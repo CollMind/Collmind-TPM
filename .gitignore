@@ -1,0 +1,22 @@
+# Dependencies & build
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# Secrets / env
+.env
+.env.*
+*.pem
+*.key
+*secret*
+
+# Claude — kişiye özel (paylaşılmaz)
+.claude/settings.local.json
+.claude/.session/
+
+# OS / editor
+.DS_Store
+*.log
+.idea/
+*.swp
