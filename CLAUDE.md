@@ -21,8 +21,8 @@ Dil: kullanıcı Türkçe yazıyor → Türkçe yanıtla.
 
 | Bileşen | Konum | Stack | Dev portu |
 |---|---|---|---|
-| Backend | `collmind.backend/` (git submodule, branch: `staging`) | NestJS 10 + TypeORM 0.3 + PostgreSQL 16, JWT/Passport, Swagger | 3000 |
-| Frontend | `collmind.frontend/` (git submodule, branch: `main`) | React 18 + Vite 5 + TS, Redux Toolkit + TanStack Query, Tailwind + shadcn/ui, Recharts | 5173 |
+| Backend | `collmind.backend/` (submodule; iş: `staging`, prod: `main`) | NestJS 10 + TypeORM 0.3 + PostgreSQL 16, JWT/Passport, Swagger | 3000 |
+| Frontend | `collmind.frontend/` (submodule; iş: `staging`, prod: `main`) | React 18 + Vite 5 + TS, Redux Toolkit + TanStack Query, Tailwind + shadcn/ui, Recharts | 5173 |
 | DB | Docker PostgreSQL | — | 5432 |
 
 Bu kök repo (`collmind.team`) orkestrasyon kurulumunu (`.claude/`) + dokümantasyonu tutar; backend/frontend submodule'dür.
@@ -81,11 +81,28 @@ Task/epic/sprint dosya formatı: [.claude/backlog/BACKLOG.md](.claude/backlog/BA
 
 ## 5. Git / Bitbucket Workflow
 
-- Backend/frontend ayrı Bitbucket repoları (submodule). Kök repo `collmind.team`.
-- **Ana branch'e (staging/main) direkt commit yok.** Feature branch aç → commit → push → PR.
+- **Çoklu repo:** backend/frontend ayrı Bitbucket repolarıdır (submodule). Kök repo `collmind.team` kod tutmaz; her submodule'ün **commit pointer'ını** tutar (hangi backend+frontend sürümü birlikte). Bir submodule'de iş bitince: o repoya push → kök repo'da pointer'ı güncelle/commit/push.
 - Commit mesajı sonu: `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`
-- Commit/push yalnızca kullanıcı isterse. Submodule'de değişiklik sonrası kök repo'da submodule pointer'ını güncelle.
+- Commit/push yalnızca kullanıcı isterse.
 - `/sync` ile submodule'leri güncel tut.
+
+### Branch & Release Modeli (ZORUNLU — her üç repoda)
+
+İki kalıcı branch:
+- **`staging`** → TÜM geliştirme burada olur. Feature/bugfix branch'leri staging'den açılır, staging'e merge edilir.
+- **`main`** → **production/release** branch'i. Yalnızca release promote'u ile güncellenir. **ASLA doğrudan commit/push edilmez.**
+
+**Release akışı (manuel promote, pipeline yok):**
+1. `staging` yeşil olmalı (testler geçiyor, code-reviewer onayı).
+2. Release tag'i **staging'de** atılır: `vMAJOR.MINOR.PATCH` (semver). Üç repoda da **aynı sürüm**.
+3. Promote: `staging → main` merge, `main` push edilir.
+4. Production deploy **manuel** yapılır (otomasyon yok).
+
+**Kurallar:**
+- Yeni iş → staging'den `feature/<ad>` veya `fix/<ad>` aç → staging'e geri merge.
+- `main`'e doğrudan commit/push YASAK; `main` yalnızca staging'den promote alır.
+- Tag yalnızca release anında, staging'den. Meta-repo tag'i o anki submodule sürüm kombinasyonunu işaretler (önce backend/frontend release'lenir, pointer güncellenir, sonra meta tag'lenir).
+- `/release <vX.Y.Z>` bu akışı orkestre eder.
 
 ---
 
