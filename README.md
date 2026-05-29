@@ -49,11 +49,18 @@ git submodule update --init --recursive
 ( cd collmind.backend && npm install )
 ( cd collmind.frontend && npm install )
 
-# 3. Claude Code'u başlat — Team Lead oturum başında backlog'la karşılar
+# 3. (Token tasarrufu — önerilir) RTK + jq kur
+#    settings.json'daki PreToolUse hook'u Bash komutlarını rtk ile sarmalar (~%80 tasarruf).
+#    rtk yoksa hook sessizce pas geçer; kurulumu opsiyonel ama tavsiye edilir.
+brew install jq
+brew install rtk-ai/tap/rtk   # veya: https://github.com/rtk-ai/rtk#installation
+
+# 4. Claude Code'u başlat — Team Lead oturum başında backlog'la karşılar
 claude
 ```
 
 > Kişiye özel ayarların `.claude/settings.local.json`'a (git-ignored). Bitbucket erişimi mevcut token'lı git remote'larıyla.
+> **Agent Teams** etkin (deneysel, Claude Code v2.1.32+); VS Code'da `teammateMode: in-process` kullanılır.
 
 ## Günlük kullanım
 
