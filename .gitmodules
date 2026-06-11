@@ -1,8 +1,8 @@
 [submodule "collmind.backend"]
 	path = collmind.backend
-	url = https://bitbucket.org/collmind/collmind-backend.git
+	url = https://bitbucket.org/collmind-tpm/collmind-backend.git
 	branch = staging
 [submodule "collmind.frontend"]
 	path = collmind.frontend
-	url = https://bitbucket.org/collmind/collmind-frontend.git
+	url = https://bitbucket.org/collmind-tpm/collmind-frontend.git
 	branch = main
