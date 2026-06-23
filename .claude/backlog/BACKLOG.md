@@ -65,13 +65,23 @@ status: active        # planned | active | closed
 ---
 
 ## Aktif Sprint
-_Henüz sprint açılmadı._
+- [[S-001]] Konsolidasyon Sprint 1 — 2026-06-23 → 2026-07-07 — `active`
 
 ## Epic'ler
-_Henüz epic yok._
+- [[E-001]] TTM'i Collmind-TPM'e konsolide et, ana ürünü olgunlaştır — `in-progress`
 
 ## Açık Task'lar (todo / in-progress / review)
-_Henüz task yok._
+| ID | Başlık | Öncelik | Assignee | Durum |
+|---|---|---|---|---|
+| [[T-002]] | Karar & dondurma (CTPM ana ürün, TTM legacy) | P0 | architect | todo |
+| [[T-003]] | Reversals akışı port | P0 | backend-engineer | todo |
+| [[T-004]] | Settlements derinleştirme | P0 | backend-engineer | todo |
+| [[T-005]] | Dashboard modülü port | P1 | backend ∥ frontend | todo |
+| [[T-006]] | Reports olgunlaştırma | P1 | backend-engineer | todo |
+| [[T-007]] | E2E suite kurulumu (0→14 senaryo) | P0 | qa-engineer | todo |
+| [[T-008]] | Finansal-doğruluk paritesi | P0 | qa-engineer ∥ data-analyst | todo |
+| [[T-009]] | Gap audit (attachments/baseline/cap/sales) | P2 | planner | todo |
+| [[T-010]] | Wella demo dataset (CTPM) | P1 | data-engineer | todo |
 
 ## Tamamlanan (done)
-_Henüz yok._
+- [[T-001]] Wella Customer.xlsx'ten CPL + müşteri master-data tanımı — `backend-engineer` — 2026-06-23
