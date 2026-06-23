@@ -73,7 +73,7 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
-| [[T-002]] | Karar & dondurma (CTPM ana ürün, TTM legacy) | P0 | architect | todo |
+| [[T-002]] | Karar & dondurma (CTPM ana ürün, TTM legacy) | P0 | architect | blocked (TTM freeze) |
 | [[T-003]] | Reversals akışı port | P0 | backend-engineer | todo |
 | [[T-004]] | Settlements derinleştirme | P0 | backend-engineer | todo |
 | [[T-005]] | Dashboard modülü port | P1 | backend ∥ frontend | todo |

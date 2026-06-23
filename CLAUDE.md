@@ -27,6 +27,17 @@ Dil: kullanıcı Türkçe yazıyor → Türkçe yanıtla.
 
 Bu kök repo (`collmind.team`) orkestrasyon kurulumunu (`.claude/`) + dokümantasyonu tutar; backend/frontend submodule'dür.
 
+### Ürün konumu / TTM ilişkisi (ZORUNLU)
+
+**Bu repo (Collmind-TPM / CTPM) CollMind TPM'in tek ve resmi ana ürünüdür.**
+Tüm geliştirme, release ve teslimat burada, `staging` branch'i üzerinden
+yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24).
+
+`TTM` reposu **dondurulmuştur (reference/legacy-only)**:
+- TTM'e yeni iş gitmez; yalnızca UAT'de kanıtlanmış akışlar için **port-kaynağı** referanstır.
+- Port'ta düz kopyalama YASAK: TTM davranışı CTPM'in katmanlı/DDD modül yapısına (`collmind.backend/src/modules/...`) uyarlanır, Next.js UI yalnızca davranış referansıdır (Vite/React'a yeniden yazılır), BRD'nin dinamik-formül kuralı korunur, her port'a e2e eklenir.
+- Açık port-adayları: E2E iskeleti, settlements, reversals, invoice claims.
+
 **Test/komut referansı:**
 - Backend test: `npm test` (Jest) · e2e: `npm run test:e2e` · lint: `npm run lint` · migration: `npm run migration:run` · seed: `npm run seed`
 - Frontend test: `npm test` (Vitest) · type-check: `npm run type-check` · lint: `npm run lint` · dev: `npm run dev`
