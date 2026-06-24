@@ -76,7 +76,6 @@ status: active        # planned | active | closed
 | [[T-012]] | Hardcoded budget/RAG threshold → dinamik konfig (BRD) | P1 | backend-engineer | todo |
 | [[T-013]] | CLOSED agreement ↔ reversal etkileşimi (re-open/reversible) | P2 | architect | todo |
 | [[T-014]] | Transactional audit (reversal+settlement queryRunner-aware) | P1 | backend-engineer | todo |
-| [[T-005]] | Dashboard modülü port | P1 | backend ∥ frontend | todo |
 | [[T-006]] | Reports olgunlaştırma | P1 | backend-engineer | todo |
 | [[T-007]] | E2E suite kurulumu (0→14 senaryo) | P0 | qa-engineer | todo |
 | [[T-008]] | Finansal-doğruluk paritesi | P0 | qa-engineer ∥ data-analyst | todo |
@@ -85,6 +84,7 @@ status: active        # planned | active | closed
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 
 ## Tamamlanan (done)
+- [[T-005]] Dashboard port — shared/dashboard orchestrator (finance-reporting reuse, no-recompute) + frontend persona kartları; polymorphic approval count bug'ı yakalandı — `backend ∥ frontend` — 2026-06-24
 - [[T-004]] Settlements derinleştirme — summary + close (state geçişi, budget'a dokunmaz); tenant-sızıntısı bug'ı yakalandı — `backend-engineer` — 2026-06-24
 - [[T-003]] Reversals akışı port — reversal modülü + ledger CREDIT + audit; çift-restore bug'ı yakalandı — `backend-engineer` — 2026-06-24
 - [[T-002]] Karar & dondurma — CTPM ana ürün kararı (ADR + governance) — `architect` — 2026-06-24
