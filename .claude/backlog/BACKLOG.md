@@ -73,15 +73,19 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
-| [[T-002]] | Karar & dondurma (CTPM ana ürün, TTM legacy) | P0 | architect | blocked (TTM freeze) |
-| [[T-003]] | Reversals akışı port | P0 | backend-engineer | todo |
-| [[T-004]] | Settlements derinleştirme | P0 | backend-engineer | todo |
+| [[T-012]] | Hardcoded budget/RAG threshold → dinamik konfig (BRD) | P1 | backend-engineer | todo |
+| [[T-013]] | CLOSED agreement ↔ reversal etkileşimi (re-open/reversible) | P2 | architect | todo |
+| [[T-014]] | Transactional audit (reversal+settlement queryRunner-aware) | P1 | backend-engineer | todo |
 | [[T-005]] | Dashboard modülü port | P1 | backend ∥ frontend | todo |
 | [[T-006]] | Reports olgunlaştırma | P1 | backend-engineer | todo |
 | [[T-007]] | E2E suite kurulumu (0→14 senaryo) | P0 | qa-engineer | todo |
 | [[T-008]] | Finansal-doğruluk paritesi | P0 | qa-engineer ∥ data-analyst | todo |
 | [[T-009]] | Gap audit (attachments/baseline/cap/sales) | P2 | planner | todo |
 | [[T-010]] | Wella demo dataset (CTPM) | P1 | data-engineer | todo |
+| [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 
 ## Tamamlanan (done)
+- [[T-004]] Settlements derinleştirme — summary + close (state geçişi, budget'a dokunmaz); tenant-sızıntısı bug'ı yakalandı — `backend-engineer` — 2026-06-24
+- [[T-003]] Reversals akışı port — reversal modülü + ledger CREDIT + audit; çift-restore bug'ı yakalandı — `backend-engineer` — 2026-06-24
+- [[T-002]] Karar & dondurma — CTPM ana ürün kararı (ADR + governance) — `architect` — 2026-06-24
 - [[T-001]] Wella Customer.xlsx'ten CPL + müşteri master-data tanımı — `backend-engineer` — 2026-06-23
