@@ -83,12 +83,16 @@ status: active        # planned | active | closed
 | [[T-023]] | Plan-vs-Actual varyans raporu (finance-reporting) | P1 | backend-engineer | todo |
 | [[T-024]] | Baseline türetme (actuals→BASE_VOL) — BRD onayı şart | P3 | architect | **blocked** |
 | [[T-025]] | Frontend actuals upload ekranı + batch geçmişi | P1 | frontend-engineer | todo |
+| [[T-029]] | Plan onay audit ihlali (approve/reject history yok) + reserve/commit semantiği | **P0** | backend-engineer | todo |
+| [[T-027]] | KPI eksik-veri kuralı (COGS null → ROI %100 yanılsaması) | **P0** | backend-engineer | todo |
+| [[T-028]] | RBAC/BRD hizalaması (CM onay + Planner scope + rol matrisi) | P1 | architect | todo |
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
 
 ## Tamamlanan (done)
+- [[T-026]] Planning-first akış onarımı — entity kaydı + 2 migration + DecimalTransformer (string `>=`/`+=` bug'ları); submit→approve→bütçe SQL kanıtlı; role-journey 43/43 — `backend-engineer` — 2026-06-24
 - [[T-020]] Actuals (satış) modülü portu — sales-actuals modülü + migration 1785; ledger sınırı 5 katman + DB kanıtı; hard-delete yerine versiyonlama; Wella actuals yüklü — `backend-engineer` — 2026-06-24
 - [[T-018]] Planlama mechanic master-data seed — CPP/VIS_LS/PRICE_SUP/DISPLAY spendingType/category/mechanicType + backfill migration (0 NULL); SpendCalc routing doğrulandı — `data-engineer` — 2026-06-24
 - [[T-017]] SpendCalc parite tamamlama — includes('PCT') hardcode → mechanic config-driven; baseTo NIV; tenant-scope bug'ı yakalandı — `backend-engineer` — 2026-06-24
