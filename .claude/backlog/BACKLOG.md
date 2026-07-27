@@ -86,13 +86,16 @@ status: active        # planned | active | closed
 | [[T-033]] | Rejected → Draft geçişi yok (BRD state machine eksiği) | P1 | backend-engineer | todo |
 | [[T-031]] | Encumbrance relief (ACTIVE dönem çifte blokaj) | P2 | architect | todo |
 | [[T-032]] | Agreement lifecycle audit eksikliği (BRD ihlali) | **P1** | backend-engineer | todo |
-| [[T-028]] | RBAC/BRD hizalaması (CM onay + Planner scope + rol matrisi) | P1 | architect | todo |
+| [[T-028b]] | AccessScopeService + CM kategori-scoped onay | **P1** | backend-engineer | in-progress |
+| [[T-028c]] | Planner scope enforcement (yüksek risk, flag'li) | P1 | backend-engineer | todo |
+| [[T-028d]] | dashboard/settlement scope refactor + F6 fix | P2 | backend-engineer | todo |
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
 
 ## Tamamlanan (done)
+- [[T-028a]] Rol konsolidasyonu — BRD 4 rol; MANAGER/FINANCE deprecated alias + ESLint kalkanı; CM artık onaycı; F8/F9 fix; route-ordering bug'ı bulundu — `backend-engineer` — 2026-07-28
 - [[T-030]] Agreement bütçe rezerv sızıntısı — net-tabanlı ortak release motoru + backfill (17 agreement, 395.000 iade); code-review 5. çift-sayım hatasını yakaladı (plan tarafı da ortak motora devredildi) — `backend-engineer` — 2026-07-28
 - [[T-029]] Plan onay audit + reserve/commit semantiği — approve/reject artık history yazıyor; submit→RESERVE, approve→COMMIT; **onaylı planların bütçeyi düşürmediği ikinci sızıntı** kapatıldı (migration 1789) — `backend-engineer` — 2026-07-27
 - [[T-027]] KPI eksik-veri kuralı — COGS null → ROI/RAG null (sahte %100/GREEN bitti); migration 1788; bonus: cleanup FK fix + reseed-dayanıklı e2e; T-030 zarf sızıntısı bulundu — `backend-engineer` — 2026-07-27
