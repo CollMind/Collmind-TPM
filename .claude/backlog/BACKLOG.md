@@ -77,7 +77,7 @@ status: active        # planned | active | closed
 | [[T-014]] | Transactional audit (reversal+settlement queryRunner-aware) | P1 | backend-engineer | todo |
 | [[T-006]] | Reports olgunlaştırma | P1 | backend-engineer | todo |
 | [[T-009]] | Gap audit (attachments/baseline/cap/sales) | P2 | planner | todo |
-| [[T-010]] | Wella demo dataset (CTPM) | P1 | data-engineer | todo |
+| [[T-010]] | Wella demo dataset (CTPM) | P1 | data-engineer | in-progress |
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
