@@ -85,13 +85,13 @@ status: active        # planned | active | closed
 | [[T-025]] | Frontend actuals upload ekranı + batch geçmişi | P1 | frontend-engineer | todo |
 | [[T-033]] | Rejected → Draft geçişi yok (BRD state machine eksiği) | P1 | backend-engineer | todo |
 | [[T-031]] | Encumbrance relief (ACTIVE dönem çifte blokaj) | P2 | architect | todo |
-| [[T-032]] | Agreement lifecycle audit eksikliği (BRD ihlali) | **P1** | backend-engineer | todo |
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
 
 ## Tamamlanan (done)
+- [[T-032]] Agreement lifecycle audit — submit/approve/reject/cancel/update loglanıyor (önce 0 satırdı); APPROVE+CANCEL high-risk; cancel'da bilinçli asimetri (state geri alınmaz, AUDIT LOG MISSING) — `backend-engineer` — 2026-07-28
 - [[T-028e]] Agreement CM kategori-scope — kategori FU→GU'dan türetilir; findById ham (boş) kolonu kullanıyordu, CM scope'u fiilen bozuktu — `backend-engineer` — 2026-07-28
 - [[T-028c]] Planner scope enforcement — flag'li (varsayılan kapalı), backfill migration 1792; code-review scope kaçağı yakaladı (calculate-kpis/recalculate actor'suzdu → kapsam dışı planı yazdırıyordu) — `backend-engineer` — 2026-07-28
 - [[T-028d]] Scope kopyaları AccessScopeService'e taşındı + F6 latent bug (cplId=null → "hiçbiri" idi) fix; e2e bütçe sızıntısı kalıcı çözüldü (cleanupTestPlans, 3 koşum kanıtlı) — `backend-engineer` — 2026-07-28
