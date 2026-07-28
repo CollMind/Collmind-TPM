@@ -87,13 +87,13 @@ status: active        # planned | active | closed
 | [[T-031]] | Encumbrance relief (ACTIVE dönem çifte blokaj) | P2 | architect | todo |
 | [[T-032]] | Agreement lifecycle audit eksikliği (BRD ihlali) | **P1** | backend-engineer | todo |
 | [[T-028c]] | Planner scope enforcement (yüksek risk, flag'li) | P1 | backend-engineer | todo |
-| [[T-028d]] | dashboard/settlement scope refactor + F6 fix | P2 | backend-engineer | todo |
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
 
 ## Tamamlanan (done)
+- [[T-028d]] Scope kopyaları AccessScopeService'e taşındı + F6 latent bug (cplId=null → "hiçbiri" idi) fix; e2e bütçe sızıntısı kalıcı çözüldü (cleanupTestPlans, 3 koşum kanıtlı) — `backend-engineer` — 2026-07-28
 - [[T-028b]] AccessScopeService + CM kategori-scoped onay — pair semantiği kanıtlı (düzleştirme tuzağı kapalı), fail-closed; F3/F4/F7 fix; submit() submittedById'yi kaydetmiyormuş (guard'ı devre dışı bırakacaktı) — `backend-engineer` — 2026-07-28
 - [[T-028a]] Rol konsolidasyonu — BRD 4 rol; MANAGER/FINANCE deprecated alias + ESLint kalkanı; CM artık onaycı; F8/F9 fix; route-ordering bug'ı bulundu — `backend-engineer` — 2026-07-28
 - [[T-030]] Agreement bütçe rezerv sızıntısı — net-tabanlı ortak release motoru + backfill (17 agreement, 395.000 iade); code-review 5. çift-sayım hatasını yakaladı (plan tarafı da ortak motora devredildi) — `backend-engineer` — 2026-07-28
