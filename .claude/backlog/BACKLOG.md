@@ -88,9 +88,10 @@ status: active        # planned | active | closed
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
 | [[T-034]] | Optimistic locking yok (plan/agreement mutasyonları) — BRD | P1 | architect | todo |
-| [[T-036]] | E2E bütçe zarfı tükenmesi — agreement tarafı (iki-flag protokolünü kırıyor) | P1 | qa-engineer | todo |
+| [[T-037]] | E2E izolasyon — paylaşılan seed fixture race + diriltme hack'i (BRD-ihlali durum) | P1 | qa-engineer | todo |
 
 ## Tamamlanan (done)
+- [[T-036]] E2E zarf tükenmesi çözüldü — `cleanupTestTransactions` **hiç çalışmıyormuş** (source_id agreement_id tutuyor, sorgu asla eşleşmiyordu) + role-journey C7-C9 agreement'ı APPROVED bırakıyordu; reset'siz 3 ardışık koşum 153/153 kanıtlı — `qa-engineer` — 2026-07-29
 - [[T-014]] Transactional audit — audit artık reversal/settlement transaction'ının İÇİNDE (rollback→0 satır SQL kanıtlı); high-risk alarm commit sonrasına ertelendi; review sonrası flush idempotency referans-seviyesine çekildi — `backend-engineer` — 2026-07-29
 - [[T-035]] Seed DataSource'ları namingStrategy'siz kuruluyordu (`seed:cleanup-and-seed` kırık); kök neden düzeltmesi — `Team Lead` — 2026-07-29
 - [[T-033]] Rejected→Draft geçişi — BRD state machine tamamlandı; **6. çift-sayım hatası** bulundu (reserveForPlan tip-bazlı idempotency → resubmit'te rezervasyon hiç oluşmuyordu) — `backend-engineer` — 2026-07-28
