@@ -87,9 +87,13 @@ status: active        # planned | active | closed
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
-| [[T-034]] | Optimistic locking yok (plan/agreement mutasyonları) — BRD | P1 | architect | todo |
+| [[T-034f]] | Frontend: version gönderimi + 409 STALE_VERSION akışı (katı mod) | P1 | frontend-engineer | todo |
+| [[T-034b]] | State geçişleri: transaction + FOR UPDATE + status-CAS | P1 | backend-engineer | todo |
+| [[T-034c]] | Recalc advisory lock (lost recalculation) | P1 | backend-engineer | todo |
+| [[T-039]] | KPI/formül konfigürasyonunda optimistic locking | P2 | architect | todo |
 
 ## Tamamlanan (done)
+- [[T-034]] Optimistic locking — `@VersionColumn` ölü kalırdı (mutasyonlar `.update()`), manuel version CAS uygulandı; code-review `delete()`'in atlandığını yakaladı (en yıkıcı yol korumasızdı); mutasyon kanıtı 7 kırmızı ile doğrulandı; multi-tenant açığı da kapandı — `backend-engineer` — 2026-07-29
 - [[T-037]] E2E izolasyon — diriltme hack'i silindi (BRD ihlali kapandı: onaylı agreement artık bütçeden düşüyor); invaryantlar agreement/app-scoped'a çevrildi; **paralel 5 ardışık koşum 154/154** (Team Lead doğruladı) — `qa-engineer` — 2026-07-29
 - [[T-038]] SA-E2E-06 tenant-geneli invaryantı — aynı kök neden, [[T-037]]'ye katıldı — `qa-engineer` — 2026-07-29
 - [[T-036]] E2E zarf tükenmesi çözüldü — `cleanupTestTransactions` **hiç çalışmıyormuş** (source_id agreement_id tutuyor, sorgu asla eşleşmiyordu) + role-journey C7-C9 agreement'ı APPROVED bırakıyordu; reset'siz 3 ardışık koşum 153/153 kanıtlı — `qa-engineer` — 2026-07-29
