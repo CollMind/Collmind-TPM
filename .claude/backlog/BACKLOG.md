@@ -74,7 +74,6 @@ status: active        # planned | active | closed
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
 | [[T-013]] | CLOSED agreement ↔ reversal etkileşimi (re-open/reversible) | P2 | architect | todo |
-| [[T-014]] | Transactional audit (reversal+settlement queryRunner-aware) | P1 | backend-engineer | todo |
 | [[T-006]] | Reports olgunlaştırma | P1 | backend-engineer | todo |
 | [[T-009]] | Gap audit (attachments/baseline/cap/sales) | P2 | planner | todo |
 | [[T-010]] | Wella demo dataset (CTPM) | P1 | data-engineer | in-progress (ürün ✅, actuals→T-020) |
@@ -89,8 +88,11 @@ status: active        # planned | active | closed
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
 | [[T-034]] | Optimistic locking yok (plan/agreement mutasyonları) — BRD | P1 | architect | todo |
+| [[T-036]] | E2E bütçe zarfı tükenmesi — agreement tarafı (iki-flag protokolünü kırıyor) | P1 | qa-engineer | todo |
 
 ## Tamamlanan (done)
+- [[T-014]] Transactional audit — audit artık reversal/settlement transaction'ının İÇİNDE (rollback→0 satır SQL kanıtlı); high-risk alarm commit sonrasına ertelendi; review sonrası flush idempotency referans-seviyesine çekildi — `backend-engineer` — 2026-07-29
+- [[T-035]] Seed DataSource'ları namingStrategy'siz kuruluyordu (`seed:cleanup-and-seed` kırık); kök neden düzeltmesi — `Team Lead` — 2026-07-29
 - [[T-033]] Rejected→Draft geçişi — BRD state machine tamamlandı; **6. çift-sayım hatası** bulundu (reserveForPlan tip-bazlı idempotency → resubmit'te rezervasyon hiç oluşmuyordu) — `backend-engineer` — 2026-07-28
 - [[T-032]] Agreement lifecycle audit — submit/approve/reject/cancel/update loglanıyor (önce 0 satırdı); APPROVE+CANCEL high-risk; cancel'da bilinçli asimetri (state geri alınmaz, AUDIT LOG MISSING) — `backend-engineer` — 2026-07-28
 - [[T-028e]] Agreement CM kategori-scope — kategori FU→GU'dan türetilir; findById ham (boş) kolonu kullanıyordu, CM scope'u fiilen bozuktu — `backend-engineer` — 2026-07-28
