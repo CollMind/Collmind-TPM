@@ -90,10 +90,12 @@ status: active        # planned | active | closed
 | [[T-040]] | Frontend test suite'i kırık (24/50 dosya fail, OOM) — güvenilir sinyal yok | P1 | qa-engineer | todo |
 | [[T-041]] | addFu yanıtı güncel plan.version döndürmeli (frontend tahmin ediyor) | P2 | backend-engineer | todo |
 | [[T-043]] | plan/agreement controller'larında ParseUUIDPipe yok (bozuk UUID → 500) | P2 | backend-engineer | todo |
-| [[T-044]] | Recalc performansı BRD <500ms'i aşıyor — kuralın kapsamı netleşmeli | P1 | architect | todo |
+| [[T-046]] | Senkron tam-plan recalc'ı HTTP yanıtından çıkar + telemetri | P1 | architect | todo |
 | [[T-039]] | KPI/formül konfigürasyonunda optimistic locking | P2 | architect | todo |
 
 ## Tamamlanan (done)
+- [[T-045]] Recalc N+1 temizliği — round-trip **379→173 (%54)**, HTTP recalc **540→421 ms**: BRD `<500ms` eşiğinin ALTINA inildi, mimari değişiklik gerekmeden; KPI çıktıları birebir aynı (eşdeğerlik kanıtlı) — `backend-engineer` — 2026-07-30
+- [[T-044]] BRD `<500ms` kapsamı **uçtan uca** olarak karara bağlandı (ADR 0003); T-034c'nin "tek formül" yorumu kanıtla çürütüldü; profil darboğazın **N+1 (318 round-trip, %49'u tekrar)** olduğunu gösterdi, formül motoru değil — `architect` — 2026-07-30
 - [[T-034c]] Recalc advisory lock — 3 auto-commit yazımı tek transaction'a alındı (**atomiklik kanıtlanmış kazanç**); ancak **lost-recalculation yarışı 15 iterasyonda yeniden ÜRETİLEMEDİ** (dürüst kayıt); performans BRD sapması çıktı → [[T-044]] — `backend-engineer` — 2026-07-30
 - [[T-042]] `cancel()` T-034b desenine geçti — son korumasız geçiş kapandı (`CLOSED` artık sessizce `CANCELLED`'a dönemez); T-032'nin asimetri kompanzasyonu gerçek transaction gelince gereksizleşti ve kaldırıldı — `backend-engineer` — 2026-07-30
 - [[T-034b]] State geçişleri — transaction + FOR UPDATE + status-CAS; **kompanzasyon gerçek atomiklikle değişti** (T-014'ün karşılığı); kilit kaldırılınca yarış testi `[200,500]` (çift COMMIT) veriyor; Team Lead bütçe sızıntısı + frontend submit kırığını yakaladı — `backend-engineer` — 2026-07-30
