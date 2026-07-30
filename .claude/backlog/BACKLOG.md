@@ -89,12 +89,12 @@ status: active        # planned | active | closed
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
 | [[T-040]] | Frontend test suite'i kırık (24/50 dosya fail, OOM) — güvenilir sinyal yok | P1 | qa-engineer | todo |
 | [[T-041]] | addFu yanıtı güncel plan.version döndürmeli (frontend tahmin ediyor) | P2 | backend-engineer | todo |
-| [[T-042]] | AgreementService.cancel() korumasız (kilitsiz okuma + koşulsuz status yazımı) | P1 | backend-engineer | todo |
 | [[T-043]] | plan/agreement controller'larında ParseUUIDPipe yok (bozuk UUID → 500) | P2 | backend-engineer | todo |
 | [[T-034c]] | Recalc advisory lock (lost recalculation) | P1 | backend-engineer | todo |
 | [[T-039]] | KPI/formül konfigürasyonunda optimistic locking | P2 | architect | todo |
 
 ## Tamamlanan (done)
+- [[T-042]] `cancel()` T-034b desenine geçti — son korumasız geçiş kapandı (`CLOSED` artık sessizce `CANCELLED`'a dönemez); T-032'nin asimetri kompanzasyonu gerçek transaction gelince gereksizleşti ve kaldırıldı — `backend-engineer` — 2026-07-30
 - [[T-034b]] State geçişleri — transaction + FOR UPDATE + status-CAS; **kompanzasyon gerçek atomiklikle değişti** (T-014'ün karşılığı); kilit kaldırılınca yarış testi `[200,500]` (çift COMMIT) veriyor; Team Lead bütçe sızıntısı + frontend submit kırığını yakaladı — `backend-engineer` — 2026-07-30
 - [[T-034f]] Frontend optimistic locking — version gönderimi + 409 akışı; **otomatik retry YOK** (olsaydı lost update'i geri getirirdi), axios delete gövde tuzağı kapatıldı; gizli parse hatası 12 kırmızı testi açığa çıkardı — `frontend-engineer` — 2026-07-29
 - [[T-034]] Optimistic locking — `@VersionColumn` ölü kalırdı (mutasyonlar `.update()`), manuel version CAS uygulandı; code-review `delete()`'in atlandığını yakaladı (en yıkıcı yol korumasızdı); mutasyon kanıtı 7 kırmızı ile doğrulandı; multi-tenant açığı da kapandı — `backend-engineer` — 2026-07-29
