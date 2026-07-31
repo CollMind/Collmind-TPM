@@ -87,7 +87,7 @@ status: active        # planned | active | closed
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
-| [[T-040]] | Frontend test suite'i kırık (24/50 dosya fail, OOM) — güvenilir sinyal yok | P1 | qa-engineer | todo |
+| [[T-040]] | Frontend test suite onarımı — 24→2 fail dosya, 226→388 test; **kalan 3 hata** | P1 | qa-engineer | in-progress |
 | [[T-041]] | addFu yanıtı güncel plan.version döndürmeli (frontend tahmin ediyor) | P2 | backend-engineer | todo |
 | [[T-043]] | plan/agreement controller'larında ParseUUIDPipe yok (bozuk UUID → 500) | P2 | backend-engineer | todo |
 | [[T-046]] | Senkron tam-plan recalc'ı HTTP yanıtından çıkar + telemetri | P1 | architect | todo |
