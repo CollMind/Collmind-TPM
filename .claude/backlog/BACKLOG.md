@@ -84,7 +84,9 @@ status: active        # planned | active | closed
 | [[T-031]] | Encumbrance relief (ACTIVE dönem çifte blokaj) | P2 | architect | todo |
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
-| [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
+| [[T-049]] | 🔴 CANLI UI: Planning Grid hücreleri başlığa göre 2 kolon kaymış | P1 | frontend-engineer | todo |
+| [[T-050]] | Login hatası yanlış mesaj ("No refresh token") | P2 | frontend-engineer | todo |
+| [[T-016]] | Playwright UI E2E — altyapı + 4 senaryo **done**, kalan ~10 senaryo | P2 | qa-engineer | in-progress |
 | [[T-048]] | 🔴 CANLI: submitForApproval off-invoice rezervasyonu yazmıyor (7. sınıf) | P1 | backend-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope — **tasarım hazır** (0008), uygulama 2 fazlı | P1 | backend-engineer | todo |
 | [[T-046c]] | Kısmi recalc — **gerekçesi değişti**, T-046b+T-046d'den sonra yeniden değerlendir | P2 | architect | blocked |
