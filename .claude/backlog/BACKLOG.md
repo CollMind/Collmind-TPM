@@ -90,7 +90,7 @@ status: active        # planned | active | closed
 | [[T-041]] | addFu yanıtı güncel plan.version döndürmeli (frontend tahmin ediyor) | P2 | backend-engineer | todo |
 | [[T-043]] | plan/agreement controller'larında ParseUUIDPipe yok (bozuk UUID → 500) | P2 | backend-engineer | todo |
 | [[T-046c]] | Kısmi recalc — **gerekçesi değişti**, T-046b+T-046d'den sonra yeniden değerlendir | P2 | architect | blocked |
-| [[T-046d]] | Frontend performanceMonitor (ADR 0003 metriğinin tek doğru ölçüm noktası) | P2 | frontend-engineer | todo |
+| [[T-046d]] | Frontend performanceMonitor — kod hazır, **render dahil gerçek ölçüm eksik** | P1 | frontend-engineer | in-progress |
 | [[T-039]] | KPI/formül konfigürasyonunda optimistic locking | P2 | architect | todo |
 
 ## Tamamlanan (done)
