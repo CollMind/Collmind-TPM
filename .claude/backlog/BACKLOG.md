@@ -86,7 +86,8 @@ status: active        # planned | active | closed
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
-| [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
+| [[T-048]] | 🔴 CANLI: submitForApproval off-invoice rezervasyonu yazmıyor (7. sınıf) | P1 | backend-engineer | todo |
+| [[T-019]] | On/Off-Invoice ayrı envelope — **tasarım hazır** (0008), uygulama 2 fazlı | P1 | backend-engineer | todo |
 | [[T-046c]] | Kısmi recalc — **gerekçesi değişti**, T-046b+T-046d'den sonra yeniden değerlendir | P2 | architect | blocked |
 | [[T-046d]] | Frontend performanceMonitor — kod hazır, **render dahil gerçek ölçüm eksik** | P1 | frontend-engineer | in-progress |
 ## Tamamlanan (done)
