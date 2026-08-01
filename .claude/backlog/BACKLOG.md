@@ -87,13 +87,13 @@ status: active        # planned | active | closed
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E suite (14 senaryo) | P1 | qa-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
-| [[T-041]] | addFu yanıtı güncel plan.version döndürmeli (frontend tahmin ediyor) | P2 | backend-engineer | todo |
-| [[T-043]] | plan/agreement controller'larında ParseUUIDPipe yok (bozuk UUID → 500) | P2 | backend-engineer | todo |
 | [[T-046c]] | Kısmi recalc — **gerekçesi değişti**, T-046b+T-046d'den sonra yeniden değerlendir | P2 | architect | blocked |
 | [[T-046d]] | Frontend performanceMonitor — kod hazır, **render dahil gerçek ölçüm eksik** | P1 | frontend-engineer | in-progress |
 | [[T-039]] | KPI/formül konfigürasyonunda optimistic locking | P2 | architect | todo |
 
 ## Tamamlanan (done)
+- [[T-041]] `addFu`/`updateFuTactic`/`updateSkuVolume` yanıtında **CAS-sonrası** `planVersion`, `removeFu`'da `X-Plan-Version` başlığı — frontend'in `version+1` tahmini gereksizleşti; eklemeli değişiklik (kırılma yok); ajan CORS dersini kendiliğinden uyguladı — `backend-engineer` — 2026-07-31
+- [[T-043]] `ParseUUIDPipe` 28 controller'a — bozuk UUID artık **400**, 500 değil; sorun "hiç yok" değil **tutarsızlık**tı (settlement/reversal zaten doğruydu); iş-kodu parametrelerine dokunulmadı — `backend-engineer` — 2026-07-31
 - [[T-046b]] Recalc telemetrisi + **kalıcı round-trip regresyon testi** — süreye değil SAYIYA assert (deterministik, yükten etkilenmez); mutasyon kanıtı: hoisting kapatılınca 24→336, test kırmızı (Team Lead koşturdu); eşik ConfigService'ten, aşımda yalnız warn — `backend-engineer` — 2026-07-31
 - [[T-046a]] Recalc mikro-temizlik — 500 SKU+tactic: round-trip **4565→60 (%99)**, süre **7103→467 ms (%93)**; **T-046'nın "mikro-temizlik yetmez" tahmini ölçümle çürütüldü** (eşiğin altına inildi) → T-046c'nin gerekçesi değişti; KPI çıktıları byte-eşit — `backend-engineer` — 2026-07-31
 - [[T-046]] Recalc ölçek analizi (TASARIM) — **ölçüldü, tahmin edilmedi**: eğri lineer, eşik ~150 SKU (tactic'li ~70) aşılıyor, 500 SKU'da 1532/3372 ms; **BRD'nin kendi referans tasarımı zaten kısmi recalc** (KPI_Details [148], Team Lead doğruladı) → async reddedildi; T-045'in ölçemediği mechanic N+1 isteğin %52'si çıktı — `architect` — 2026-07-31
