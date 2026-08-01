@@ -89,9 +89,8 @@ status: active        # planned | active | closed
 | [[T-019]] | On/Off-Invoice ayrı envelope bütçe kontrol/rezervasyon | P1 | backend-engineer | todo |
 | [[T-046c]] | Kısmi recalc — **gerekçesi değişti**, T-046b+T-046d'den sonra yeniden değerlendir | P2 | architect | blocked |
 | [[T-046d]] | Frontend performanceMonitor — kod hazır, **render dahil gerçek ölçüm eksik** | P1 | frontend-engineer | in-progress |
-| [[T-047]] | E2E fixture sızıntısı — 201 agreement + 196 plan birikmiş; invaryant kördü | P1 | qa-engineer | todo |
-
 ## Tamamlanan (done)
+- [[T-047]] E2E fixture adlandırma sızıntısı — tek dosyaydı (`optimistic-locking.e2e-spec.ts`, 5 rename noktası önek kaybediyordu, biri soft-delete'te de sızıyordu); 203 agreement + 292 plan artığı temizlendi; **kalıcı invaryant**: Jest globalSetup/Teardown ile suite başı/sonu satır sayısı karşılaştırması (yalnız zarf değil), CI'da KIRMIZI yapıyor; mutasyon kanıtlı (derleme bozulmadan invaryant KIRMIZI'ya döndüğü doğrulandı) — `qa-engineer` — 2026-08-01
 - [[T-039]] KPI/formül konfigürasyonunda optimistic locking (migration 1794) — **Team Lead'in "@VersionColumn burada çalışır" öncülü ajan tarafından TypeORM kaynağıyla çürütüldü** (save() çakışma kontrolü yapmıyor); eklemeli rollout (frontend kırılmadı); **2. gerçek hata: formül cache'i 60 sn bayatlıyormuş, clearCache'in üretim çağıranı yokmuş** — `backend-engineer` — 2026-08-01
 - [[T-041]] `addFu`/`updateFuTactic`/`updateSkuVolume` yanıtında **CAS-sonrası** `planVersion`, `removeFu`'da `X-Plan-Version` başlığı — frontend'in `version+1` tahmini gereksizleşti; eklemeli değişiklik (kırılma yok); ajan CORS dersini kendiliğinden uyguladı — `backend-engineer` — 2026-07-31
 - [[T-043]] `ParseUUIDPipe` 28 controller'a — bozuk UUID artık **400**, 500 değil; sorun "hiç yok" değil **tutarsızlık**tı (settlement/reversal zaten doğruydu); iş-kodu parametrelerine dokunulmadı — `backend-engineer` — 2026-07-31
