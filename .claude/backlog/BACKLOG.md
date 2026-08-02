@@ -85,11 +85,11 @@ status: active        # planned | active | closed
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-016]] | Playwright UI E2E — altyapı + 4 senaryo **done**, kalan ~10 senaryo | P2 | qa-engineer | in-progress |
-| [[T-052]] | 🔴 CANLI: calculateAllSpendsForFU taktikleri okumuyor → submitForApproval 0/0 spend | P1 | backend-engineer | todo |
 | [[T-019b]] | On/Off-Invoice **Faz 2** — zarf split + re-home (append-only, REHOME key uzayı) | P2 | backend-engineer | todo |
 | [[T-046c]] | Kısmi recalc — **gerekçesi değişti**, T-046b+T-046d'den sonra yeniden değerlendir | P2 | architect | blocked |
 | [[T-046d]] | Frontend performanceMonitor — kod hazır, **render dahil gerçek ölçüm eksik** | P1 | frontend-engineer | in-progress |
 ## Tamamlanan (done)
+- [[T-052]] `calculateAllSpendsForFU` taktikleri okumuyordu → gerçek UI akışı (tactics PATCH) **0/0 spend** hesaplıyordu. Fix: **tek türetim noktası** `SpendCalculationService#buildMechanicValues` (`enteredValue` + `plan_fus.tactics`; çakışmada tactics kazanır, toplama yok) — iki kanonik yol da onu çağırıyor. İki yol aynı sonuç: `14500 == 10000+4500`. A8c'nin geçici seed fixture'ı kaldırıldı, gerçek akış test ediliyor. Mutasyon (Team Lead koştu): tactics okuması geri alınınca `tsc` temiz + test KIRMIZI `Expected > 0, Received 0` — `backend-engineer` — 2026-08-02
 - [[T-019]] On/Off-Invoice **Faz 1** — migration 1795 (`spend_type` zarf+transaction, nullable); **hiç para taşınmadan** (up→down→up üç durumda da reserved birebir aynı); ADR 0004: agreement `spend_type` NULL → 400, **atomik blok** (biri aşarsa hiçbir rezervasyon yazılmıyor); geriye uyum korundu — `backend-engineer` — 2026-08-02
 - [[T-048]] 🔴 CANLI hata düzeltildi — asıl fix **idempotency'nin kova-farkındalı olması** (`(plan,envelope,spendType)`); mutasyon: kapatılınca A8c `Expected 2, Received 1` (orijinal hata birebir); artık **iki ayrı RESERVE satırı** SQL ile kanıtlı — `backend-engineer` — 2026-08-02
 - [[T-051]] Playwright↔backend suite yarışı — **Team Lead'in hipotezi ölçümle çürütüldü**; gerçek neden: `DELETE /plans/:id` soft-delete, T-047 satır sayıyor → her koşum kalıcı satır bırakıyordu (12 birikmiş ölçüldü), jest'in `LIKE 'E2E-%'` temizliği yan etki olarak siliyordu. Playwright artık kendi satırını **id ile** hard-delete edip doğruluyor; invaryant gevşetilmedi — `qa-engineer` — 2026-08-02
