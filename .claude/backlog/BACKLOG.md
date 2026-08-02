@@ -85,13 +85,13 @@ status: active        # planned | active | closed
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
 | [[T-015]] | Cap kontrolü reversed tx semantiği (BRD karar) | P1 | architect | todo |
 | [[T-051]] | Playwright→backend e2e arka arkaya koşunca T-047 invaryantı kırmızı (yarış) | P2 | qa-engineer | todo |
-| [[T-050]] | Login hatası yanlış mesaj ("No refresh token") | P2 | frontend-engineer | todo |
 | [[T-016]] | Playwright UI E2E — altyapı + 4 senaryo **done**, kalan ~10 senaryo | P2 | qa-engineer | in-progress |
 | [[T-048]] | 🔴 CANLI: submitForApproval off-invoice rezervasyonu yazmıyor (7. sınıf) | P1 | backend-engineer | todo |
 | [[T-019]] | On/Off-Invoice ayrı envelope — **tasarım hazır** (0008), uygulama 2 fazlı | P1 | backend-engineer | todo |
 | [[T-046c]] | Kısmi recalc — **gerekçesi değişti**, T-046b+T-046d'den sonra yeniden değerlendir | P2 | architect | blocked |
 | [[T-046d]] | Frontend performanceMonitor — kod hazır, **render dahil gerçek ölçüm eksik** | P1 | frontend-engineer | in-progress |
 ## Tamamlanan (done)
+- [[T-050]] Login hata mesajı — `/auth/login` + `/auth/refresh` 401-refresh akışından muaf (**pathname bazlı**, substring değil); asıl yenileme mekanizması korundu (mevcut testler değişmeden geçiyor); **task tanımımdaki beklenen metin yanlıştı**, ajan gerçek backend davranışına göre yazdı — `frontend-engineer` — 2026-08-02
 - [[T-049]] 🔴 Planning Grid hiza hatası düzeltildi — başlık/satır **tek kaynak** `gridColumns` memo'suna indirildi (üç ayrı filtre yazılmadı: kök neden tekrar üretilemesin); T-016 offset telafisi kaldırıldı; hizayı doğrulayan test + mutasyon kanıtı (Team Lead koşturdu) — `frontend-engineer` — 2026-08-02
 - [[T-023]] **Bütçe varyansı raporu** — kapsam BRD kanıtıyla daraltıldı (hacim varyansının BRD'de karşılığı YOK, "spend actuals" future phase, sales_actuals boş); `variance = consumed − allocated`, reserved varyansa girmiyor; eşik ConfigService'ten, div-by-zero → null; mutasyon kanıtlı — `backend-engineer` — 2026-08-01
 - [[T-047]] E2E fixture adlandırma sızıntısı — tek dosyaydı (`optimistic-locking.e2e-spec.ts`, 5 rename noktası önek kaybediyordu, biri soft-delete'te de sızıyordu); 203 agreement + 292 plan artığı temizlendi; **kalıcı invaryant**: Jest globalSetup/Teardown ile suite başı/sonu satır sayısı karşılaştırması (yalnız zarf değil), CI'da KIRMIZI yapıyor; mutasyon kanıtlı (derleme bozulmadan invaryant KIRMIZI'ya döndüğü doğrulandı) — `qa-engineer` — 2026-08-01
