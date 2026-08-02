@@ -73,7 +73,11 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
-| [[T-056]] | Tipsiz zarf çözümü yapan 5 çağrı yerini bölünmüş dünyaya taşı (split'in ön koşulu) | P1 | backend-engineer | todo |
+| [[T-058]] | /submit-for-approval endpoint'ini kaldır (deprecation faz 2) | P3 | backend-engineer | todo |
+| [[T-061]] | on/off üçüncü türetim noktası (plan.service.ts:2227) — tek kaynağa bağla | P2 | backend-engineer | todo |
+| [[T-059]] | Seed fixture: aynı agreement iki zarfta 150.000 encumber ediyor | P2 | data-engineer | todo |
+| [[T-056]] | 🔵 Submit yolu yakınsaması — tipli on/off rezervasyon canlı `/submit`'e (on/off ürüne açılır) | P1 | architect | in-progress |
+| [[T-057]] | Kalan 4 tipsiz zarf çözümü — status, auto-create, ledger yolları | P2 | backend-engineer | todo |
 | [[T-054]] | Seed 4→8 zarf (bölünmüş dünya fixture'ı) — yalnız temiz DB | P3 | data-engineer | todo |
 | [[T-055]] | unsplit ucu — split'in geri alınması (append-only) | P3 | backend-engineer | todo |
 | [[T-013]] | CLOSED agreement ↔ reversal etkileşimi (re-open/reversible) | P2 | architect | todo |
@@ -91,6 +95,7 @@ status: active        # planned | active | closed
 | [[T-046c]] | Kısmi recalc — **gerekçesi değişti**, T-046b+T-046d'den sonra yeniden değerlendir | P2 | architect | blocked |
 | [[T-046d]] | Frontend performanceMonitor — kod hazır, **render dahil gerçek ölçüm eksik** | P1 | frontend-engineer | in-progress |
 ## Tamamlanan (done)
+- [[T-060]] [[T-047]] invaryantı **kördü** — kapsam 39 tablo ölçülerek yeniden belirlendi: `approval_requests` (+38/koşum, 9.154 birikmiş), `admin_audit_logs` (+6, 3.167), `users` (+1, 289). Kök nedenler kanıtlı (FK'siz polimorfik `entity_id`; `DELETE /users` ucunun olmaması). Ajanın mutasyonu **ikinci bir yaşayan sızıntı** daha buldu (`cleanupTestTransactions` sırası audit izini öksüz bırakıyordu). Team Lead notu: mutasyonda **testler yeşilken exit code 1** — 'Tests: passed' tek başına yeterli sinyal değil — `qa-engineer` — 2026-08-02
 - [[T-019b]] On/Off-Invoice **Faz 2** — `POST /budget/envelopes/:id/split` + append-only re-home (`|REHOME` ayrı key uzayı) + `UNTYPED_ENCUMBRANCE_PRESENT` guard + §5.5 tip bazlı availability. Migration yok. Ayrıca `SPEND_TYPE_REQUIRED_FOR_SPLIT_DIMENSION` guard'ı (ADR Karar 5). **Guard'ın ilk hali yanlış-pozitif üretiyordu — Team Lead canlı ölçümle buldu** (NKA-Q2 bölünürse bölünmemiş NKA-Q1 de 400 alıyordu, `LIKE 'yıl%'` fallback'i yüzünden); kontrol kazanan adayın boyut grubuna daraltıldı. e2e 227/227 ×3, unit 585/585 — `backend-engineer` — 2026-08-02
 - [[T-053]] 🔴 CANLI hata — [[T-048]]'in getirdiği regresyon: RELEASE satırı tipsiz yazıldığı için tipli kovalar teardown'ı görmüyor, `/submit-for-approval` yolunda reject→resubmit **hiç RESERVE yazmadan** onaya gidiyordu (BRD "Approved bütçeden düşer" ihlali). Fix: `releaseNetReservation` artık `(envelopeId, spendType)` grain'inde netliyor, RELEASE kovanın tipini taşıyor, **UNTYPED key formatı birebir korundu** (çift iade riski R2). A17 kapsama boşluğunu kapattı; A16 regresyonsuz — `backend-engineer` — 2026-08-02
 - [[T-052]] `calculateAllSpendsForFU` taktikleri okumuyordu → gerçek UI akışı (tactics PATCH) **0/0 spend** hesaplıyordu. Fix: **tek türetim noktası** `SpendCalculationService#buildMechanicValues` (`enteredValue` + `plan_fus.tactics`; çakışmada tactics kazanır, toplama yok) — iki kanonik yol da onu çağırıyor. İki yol aynı sonuç: `14500 == 10000+4500`. A8c'nin geçici seed fixture'ı kaldırıldı, gerçek akış test ediliyor. Mutasyon (Team Lead koştu): tactics okuması geri alınınca `tsc` temiz + test KIRMIZI `Expected > 0, Received 0` — `backend-engineer` — 2026-08-02
