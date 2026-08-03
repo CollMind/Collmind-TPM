@@ -1,7 +1,8 @@
-# SYSTEM_INVARIANTS.md — v0.1 (DRAFT)
+# SYSTEM_INVARIANTS.md — v0.2 (DRAFT)
 
 > **Status:** Draft for review. Not yet normative.
-> **Subject:** Collmind-TPM (`collmind.backend`) @ `b122a6e6` + uncommitted T-057 delta
+> **Subject:** Collmind-TPM (`collmind.backend`) @ `876010f` + guards Phase 2 + uncommitted T-057 delta
+> **Count:** 33 invariants — **16 HOLDS · 10 VIOLATED · 7 BLOCKED** · 14 open decisions
 > **Derived from:** `docs/verification/CTPM_BASELINE_AND_PORT_AUDIT.md` (2026-08-03)
 > **Supersedes for invariant purposes:** nothing yet. Coexists with `.cursor/rules.md`
 > until §Adoption is executed.
@@ -33,7 +34,7 @@ statements.
 ```
 ### INV-X-000 — <single testable sentence>
 Status:   HOLDS | VIOLATED | BLOCKED
-Guard:    DB | TEST | LINT | CI | NONE
+Guard:    DB | GUARD SCRIPT | TEST | LINT | NONE
 Evidence: file:line or catalogue query
 Source:   audit candidate #n · K-nn · ADR-nnnn
 ```
@@ -51,14 +52,34 @@ only by developer discipline, which is not protection.
 | Guard | Mechanism |
 |---|---|
 | `DB` | Constraint, unique index, trigger, or revoked grant |
+| `GUARD SCRIPT` | `scripts/guards/*.sh`, run by `npm run guards`. Blocking (`exit 1`) since Phase 2 |
 | `TEST` | Unit / integration / e2e assertion |
 | `LINT` | ESLint rule, `no-restricted-syntax`, custom AST rule |
-| `CI` | Pipeline step (schema diff, invariant job, coverage gate) |
 | `NONE` | Unprotected |
 
-**Guard strength order:** `DB` > `LINT` > `CI` > `TEST` > `NONE`. Prefer the strongest
-guard the invariant admits. A rule that can be expressed as a DB constraint should not be
-left to a test.
+**Guard strength order:** `DB` > `GUARD SCRIPT` > `LINT` > `TEST` > `NONE`. Prefer the
+strongest guard the invariant admits. A rule that can be expressed as a DB constraint should
+not be left to a test.
+
+**Why `GUARD SCRIPT` and not `LINT`:** ESLint operates on the TypeScript AST. Several
+invariants here are properties of **SQL text inside string literals** — a schema predicate in
+a catalogue query, a direction-aware `SUM`, an `ORDER BY` column. To ESLint that is an opaque
+string. The guard scripts read the string contents, so they are a different mechanism, not a
+weaker spelling of the same one.
+
+**There is no `CI` guard type.** This project has no pipeline (`CLAUDE.md` §5: manual
+promote, no pipeline). Anywhere an invariant previously targeted `CI`, the enforcement path
+is instead the three places a guard is actually invoked:
+
+1. `npm run guards` — blocking by default (`GUARD_MODE=block`; `exit 1` on a finding,
+   `exit 2` on an allowlist parse error)
+2. `code-reviewer` agent checklist — a red guard run is a 🔴 Blocker
+3. `BACKLOG.md` / `CLAUDE.md` Done checklist — `done` is not writable while guards are red
+
+Invariants whose enforcement genuinely needs a scheduled job (nightly reconciliation,
+fresh-migrate schema diff) keep that as a stated *target* and remain `NONE` until such a job
+exists. Naming a pipeline that does not exist would be the same silent-failure class this
+document is about.
 
 ---
 
@@ -99,8 +120,18 @@ in the product and most of them already hold.
   the read-then-write check at `reversal.service.ts:137-144` stands.
 - **Impact:** two concurrent reversals can both insert a CREDIT → understated spend,
   overstated available budget, **silent**
-- **Remediation:** repair migration, schema-qualified (see INV-M-002). **Urgent — verify
-  staging/production before anything else.**
+- **Remediation:** ⏳ **fix proven, environment not yet carrying it.** The catalogue guards in
+  `1777000000000-LedgerReversalSupport.ts` are now schema-qualified (see INV-M-002). Verified
+  2026-08-03 on a throwaway database (`collmind_tpm_guardtest`, all 54 migrations from empty,
+  then dropped): `UQ_ledger_entries_reversal_per_tenant` and `FK_ledger_entries_reverses_entry`
+  both land on **`main`**. So any newly built environment is protected.
+- **Why still VIOLATED:** the working database `collmind_tpm` is unchanged. `main.migrations`
+  already records this migration as run, so `migration:run` will not re-execute it, and a live
+  check still returns `public` only. Until the constraint exists on the database actually in
+  use, the sole protection remains the read-then-write check at `reversal.service.ts:137-144`
+  — an invariant is not held by a fix that has not reached the environment.
+- **Flips to HOLDS / Guard `DB`** after a `db:reset` + `seed` on `collmind_tpm`, to be done
+  once T-057 is committed (its test data depends on current DB state).
 - **Source:** audit candidate #5, violation #5
 
 ### INV-L-006 — Every ledger insert carries a non-empty `idempotency_key` unique within its tenant.
@@ -110,8 +141,10 @@ in the product and most of them already hold.
 
 ### INV-L-007 — Consumed spend is computed as `Σ DEBIT − Σ CREDIT` and never as a plain `SUM(amount)`.
 - **Status:** HOLDS
-- **Guard:** TEST → **add `LINT`** (custom rule: `SUM(` over `ledger_entries.amount` without a
-  direction `CASE` is an error)
+- **Guard:** TEST + **GUARD SCRIPT** ✅ (`scripts/guards/ledger-direction.sh` — a `SUM(` over
+  `ledger_entries.amount` without a direction `CASE` is a finding)
+- **Evidence:** guard measured 0 findings across the codebase (Phase 1 report mode,
+  re-confirmed in Phase 2 block mode)
 - **Rationale:** any future direction-unaware aggregation counts reversals as spend. The trap
   is invisible to anyone porting from TTM, where the direction axis does not exist.
 - **Source:** audit candidate #7, hazard H4, Tier-1 risk #3
@@ -300,20 +333,39 @@ counterpart in either codebase's existing documentation.
   — TTM's table
 - **Impact:** the migration ledger reports success for DDL that was never applied. The
   release process trusts that report.
+- **Remediation:** ⏳ **cause removed and proven, environment not yet carrying it.** The
+  unqualified catalogue guards that produced the silent no-op are fixed (INV-M-002) and
+  `migration-schema.sh` blocks the class from recurring. A from-empty migrate on a throwaway
+  database applied all 54 migrations with every effect on `main` (see INV-L-005), so the
+  invariant holds for any newly built environment. It does not hold for `collmind_tpm`, whose
+  recorded history still contains the migration whose DDL never landed. Closes with the same
+  `db:reset` as INV-L-005.
 - **Source:** audit candidate #19, violation #19, hazard H2
 
 ### INV-M-002 — Every catalogue existence guard in a migration is schema-qualified.
-- **Status:** 🔴 VIOLATED (at least once; scope unknown)
-- **Guard:** NONE → target `LINT` (`pg_constraint` / `pg_indexes` / `pg_class` query without a
-  `nspname` or `schemaname` predicate is an error)
-- **Evidence:** `:33-37`, `:52-56` of the migration above match by name only
-- **⚠️ Unknown scope:** this is a **class**, not an instance. Any migration using name-only
-  existence checks may have silently no-opped. A sweep is required before the count is known.
-- **Source:** spec gap 21, determinism risk 7
+- **Status:** HOLDS *(v0.1 recorded a breach; scope is now measured and closed — see §12)*
+- **Guard:** **GUARD SCRIPT** ✅ (`scripts/guards/migration-schema.sh`)
+- **Scope, measured:** 54 migrations, 9 of which contain catalogue queries. 5 unqualified
+  queries in 2 files: `1777000000000-LedgerReversalSupport.ts` (2) and
+  `1779000000000-CreateUserScopes.ts` (3). All 5 repaired in place — legitimate here because
+  no deployed environment has ever run them, and left as-is every new environment would be
+  built with the same missing constraints.
+- **Guard method:** the guard evaluates each `queryRunner.query()` template literal as one
+  unit. Phase 1 used a ±10-line window, which **masked** violations whenever a qualified
+  query sat near an unqualified one; a fixture reproduced the masking and the block-based
+  guard catches what the window missed. Schema-safe forms (`'main.x'::regclass`,
+  `to_regclass('main.x')`, `::regnamespace`) are recognised by the guard itself rather than
+  being silenced through the allowlist.
+- **Residual limit:** two catalogue queries inside a *single* template literal are judged as
+  one block; if one is qualified the other could still hide. No such block exists today.
+- **Source:** spec gap 21, determinism risk 7; T-065
 
 ### INV-M-003 — One database hosts exactly one product's schema.
-- **Status:** 🔴 VIOLATED (environment)
-- **Guard:** NONE → target `CI` (environment assertion)
+- **Status:** 🔴 VIOLATED (environment) — **detected and allowlisted**, not fixed
+- **Guard:** **GUARD SCRIPT** (`scripts/guards/schema-isolation.sh` — detects the condition;
+  it cannot repair it). The finding is allowlisted under key `ENV` with a written rationale,
+  so `npm run guards` is green while the environment fact stays recorded rather than
+  forgotten. Remediation tracked as **T-067**.
 - **Evidence:** `collmind-tpm-postgres:5434` hosts both `main` (Collmind-TPM) and `public`
   (TTM), **including two separate `migrations` tables** (54 rows / 44 rows)
 - **Impact:** root cause of INV-M-001. Also: an unqualified `SELECT name FROM migrations`
@@ -327,7 +379,10 @@ counterpart in either codebase's existing documentation.
 
 ### INV-N-001 — Batch-ordered financial processing iterates in ascending source row number, never in an order derived from a generated identifier.
 - **Status:** HOLDS
-- **Guard:** TEST → add `LINT` (ordering by `id` in a financial path is an error)
+- **Guard:** TEST + **GUARD SCRIPT** ✅ (`scripts/guards/financial-ordering.sh` — `ORDER BY`
+  on a generated identifier in a financial path is a finding)
+- **Evidence:** guard measured 0 findings across the codebase (Phase 1 report mode,
+  re-confirmed in Phase 2 block mode)
 - **Note:** a genuine improvement over TTM, whose financial ordering was by `randomUUID()`.
   Worth protecting explicitly so a port does not reintroduce it.
 - **Source:** audit candidate #18
@@ -384,21 +439,25 @@ whether a silent wrong number depends on it.
 
 Ranked by risk closed per unit of effort.
 
-| # | Guard | Type | Closes | Effort |
-|---|---|---|---|---|
-| 1 | Repair migration for `UQ_ledger_entries_reversal_per_tenant` + FK, schema-qualified | DB | INV-L-005 | S |
-| 2 | Environment assertion: one product schema per database | CI | INV-M-003 | S |
-| 3 | Schema-qualification lint for migration catalogue guards | LINT | INV-M-002 | S |
-| 4 | `SUM(amount)` direction-awareness lint | LINT | INV-L-007 | S |
-| 5 | Financial ordering lint (no `ORDER BY id`) | LINT | INV-N-001 | S |
-| 6 | Ledger immutability trigger | DB | INV-L-001, INV-L-002 | M |
-| 7 | Schema-diff CI step (fresh migrate vs current) | CI | INV-M-001 | M |
-| 8 | Nightly tx↔ledger reconciliation job | CI | INV-B-001, INV-B-004 | M |
-| 9 | Money-as-float lint + `DecimalTransformer` rollout | LINT | INV-N-002 | L |
-| 10 | RLS policies + policy-presence CI check | DB | INV-T-003 | L |
+| # | Guard | Type | Closes | Effort | State |
+|---|---|---|---|---|---|
+| 1 | Repair migration for `UQ_ledger_entries_reversal_per_tenant` + FK, schema-qualified | DB | INV-L-005 | S | ✅ done |
+| 2 | Environment assertion: one product schema per database | GUARD SCRIPT | INV-M-003 | S | ✅ done (detects; allowlisted, T-067) |
+| 3 | Schema-qualification guard for migration catalogue queries | GUARD SCRIPT | INV-M-002 | S | ✅ done |
+| 4 | `SUM(amount)` direction-awareness guard | GUARD SCRIPT | INV-L-007 | S | ✅ done |
+| 5 | Financial ordering guard (no `ORDER BY` on a generated id) | GUARD SCRIPT | INV-N-001 | S | ✅ done |
+| 6 | Ledger immutability trigger | DB | INV-L-001, INV-L-002 | M | open |
+| 7 | Schema-diff step (fresh migrate vs current) | *needs a scheduled job* | INV-M-001 | M | open |
+| 8 | Nightly tx↔ledger reconciliation job | *needs a scheduled job* | INV-B-001, INV-B-004 | M | open |
+| 9 | Money-as-float lint + `DecimalTransformer` rollout | LINT | INV-N-002 | L | open |
+| 10 | RLS policies + policy-presence check | DB | INV-T-003 | L | open |
 
-Items 1–5 are all small, all currently `NONE`, and together close three silent-wrong-number
-risks. They are the correct first sprint of this layer.
+Items 1–5 were the first sprint of this layer and are now complete: guards 2–5 ship as
+`scripts/guards/*.sh` and block by default; guard 1 is the repaired migration. Together they
+close three silent-wrong-number risks.
+
+Items 7 and 8 are deliberately **not** typed `CI`. No pipeline exists to host them, and
+labelling them `CI` would assert protection that is not there.
 
 ---
 
@@ -408,7 +467,7 @@ This document becomes normative when:
 
 1. §9 decisions D-01, D-02, D-04, D-05, D-08 are recorded as ADRs in
    `docs/decisions/` (these five block the most invariants and all touch money).
-2. Guard backlog items 1–5 are implemented.
+2. ~~Guard backlog items 1–5 are implemented.~~ ✅ **done** (Phase 2, T-064/T-065)
 3. `CLAUDE.md` §2 stops restating domain rules and references invariant IDs instead.
 4. Every agent definition in `.claude/agents/` references this file and
    `docs/decisions/` as binding sources.
@@ -424,4 +483,5 @@ a tenant profile — and TTM's copy marked historical.
 
 | Version | Date | Change |
 |---|---|---|
-| 0.1 | 2026-08-03 | Initial draft from CTPM baseline audit. 25 invariants: 15 HOLDS · 10 VIOLATED/BLOCKED. 14 open decisions. |
+| 0.1 | 2026-08-03 | Initial draft from CTPM baseline audit. 14 open decisions. Header count of "25 invariants: 15 HOLDS · 10 VIOLATED/BLOCKED" was an estimate and is corrected in 0.2 by counting the entries. |
+| 0.2 | 2026-08-03 | Guards Phase 2. Guard type `LINT` → `GUARD SCRIPT` for entries enforced by `scripts/guards/*.sh` (ESLint reads the AST; these checks read SQL string contents). Guard type `CI` removed — no pipeline exists; enforcement path is `npm run guards` + `code-reviewer` + Done checklist. INV-M-002 → HOLDS (5 unqualified catalogue queries in 2 migrations found and repaired; scope now measured, not unknown). INV-M-003 → detected + allowlisted (T-067). INV-L-007, INV-N-001 → guard `NONE` → `GUARD SCRIPT`, both measured at 0 findings. INV-L-005 and INV-M-001 remain VIOLATED deliberately: the repaired migration was proven on a throwaway database (all 54 migrations from empty → both objects on `main`), but the working database `collmind_tpm` still lacks them and cannot be re-migrated in place. A fix that has not reached the environment is not a held invariant. Both close with a `db:reset` after T-057 is committed. **Counted:** 33 invariants — 16 HOLDS · 10 VIOLATED · 7 BLOCKED. (The 34th `### INV-` heading, `INV-X-000`, is the §2 format template, not an invariant.) |

@@ -72,6 +72,12 @@ iki CSV parser, üç scope implementasyonu). Aranmadan yazılan kod eksiktir.
 - **Pattern tutarlılığı:** NestJS modül/DTO/guard kalıbı, React bileşen/TanStack Query stili.
 - **Güvenlik:** secret sızıntısı, input validation, yetki kontrolü.
 - **Test:** yeni davranış test edilmiş mi? Lint/type-check geçiyor mu?
+- **Guard'lar:** backend'e dokunulduysa `npm run guards` yeşil mi (exit 0)? Kırmızıysa
+  → 🔴 **Blocker**. Bu, yukarıdaki determinizm / migration hijyeni / ledger yönü
+  maddelerinin otomatik ölçümüdür; gözle aramanın yerine geçmez, tabanını kurar.
+  `exit 2` = allowlist parse hatası (gerekçesiz susturma satırı) → 🔴 **Blocker**.
+  Yeni bir allowlist satırı eklenmişse gerekçesini ayrıca değerlendir: yanlış pozitif
+  deseni guard'ın kendisinde çözülebiliyorsa allowlist yanlış çözümdür.
 
 ## Çıktı
 Önem sırasına göre bulgular:

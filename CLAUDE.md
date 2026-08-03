@@ -173,6 +173,7 @@ Alt-ajana iş verirken **kaynağı referansla ver, özetini değil.**
 ### 4.2 "Done" tanımı (ZORUNLU — hepsi sağlanmadan `done` yazılmaz)
 
 - [ ] Testler yeşil (unit + ilgili e2e)
+- [ ] `npm run guards` yeşil (backend'e dokunulduysa) — exit 0
 - [ ] `code-reviewer` onayı
 - [ ] **Üretim çağrı yolu var mı?** Bu kodu çağıran HTTP route / zamanlanmış iş / event nedir?
       Yol yoksa status `done` DEĞİL → **`blocked-unreachable`**

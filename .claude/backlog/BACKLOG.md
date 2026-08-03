@@ -32,6 +32,7 @@ Ne yapılacak.
 
 ## Done tanımı (hepsi işaretlenmeden `done` yazılmaz)
 - [ ] Testler yeşil (unit + ilgili e2e)
+- [ ] `npm run guards` yeşil (backend'e dokunulduysa) — exit 0
 - [ ] code-reviewer onayı
 - [ ] Üretim çağrı yolu var (yoksa → `blocked-unreachable`)
 - [ ] Bağlayıcı koşullar guard'a bağlandı (test/lint/DB constraint/CI) veya "tavsiye"ye düşürüldü
