@@ -73,7 +73,7 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
-| [[T-062]] | 🔴 LUMPSUM_SPEND hiçbir toplama katılmıyor (distributeSpendToSKUs çağrılmıyor) | P1 | backend-engineer | todo |
+| [[T-063]] | SpendDistributionService'in kaderi — sil/deprecate/bağla (test yok, çağrı yok, karar ihlali var) | P2 | architect | todo |
 | [[T-058]] | /submit-for-approval endpoint'ini kaldır (deprecation faz 2) | P3 | backend-engineer | todo |
 | [[T-061]] | on/off üçüncü türetim noktası (plan.service.ts:2227) — tek kaynağa bağla | P2 | backend-engineer | todo |
 | [[T-059]] | Seed fixture: aynı agreement iki zarfta 150.000 encumber ediyor | P2 | data-engineer | todo |
@@ -95,6 +95,7 @@ status: active        # planned | active | closed
 | [[T-046c]] | Kısmi recalc — **gerekçesi değişti**, T-046b+T-046d'den sonra yeniden değerlendir | P2 | architect | blocked |
 | [[T-046d]] | Frontend performanceMonitor — kod hazır, **render dahil gerçek ölçüm eksik** | P1 | frontend-engineer | in-progress |
 ## Tamamlanan (done)
+- [[T-062]] 🔴 **LUMPSUM_SPEND hiçbir toplama katılmıyordu** — götürü harcamalı planlar bütçeden hiç düşmüyor, SKU ROI'si görmüyordu. `distributeSpendToSKUs` ilk commit'ten beri ölüymüş (git ile ölçüldü), silindi; yerine base-hacim orantılı `computeLumpsumDistribution` (null base pay almaz, kuruş artığı en büyük base'e). Tüm base'ler null ise sessiz 0 yerine `400 LUMPSUM_DISTRIBUTION_NO_BASE_VOLUME`. Kanıt: submit sonrası `RESERVE OFF_INVOICE=100.00` (önce 0'dı). unit 609/609, e2e 233/233 ×3 EXIT=0 — `backend-engineer` — 2026-08-03
 - [[T-056]] 🔵 **Submit yolu yakınsaması (7 adım)** — on/off-invoice ayrımı artık frontend'in gerçekten çağırdığı `POST /plans/:id/submit` ucunda çalışıyor. Task açıldığında ayrım üründen **tamamen erişilemezdi** (makine `/submit-for-approval`'da, frontend orayı hiç çağırmıyor). Yol boyunca 2 canlı hata (F1 hayalet COMMIT, LUMPSUM_SPEND) + 1 kanıtlanmamış koruma bulundu. Her adım ayrı commit, ayrı mutasyon kanıtı; unit 606/606, e2e 231/231 ×3 koşum EXIT=0 — `backend-engineer` — 2026-08-03
 - [[T-060]] [[T-047]] invaryantı **kördü** — kapsam 39 tablo ölçülerek yeniden belirlendi: `approval_requests` (+38/koşum, 9.154 birikmiş), `admin_audit_logs` (+6, 3.167), `users` (+1, 289). Kök nedenler kanıtlı (FK'siz polimorfik `entity_id`; `DELETE /users` ucunun olmaması). Ajanın mutasyonu **ikinci bir yaşayan sızıntı** daha buldu (`cleanupTestTransactions` sırası audit izini öksüz bırakıyordu). Team Lead notu: mutasyonda **testler yeşilken exit code 1** — 'Tests: passed' tek başına yeterli sinyal değil — `qa-engineer` — 2026-08-02
 - [[T-019b]] On/Off-Invoice **Faz 2** — `POST /budget/envelopes/:id/split` + append-only re-home (`|REHOME` ayrı key uzayı) + `UNTYPED_ENCUMBRANCE_PRESENT` guard + §5.5 tip bazlı availability. Migration yok. Ayrıca `SPEND_TYPE_REQUIRED_FOR_SPLIT_DIMENSION` guard'ı (ADR Karar 5). **Guard'ın ilk hali yanlış-pozitif üretiyordu — Team Lead canlı ölçümle buldu** (NKA-Q2 bölünürse bölünmemiş NKA-Q1 de 400 alıyordu, `LIKE 'yıl%'` fallback'i yüzünden); kontrol kazanan adayın boyut grubuna daraltıldı. e2e 227/227 ×3, unit 585/585 — `backend-engineer` — 2026-08-02
