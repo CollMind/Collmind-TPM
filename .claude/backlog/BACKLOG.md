@@ -88,6 +88,8 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-065]] | Split'in üretime açılma ön koşulu — Y1/Y2/B1-artık aralığı (ADR Karar 5 kısıtı buna bağlı) | P2 | backend-engineer | todo |
+| [[T-064]] | 🔴 on-invoice validateBatch hâlâ kırık (aynı .toISOString() hatası) — yarım çalışan finansal modül | P1 | backend-engineer | todo |
 | [[T-066]] | finance-reporting sortField — whitelist'siz dinamik orderBy (injection + INV-N-001 kör noktası) | P1 | backend-engineer | todo |
 | [[T-067]] | Şema ayırma — bir veritabanı, bir ürün şeması (INV-M-003; allowlist'teki tek susturmanın karşılığı) | P2 | data-engineer | todo |
 | [[T-063]] | SpendDistributionService'in kaderi — sil/deprecate/bağla (test yok, çağrı yok, karar ihlali var) | P2 | architect | todo |
