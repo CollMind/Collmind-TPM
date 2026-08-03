@@ -89,6 +89,7 @@ status: active        # planned | active | closed
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
 | [[T-064]] | Finansal invariant guard'ları — Faz 1 (rapor) + Faz 2 (bloklama); tek eksik: code-reviewer onayı | P1 | backend-engineer | review |
+| [[T-066]] | finance-reporting sortField — whitelist'siz dinamik orderBy (injection + INV-N-001 kör noktası) | P1 | backend-engineer | todo |
 | [[T-067]] | Şema ayırma — bir veritabanı, bir ürün şeması (INV-M-003; allowlist'teki tek susturmanın karşılığı) | P2 | data-engineer | todo |
 | [[T-063]] | SpendDistributionService'in kaderi — sil/deprecate/bağla (test yok, çağrı yok, karar ihlali var) | P2 | architect | todo |
 | [[T-058]] | /submit-for-approval endpoint'ini kaldır (deprecation faz 2) | P3 | backend-engineer | todo |

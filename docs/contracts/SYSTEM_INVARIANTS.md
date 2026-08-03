@@ -1,4 +1,4 @@
-# SYSTEM_INVARIANTS.md — v0.2 (DRAFT)
+# SYSTEM_INVARIANTS.md — v0.2.1 (DRAFT)
 
 > **Status:** Draft for review. Not yet normative.
 > **Subject:** Collmind-TPM (`collmind.backend`) @ `876010f` + guards Phase 2 + uncommitted T-057 delta
@@ -143,8 +143,9 @@ in the product and most of them already hold.
 - **Status:** HOLDS
 - **Guard:** TEST + **GUARD SCRIPT** ✅ (`scripts/guards/ledger-direction.sh` — a `SUM(` over
   `ledger_entries.amount` without a direction `CASE` is a finding)
-- **Evidence:** guard measured 0 findings across the codebase (Phase 1 report mode,
-  re-confirmed in Phase 2 block mode)
+- **Evidence:** 0 findings. This guard's scope is content-derived, not path-derived — it greps
+  all of `src` for `ledger_entries` / `LedgerEntry` / `ledger.` and scans every file that
+  matches, so it is genuinely codebase-wide (unlike INV-N-001's guard, see there).
 - **Rationale:** any future direction-unaware aggregation counts reversals as spend. The trap
   is invisible to anyone porting from TTM, where the direction axis does not exist.
 - **Source:** audit candidate #7, hazard H4, Tier-1 risk #3
@@ -357,8 +358,16 @@ counterpart in either codebase's existing documentation.
   `to_regclass('main.x')`, `::regnamespace`) are recognised by the guard itself rather than
   being silenced through the allowlist.
 - **Residual limit:** two catalogue queries inside a *single* template literal are judged as
-  one block; if one is qualified the other could still hide. No such block exists today.
-- **Source:** spec gap 21, determinism risk 7; T-065
+  one block; if one is qualified the other could still hide. **One such block exists today** —
+  `1795000000000-AddSpendTypeToBudgetDimensions.ts:148-160`, two `information_schema.columns`
+  queries in one literal. It is not masking anything, because both carry `table_schema = 'main'`;
+  but an unqualified third query added to that block would go unreported.
+- **Second limit, closed:** the guard splits template literals on backticks. A backtick inside a
+  `//` comment shifts that parity and used to blind the guard **silently**. Comment backticks are
+  now stripped before splitting, and any file whose parity is still odd — or that contains an
+  escaped `` \` `` — is reported as a finding rather than skipped. Verified with a fixture: the
+  pre-fix guard returned 0 findings on a file the fixed guard flags.
+- **Source:** spec gap 21, determinism risk 7; T-064 Faz 2
 
 ### INV-M-003 — One database hosts exactly one product's schema.
 - **Status:** 🔴 VIOLATED (environment) — **detected and allowlisted**, not fixed
@@ -379,10 +388,18 @@ counterpart in either codebase's existing documentation.
 
 ### INV-N-001 — Batch-ordered financial processing iterates in ascending source row number, never in an order derived from a generated identifier.
 - **Status:** HOLDS
-- **Guard:** TEST + **GUARD SCRIPT** ✅ (`scripts/guards/financial-ordering.sh` — `ORDER BY`
+- **Guard:** TEST + **GUARD SCRIPT** (`scripts/guards/financial-ordering.sh` — `ORDER BY`
   on a generated identifier in a financial path is a finding)
-- **Evidence:** guard measured 0 findings across the codebase (Phase 1 report mode,
-  re-confirmed in Phase 2 block mode)
+- **Evidence:** 0 findings across the **176 of 273** `src/modules` files matching the guard's
+  path filter. Phase 1 scanned only 132 — `finance-reporting`, `spend-calculation` and
+  `kpi-engine` were entirely outside it, so the earlier "across the codebase" phrasing claimed
+  more than was measured. Scope widened and re-measured in Phase 2; still 0.
+- **⚠️ Guard blind spot:** only *literal* sort keys are visible. A key built at runtime —
+  `` query.orderBy(sortField, …) `` where ``sortField = `plan.${pagination.sortBy}` `` at
+  `finance-reporting.service.ts:487-492` — is not evaluated by the guard at all. That call site
+  also lacks an `@IsIn(...)` whitelist on `sortBy` (`dto/report-filters.dto.ts:97-100`), and
+  TypeORM does not parameterise `orderBy`. Tracked as **T-066**; this invariant is *not* fully
+  guarded until it is closed.
 - **Note:** a genuine improvement over TTM, whose financial ordering was by `randomUUID()`.
   Worth protecting explicitly so a port does not reintroduce it.
 - **Source:** audit candidate #18
@@ -467,7 +484,7 @@ This document becomes normative when:
 
 1. §9 decisions D-01, D-02, D-04, D-05, D-08 are recorded as ADRs in
    `docs/decisions/` (these five block the most invariants and all touch money).
-2. ~~Guard backlog items 1–5 are implemented.~~ ✅ **done** (Phase 2, T-064/T-065)
+2. ~~Guard backlog items 1–5 are implemented.~~ ✅ **done** (Phase 2, T-064)
 3. `CLAUDE.md` §2 stops restating domain rules and references invariant IDs instead.
 4. Every agent definition in `.claude/agents/` references this file and
    `docs/decisions/` as binding sources.
@@ -484,4 +501,5 @@ a tenant profile — and TTM's copy marked historical.
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-08-03 | Initial draft from CTPM baseline audit. 14 open decisions. Header count of "25 invariants: 15 HOLDS · 10 VIOLATED/BLOCKED" was an estimate and is corrected in 0.2 by counting the entries. |
+| 0.2.1 | 2026-08-03 | Phase 2 code review follow-up. Two blockers closed in the guards themselves: (1) `migration-schema.sh` split template literals on backticks, so a backtick inside a `//` comment shifted the parity and blinded the guard **silently** — comment backticks are now stripped and any file with odd parity or an escaped backtick is reported, not skipped (fixture-verified: pre-fix guard 0 findings, post-fix 1). (2) `financial-ordering.sh` scanned 132 of 273 module files — `finance-reporting`, `spend-calculation`, `kpi-engine` were outside it — so INV-N-001's "0 findings across the codebase" claimed more than was measured; scope widened to 176 files (still 0) and the guard's blind spot for runtime-built sort keys is now stated (T-066 opened). Also: `SKIPPED` no longer counts as green (a source-code guard that cannot run exits 1; a DB guard without a database reports `ÖLÇÜLMEDİ`), allowlist-suppressed findings are now printed in the summary instead of vanishing into `0 bulgu`, and the `schema-isolation` entry uses the narrow key `db:collmind_tpm` rather than the `ENV` wildcard. |
 | 0.2 | 2026-08-03 | Guards Phase 2. Guard type `LINT` → `GUARD SCRIPT` for entries enforced by `scripts/guards/*.sh` (ESLint reads the AST; these checks read SQL string contents). Guard type `CI` removed — no pipeline exists; enforcement path is `npm run guards` + `code-reviewer` + Done checklist. INV-M-002 → HOLDS (5 unqualified catalogue queries in 2 migrations found and repaired; scope now measured, not unknown). INV-M-003 → detected + allowlisted (T-067). INV-L-007, INV-N-001 → guard `NONE` → `GUARD SCRIPT`, both measured at 0 findings. INV-L-005 and INV-M-001 remain VIOLATED deliberately: the repaired migration was proven on a throwaway database (all 54 migrations from empty → both objects on `main`), but the working database `collmind_tpm` still lacks them and cannot be re-migrated in place. A fix that has not reached the environment is not a held invariant. Both close with a `db:reset` after T-057 is committed. **Counted:** 33 invariants — 16 HOLDS · 10 VIOLATED · 7 BLOCKED. (The 34th `### INV-` heading, `INV-X-000`, is the §2 format template, not an invariant.) |
