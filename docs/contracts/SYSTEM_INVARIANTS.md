@@ -238,14 +238,26 @@ Ingestion is solid and well-guarded. Recognition does not exist; its invariants 
 here so they are designed in rather than retrofitted.
 
 ### INV-R-001 — Every `on_invoice_entries` row in a `COMPLETED` batch is either `POSTED` with a corresponding ledger DEBIT, or `ERROR` with a non-empty `validation_errors` array.
-- **Status:** HOLDS
-- **Guard:** TEST → add `CI` (reconciliation)
+- **Status:** ⚠️ **HOLDS VACUOUSLY (until 2026-08-04)** — bugüne kadar üretimde **hiç POSTED satır
+  üretilmedi**: `on-invoice.service.ts`'teki `entry.invoiceDate.toISOString()` her zaman
+  çöküyordu (TypeORM `type:'date'` kolonlarını `Date` değil `'YYYY-MM-DD'` **string** olarak
+  hydrate ediyor). **Boş kümede her invaryant sağlanır.** Posting yolu [[T-057]]'de düzeltildi;
+  bu invaryant ilk kez gerçek veriyle sınanacak. Doğrulama yolu (`validateBatch`) hâlâ kırık →
+  [[T-064]].
+- **Guard:** TEST → add `CI` (reconciliation) — ⚠️ mevcut testler bu hatayı **yakalamadı**
 - **Source:** audit candidate #9
 
 ### INV-R-002 — The sum of ledger DEBITs created from an on-invoice batch equals the sum of `discount` over that batch's `POSTED` entries.
-- **Status:** HOLDS
-- **Guard:** TEST → add `CI`
+- **Status:** ⚠️ **HOLDS VACUOUSLY (until 2026-08-04)** — aynı gerekçe: hiç POSTED satır
+  üretilmediği için hiç ledger DEBIT de üretilmedi; iki boş kümenin toplamı eşitti.
+  Bkz. INV-R-001 notu, [[T-057]] (posting düzeltmesi) ve [[T-064]] (validate yolu hâlâ kırık).
+- **Guard:** TEST → add `CI` — ⚠️ mevcut testler bu hatayı **yakalamadı**
 - **Source:** audit candidate #10
+
+> **Ders (2026-08-04):** İki denetim (`0011` ve CTPM baseline) `on-invoice.service.ts:439`'u okudu,
+> zarf çözümünü tartıştı, ama o kodun **hiç çalışmadığını** görmedi.
+> **Statik okuma, çalıştırmanın yerini tutmaz.** "HOLDS" işareti, invaryantın sınandığı anlamına
+> gelmez — üretilen satır sayısı sıfırsa hiçbir şey sınanmamıştır.
 
 ### INV-R-003 — At most one `sales_actual_batches` row is `ACTIVE` per `(tenant, fiscal_period, cpl, category, channel)`.
 - **Status:** HOLDS
