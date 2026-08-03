@@ -88,9 +88,9 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
-| [[T-066]] | 🔴 Onay ekranında artımlı GP bilerek yanlış (`× 0`) — sunucudan oku | P1 | frontend-engineer | todo |
-| [[T-067]] | 🔴 `unitPrice ?? 0` fabrikasyonu — T-027 null semantiğiyle hizala (T-066 ile tek teslimat) | P1 | frontend-engineer | todo |
-| [[T-068]] | Grid'de gömülü 8 formül dinamik formül kapsamı dışında (main.kpis'e taşı/sunucudan oku) + R4 | P2 | architect | todo |
+| [[T-069]] | 🔴 Onay ekranında artımlı GP bilerek yanlış (`× 0`) — sunucudan oku | P1 | frontend-engineer | todo |
+| [[T-070]] | 🔴 `unitPrice ?? 0` fabrikasyonu — T-027 null semantiğiyle hizala (T-069 ile tek teslimat) | P1 | frontend-engineer | todo |
+| [[T-071]] | Grid'de gömülü 8 formül dinamik formül kapsamı dışında (main.kpis'e taşı/sunucudan oku) + R4 | P2 | architect | todo |
 | [[T-065]] | Split'in üretime açılma ön koşulu — Y1/Y2/B1-artık aralığı (ADR Karar 5 kısıtı buna bağlı) | P2 | backend-engineer | todo |
 | [[T-064]] | 🔴 on-invoice validateBatch hâlâ kırık (aynı .toISOString() hatası) — yarım çalışan finansal modül | P1 | backend-engineer | todo |
 | [[T-066]] | finance-reporting sortField — whitelist'siz dinamik orderBy (injection + INV-N-001 kör noktası) | P1 | backend-engineer | todo |
