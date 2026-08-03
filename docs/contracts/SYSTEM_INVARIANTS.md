@@ -1,4 +1,4 @@
-# SYSTEM_INVARIANTS.md — v0.2.1 (DRAFT)
+# SYSTEM_INVARIANTS.md — v0.2.2 (DRAFT)
 
 > **Status:** Draft for review. Not yet normative.
 > **Subject:** Collmind-TPM (`collmind.backend`) @ `876010f` + guards Phase 2 + uncommitted T-057 delta
@@ -362,11 +362,16 @@ counterpart in either codebase's existing documentation.
   `1795000000000-AddSpendTypeToBudgetDimensions.ts:148-160`, two `information_schema.columns`
   queries in one literal. It is not masking anything, because both carry `table_schema = 'main'`;
   but an unqualified third query added to that block would go unreported.
-- **Second limit, closed:** the guard splits template literals on backticks. A backtick inside a
-  `//` comment shifts that parity and used to blind the guard **silently**. Comment backticks are
-  now stripped before splitting, and any file whose parity is still odd — or that contains an
-  escaped `` \` `` — is reported as a finding rather than skipped. Verified with a fixture: the
-  pre-fix guard returned 0 findings on a file the fixed guard flags.
+- **How the guard reads a literal — no heuristic:** `scripts/guards/migration-schema.awk` tracks
+  literal-in/out state character by character. A `//` counts as a comment only when the scanner is
+  *outside* a literal; quoted strings are skipped so backticks inside them do not count; an
+  unterminated literal at EOF is reported rather than passed over.
+  Two earlier heuristics both produced **silent false negatives** and were replaced, each caught by
+  a code-review round: (1) a ±10-line window, where a neighbouring qualified query masked an
+  unqualified one; (2) backtick parity with comment pre-stripping, where a SQL line beginning with
+  `*` (`SELECT` / newline / `  * FROM …`) was mistaken for a comment, its backtick removed, and the
+  parity shifted. Fixtures for both, plus a mid-line-comment false-positive case, are the
+  regression evidence.
 - **Source:** spec gap 21, determinism risk 7; T-064 Faz 2
 
 ### INV-M-003 — One database hosts exactly one product's schema.
@@ -390,10 +395,12 @@ counterpart in either codebase's existing documentation.
 - **Status:** HOLDS
 - **Guard:** TEST + **GUARD SCRIPT** (`scripts/guards/financial-ordering.sh` — `ORDER BY`
   on a generated identifier in a financial path is a finding)
-- **Evidence:** 0 findings across the **176 of 273** `src/modules` files matching the guard's
-  path filter. Phase 1 scanned only 132 — `finance-reporting`, `spend-calculation` and
-  `kpi-engine` were entirely outside it, so the earlier "across the codebase" phrasing claimed
-  more than was measured. Scope widened and re-measured in Phase 2; still 0.
+- **Evidence:** 0 findings across the **148 of 239** production files under `src/modules` matching
+  the guard's path filter (specs and e2e excluded — this invariant is about the production
+  ordering path, and a blocking guard over fixture code would force allowlist entries).
+  Phase 1 scanned only 132 files and left `finance-reporting`, `spend-calculation` and
+  `kpi-engine` entirely outside, so its "across the codebase" phrasing claimed more than was
+  measured. Scope widened and re-measured; still 0.
 - **⚠️ Guard blind spot:** only *literal* sort keys are visible. A key built at runtime —
   `` query.orderBy(sortField, …) `` where ``sortField = `plan.${pagination.sortBy}` `` at
   `finance-reporting.service.ts:487-492` — is not evaluated by the guard at all. That call site
@@ -501,5 +508,6 @@ a tenant profile — and TTM's copy marked historical.
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-08-03 | Initial draft from CTPM baseline audit. 14 open decisions. Header count of "25 invariants: 15 HOLDS · 10 VIOLATED/BLOCKED" was an estimate and is corrected in 0.2 by counting the entries. |
+| 0.2.2 | 2026-08-03 | Phase 2 code review, round 2. The round-1 fix for the backtick-parity blind spot **introduced a regression of its own class**: its comment pre-pass treated any line starting with `*` as a comment, so a SQL line like `  * FROM pg_indexes …` had its backtick stripped and the parity shifted — one masked query in a two-query fixture, silently. Both heuristics are now gone: `migration-schema.awk` is a real lexer tracking literal-in/out state, so a `//` is a comment only outside a literal and an unterminated literal is reported. Four fixtures cover it (star-line, comment-backtick, mid-line comment, schema-safe forms). Also: guard-name list is now single-sourced from `lib.sh` (`run-all.sh` reads it), `filter_allowlist` accepts exactly what `validate_allowlist` accepts (they had drifted — `n < 3` vs `n != 3`, and `ENV` accepted for any guard), and `financial-ordering` excludes spec/e2e files. Counts unchanged. |
 | 0.2.1 | 2026-08-03 | Phase 2 code review follow-up. Two blockers closed in the guards themselves: (1) `migration-schema.sh` split template literals on backticks, so a backtick inside a `//` comment shifted the parity and blinded the guard **silently** — comment backticks are now stripped and any file with odd parity or an escaped backtick is reported, not skipped (fixture-verified: pre-fix guard 0 findings, post-fix 1). (2) `financial-ordering.sh` scanned 132 of 273 module files — `finance-reporting`, `spend-calculation`, `kpi-engine` were outside it — so INV-N-001's "0 findings across the codebase" claimed more than was measured; scope widened to 176 files (still 0) and the guard's blind spot for runtime-built sort keys is now stated (T-066 opened). Also: `SKIPPED` no longer counts as green (a source-code guard that cannot run exits 1; a DB guard without a database reports `ÖLÇÜLMEDİ`), allowlist-suppressed findings are now printed in the summary instead of vanishing into `0 bulgu`, and the `schema-isolation` entry uses the narrow key `db:collmind_tpm` rather than the `ENV` wildcard. |
 | 0.2 | 2026-08-03 | Guards Phase 2. Guard type `LINT` → `GUARD SCRIPT` for entries enforced by `scripts/guards/*.sh` (ESLint reads the AST; these checks read SQL string contents). Guard type `CI` removed — no pipeline exists; enforcement path is `npm run guards` + `code-reviewer` + Done checklist. INV-M-002 → HOLDS (5 unqualified catalogue queries in 2 migrations found and repaired; scope now measured, not unknown). INV-M-003 → detected + allowlisted (T-067). INV-L-007, INV-N-001 → guard `NONE` → `GUARD SCRIPT`, both measured at 0 findings. INV-L-005 and INV-M-001 remain VIOLATED deliberately: the repaired migration was proven on a throwaway database (all 54 migrations from empty → both objects on `main`), but the working database `collmind_tpm` still lacks them and cannot be re-migrated in place. A fix that has not reached the environment is not a held invariant. Both close with a `db:reset` after T-057 is committed. **Counted:** 33 invariants — 16 HOLDS · 10 VIOLATED · 7 BLOCKED. (The 34th `### INV-` heading, `INV-X-000`, is the §2 format template, not an invariant.) |
