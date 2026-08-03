@@ -1,0 +1,427 @@
+# SYSTEM_INVARIANTS.md — v0.1 (DRAFT)
+
+> **Status:** Draft for review. Not yet normative.
+> **Subject:** Collmind-TPM (`collmind.backend`) @ `b122a6e6` + uncommitted T-057 delta
+> **Derived from:** `docs/verification/CTPM_BASELINE_AND_PORT_AUDIT.md` (2026-08-03)
+> **Supersedes for invariant purposes:** nothing yet. Coexists with `.cursor/rules.md`
+> until §Adoption is executed.
+
+---
+
+## 1. What this document is
+
+A system invariant is a statement that must be true of the system at all times, expressed
+so that a machine can check it. This document is the single normative home for such
+statements.
+
+**Rules of this layer:**
+
+1. An invariant is written **once**, here. Other documents reference its ID; they do not
+   restate the rule.
+2. Every invariant carries a **guard**. An invariant without a guard is an aspiration and
+   is marked as such.
+3. Where an invariant cannot yet be stated because a product decision is missing, it is
+   recorded as `BLOCKED` with the decision it waits on. Blocked invariants are not
+   silently omitted.
+4. Code is ground truth for *what is*. This document is ground truth for *what must be*.
+   Divergence between them is a defect in one or the other — never an ambiguity.
+
+---
+
+## 2. How to read an entry
+
+```
+### INV-X-000 — <single testable sentence>
+Status:   HOLDS | VIOLATED | BLOCKED
+Guard:    DB | TEST | LINT | CI | NONE
+Evidence: file:line or catalogue query
+Source:   audit candidate #n · K-nn · ADR-nnnn
+```
+
+**Status**
+| Value | Meaning |
+|---|---|
+| `HOLDS` | True in the codebase today, verified with evidence |
+| `VIOLATED` | Should be true; is not. Carries a remediation note |
+| `BLOCKED` | Cannot be stated until an open decision is made |
+
+**Guard** — how a breach is detected. `NONE` means the invariant is currently protected
+only by developer discipline, which is not protection.
+
+| Guard | Mechanism |
+|---|---|
+| `DB` | Constraint, unique index, trigger, or revoked grant |
+| `TEST` | Unit / integration / e2e assertion |
+| `LINT` | ESLint rule, `no-restricted-syntax`, custom AST rule |
+| `CI` | Pipeline step (schema diff, invariant job, coverage gate) |
+| `NONE` | Unprotected |
+
+**Guard strength order:** `DB` > `LINT` > `CI` > `TEST` > `NONE`. Prefer the strongest
+guard the invariant admits. A rule that can be expressed as a DB constraint should not be
+left to a test.
+
+---
+
+## 3. Ledger — `INV-L`
+
+The ledger is the system's financial system of record. These are the strongest invariants
+in the product and most of them already hold.
+
+### INV-L-001 — No statement may modify `ledger_entries.amount`, `entry_direction`, `budget_envelope_id`, or `period_month` after insert.
+- **Status:** HOLDS
+- **Guard:** NONE → target `DB` (BEFORE UPDATE trigger rejecting changes to these columns)
+- **Evidence:** exactly one mutating statement exists in the codebase; it sets `is_reversed`
+- **Source:** audit candidate #1
+
+### INV-L-002 — The only permitted mutation of an existing ledger row is setting `is_reversed` from `false` to `true`.
+- **Status:** HOLDS
+- **Guard:** NONE → target `DB` (same trigger as INV-L-001, with the `is_reversed` exception)
+- **Source:** audit candidate #2
+
+### INV-L-003 — No ledger row may ever have a non-null `deleted_at`.
+- **Status:** 🔴 VIOLATED (structurally, not in practice)
+- **Guard:** NONE → target `DB` (`CHECK (deleted_at IS NULL)`, or drop the column)
+- **Evidence:** `@DeleteDateColumn` active via `BaseEntity` (`base.entity.ts:23-24`); ~20 sibling
+  entities call `softRemove`; no row currently affected
+- **Remediation:** blocked on **D-04**. A single future `softRemove` silently removes money
+  from every balance.
+- **Source:** audit candidate #3, violation #3
+
+### INV-L-004 — Every reversal is a new row with the opposite `entry_direction`, an equal absolute `amount`, and `reverses_entry_id` pointing at the original.
+- **Status:** HOLDS
+- **Guard:** TEST → add `DB` (FK on `reverses_entry_id`; **currently missing on `main`** — see INV-M-001)
+- **Source:** audit candidate #4
+
+### INV-L-005 — At most one non-deleted reversal row may exist per `(tenant_id, reverses_entry_id)`.
+- **Status:** 🔴 VIOLATED
+- **Guard:** NONE → target `DB` (`UQ_ledger_entries_reversal_per_tenant`)
+- **Evidence:** the unique index is **absent from `main.ledger_entries`** (verified live). Only
+  the read-then-write check at `reversal.service.ts:137-144` stands.
+- **Impact:** two concurrent reversals can both insert a CREDIT → understated spend,
+  overstated available budget, **silent**
+- **Remediation:** repair migration, schema-qualified (see INV-M-002). **Urgent — verify
+  staging/production before anything else.**
+- **Source:** audit candidate #5, violation #5
+
+### INV-L-006 — Every ledger insert carries a non-empty `idempotency_key` unique within its tenant.
+- **Status:** HOLDS
+- **Guard:** DB ✅
+- **Source:** audit candidate #6
+
+### INV-L-007 — Consumed spend is computed as `Σ DEBIT − Σ CREDIT` and never as a plain `SUM(amount)`.
+- **Status:** HOLDS
+- **Guard:** TEST → **add `LINT`** (custom rule: `SUM(` over `ledger_entries.amount` without a
+  direction `CASE` is an error)
+- **Rationale:** any future direction-unaware aggregation counts reversals as spend. The trap
+  is invisible to anyone porting from TTM, where the direction axis does not exist.
+- **Source:** audit candidate #7, hazard H4, Tier-1 risk #3
+
+### INV-L-008 — Reversing an already-reversed entry is rejected with `ALREADY_REVERSED`.
+- **Status:** HOLDS
+- **Guard:** TEST (application-level; DB guard is INV-L-005)
+- **Source:** audit candidate #21
+
+### INV-L-009 — Every idempotency key conforms to a registered format.
+- **Status:** BLOCKED → **D-13**
+- **Guard:** target `LINT` + `TEST`
+- **Note:** three literal formats are in use (`LEDGER|AGREEMENT|…`, `LEDGER|ON_INVOICE|…`,
+  `REVERSAL|LEDGER|…`), defined only at their call sites. Key formats are a contract:
+  changing one silently breaks idempotency for all historical rows.
+- **Source:** spec gap 24
+
+---
+
+## 4. Budget & CAP — `INV-B`
+
+The most fragmented area of the system. Five spec gaps and three incompatible behaviours
+across the estate all concern CAP.
+
+### INV-B-001 — Every committed `agreement_transactions` row has exactly one corresponding ledger DEBIT.
+- **Status:** 🔴 VIOLATED
+- **Guard:** NONE → target `CI` (nightly reconciliation job) + `TEST`
+- **Evidence:** `agreement-transaction.service.ts:148-170` — `if (envelope) { … }` with no
+  `else`. Envelope-not-found ⇒ transaction committed, no ledger entry, `200 OK`.
+- **Impact:** budget reports understate spend by exactly this amount while the CAP check —
+  which sums `agreement_transactions` — still counts it. **The two subsystems silently
+  disagree.** No error, no log, no test.
+- **Remediation:** blocked on **D-08**. The T-057 delta makes the *ambiguous* case loud but
+  leaves the *not-found* case silent.
+- **Source:** audit candidate #8, violation #8, Tier-1 risk #1
+
+### INV-B-002 — Spend against an agreement never exceeds its CAP.
+- **Status:** 🔴 VIOLATED (asymmetrically)
+- **Guard:** TEST (off-invoice only)
+- **Evidence:** holds for off-invoice; ON_INVOICE bypasses CAP entirely
+  (`on-invoice.service.ts:327-450`)
+- **Remediation:** blocked on **D-01**, **D-02**, **D-03**
+- **Source:** audit candidate #11, violation #11
+
+### INV-B-003 — An on-invoice ledger entry is always attributed to an envelope whose spend type is `ON_INVOICE`.
+- **Status:** 🔴 VIOLATED at HEAD · HOLDS with the uncommitted T-057 delta
+- **Guard:** TEST (added by T-057's untracked spec)
+- **Evidence:** `findEnvelopeByDimensions` called without a spend type
+  (`on-invoice.service.ts:437`) while the ledger row hardcodes `ON_INVOICE`
+- **Action:** none beyond committing T-057
+- **Source:** audit candidate #20, violation #20
+
+### INV-B-004 — CAP and spend reporting derive from the same source, and that source is the ledger.
+- **Status:** BLOCKED → **D-02**
+- **Guard:** target `CI` (reconciliation) + `LINT`
+- **Note:** today CAP sums `agreement_transactions`; reporting sums `ledger_entries`. Two
+  sources of truth for "spent" is the root cause of INV-B-001's silence, not a side effect.
+- **Source:** spec gap 12
+
+### INV-B-005 — No realized economic event may go unrecorded because of a budget limit.
+- **Status:** BLOCKED → **D-01**
+- **Guard:** target `TEST` (property-based) + `CI`
+- **Statement when unblocked:**
+  `Σ(recognized_on_invoice_discount) ≡ Σ(claimed) + Σ(OVER_CAP) + Σ(NON_TPM)`
+- **Rationale:** an on-invoice discount has already been granted on the customer's invoice.
+  Refusing it does not unspend the money; it only removes it from the books. CAP is
+  *preventive* for discretionary (off-invoice) spend and *detective* for realized
+  (on-invoice) spend. These are different mechanisms and must not share one policy.
+- **Source:** D1 discussion; audit open question #3
+
+### INV-B-006 — Every path that fails to resolve a budget envelope behaves according to one declared policy.
+- **Status:** BLOCKED → **D-08**
+- **Guard:** target `TEST` per path
+- **Note:** today the system gives two answers — silent skip (off-invoice) and a persisted
+  `ERROR` row (on-invoice). One system, two policies.
+- **Source:** spec gap 13
+
+### INV-B-007 — Envelope resolution uses one dimension set across all paths.
+- **Status:** BLOCKED → **D-09**
+- **Guard:** target `LINT` (single resolution function) + `TEST`
+- **Note:** off-invoice resolves on `(channel, period)`; on-invoice adds category. The same
+  logical budget can resolve to different envelopes depending on which path reaches it.
+- **Source:** spec gap 14, B2 finding #3
+
+---
+
+## 5. Recognition & Actuals — `INV-R`
+
+Ingestion is solid and well-guarded. Recognition does not exist; its invariants are stated
+here so they are designed in rather than retrofitted.
+
+### INV-R-001 — Every `on_invoice_entries` row in a `COMPLETED` batch is either `POSTED` with a corresponding ledger DEBIT, or `ERROR` with a non-empty `validation_errors` array.
+- **Status:** HOLDS
+- **Guard:** TEST → add `CI` (reconciliation)
+- **Source:** audit candidate #9
+
+### INV-R-002 — The sum of ledger DEBITs created from an on-invoice batch equals the sum of `discount` over that batch's `POSTED` entries.
+- **Status:** HOLDS
+- **Guard:** TEST → add `CI`
+- **Source:** audit candidate #10
+
+### INV-R-003 — At most one `sales_actual_batches` row is `ACTIVE` per `(tenant, fiscal_period, cpl, category, channel)`.
+- **Status:** HOLDS
+- **Guard:** DB ✅ (partial unique index)
+- **Tenant coupling:** this encodes K44 ("last upload wins") in the schema. See **D-14**.
+- **Source:** audit candidate #14
+
+### INV-R-004 — A replaced sales-actuals batch is never deleted; it transitions to `REPLACED` with `replaced_by_batch_id` and `replaced_at` set.
+- **Status:** HOLDS
+- **Guard:** TEST → add `DB` (`CHECK`: `status='REPLACED'` requires both columns non-null)
+- **Source:** audit candidate #15
+
+### INV-R-005 — `sales_actuals.discount_amount` never contributes to any ledger entry, budget reservation, or spend figure.
+- **Status:** HOLDS
+- **Guard:** TEST (module boundary spec) ✅ — the strongest existing guard pattern in the codebase
+- **⚠️ Note:** any recognition design must **explicitly** overturn or reconcile with this. The
+  quarantine exists for a documented double-counting reason (T-003/T-017). Recognition that
+  reads `discount_amount` without addressing that history reintroduces the bug.
+- **Source:** audit candidate #16, spec gap 6
+
+### INV-R-006 — A sales-actuals row is rejected if `net_amount > gross_amount`.
+- **Status:** HOLDS
+- **Guard:** TEST → add `DB` (`CHECK`)
+- **Source:** audit candidate #17
+
+### INV-R-007 — Recognized on-invoice spend is conserved: `Σ(claims) + Σ(NON_TPM) = actual_discount`, for every scope, always.
+- **Status:** BLOCKED → **D-07**
+- **Guard:** target `TEST` (property-based, the primary use case for it)
+- **Proposed rule:**
+  ```
+  attributable = min(actual_discount, expected_total)
+  per tactic  = attributable × (expected_i / expected_total)
+  actual > expected → NON_TPM = actual − expected
+  actual < expected → UNDER   = expected − actual   (informational; no claim)
+  ```
+- **Rationale:** the two extant Addendum V2 versions specify incompatible algorithms.
+  Proportional-of-actual overpays whenever a non-TPM discount exists; expected-based books
+  spend that was never granted when the actual falls short. The rule above uses `expected`
+  as a ceiling and the rate ratio as a distribution key — two different jobs that both
+  documents conflated.
+- **Source:** D3 discussion; spec gaps 4, 5
+
+### INV-R-008 — Allocation is deterministic: identical inputs under an identical policy version produce an identical distribution to the cent.
+- **Status:** BLOCKED → **D-07**, **D-05**
+- **Guard:** target `TEST` (property-based) + `CI`
+- **Must specify:** rounding mode, residual-cent assignment, tie-breaking order (business
+  key — never a generated identifier, cf. INV-N-001)
+- **Source:** spec gap 15
+
+---
+
+## 6. Tenancy & Access — `INV-T`
+
+### INV-T-001 — No financial query executes without a `tenant_id` predicate.
+- **Status:** HOLDS
+- **Guard:** TEST → add `LINT` (repository-layer rule)
+- **Source:** audit candidate #12
+
+### INV-T-002 — A user may not approve a request they submitted.
+- **Status:** HOLDS
+- **Guard:** TEST ✅
+- **Note:** implemented as a general submitter≠approver rule, not an actuals-specific one —
+  therefore **product policy, not tenant policy**. K45 is satisfied as a consequence.
+- **Source:** audit candidate #13; K45
+
+### INV-T-003 — Tenant isolation is enforced by the database, not only by application predicates.
+- **Status:** 🔴 VIOLATED
+- **Guard:** NONE → target `DB` (RLS) + `CI` (policy-presence check)
+- **Evidence:** 0 RLS policies, 0 tables with `rowsecurity`
+- **Remediation:** blocked on **D-11**. Greenfield in both codebases. This is the gate for
+  the second customer, not a hardening nicety.
+- **Source:** audit candidate #22, violation #22
+
+---
+
+## 7. Schema & Migration integrity — `INV-M`
+
+This section exists because of a defect class discovered in the audit. It has no
+counterpart in either codebase's existing documentation.
+
+### INV-M-001 — Every migration recorded in `main.migrations` has had all of its DDL effects applied to the `main` schema.
+- **Status:** 🔴 VIOLATED
+- **Guard:** NONE → target `CI` (schema diff: freshly-migrated database vs current)
+- **Evidence:** `LedgerReversalSupport1777000000000` is recorded in `main.migrations`; its
+  self-FK and `UQ_ledger_entries_reversal_per_tenant` exist **only on `public.ledger_entries`**
+  — TTM's table
+- **Impact:** the migration ledger reports success for DDL that was never applied. The
+  release process trusts that report.
+- **Source:** audit candidate #19, violation #19, hazard H2
+
+### INV-M-002 — Every catalogue existence guard in a migration is schema-qualified.
+- **Status:** 🔴 VIOLATED (at least once; scope unknown)
+- **Guard:** NONE → target `LINT` (`pg_constraint` / `pg_indexes` / `pg_class` query without a
+  `nspname` or `schemaname` predicate is an error)
+- **Evidence:** `:33-37`, `:52-56` of the migration above match by name only
+- **⚠️ Unknown scope:** this is a **class**, not an instance. Any migration using name-only
+  existence checks may have silently no-opped. A sweep is required before the count is known.
+- **Source:** spec gap 21, determinism risk 7
+
+### INV-M-003 — One database hosts exactly one product's schema.
+- **Status:** 🔴 VIOLATED (environment)
+- **Guard:** NONE → target `CI` (environment assertion)
+- **Evidence:** `collmind-tpm-postgres:5434` hosts both `main` (Collmind-TPM) and `public`
+  (TTM), **including two separate `migrations` tables** (54 rows / 44 rows)
+- **Impact:** root cause of INV-M-001. Also: an unqualified `SELECT name FROM migrations`
+  resolves by `search_path` and can report the wrong product's history — this misled the
+  audit's own first pass.
+- **Source:** environment notes
+
+---
+
+## 8. Numeric & Determinism — `INV-N`
+
+### INV-N-001 — Batch-ordered financial processing iterates in ascending source row number, never in an order derived from a generated identifier.
+- **Status:** HOLDS
+- **Guard:** TEST → add `LINT` (ordering by `id` in a financial path is an error)
+- **Note:** a genuine improvement over TTM, whose financial ordering was by `randomUUID()`.
+  Worth protecting explicitly so a port does not reintroduce it.
+- **Source:** audit candidate #18
+
+### INV-N-002 — Monetary arithmetic is exact; no monetary value is represented as a floating-point number in application code.
+- **Status:** 🔴 VIOLATED
+- **Guard:** NONE → target `LINT` (ban `parseFloat`/`Number()` on money fields) + `TEST`
+- **Evidence:** all amounts are `number`. `DecimalTransformer` exists but is **not** applied to
+  `ledger_entries.amount`. `parseFloat` at `ledger.repository.ts:123,147`; `Number()` at
+  `agreement-transaction.service.ts:102` and throughout `budget.service.ts`.
+- **Impact:** the CAP boundary (`currentTotal + dto.amount > cap`) can flip on representation
+  error at exactly the cap. `Object.entries()` accumulation
+  (`spend-calculation.service.ts:539,664,824,832`) is order-dependent in floating point.
+- **Remediation:** blocked on **D-05**
+- **Source:** determinism risks 1, 2, 3; spec gap 15
+
+### INV-N-003 — Fiscal period derivation is timezone-independent.
+- **Status:** 🔴 VIOLATED
+- **Guard:** NONE → target `TEST` (assert under ≥2 `TZ` values) + `LINT`
+- **Evidence:** `agreement-transaction.service.ts:108-122` — 3-level fallback ending in
+  `getFullYear()`/`getMonth()`, which are local-timezone operations
+- **Impact:** the same invoice lands in different fiscal months on servers in different
+  timezones
+- **Remediation:** blocked on **D-12**
+- **Source:** determinism risk 6, spec gap 22
+
+---
+
+## 9. Open decisions blocking invariants
+
+Each blocks at least one invariant. Ordered by number of invariants unblocked, then by
+whether a silent wrong number depends on it.
+
+| ID | Decision | Blocks | Note |
+|---|---|---|---|
+| **D-01** | CAP exceedance behaviour | INV-B-002, INV-B-005 | Three variants exist: TTM skip · K43-R clamp · CTPM reject. **Proposed:** split by controllability — off-invoice clamps (K43-R), on-invoice always posts and records `OVER_CAP` |
+| **D-02** | CAP source of truth | INV-B-002, INV-B-004 | **Proposed:** the ledger. It is append-only, direction-aware, and already the reporting source |
+| **D-03** | CAP scope and optionality | INV-B-002 | K29 says tactic-level, code is agreement-level. K31 says optional, `cap_total_amount` is `NOT NULL` |
+| **D-04** | Append-only enforcement level | INV-L-001…003 | DB guarantee or application convention? If DB: `deleted_at` arguably should not exist on this table |
+| **D-05** | Numeric contract | INV-N-002, INV-R-008 | Integer minor units · decimal library · SQL-side arithmetic. Plus rounding mode |
+| **D-06** | Settlement base | — (prerequisite for INV-R-007) | Absent entirely. Addendum V2 §5.2 specifies three types frozen per agreement; `LIST_PRICE × VOLUME` is uncomputable because actuals carry no volume |
+| **D-07** | Recognition allocation rule | INV-R-007, INV-R-008 | Two Addendum V2 versions specify incompatible algorithms. Proposal in INV-R-007 |
+| **D-08** | Envelope-not-found policy | INV-B-001, INV-B-006 | Reject · auto-provision · catch-all · persisted exception. **Fixing this also closes Tier-1 risk #1** — same `if` |
+| **D-09** | Envelope resolution dimensions | INV-B-007 | One dimension set for both paths |
+| **D-10** | Claim model | INV-R-007 | First-class entity (TTM, Addendum V2) or `agreement_transactions` + ledger? |
+| **D-11** | RLS requirement | INV-T-003 | Second-customer gate |
+| **D-12** | Fiscal period timezone | INV-N-003 | UTC vs local, explicitly |
+| **D-13** | Idempotency key formats | INV-L-009 | Three undocumented formats in use |
+| **D-14** | Actuals replace semantics as tenant policy | INV-R-003 | K44 is schema-encoded. Cost to make configurable: **high** — relaxing a uniqueness constraint that current correctness depends on |
+
+---
+
+## 10. Guard backlog
+
+Ranked by risk closed per unit of effort.
+
+| # | Guard | Type | Closes | Effort |
+|---|---|---|---|---|
+| 1 | Repair migration for `UQ_ledger_entries_reversal_per_tenant` + FK, schema-qualified | DB | INV-L-005 | S |
+| 2 | Environment assertion: one product schema per database | CI | INV-M-003 | S |
+| 3 | Schema-qualification lint for migration catalogue guards | LINT | INV-M-002 | S |
+| 4 | `SUM(amount)` direction-awareness lint | LINT | INV-L-007 | S |
+| 5 | Financial ordering lint (no `ORDER BY id`) | LINT | INV-N-001 | S |
+| 6 | Ledger immutability trigger | DB | INV-L-001, INV-L-002 | M |
+| 7 | Schema-diff CI step (fresh migrate vs current) | CI | INV-M-001 | M |
+| 8 | Nightly tx↔ledger reconciliation job | CI | INV-B-001, INV-B-004 | M |
+| 9 | Money-as-float lint + `DecimalTransformer` rollout | LINT | INV-N-002 | L |
+| 10 | RLS policies + policy-presence CI check | DB | INV-T-003 | L |
+
+Items 1–5 are all small, all currently `NONE`, and together close three silent-wrong-number
+risks. They are the correct first sprint of this layer.
+
+---
+
+## 11. Adoption
+
+This document becomes normative when:
+
+1. §9 decisions D-01, D-02, D-04, D-05, D-08 are recorded as ADRs in
+   `docs/decisions/` (these five block the most invariants and all touch money).
+2. Guard backlog items 1–5 are implemented.
+3. `CLAUDE.md` §2 stops restating domain rules and references invariant IDs instead.
+4. Every agent definition in `.claude/agents/` references this file and
+   `docs/decisions/` as binding sources.
+
+**Registry note:** `DECISION_REGISTRY.md` (K1–K45) currently lives in **TTM**, the frozen
+repo. The product's decision registry cannot live in the legacy codebase. It should be
+split — product decisions into Collmind-TPM's `docs/decisions/`, Wella-specific choices into
+a tenant profile — and TTM's copy marked historical.
+
+---
+
+## 12. Changelog
+
+| Version | Date | Change |
+|---|---|---|
+| 0.1 | 2026-08-03 | Initial draft from CTPM baseline audit. 25 invariants: 15 HOLDS · 10 VIOLATED/BLOCKED. 14 open decisions. |
