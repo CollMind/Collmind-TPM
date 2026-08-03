@@ -15,10 +15,13 @@ id: T-001
 title: Kısa başlık
 epic: E-001            # bağlı epic id (yoksa boş)
 sprint: S-001          # aktif sprint id (yoksa boş)
-status: todo           # todo | in-progress | review | done | blocked
+status: todo           # todo | in-progress | review | done | blocked | blocked-unreachable
 assignee: backend-engineer   # bir subagent adı
 created: 2026-05-29
 updated: 2026-05-29
+touches:            # ZORUNLU — dokunulacak dosya/modül listesi
+  - collmind.backend/src/modules/...
+migration_seq:      # migration yazılacaksa MIGRATION_SEQUENCE.md'den tahsis edilen numara
 ---
 
 ## Açıklama
@@ -27,9 +30,20 @@ Ne yapılacak.
 ## Acceptance Criteria
 - [ ] ...
 
+## Done tanımı (hepsi işaretlenmeden `done` yazılmaz)
+- [ ] Testler yeşil (unit + ilgili e2e)
+- [ ] code-reviewer onayı
+- [ ] Üretim çağrı yolu var (yoksa → `blocked-unreachable`)
+- [ ] Bağlayıcı koşullar guard'a bağlandı (test/lint/DB constraint/CI) veya "tavsiye"ye düşürüldü
+- [ ] `touches:` gerçekte dokunulan dosyalarla güncel
+- [ ] Migration varsa catalogue guard'ları şema-nitelendirilmiş
+
 ## İlgili
 - Dosya/PR/branch linkleri, bağımlı task'lar ([[T-002]])
 ```
+
+Yeni status değeri: **`blocked-unreachable`** — kod yazıldı, testleri geçiyor, ama üretimden
+çağrılmıyor. `done` değildir.
 
 ### Epic — `.claude/backlog/epics/<id>.md`
 ```markdown

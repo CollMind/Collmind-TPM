@@ -23,9 +23,19 @@ Dil: kullanıcı Türkçe yazıyor → Türkçe yanıtla.
 |---|---|---|---|
 | Backend | `collmind.backend/` (submodule; iş: `staging`, prod: `main`) | NestJS 10 + TypeORM 0.3 + PostgreSQL 16, JWT/Passport, Swagger | 3000 |
 | Frontend | `collmind.frontend/` (submodule; iş: `staging`, prod: `main`) | React 18 + Vite 5 + TS, Redux Toolkit + TanStack Query, Tailwind + shadcn/ui, Recharts | 5173 |
-| DB | Docker PostgreSQL | — | 5432 |
+| DB | Docker PostgreSQL — container `collmind-tpm-postgres`, DB `collmind_tpm`, şema `main` | — | **5434** |
 
 Bu kök repo (`collmind.team`) orkestrasyon kurulumunu (`.claude/`) + dokümantasyonu tutar; backend/frontend submodule'dür.
+
+> ⚠️ **Ortam notları (2026-08-03 denetimiyle doğrulandı):**
+> - DB portu **5434**'tür (eski dokümanlarda 5432 yazıyordu — yanlış).
+> - Aynı PostgreSQL instance'ı hem `main` (CTPM) hem `public` (TTM) şemasını barındırıyor.
+>   **Şemasız `SELECT ... FROM migrations` yanlış ürünün geçmişini döndürebilir.** Her
+>   catalogue/migrations sorgusunu şema-nitelendir.
+> - `collmind.frontend` bu tabloda `staging` diye yazılıdır; README bir yerde `main` diyor.
+>   **Doğrusu `staging`** (bkz. §5 branch modeli). README düzeltilecek.
+> - CTPM bugün yalnızca lokal geliştirme ortamında koşuyor. Deploy edilmiş staging/production
+>   **yok**. §5'teki promote akışı branch modelidir, çalışan ortam değil.
 
 ### Ürün konumu / TTM ilişkisi (ZORUNLU)
 
@@ -36,7 +46,11 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 `TTM` reposu **dondurulmuştur (reference/legacy-only)**:
 - TTM'e yeni iş gitmez; yalnızca UAT'de kanıtlanmış akışlar için **port-kaynağı** referanstır.
 - Port'ta düz kopyalama YASAK: TTM davranışı CTPM'in katmanlı/DDD modül yapısına (`collmind.backend/src/modules/...`) uyarlanır, Next.js UI yalnızca davranış referansıdır (Vite/React'a yeniden yazılır), BRD'nin dinamik-formül kuralı korunur, her port'a e2e eklenir.
-- Açık port-adayları: E2E iskeleti, settlements, reversals, invoice claims.
+- Açık port-adayları: invoice claims (E2E iskeleti, settlements, reversals tamamlandı).
+
+> ⚠️ **Port ederken isim farkına dikkat:** aynı kavram iki repoda farklı adlanabilir
+> (ör. CTPM `capTotalAmount` ↔ TTM `capAmount`/`checkCapPolicy`). Çapraz repo grep'i
+> tek başına güvenilir değildir; "bulunamadı" sonucu "yok" demek değildir.
 
 **Test/komut referansı:**
 - Backend test: `npm test` (Jest) · e2e: `npm run test:e2e` · lint: `npm run lint` · migration: `npm run migration:run` · seed: `npm run seed`
@@ -44,20 +58,67 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 
 ---
 
-## 2. Domain Kuralları (BRD — DEĞİŞTİRİLEMEZ)
+## 2. Domain Kuralları — kaynak hiyerarşisi
 
-Tek doğruluk kaynağı: [.cursor/rules.md](.cursor/rules.md) + `.cursor/` altındaki BRD PDF'leri. Özet:
+### 2.1 Bağlayıcı kaynaklar (öncelik sırasıyla)
 
-- **FMCG Trade Promotion Management (TPM)** ürünü. Tüm geliştirmeler BRD ile uyumlu olmalı; varsayım yapma.
-- **Hesaplamalar asla hardcode edilmez.** KPI/ROI/Spend/Profit = Admin tanımlı **dinamik formül**. Frontend sadece sonucu render eder. Hesap < 500ms.
-- **RBAC (sabit):** Planner (sadece yetkili CPL+Category, plan onaylayamaz) · Category Manager (atanmış kategoriyi onaylar, plan düzenleyemez) · Finance Manager (okuma + bütçe) · Admin (tam). Roller birbirinin yetkisini kullanamaz.
-- **Plan state machine:** `Draft → Pending Approval → Approved/Rejected`; Rejected → Draft (audit korunur). Pending'de plan değiştirilemez; Approved bütçeden düşer.
-- **Grid hiyerarşisi:** Plan → FU → SKU. SKU'da Planned Volume, FU'da Tactic girilir; FU değerleri SKU'ya miras; SKU'da tactic değiştirilemez.
+| # | Kaynak | Statü |
+|---|---|---|
+| 1 | `docs/decisions/*.md` — **ADR'ler** | **Bağlayıcı.** Ürün sahibinin verdiği kararlar. BRD ile çelişirse ADR kazanır (BRD'nin bilinçli genişletmesidir). |
+| 2 | `.cursor/` altındaki **BRD PDF'leri** | Asıl kaynak metin. |
+| 3 | `.cursor/rules.md` | **Türetilmiş özet — normatif değil.** |
+| 4 | Bu dosyanın §2.3'ü | Hatırlatma listesi. Normatif değil. |
+
+**Task'a başlamadan önce ilgili ADR'leri tara.** Bugün dokuz ADR var; hiçbiri opsiyonel değil.
+
+### 2.2 `.cursor/rules.md` hakkında uyarı (ZORUNLU)
+
+`rules.md` BRD değildir. BRD PDF'inin bir LLM özetidir ve **kayıplıdır** — dosyanın sonunda
+üretildiği sohbetin kalıntısı hâlâ durur. Bilinen kayıp örneği: NFR-1.2'nin `<500ms` hedefi
+`rules.md`'de yalın bir cümle olarak geçer; BRD tablosundaki **"Measurement Method: Time from
+input change to UI update"** sütunu özete girmemiştir. Bir ajan bunu "tek formül" diye
+yorumladı; düzeltme `docs/decisions/0003-recalc-500ms-kapsami.md` ile geldi.
+
+Sonuç: **`rules.md` ile BRD PDF'i çeliştiğinde PDF kazanır.** `rules.md` bir noktada sessizse,
+bu "kural yok" demek değildir — PDF'e bak, orada da yoksa **DUR** (§2.4).
+
+`rules.md`'de bugün **hiç geçmeyen** kavramlar: `actuals`, `agreement`, `claim`, `settlement`,
+`ledger`, `reversal`, `invoice`, `recognition`, `tenant`. Yani ürünün actuals-first tarafının
+normatif kaynağı `rules.md` **değildir**.
+
+### 2.3 Özet hatırlatmalar (normatif DEĞİL — doğrulamadan uygulama)
+
+- **FMCG Trade Promotion Management (TPM)** ürünü.
+- **Hesaplamalar asla hardcode edilmez.** KPI/ROI/Spend/Profit = Admin tanımlı **dinamik formül**. Frontend sadece sonucu render eder.
+- **RBAC:** Planner · Category Manager · Finance Manager · Admin. Roller birbirinin yetkisini kullanamaz. (Genişletme: FM yalnız `PENDING_FINANCE_REVIEW` onaylar — ADR 0002.)
+- **Plan state machine:** `Draft → Pending Approval → Approved/Rejected`; Rejected → Draft (audit korunur).
+- **Grid hiyerarşisi:** Plan → FU → SKU. FU değerleri SKU'ya miras.
 - **KPI edge case:** division-by-zero → null, eksik veri → null, negatif ROI geçerlidir.
-- **RAG:** hardcoded threshold YASAK; sadece KPI konfigürasyonundan. SKU Red→FU Red, karışık→Amber, hepsi Green→Green.
-- **Budget threshold:** %80 Warning, %95 Critical, %100+ Exceeded (block). On-Invoice / Off-Invoice ayrı.
+- **RAG:** hardcoded threshold YASAK; sadece KPI konfigürasyonundan.
+- **Budget threshold:** %80 Warning, %95 Critical, %100+ Exceeded. On-Invoice / Off-Invoice ayrı değerlendirilir (ADR 0004).
+  ⚠️ **Bilinen belirsizlik:** sınır semantiği (`>95` mi `>=95` mi) çözülmemiştir ve bu eşikler
+  bugün birçok dosyada hardcode'dur (BRD ihlali). Bu maddeye dayanarak kod yazma — önce sor.
 - **Audit:** immutable; silinemez/güncellenemez; onay/red dahil her işlem loglanır.
-- Optimistic locking (eş zamanlı düzenleme), desktop-first, grid-heavy, real-time recalc.
+- Optimistic locking, desktop-first, grid-heavy, real-time recalc.
+
+### 2.4 Belirsizlikte DUR (ZORUNLU — her ajan için geçerli)
+
+ADR ve BRD bir noktada sessiz veya çok anlamlıysa: **DUR.**
+
+- Varsayma. "En makul olanı" seçme. "Muhtemelen şöyledir" diye ilerleme.
+- Team Lead'e bildir: belirsizlik nedir, seçenekler neler, her birinin sonucu ne.
+- **BRD yorumu ürün sahibinin kararıdır, ajanın varsayımı değil.** (ADR 0003 dersi.)
+
+### 2.5 Sessiz sıfır yasağı (ZORUNLU)
+
+Finansal bir yolda eksik, belirsiz veya çözülemeyen girdi → **açık hata fırlat.**
+
+Yasak: varsayılan değer atamak · sessizce `0` döndürmek · sessizce atlamak · `if` yazıp `else`
+bırakmamak · iki seçenek arasında rastgele/gizli tie-break yapmak.
+
+Bu tek kural, projede sekiz kez ayrı ayrı karara bağlanmış bir hata sınıfını kapatır
+(ADR 0004 Karar 1/3/5, ADR 0005 K3, ADR 0006). Yeni bir vaka çıktığında yeniden tartışma —
+kural budur.
 
 ---
 
@@ -75,6 +136,12 @@ Tek doğruluk kaynağı: [.cursor/rules.md](.cursor/rules.md) + `.cursor/` altı
 | `data-analyst` | KPI/raporlama analizi, SQL içgörü (read-only) |
 | `data-engineer` | Migration, seed, ETL, şema, veri pipeline |
 
+**Sorumluluk sınırları (ZORUNLU):**
+- **Migration yalnız `data-engineer` yazar.** `backend-engineer` entity değiştirip migration
+  gerektiriyorsa task'ı böl.
+- `code-reviewer` ve `data-analyst` **kod/veri değiştirmez.** Bulgu raporlar.
+- Bir ajan kendi yazdığı kodun testini yazmaz — o `qa-engineer`'ın işidir.
+
 ---
 
 ## 4. Yeni Görev Akışı (ZORUNLU — tekrarı önler)
@@ -83,19 +150,53 @@ Tek doğruluk kaynağı: [.cursor/rules.md](.cursor/rules.md) + `.cursor/` altı
    - **Varsa** → o task'ı devam ettir/güncelle. **YENİ TASK AÇMA.**
    - **Yoksa** → yeni task dosyası oluştur (`.claude/backlog/tasks/<id>.md`), uygun agent'a `assignee` ata, `BACKLOG.md` indeksine satır ekle.
 2. **Dekompozisyon:** büyük iş → epic (`epics/<id>.md`) → task'lar. Her task tek agent'a.
-3. **Delege:** bağımsız task'ları **tek mesajda paralel** başlat (Agent tool, birden çok çağrı). Bağımlı olanları sırala.
-4. **İlerleme:** agent bitirince task `status` (`todo→in-progress→review→done`) + `updated` alanını güncelle, `BACKLOG.md`'yi senkronla.
+3. **Çakışma kontrolü (YENİ — ZORUNLU):** her task'ta `touches:` alanı dolu olmalı
+   (dokunulacak dosya/modül listesi). **Paralel başlatmadan önce `touches:` kesişimini kontrol
+   et.** Kesişim varsa paralel değil, **sıralı** çalıştır.
+   Migration numarası alacak task varsa `.claude/backlog/MIGRATION_SEQUENCE.md`'den numara
+   tahsis et — **ajan kendi numarasını seçmez.**
+4. **Delege:** bağımsız task'ları **tek mesajda paralel** başlat (Agent tool, birden çok çağrı). Bağımlı olanları sırala.
+5. **İlerleme:** agent bitirince task `status` + `updated` alanını güncelle, `BACKLOG.md`'yi senkronla.
 
 Task/epic/sprint dosya formatı: [.claude/backlog/BACKLOG.md](.claude/backlog/BACKLOG.md) başındaki şablona uy.
+
+### 4.1 Delegasyonda bağlam sadakati (ZORUNLU)
+
+Alt-ajana iş verirken **kaynağı referansla ver, özetini değil.**
+
+- ✅ `ADR 0004 Karar 2` · `rules.md §8` · `docs/analysis/0008 §5.7` · `agreement.service.ts:438`
+- ❌ "hatırladığım kadarıyla eşik %95'ti" · "sanırım kısmi rezervasyon yasak"
+
+Özet vermen gerekiyorsa **kaynağı da ekle** ki ajan doğrulayabilsin. Finansal bir sistemde
+özet-kaybı sessiz yanlış sayı üretir.
+
+### 4.2 "Done" tanımı (ZORUNLU — hepsi sağlanmadan `done` yazılmaz)
+
+- [ ] Testler yeşil (unit + ilgili e2e)
+- [ ] `code-reviewer` onayı
+- [ ] **Üretim çağrı yolu var mı?** Bu kodu çağıran HTTP route / zamanlanmış iş / event nedir?
+      Yol yoksa status `done` DEĞİL → **`blocked-unreachable`**
+- [ ] Bağlayıcı koşullar bir guard'a bağlandı (test / lint / DB constraint / CI).
+      Bağlanamıyorsa koşul "tavsiye"ye düşürülür ve öyle işaretlenir.
+- [ ] `touches:` alanı gerçekte dokunulan dosyalarla güncel
+- [ ] Migration varsa: **catalogue guard'ları şema-nitelendirilmiş** (`nspname`/`schemaname`
+      predicate'i olmadan `pg_constraint`/`pg_indexes` sorgulanmaz)
+
+> Üçüncü madde neden var: bu projede "mekanizma var, ona giden yol yok" hatası **sekiz kez**
+> tekrarlandı (T-033, T-036, T-039, T-046d, T-048, T-052, T-053, T-062). Her task kendi
+> ölçütünde yeşil geçti, ürün etkisi sıfır oldu. Bu madde o sınıfı kapatır.
 
 ---
 
 ## 5. Git / Bitbucket Workflow
 
-- **Çoklu repo:** backend/frontend ayrı Bitbucket repolarıdır (submodule). Kök repo `collmind.team` kod tutmaz; her submodule'ün **commit pointer'ını** tutar (hangi backend+frontend sürümü birlikte). Bir submodule'de iş bitince: o repoya push → kök repo'da pointer'ı güncelle/commit/push.
-- Commit mesajı sonu: `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>`
+- **Çoklu repo:** backend/frontend ayrı Bitbucket repolarıdır (submodule). Kök repo `collmind.team` kod tutmaz; her submodule'ün **commit pointer'ını** tutar. Bir submodule'de iş bitince: o repoya push → kök repo'da pointer'ı güncelle/commit/push.
+- Commit mesajı sonu: `Co-Authored-By: Claude <noreply@anthropic.com>`
+  *(Model adı yazma — model değişince her commit yanlış imzalanır.)*
 - Commit/push yalnızca kullanıcı isterse.
 - `/sync` ile submodule'leri güncel tut.
+- **`git checkout` ve `git pull` artık otomatik onaylı değil.** Paylaşılan working tree'de
+  paralel ajanlar varken branch değiştirmek, başka bir ajanın altından zemini çeker.
 
 ### Branch & Release Modeli (ZORUNLU — her üç repoda)
 
@@ -111,8 +212,8 @@ Task/epic/sprint dosya formatı: [.claude/backlog/BACKLOG.md](.claude/backlog/BA
 
 **Kurallar:**
 - Yeni iş → staging'den `feature/<ad>` veya `fix/<ad>` aç → staging'e geri merge.
-- `main`'e doğrudan commit/push YASAK; `main` yalnızca staging'den promote alır.
-- Tag yalnızca release anında, staging'den. Meta-repo tag'i o anki submodule sürüm kombinasyonunu işaretler (önce backend/frontend release'lenir, pointer güncellenir, sonra meta tag'lenir).
+- `main`'e doğrudan commit/push YASAK.
+- Tag yalnızca release anında, staging'den.
 - `/release <vX.Y.Z>` bu akışı orkestre eder.
 
 ---
@@ -123,4 +224,17 @@ Task/epic/sprint dosya formatı: [.claude/backlog/BACKLOG.md](.claude/backlog/BA
 - **Bugfix:** `debugger (teşhis+fix) → qa-engineer (regresyon) → code-reviewer`
 - **Data işi:** `data-analyst (analiz) → data-engineer (migration/pipeline) → qa-engineer`
 
-Slash command'lar: `/feature`, `/bugfix`, `/sync`, `/qa`, `/standup`.
+Slash command'lar: `/feature`, `/bugfix`, `/sync`, `/qa`, `/standup`, `/release`.
+
+---
+
+## 7. Yeni kod yazmadan önce ara (ZORUNLU)
+
+Bu projede aynı yetenek birden çok kez yazıldı: iki submit yolu, iki lumpsum dağıtım
+implementasyonu, iki CSV parser, üç kez yazılmış scope mantığı.
+
+`architect` review'ında ve her implementasyon task'ında cevaplanmalı:
+
+> **"Bu yeteneğin mevcut bir implementasyonu var mı? Arandı mı, nerede, hangi terimlerle?"**
+
+Cevap "yok" ise gerekçesiyle yazılır. Aranmadıysa task eksiktir.

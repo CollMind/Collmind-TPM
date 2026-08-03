@@ -12,8 +12,6 @@
       "Bash(git branch:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git checkout:*)",
-      "Bash(git pull:*)",
       "Bash(git fetch:*)",
       "Bash(git submodule:*)",
       "Bash(npm test:*)",
@@ -25,9 +23,12 @@
       "Bash(npm run seed:*)",
       "Bash(npm ci:*)",
       "Bash(npm install:*)",
-      "Bash(node:*)",
       "Bash(npx jest:*)",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(bash scripts/db-query.sh:*)",
+      "Bash(git merge-base:*)",
+      "Bash(git show:*)",
+      "Bash(git ls-files:*)"
     ],
     "deny": [
       "Read(./**/.env)",

@@ -15,7 +15,7 @@ collmind/  (collmind.team meta-repo)
 │   ├── hooks/session-start.sh # Oturum başında backlog'u Team Lead'e enjekte eder
 │   └── settings.json          # İzinler + SessionStart hook (paylaşılan)
 ├── collmind.backend/          # git submodule — NestJS (branch: staging)
-├── collmind.frontend/         # git submodule — React/Vite (branch: main)
+├── collmind.frontend/         # git submodule — React/Vite (branch: staging)
 └── .cursor/rules.md           # BRD domain kuralları (tek doğruluk kaynağı)
 ```
 
@@ -29,7 +29,7 @@ collmind/  (collmind.team meta-repo)
 | frontend-engineer | React UI tasarım + implementasyon |
 | qa-engineer | Test yazma/çalıştırma, QA planı |
 | debugger | Bug teşhis + fix |
-| code-reviewer | Commit öncesi diff review |
+| code-reviewer | Commit öncesi diff review (opus) |
 | data-analyst | KPI/raporlama analizi (read-only) |
 | data-engineer | Migration/seed/şema/pipeline |
 
