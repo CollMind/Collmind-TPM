@@ -95,6 +95,8 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-082]] | `null` taktik değeri: yazma kapısı 400 diyor, okuma tarafı sessizce atlıyor (T-078 ailesi) | P2 | backend-engineer | todo |
+| [[T-081]] | `INVALID_SCALE` mesajı hangi mekanik/hangi sınır olduğunu söylemiyor (`violations` render edilmiyor) | P3 | frontend-engineer | todo |
 | [[T-080]] | `PATCH tactics` tüm JSONB'yi değiştiriyor — ikinci mekaniği girmek birincisini siliyor olabilir (veri kaybı) | P1 | debugger | todo |
 | [[T-079]] | `POST /plans/:id/fus` ölçek kapısı yok — 999 bugün 201 dönüyor (açık kapı) | P1 | backend-engineer | todo |
 | [[T-078]] | `mechanicValues[code] \|\| 0` — değer yok ile sıfır ayırt edilmiyor (iş sonucu ölçülmeli) | P2 | backend-engineer | todo |
