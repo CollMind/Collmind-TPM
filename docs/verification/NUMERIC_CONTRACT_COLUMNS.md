@@ -7,7 +7,8 @@
 | **C1** | Column split — expand phase | `ce1ca97` | **done** |
 | **C2a** | JSONB semantics (J1) — discriminated union | `43301b5` | **done** |
 | **C2b** | 18 readers converted + `DROP COLUMN` (contract phase) | `42a59a6` `bafafa3` `88493eb` `3336c38` `95cb6e6` | **done** |
-| **C3** | Write-side scale validation — `PATCH .../tactics` only | pending commit | **partial, by decision** |
+| **C3** | Write-side scale validation — `PATCH .../tactics` only | `b712829` | **partial, by decision** |
+| **E15** | `src/common/numeric` → Domain A + NEW_MODULES; detector knows the primitives | `111eb13` | **done** |
 
 ---
 
@@ -288,7 +289,7 @@ counting.
 | Layer | Status |
 |---|---|
 | Column | **closed** — three semantic columns, `CHECK`, `entered_value` dropped (C1, C2b-4) |
-| Read path | **closed** — discriminated union, single derivation point (C2a, C2b-1..3) |
+| Read path | **closed for scale** — discriminated union, single derivation point (C2a, C2b-1..3). Not closed for the "no value vs zero" question: `rawOf`/`readEnteredValue` still collapse with `?? 0` (`T-078`), and `buildMechanicValues:719` still skips a `null` silently while the C3 write gate rejects it (`T-082`). Scale is settled; nullity is not. |
 | Write path | **PARTIALLY closed (C3).** `PATCH .../tactics` goes through the scale gate; `POST /plans/:id/fus` does **not** (`T-079`). Two write paths reach the same JSONB, one gated and one open. |
 
 Explicitly **not** closed here, each with its task:
