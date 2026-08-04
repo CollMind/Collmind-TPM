@@ -95,6 +95,8 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-080]] | `PATCH tactics` tüm JSONB'yi değiştiriyor — ikinci mekaniği girmek birincisini siliyor olabilir (veri kaybı) | P1 | debugger | todo |
+| [[T-079]] | `POST /plans/:id/fus` ölçek kapısı yok — 999 bugün 201 dönüyor (açık kapı) | P1 | backend-engineer | todo |
 | [[T-078]] | `mechanicValues[code] \|\| 0` — değer yok ile sıfır ayırt edilmiyor (iş sonucu ölçülmeli) | P2 | backend-engineer | todo |
 | [[T-077]] | `budget-allocation.service.ts` sayısal dönüşümü — tabanın %33'ü tek dosyada (F1'e bağlı) | P2 | backend-engineer | todo |
 | [[T-072]] | `agreements.mechanic_value` dondurma (ADR 0007 A4/K13) | P3 | backend-engineer | todo |

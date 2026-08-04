@@ -7,7 +7,7 @@
 | **C1** | Column split — expand phase | `ce1ca97` | **done** |
 | **C2a** | JSONB semantics (J1) — discriminated union | `43301b5` | **done** |
 | **C2b** | 18 readers converted + `DROP COLUMN` (contract phase) | `42a59a6` `bafafa3` `88493eb` `3336c38` `95cb6e6` | **done** |
-| **C3** | Write-side scale validation | — | pending |
+| **C3** | Write-side scale validation — `PATCH .../tactics` only | pending commit | **partial, by decision** |
 
 ---
 
@@ -63,7 +63,11 @@ C1's gate was easy because `plan.service.ts` never appeared in the diff. C2a/C2b
 criterion was actually tested — `plan.service.ts` is one of the callers whose signature changed.
 It held at 36 across all five commits.
 
-### C3 — pending
+### C3 — 36 (36)
+
+`plan.service.ts` gained ~70 lines (five-step ordering, scale gate, `mechanics?` threading) and
+its finding count did not move. That is the criterion doing its job: the new code adds no float
+money arithmetic, and no existing arithmetic was opportunistically converted on the side.
 
 ---
 
@@ -285,7 +289,7 @@ counting.
 |---|---|
 | Column | **closed** — three semantic columns, `CHECK`, `entered_value` dropped (C1, C2b-4) |
 | Read path | **closed** — discriminated union, single derivation point (C2a, C2b-1..3) |
-| Write path | **NOT closed** — `PATCH .../tactics` still accepts any scale. That is **C3**. |
+| Write path | **PARTIALLY closed (C3).** `PATCH .../tactics` goes through the scale gate; `POST /plans/:id/fus` does **not** (`T-079`). Two write paths reach the same JSONB, one gated and one open. |
 
 Explicitly **not** closed here, each with its task:
 `T-074` (four hardcoded rate thresholds) · `T-075` (A10 canonical choice **and**, per errata E14,
@@ -311,4 +315,121 @@ collapse) · the `=== 'PERCENT'` comparison sites found in C2a.
    missing. `mechanic_type` is NOT NULL so it cannot be missing in the DB — but the mocks proved
    it can be missing in tests. Is that worth a guard?
 
-## C3 — Write validation · pending
+## C3 — Write validation
+
+### What the write path is now
+
+`E2 write path is PARTIALLY closed.` `PATCH /plans/:id/fus/:fuId/tactics` goes through the scale
+gate; `POST /plans/:id/fus` does not (`T-079`). Two write paths reach the same
+`plan_fus.tactics` JSONB — **one gated, one open**. Naming the open one matters: "C3 closed the
+write path" is how this reads in six months if only the word "partial" is recorded.
+
+### The ordering, and why it is that ordering
+
+```
+1. load the active mechanics once
+2. version pre-check          → 409  (stale requests exit here)
+3. scale validation           → 400  (only requests that passed 2)
+4. CAS write                        (the real race protection)
+5. hand the mechanics to recalc
+```
+
+Steps 2 and 4 both raise the version conflict, and both must stay. Step 2 is **not** the race
+protection — another request can still land between the read and the CAS, and then the CAS
+returns `affected=0` and raises the same 409. That is expected. Step 2 exists only so a stale
+request is not scale-judged: a stale write reaches no column, so reporting a 400 about its
+numbers would be a message about values that were never going to be stored, and it would mask
+the 409 the client actually needs.
+
+Both raisers go through **one producer**, `planFuStaleConflict` (`plan.repository.ts`). A client
+cannot tell which one fired, and building the body by hand in two places is the small-scale form
+of the divergence this repo has recorded seven times.
+
+### The three-branch scale rule
+
+| Column | Type | Rule |
+|---|---|---|
+| `entered_rate_pct` | `numeric(9,4)` | 0–100 bound (same bound as `chk_pmv_rate_range`) |
+| `entered_unit_amount` | `numeric(18,4)` | **exempt from the kuruş rule — by decision** |
+| `entered_total_amount` | `numeric(18,2)` | sub-kuruş rejected |
+
+The exemption is the part most likely to be "fixed" by a later reader. A per-unit amount is a
+**price**, not a money total: 0.0125 TRY/unit over 800 000 units is 10 000 TRY, ordinary in this
+domain. Its column carries four decimals precisely so that survives. Applying "money has at most
+2 decimals" there would reject legitimate unit prices and push planners to round 0.0125 → 0.01,
+a 20% error on the resulting spend. The rule is justified in the code comment and has a
+**positive** unit test (0.0125 → no violation), so removing the exemption turns a test red
+instead of passing silently.
+
+The gate lives in the API, not the DB, and the reason is not "convenience": the planner's input
+lands in the `plan_fus.tactics` **JSONB**, which enforces nothing — a per-key scale constraint
+cannot be expressed on a jsonb column. The `CHECK` constraints from migration 1796 do not fire on
+this request. The API is the only layer that can enforce the contract here.
+
+### Unknown mechanic codes — a decision that already existed
+
+The first revision of this work skipped unknown tactic keys with `if (!mechanic) continue;` and a
+comment claiming the question "has never been decided". **That was wrong.**
+`spend-calculation.service.ts` had raised `UNKNOWN_MECHANIC_CODE` since T-062. The comment was
+written without searching — the failure CLAUDE.md §7 exists to prevent. `code-reviewer` caught it.
+
+Skipping was not merely redundant, it was actively harmful, because the write and the recalc are
+**not in one transaction**:
+
+1. step 3 skips the unknown key,
+2. step 4 commits `tactics` on its own connection,
+3. step 5's recalc raises `UNKNOWN_MECHANIC_CODE` and rolls back only *its* transaction.
+
+The client sees a 400 **and the bad key stays on disk** — after which every later recalc and every
+`submit` for that plan fails on the same key. The plan becomes unopenable by the error that was
+supposed to be a typo message. Rejecting before the write is what keeps the 400 recoverable.
+
+The fix calls the **existing** producer, now extracted to `unknownMechanicCodeError`, rather than
+inventing a second error source.
+
+### Mutation proof
+
+Both directions were proven by mutation, not by reading the code.
+
+| Mutation | Result |
+|---|---|
+| version pre-check disabled | `999` + stale version → **400** (test red) — ordering is load-bearing |
+| pre-check restored | `999` + stale version → **409**, `999` + valid version → **400** |
+| unknown-key rejection reverted to `continue` | the 400 test **still passed** (recalc raises it); the *"never reaches disk"* and *"plan is not locked"* tests went **red** — version had advanced 1→2 and the next valid write got 409 |
+
+The middle row is the one worth keeping: **a 400 alone was never proof.** The old, broken
+behaviour also returned 400 — just after writing. Only the on-disk assertion separates them.
+
+### Gate
+
+| Check | Result |
+|---|---|
+| `money-float.sh --ratchet` | exit 0, empty output |
+| `plan.service.ts` findings | **36 (36)** |
+| `tsc --noEmit` | exit 0 |
+| `npm run guards` | exit 0, TOPLAM 0 |
+| `npm test` | 673/673 (47 suites), exit 0 |
+| e2e ×3, no reset | exit 0 each, 248/248, T-047 invariant PASS each |
+| `test/optimistic-locking.e2e-spec.ts` | untouched (`git diff` empty) |
+
+### Deliberately NOT decided (recorded, not closed — CLAUDE.md §2.4)
+
+1. **`POST /plans/:id/fus` has no gate** — `T-079`, P1. Not a gap in C3's implementation; a second
+   endpoint whose behaviour change deserves its own measurement and e2e. This session watched
+   unmeasured scope come in low five times.
+2. **Sub-0.0001 precision on `rate` and `unitAmount`** — only the `totalAmount` kuruş rule and the
+   rate's 0–100 bound were settled. `unitAmount = 0.00125` is not representable in
+   `numeric(18,4)` and is **not** rejected today.
+3. **Sign.** A negative `totalAmount` or `unitAmount` passes; `rate` has a 0 floor. A negative
+   lumpsum moves spend and budget reservation the wrong way — a financial path. Undecided.
+4. **Values above 2^53** are rounded by JS before reaching the gate
+   (`1234567890123456.78` → `…6.8`, 1 decimal, passes). Representation, ADR 0007 K9.
+5. **`tactics` is replaced, not merged** (`T-080`, P1) — possibly a data-loss case, see below.
+
+### Adjacent finding, out of scope: `T-080`
+
+`tactics: dto.tactics || planFu.tactics` replaces the whole JSONB. If the frontend sends a single
+key per PATCH, editing a second mechanic silently deletes the first. The e2e suite cannot see it:
+its tests send both keys **in one request**, where replace and merge are indistinguishable. Green
+tests carry no information about this case. `plan_fus` holds 0 rows today, which is why nobody has
+hit it.
