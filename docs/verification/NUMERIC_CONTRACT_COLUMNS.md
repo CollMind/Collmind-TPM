@@ -5,7 +5,8 @@
 | Commit | Content | SHA | Status |
 |---|---|---|---|
 | **C1** | Column split — expand phase | `ce1ca97` | **done** |
-| **C2** | JSONB semantics (J1) + `DROP COLUMN` (contract phase) | — | pending |
+| **C2a** | JSONB semantics (J1) — discriminated union | `43301b5` | **done** |
+| **C2b** | 18 readers converted + `DROP COLUMN` (contract phase) | `42a59a6` `bafafa3` `88493eb` `3336c38` `95cb6e6` | **done** |
 | **C3** | Write-side scale validation | — | pending |
 
 ---
@@ -56,11 +57,13 @@ $ e2e ×3, no reset between runs, exit captured directly (CLAUDE.md §2.6)
 
 Nothing moved, so nothing needed reverting.
 
-### C2 / C3 — pending
+### C2a / C2b — see the per-commit tables below
 
-C1's gate was easy because `plan.service.ts` never appeared in the diff. **C2 is where the
-criterion is actually tested** — `plan.service.ts` is one of the two callers whose signature
-changes.
+C1's gate was easy because `plan.service.ts` never appeared in the diff. C2a/C2b are where the
+criterion was actually tested — `plan.service.ts` is one of the callers whose signature changed.
+It held at 36 across all five commits.
+
+### C3 — pending
 
 ---
 
