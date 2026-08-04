@@ -33,6 +33,13 @@ Ne yapılacak.
 ## Done tanımı (hepsi işaretlenmeden `done` yazılmaz)
 - [ ] Testler yeşil (unit + ilgili e2e)
 - [ ] `npm run guards` yeşil (backend'e dokunulduysa) — exit 0
+- [ ] `bash scripts/guards/money-float.sh --ratchet` exit 0 — **hiçbir** Alan A dosyasının
+      bulgu sayısı artmamış olmalı. Azalma beklenen ve iyidir: azaldıysa yeni referansı
+      `--baseline > scripts/guards/money-float-baseline.txt` ile ayrı, gözden geçirilebilir
+      bir commit'te güncelle (baseline asla kendini yazmaz). **Baseline commit'i, azalmayı
+      üreten commit'ten SONRA gelir** — önce gelirse ratchet o aralıkta kör kalır.
+      Alan A üyelik testi: bir modül para üretiyor, para kalıcılaştırıyor veya parayı bir
+      eşikle karşılaştırıyorsa Alan A'dadır — liste: `scripts/guards/money-float-domain-a.txt`
 - [ ] code-reviewer onayı
 - [ ] Üretim çağrı yolu var (yoksa → `blocked-unreachable`)
 - [ ] Bağlayıcı koşullar guard'a bağlandı (test/lint/DB constraint/CI) veya "tavsiye"ye düşürüldü
@@ -88,6 +95,7 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-077]] | `budget-allocation.service.ts` sayısal dönüşümü — tabanın %33'ü tek dosyada (F1'e bağlı) | P2 | backend-engineer | todo |
 | [[T-072]] | `agreements.mechanic_value` dondurma (ADR 0007 A4/K13) | P3 | backend-engineer | todo |
 | [[T-073]] | 🔴 Bütçe %100+ bloklamıyor (`// TODO`) — CLAUDE.md §2.3 ihlali | P1 | backend-engineer | todo |
 | [[T-074]] | 🔴 spend-validation'da dört hardcoded oran eşiği (CLAUDE.md §2.3 ihlali) | P1 | backend-engineer | todo |

@@ -122,6 +122,23 @@ kural budur.
 
 ---
 
+### 2.6 Exit kodunu boruya sokma (ZORUNLU — ölçüm disiplini)
+
+**Bir komutun exit kodunu boruya soktuktan sonra okuma.** `pipefail` yoksa `$?` **son** komutun
+kodudur, ölçmek istediğinin değil.
+
+```bash
+npm test | grep "^Tests:"; echo $?     # ← grep'in kodu. YANLIŞ.
+npm test > /tmp/t.log 2>&1; echo $?    # ← testin kodu. DOĞRU.
+```
+
+Bu kural bir oturumda **üç kez** aynı hataya düşüldüğü için yazıldı: `bash -n a.sh b.sh` (yalnız
+ilk dosyayı denetler) → `jest | grep` → `self-test.sh | head`. Üçünde de yeşil görünen bir şey
+aslında kırmızıydı. Sorun script'lerin içinde değil — onları **ölçerken kurulan boru hatlarında**.
+
+İlgili: bir suite "Tests: 631 passed" yazıp yine de **exit 1** dönebilir (ör. `globalTeardown`'dan
+fırlayan T-047 invaryantı). "Tests: passed" satırı tek başına yeterli sinyal değildir.
+
 ## 3. Ekip (subagent'lar — `.claude/agents/`)
 
 | Agent | Ne zaman delege et |
@@ -174,6 +191,13 @@ Alt-ajana iş verirken **kaynağı referansla ver, özetini değil.**
 
 - [ ] Testler yeşil (unit + ilgili e2e)
 - [ ] `npm run guards` yeşil (backend'e dokunulduysa) — exit 0
+- [ ] `bash scripts/guards/money-float.sh --ratchet` exit 0 — **hiçbir** Alan A dosyasının
+      bulgu sayısı artmamış olmalı. Azalma beklenen ve iyidir: azaldıysa yeni referansı
+      `--baseline > scripts/guards/money-float-baseline.txt` ile ayrı, gözden geçirilebilir
+      bir commit'te güncelle (baseline asla kendini yazmaz). **Baseline commit'i, azalmayı
+      üreten commit'ten SONRA gelir** — önce gelirse ratchet o aralıkta kör kalır.
+      Alan A üyelik testi: bir modül para üretiyor, para kalıcılaştırıyor veya parayı bir
+      eşikle karşılaştırıyorsa Alan A'dadır — liste: `scripts/guards/money-float-domain-a.txt`
 - [ ] `code-reviewer` onayı
 - [ ] **Üretim çağrı yolu var mı?** Bu kodu çağıran HTTP route / zamanlanmış iş / event nedir?
       Yol yoksa status `done` DEĞİL → **`blocked-unreachable`**
@@ -198,6 +222,21 @@ Alt-ajana iş verirken **kaynağı referansla ver, özetini değil.**
 - `/sync` ile submodule'leri güncel tut.
 - **`git checkout` ve `git pull` artık otomatik onaylı değil.** Paylaşılan working tree'de
   paralel ajanlar varken branch değiştirmek, başka bir ajanın altından zemini çeker.
+
+### Doküman yeri (ZORUNLU)
+
+**`docs/` (ölçüm, karar, sözleşme, rapor) meta-repo'da yaşar.** Submodule'lerde yalnız **kodun
+okuduğu artefaktlar** bulunur (`scripts/guards/*-baseline.txt` gibi — guard onu okur, kodla
+senkron değişmeli).
+
+Gerekçe: ölçüm ve karar dokümanları birbirine referans verir (`0010` → `0013` → ADR 0007 →
+`MONEY_FLOAT_BASELINE.md`). Ayrı repolara dağılırlarsa bağlantılar kırılır ve hangi sürümün
+hangisine karşılık geldiği izlenemez hâle gelir.
+
+Ölçüldü (2026-08-04): `docs/verification/` altındaki üç rapor da meta'da
+(`CTPM_BASELINE_AND_PORT_AUDIT.md`, `GUARD_BASELINE_REPORT.md`, `MONEY_FLOAT_BASELINE.md`) —
+kural bugün **ihlalsiz**. `collmind.backend/docs/` altında kalanlar (`safe-prompt-standard-v2.md`,
+`safe-prompts/`) ölçüm/karar dokümanı değil, prompt şablonlarıdır; **geriye dönük taşınmıyor**.
 
 ### Branch & Release Modeli (ZORUNLU — her üç repoda)
 
