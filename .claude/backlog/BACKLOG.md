@@ -98,8 +98,8 @@ status: active        # planned | active | closed
 | [[T-083]] | Bir taktiği kaldırmanın yolu yok — T-080 merge'inden sonra kalıcı (nullity kararını bekler) | P3 | backend-engineer | blocked |
 | [[T-082]] | `null` taktik değeri: yazma kapısı 400 diyor, okuma tarafı sessizce atlıyor (T-078 ailesi) | P2 | backend-engineer | todo |
 | [[T-081]] | `INVALID_SCALE` mesajı hangi mekanik/hangi sınır olduğunu söylemiyor (`violations` render edilmiyor) | P3 | frontend-engineer | todo |
-| [[T-080]] | **(T-079'u bekler)** `PATCH tactics` tüm JSONB'yi değiştiriyor — ikinci mekaniği girmek birincisini SİLİYOR (ölçüldü; karar: merge) | P1 | debugger | todo |
-| [[T-079]] | **(T-080'den önce)** `POST /plans/:id/fus` ölçek kapısı yok — 999 bugün 201 dönüyor (açık kapı) | P1 | backend-engineer | todo |
+| [[T-080]] | `PATCH tactics` tüm JSONB'yi değiştiriyor — ikinci mekaniği girmek birincisini SİLİYOR (ölçüldü; karar: merge) | P1 | debugger | todo |
+| [[T-079]] | `POST /plans/:id/fus` açık yazma yolu — `AddFuDto.tactics` kaldırıldı (kapı değil, yolun kendisi) | P1 | backend-engineer | review |
 | [[T-078]] | `mechanicValues[code] \|\| 0` — değer yok ile sıfır ayırt edilmiyor (iş sonucu ölçülmeli) | P2 | backend-engineer | todo |
 | [[T-077]] | `budget-allocation.service.ts` sayısal dönüşümü — tabanın %33'ü tek dosyada (F1'e bağlı) | P2 | backend-engineer | todo |
 | [[T-072]] | `agreements.mechanic_value` dondurma (ADR 0007 A4/K13) | P3 | backend-engineer | todo |

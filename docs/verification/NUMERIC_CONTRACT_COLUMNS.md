@@ -7,7 +7,8 @@
 | **C1** | Column split — expand phase | `ce1ca97` | **done** |
 | **C2a** | JSONB semantics (J1) — discriminated union | `43301b5` | **done** |
 | **C2b** | 18 readers converted + `DROP COLUMN` (contract phase) | `42a59a6` `bafafa3` `88493eb` `3336c38` `95cb6e6` | **done** |
-| **C3** | Write-side scale validation — `PATCH .../tactics` only | `b712829` | **partial, by decision** |
+| **C3** | Write-side scale validation — `PATCH .../tactics` only | `b712829` | **done** |
+| **T-079** | `AddFuDto.tactics` removed — the second, ungated write path is gone | pending commit | **done** |
 | **E15** | `src/common/numeric` → Domain A + NEW_MODULES; detector knows the primitives | `111eb13` | **done** |
 
 ---
@@ -290,7 +291,7 @@ counting.
 |---|---|
 | Column | **closed** — three semantic columns, `CHECK`, `entered_value` dropped (C1, C2b-4) |
 | Read path | **closed for scale** — discriminated union, single derivation point (C2a, C2b-1..3). Not closed for the "no value vs zero" question: `rawOf`/`readEnteredValue` still collapse with `?? 0` (`T-078`), and `buildMechanicValues:719` still skips a `null` silently while the C3 write gate rejects it (`T-082`). Scale is settled; nullity is not. |
-| Write path | **PARTIALLY closed (C3).** `PATCH .../tactics` goes through the scale gate; `POST /plans/:id/fus` does **not** (`T-079`). Two write paths reach the same JSONB, one gated and one open. |
+| Write path | **closed** — exactly ONE write path to `plan_fus.tactics` remains (`updatePlanFuVersioned`), behind C3's scale gate. The second path was not gated but **removed**: `AddFuDto.tactics` had zero callers (`T-079`). |
 
 Explicitly **not** closed here, each with its task:
 `T-074` (four hardcoded rate thresholds) · `T-075` (A10 canonical choice **and**, per errata E14,
@@ -320,10 +321,24 @@ collapse) · the `=== 'PERCENT'` comparison sites found in C2a.
 
 ### What the write path is now
 
-`E2 write path is PARTIALLY closed.` `PATCH /plans/:id/fus/:fuId/tactics` goes through the scale
-gate; `POST /plans/:id/fus` does not (`T-079`). Two write paths reach the same
-`plan_fus.tactics` JSONB — **one gated, one open**. Naming the open one matters: "C3 closed the
-write path" is how this reads in six months if only the word "partial" is recorded.
+`E2 write path is CLOSED.` Exactly **one** write path to the `plan_fus.tactics` JSONB remains —
+`updatePlanFuVersioned`, reached only through `PATCH /plans/:id/fus/:fuId/tactics`, behind C3's
+scale gate.
+
+When C3 shipped this said "PARTIALLY closed", because `POST /plans/:id/fus` accepted a `tactics`
+body and wrote it ungated: `{ CPP_ON_PCT: 999 }` returned **201** there and **400** through the
+PATCH. That was recorded by name rather than as "partial", precisely so it could not be read
+later as "C3 closed the write path".
+
+`T-079` then closed it, **and not the way that note expected.** The task was written as "add the
+same gate to `addFu`". Measurement changed the answer: `AddFuDto.tactics` had **zero callers** —
+not in the frontend's three call sites, not in any e2e body, not in a seed. Adding a gate would
+have made two write paths *permanent* and merely gated both; every one of this repo's seven
+recorded divergences is a pair of paths that were each correct when written. So the field was
+**removed**. The path is gone rather than covered.
+
+Because the API runs with `forbidNonWhitelisted`, a client that still sends `tactics` now gets a
+400 instead of having it silently dropped — the closure announces itself.
 
 ### The ordering, and why it is that ordering
 
@@ -415,9 +430,12 @@ behaviour also returned 400 — just after writing. Only the on-disk assertion s
 
 ### Deliberately NOT decided (recorded, not closed — CLAUDE.md §2.4)
 
-1. **`POST /plans/:id/fus` has no gate** — `T-079`, P1. Not a gap in C3's implementation; a second
-   endpoint whose behaviour change deserves its own measurement and e2e. This session watched
-   unmeasured scope come in low five times.
+1. ~~**`POST /plans/:id/fus` has no gate**~~ — **CLOSED by `T-079`, and not the way this line
+   expected.** The measurement changed the answer: `AddFuDto.tactics` had zero callers, so the
+   field was REMOVED rather than gated. Adding a second gate would have made two write paths
+   permanent and merely gated both — and this repo's seven recorded divergences all involve two
+   paths that were each correct when written. Removing the field eliminates the path instead of
+   covering it.
 2. **Sub-0.0001 precision on `rate` and `unitAmount`** — only the `totalAmount` kuruş rule and the
    rate's 0–100 bound were settled. `unitAmount = 0.00125` is not representable in
    `numeric(18,4)` and is **not** rejected today.
