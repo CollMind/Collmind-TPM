@@ -88,6 +88,11 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-072]] | `agreements.mechanic_value` dondurma (ADR 0007 A4/K13) | P3 | backend-engineer | todo |
+| [[T-073]] | 🔴 Bütçe %100+ bloklamıyor (`// TODO`) — CLAUDE.md §2.3 ihlali | P1 | backend-engineer | todo |
+| [[T-074]] | 🔴 spend-validation'da dört hardcoded oran eşiği (CLAUDE.md §2.3 ihlali) | P1 | backend-engineer | todo |
+| [[T-075]] | Sınır doğrulaması çağıran envanteri — A10 kanonik seçimi buna bağlı | P2 | backend-engineer | todo |
+| [[T-076]] | Dağıtım artığı kuralı yakınsaması — Karar 6 kanonik, üç kural teke iner | P2 | backend-engineer | todo |
 | [[T-069]] | 🔴 Onay ekranında artımlı GP bilerek yanlış (`× 0`) — sunucudan oku | P1 | frontend-engineer | todo |
 | [[T-070]] | 🔴 `unitPrice ?? 0` fabrikasyonu — T-027 null semantiğiyle hizala (T-069 ile tek teslimat) | P1 | frontend-engineer | todo |
 | [[T-071]] | Grid'de gömülü 8 formül dinamik formül kapsamı dışında (main.kpis'e taşı/sunucudan oku) + R4 | P2 | architect | todo |

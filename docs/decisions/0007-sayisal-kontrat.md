@@ -6,6 +6,10 @@
 - **Sürüm:** v3. v1 ve v2 commit edilmedi; farkları §Sürüm geçmişi'nde.
 - **Kanıt:** `docs/analysis/0010-numeric-contract-measurement.md` ·
   `0011-integer-minor-unit-feasibility.md` · `0012-frontend-calculation-layer.md`
+- **⚠️ ERRATA VAR — v3 metnine olduğu gibi güvenmeyin.** Karar 2, 3a, 4, 5, 6 maddelerinde
+  ölçümle çürütülmüş ifadeler bulundu ve düzeltildi. Aşağıdaki v3 metni **tarihsel kayıt**
+  olarak olduğu gibi korunmuştur; bağlayıcı olan, §Errata ile düzeltilmiş hâlidir.
+  → [§Errata (2026-08-04)](#errata-2026-08-04) · kanıt: `docs/analysis/0013-numeric-contract-design.md`
 - **İlgili:** `docs/contracts/SYSTEM_INVARIANTS.md` → `INV-N-002`, `INV-N-003`, `INV-R-007`,
   `INV-R-008`, `INV-B-002` · D-05 · açtığı karar: D-07
 
@@ -258,6 +262,59 @@ D-07 bu karar olmadan yazılamıyor.
    En dar yüzey, en yüksek getiri. İlgili epsilon Karar 7 uyarınca birlikte kaldırılır
 6. **D-07 açılır** — recognition dağıtımı, doğduğu anda tam temsille
 7. Ratchet işler; `spend-calculation` ve ledger/budget dokunuldukça dönüşür
+
+---
+
+## Errata (2026-08-04)
+
+- **Kaynak:** `docs/analysis/0013-numeric-contract-design.md` (architect, tek tasarım turu)
+- **Ölçüm ortamı:** backend SHA `0b6518e` · TypeScript **5.9.3** · ESLint 8.57.1 · dev DB `main` şeması
+- **Statü:** bu bölüm **bağlayıcıdır** ve çeliştiği yerde yukarıdaki v3 metnini **geçersiz kılar.**
+  v3 metni silinmedi — altı ay sonra "ADR neden böyle diyordu" sorusunun cevabı kayıtta kalsın diye.
+
+Adım 1–3'ün tasarımı sırasında v3'ün beş maddesinde ölçümle çürütülen ifadeler bulundu. Sekizi
+düzeltme, biri (E5) genelleştirme, biri (E6) kanoniklik ilanıdır.
+
+| # | Neyi düzeltir | Düzeltme |
+|---|---|---|
+| **E1** | **Karar 3a — mekanizma cümlesi YANLIŞ** | v3: *"`MoneyMinor * RateBps` derleme hatası olur."* **Değildir.** TS 5.9.3 ile doğrulandı: `m * r` **derlenir** (sonuç düz `number`), `const wide: number = m * r` **derlenir**, `m > r` **derlenir**, `m / r` ve `m - r` **derlenir**. **Yalnız** `const stored: MoneyMinor = m * r` TS2322 verir. Marka bir **operatör kapısı değil, yuva kapısıdır.** **Ek bağlayıcı kural:** yeni modüllerde hiçbir entity kolonu, DTO alanı veya repository imzası `number` olamaz — yuva kapısını sistematik hâle getiren tek şey budur. Cast kaçağı derleyiciyle kapatılamaz; ESLint `no-restricted-syntax` seçicisi kapatır (üç cast biçimi — `as`, açı-parantez, `as unknown as` — 3/3 yakalandı, 0 yanlış pozitif). |
+| **E2** | **Karar 4 — yanlış hedefi gösteriyor** | `plan_mechanic_values.entered_value`'nun **üretimde hiçbir yazıcısı yok**; 86 referansın tamamı okuma/karşılaştırma/bildirim. Planner girdisi `plan_fus.tactics` JSONB'sine yazılıyor (`plan.service.ts:564`, tek UI-erişilebilir uç). Polimorfizm asıl olarak o JSONB'de ve `SpendCalculationService#buildMechanicValues`'ın ürettiği `Record<string, number>` haritasında yaşıyor. **Kolon bölünmesi gerekli ama YETERLİ DEĞİL** — JSONB tarafı da ele alınmalıdır. |
+| **E3** | **Karar 3a / Karar 5 — tip adı yanıltıcı** | `RateBps` → **`RateMicro`**. Baz puan = %0,01; Karar 5'in seçtiği 4 ondalıklı yüzde çözünürlüğü bunun **1/100'üdür**. `%3,25` değerini `32500` olarak tutan bir tamsayının adı `325` vaat ediyor — 100 katlık okuma hatası davetiyesi. Marka anahtarı (`__scale: 'rate'`) değişmez; yalnız tip **adı** değişir. Karar 5'in "4 ondalık" kararı **korunur**; "(baz puan hassasiyeti)" parantezi hatalıdır, doğrusu "yüzde×10⁴ = kesir×10⁶ (ppm) hassasiyeti". |
+| **E4** | **Karar 6 — 2⁵³ tavanı dar** | v3'ün yazdığı 90 trilyon TRY **tek bir `MoneyMinor` değeri** için doğrudur. Ama `applyRate`'e **giren** tutar için tavan `2⁵³ / 10⁶` = **90.071.992 TRY (~90 milyon)**'dur, çünkü ham çarpım `kuruş × 10⁻⁶` ölçeğine çıkar. Ölçülen gerçek maksimum **600.000 TRY** → 150× pay. **`bigint` yeniden değerlendirme eşiği: 50 milyon TRY.** Sınır kontrolü `applyRate`'in içindedir ve aşımda fırlatılan hata **bu eşiği ve "ADR 0007 E4/A9" atfını metninde taşır.** |
+| **E5** | **Karar 2 genelleştirilir** | v3 yalnız RAG'dan söz ediyor. Bağlayıcı hâli: *"Bir eşik değerlendirmesi — RAG, bütçe yüzdesi veya başka bir oran — bir onayı, rezervasyonu veya para hareketini **bloklayan** kapıya dönüştürülmek istenirse, karar değeri önce Alan A'da yeniden üretilmelidir."* Gerekçe: `budget_alert_configurations.threshold_percent` (%80/95/100) bugün hiçbir şeyi bloklamıyor (yalnız log + RAG rengi + rapor), yani Alan B'dedir; ama bloklamaya başladığı an v3'ün RAG'a özgü yazımı onu kapsamazdı. |
+| **E6** | **Karar 6'nın largest-remainder'ı KANONİK ilan edilir** | Repoda dağıtım artığı için **iki implementasyon ve üç farklı kural** var: `spend-calculation.service.ts:308-334` (canlı; artık → en büyük base volume, ADR 0006 Karar 2), `spend-distribution.service.ts:555-579` (erişilemez; fark → en büyük tutar, `0.01` toleransıyla), ve Karar 6'nın kendisi. **Dördüncü kural yazılmaz.** Mevcutlar Karar 6'ya **yakınsar**; yakınsama **ayrı iştir** ve ADR 0006'nın açık bıraktığı işi kapatır. Yakınsamaya kadar `computeLumpsumDistribution` değişmez. |
+| **E7** | **Karar 6 — yuvarlama modu netleştirilir** | **half-up → half-away-from-zero.** "Half-up" negatifte belirsizdir (−2,5 → −2 mi, −3 mü). Bağlayıcı kural: **`\|round(x)\| = round(\|x\|)`**, işaret simetrik; `round(2,5) = 3`, `round(−2,5) = −3`. Ticari mutabakattaki beklenti korunur, belirsizlik kalkar. Not: JS `Math.round` bunu **yapmaz** (`Math.round(-2.5) === -2`, +∞'a yuvarlar) — yardımcı onu devralamaz. Kural bugün baskı altında değilken sabitleniyor: `ledger_entries` 1.231 satır, **0 negatif**; yön `entry_direction` kolonunda taşınıyor. Reversal/CREDIT yolları negatif tutar üretmeye başladığında kural hazır olacak. |
+| **E8** | **Karar 5 kapsamı genişletilir** | `mechanics.max_combined_discount_percentage` (`numeric(5,2)`) **Karar 5 kapsamına alınır** → `numeric(9,4)`. Gerekçe: bir orandır ve `entered_value` oran toplamıyla **doğrudan karşılaştırılıyor** (`spend-validation.service.ts:325`); iki ölçekte kalırsa karşılaştırma sessizce bozulur. |
+| **E9** | **A10 kararı GERİ ÇEKİLDİ** | 0013'ün ilk turunda *"kanonik = `spend-calculation.service.ts` (exception fırlatan)"* kararı verilmişti. **Ölçüm iki gerekçeyi de çürüttü:** (i) seçilen `validateSpendCalculations` **fırlatmıyor** — `errors.push(...)` + `return {isValid, errors, warnings}`; (ii) o metot **para üretmiyor**, yalnız sınır doğruluyor. Üstelik seçilen taraf **ölü kod** (yalnız kendi spec'inden çağrılıyor), reddedilen `spend-validation.service.ts#validateInputs` ise **canlı** (`spend-calculation.controller.ts:123` üzerinden HTTP ucuna bağlı) ve hata bilgisi daha zengin (`severity`/`category`/`field`/`fuId`/`skuId`/`suggestion` vs `string[]`). `validateInputs`'u şimdi kanonik ilan etmek de **aceleci olur**: çağıran envanteri çıkmadan `validateSpendCalculations`'ın gerçekten ölü mü, yoksa yarım bırakılmış bir yol mu olduğu bilinmiyor. **Kanonik seçim askıya alındı** ve çağıran envanterine bağlandı ([[T-075]]). F2 iki implementasyonla geçer; **K14** üçüncü kopyayı sözleşme testiyle kilitler. |
+
+### Errata ile birlikte verilen kapsam kararları
+
+| # | Konu | Karar |
+|---|---|---|
+| **A4** | `agreements.mechanic_value` (3/3 NULL, ayırıcısı da 3/3 NULL, tek tüketicisi mock veriyle Alan B'ye gidiyor) | **Dondurulur.** Silinmez, tamamlanmaz, **ölçek kontratına dahil edilmez.** Kolona yorum: *"Kullanılmıyor (3/3 NULL). Yazılmadan önce ADR 0007 ölçek kontratına bağlanmalıdır."* Gerekçe: tamamlanmamış bir yolun kolonu ölçek kararı için yeterli bilgi taşımıyor; yol tamamlandığında karar zaten verilmiş olacak. |
+| **A5** | `mechanics.calculation_formula` (admin'e açık, DB'de duruyor, **hiçbir hesap yolu okumuyor**) | **Ayrı task açılmaz; [[T-071]] kapsamına eklenir.** `calculation_formula`, `mechanics.decimal_places` (6/6 NULL), `0012` R3'ün 8 gömülü formülü ve R4 — dördü **aynı sınıftır**. Tek soru olarak sorulur: *dinamik formül ilkesi gerçekten uygulanacak mı, yoksa BRD'den mi düşecek?* **Ara durum en kötüsüdür** — admin bir alanı doldurur, hiçbir şey olmaz. |
+| **A6** | `budget_alert_configurations.threshold_percent` | **Bugün Alan A dışında.** Bloklamadığı sürece Alan B'de kalır ve `RateMicro`'ya dönüşmez. E5 onu ileriye dönük kapsar. `budget-allocation.service.ts:945`'teki `// TODO: ... block plan submission if hard limit mode` **bir BRD ihlalidir** (CLAUDE.md §2.3 "%100+ Exceeded (block)") → ayrı task, bu turda değil. |
+| **A7** | `VolumeMilli` markası | **Bu turda dışarıda.** Tek şart: markalı tip tasarımı **üçüncü bir markayı sonradan eklemeye açık** olmalı — genişletilemez marka mekanizması ve iki-marka varsayan yardımcı imzası yazılmaz. |
+| **A9** | `bigint`'e geçiş tetikleyicisi | **50 milyon TRY.** `applyRate`'in sınır kontrolü aşımda fırlatırken hata mesajı **bu eşiği ve bu ADR'nin E4/A9 atfını** içerir — aşımda neye bakılacağı hata metninde olur. |
+
+### ⛔ Askıya alınan karar: A10
+
+**A10 (kanonik sınır doğrulaması) uygulanamaz — kararın dayandığı olgu ölçümle çürüdü.**
+
+Karar şuydu: *kanonik = `spend-calculation.service.ts:893-907`, çünkü exception fırlatıyor ve
+`spend-validation` yalnız `ValidationError` dönüyor.* Ölçüm (`0013` §7/A10):
+
+| | `spend-calculation.service.ts:874-918` (seçilen) | `spend-validation.service.ts:49-182` (reddedilen) |
+|---|---|---|
+| Exception fırlatıyor mu | **HAYIR** — `errors.push(string)` + `{isValid, errors, warnings}` döner | hayır — `{isValid, errors: ValidationError[], errorCount, warningCount}` döner |
+| Üretim çağıranı | **YOK** — yalnız kendi spec'i (`spend-calculation.service.spec.ts:871`) | **4 canlı HTTP endpoint** (`spend-calculation.controller.ts:112-167`) |
+| Hata bilgisi | `string[]` | yapılandırılmış `ValidationError` (severity, category, field, fuId, skuId, suggestion) |
+
+Yani seçilen taraf **exception fırlatmıyor** ve **ölü koddur**; reddedilen taraf canlıdır ve
+daha zengin bilgi taşır. Kararın her iki gerekçesi de tersine dönüyor.
+
+**Sonuç:** A10 askıdadır. F2'de iki implementasyon **birleştirilmez**; üçüncü kopya da yazılmaz.
+Kanoniklik kararı, çağıran envanteri çıkarıldıktan sonra ayrı bir turda verilir.
 
 ---
 
