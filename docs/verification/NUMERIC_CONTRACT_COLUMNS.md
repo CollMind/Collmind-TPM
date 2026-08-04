@@ -154,12 +154,158 @@ The columns carry the right *semantics*; they do not yet carry the right *types*
 
 ---
 
-## C2 — JSONB semantics (J1) · pending
+## C2a — JSONB semantics (J1) · `43301b5`
+
+`buildMechanicValues` returns a **discriminated union** instead of a raw number map.
+`plan_fus.tactics` keeps its shape: a per-key scale constraint cannot be expressed on a `jsonb`
+column, so changing it (J2) adds no DB guarantee while breaking the API contract.
+
+**Single derivation point:** `src/common/numeric/mechanic-input.ts#toMechanicInput`. Scale comes
+from `mechanic_type` — `PERCENT → rate`, `AMOUNT_PER_UNIT → unitAmount`, `AMOUNT → totalAmount`.
+An unrecognised type throws rather than defaulting.
+
+**Discriminator choice turned out load-bearing.** `category` and `input_type` are **nullable**;
+`mechanic_type` is **NOT NULL**. Had a nullable field been chosen, the five test failures below
+would have been a product question instead of a fixture fix.
+
+**Silent acceptance removed.** `if (val != null)` accepted any key; the value then sat in the map
+**unread**, because the calculation loops iterate over *mechanics*, not over tactic keys. A typo
+produced no spend and no message. The error now names the code, the FU, and the known codes.
+
+**Behaviour inventory, produced before writing code:** no seed/fixture/e2e writes an unknown code
+(STOP #4 clear); no K2 case, since an unknown code has no effect today and `plan_fus` holds 0 rows.
+
+**Correction recorded:** `mechanicType` **is** read today (`spend-validation:259,:274`,
+`spend-distribution:425`, `agreement.service`). C2a is not its first reader. The mock gap went
+unnoticed because every existing reader *compares* (`=== 'PERCENT'`) and `undefined === 'PERCENT'`
+quietly yields false — a missing discriminator selects the other branch instead of failing. That
+is the **silent-default** family (§2.5), not the unread-field family, and it may already be
+choosing wrong branches today.
+
+## C2b — Reader conversion and column drop
+
+### Scope correction
+
+Specified as "one reader + `DROP COLUMN`". Measured: **18 reads across 4 files**.
+
+| File | Reads | Commit |
+|---|---|---|
+| `spend-validation.service.ts` | 7 | C2b-2 `88493eb` |
+| `spend-calculation.service.ts` | 6 | C2b-1 `bafafa3` |
+| `spend-distribution.service.ts` | 4 (not 3 — `:239` was missed) | C2b-0 `42a59a6` / C2b-3 `3336c38` |
+| `approval-workflow.service.ts` | 1 | C2b-3 |
+| `plan-mechanic-value.entity.spec.ts` | 2 — **absent from the inventory entirely** | C2b-4 `95cb6e6` |
+
+### Ratchet gate — four readings
+
+| Commit | `--ratchet` | output | `plan.service.ts` | other touched |
+|---|---|---|---|---|
+| C2b-1 | `exit=0` | empty | **36** | spend-calculation 9 (9) |
+| C2b-2 | `exit=0` | empty | **36** | spend-validation 10 (10) |
+| C2b-3 | `exit=0` | empty | **36** | spend-distribution 10 (10) · approval-workflow 8 (8) |
+| C2b-4 | `exit=0` | empty | **36** | — |
+
+No file moved at any step. Nothing needed reverting.
+
+### Single derivation — and one reader that needed less
+
+The 18 reads were **not one kind**. Classifying before converting was the difference between
+porting three semantics and silently merging them:
+
+| Read shape | Helper | Why |
+|---|---|---|
+| null check IS the semantics (empty entry skipped, not validated as 0) | `readEnteredRaw` | `?? 0` would validate a value never entered |
+| `null`, `undefined` **and** `0` treated as three distinct states (`spend-validation:212`) | `readEnteredRaw` | `?? 0` erases two of the three |
+| truthiness only (0 and "not entered" both skip) | `readEnteredValue` | `?? 0` preserves behaviour exactly |
+| "was anything entered?", scale-independent (`approval-workflow`) | `hasEnteredValue` | see below |
+
+**The approval-path reader legitimately needs *less* than the derivation point.** It asks only
+whether an entry exists, never which scale — and the approval query loads
+`planFus.planMechanicValues` **without** the `mechanic` relation (`plan.repository.ts:70`), so
+`pmv.mechanic` is undefined there. Forcing it through `enteredColumnFor` would have meant adding
+a join to the approval query: a change beyond representation, on the approval path. `hasEnteredValue`
+is sound because the `CHECK` (errata E12) guarantees at most one column is non-null, so "any of
+the three is non-null" is exactly equivalent to the old `entered_value != null`.
+Needing less than the derivation point is not the same as bypassing it — the helper lives at the
+shared point with that reasoning in its doc.
+
+No approval-path behaviour changed: same predicate, same result, different source column.
+
+### C2b-4 proof
+
+```
+remove enteredValue from the entity
+  tsc run 1 → exit=2, TWO references:
+      plan-mechanic-value.entity.spec.ts:26, :27
+  (fixed — the test now covers all three semantic columns — not worked around)
+  tsc run 2 → exit=0
+```
+
+Running `tsc` *before* the removal would have been green whether 18 readers remained or 0. The
+ordering is the proof; §2.7 records the general form.
+
+Verified against the real catalogue, not the `migrations` table:
+
+```sql
+SELECT column_name FROM information_schema.columns
+ WHERE table_schema='main' AND table_name='plan_mechanic_values'
+   AND column_name LIKE 'entered%';
+-- entered_rate_pct · entered_total_amount · entered_unit_amount
+-- entered_value ABSENT
+```
+
+```
+guards exit=0 · tsc exit=0 · unit 648/648 exit=0
+e2e ×3 consecutive, no reset: 239/239 each, exit 0 each, T-047 PASS each
+```
+
+### Calibration — five data points, one direction
+
+| Estimate | Measured | Off by |
+|---|---|---|
+| `0010`: Domain A = 54 files | 86 | +59% |
+| F0: 0010's 130 money-context `Number(` | 163 findings / 24 files | different method, same direction |
+| `0013`: C2 ≈ 3 backend files | 8 call sites | ~2.7× |
+| C2b spec: 1 reader | 18 | **18×** |
+| My own C2b-3 inventory: 3 + 1 | 4 + 1, **plus 2 invisible** | undercounted twice |
+
+The pattern is **not specific to design documents**. It holds for task specs and for inventories
+I produced myself, minutes before relying on them. Any unmeasured scope figure runs low.
+
+Operationally: the last two rows were caught by *mechanisms*, not by care — removing the property
+and letting the compiler answer. That is the reason the proof ordering matters more than the
+counting.
+
+## E2 closure
+
+| Layer | Status |
+|---|---|
+| Column | **closed** — three semantic columns, `CHECK`, `entered_value` dropped (C1, C2b-4) |
+| Read path | **closed** — discriminated union, single derivation point (C2a, C2b-1..3) |
+| Write path | **NOT closed** — `PATCH .../tactics` still accepts any scale. That is **C3**. |
+
+Explicitly **not** closed here, each with its task:
+`T-074` (four hardcoded rate thresholds) · `T-075` (A10 canonical choice **and**, per errata E14,
+the K14 contract test that does not exist) · `T-077` / `T-078` (representation and the `|| 0`
+collapse) · the `=== 'PERCENT'` comparison sites found in C2a.
+
+## What this does not protect
+
+1. **Wrong scale can still be written.** J1's accepted residual risk: the JSONB takes any number
+   for any key. C3 compensates at the write boundary; until then the read path interprets whatever
+   is there.
+2. **The `?? 0` collapse survives** in the arithmetic path (`rawOf`, four unwrap sites). The union
+   carries the distinction; the unwrap discards it. T-078.
+3. **Representation is unchanged.** These columns are `number`, not `MoneyMinor`/`RateMicro`.
+   F2 delivered the *distinction*, not the *exactness*. K9 keeps the conversion with the ratchet.
+4. **K14 is unbacked** (errata E14) — the ADR describes a lock that does not exist.
+
+## Open questions
+
+1. Should `plan.repository.ts:70` load `planMechanicValues.mechanic`? Not needed today thanks to
+   `hasEnteredValue`, but any future approval-path read of a scaled value would need it.
+2. The `=== 'PERCENT'` comparison sites silently select a branch when the discriminator is
+   missing. `mechanic_type` is NOT NULL so it cannot be missing in the DB — but the mocks proved
+   it can be missing in tests. Is that worth a guard?
 
 ## C3 — Write validation · pending
-
-## E2 closure · pending
-
-## What this does not protect · pending
-
-## Open questions · pending
