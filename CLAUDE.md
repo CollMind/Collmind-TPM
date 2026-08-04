@@ -139,6 +139,29 @@ aslında kırmızıydı. Sorun script'lerin içinde değil — onları **ölçer
 İlgili: bir suite "Tests: 631 passed" yazıp yine de **exit 1** dönebilir (ör. `globalTeardown`'dan
 fırlayan T-047 invaryantı). "Tests: passed" satırı tek başına yeterli sinyal değildir.
 
+### 2.7 Kanıt kurulumu ölçtüğün durumu değiştirmesin (ZORUNLU — ölçüm disiplini)
+
+**Bir mekanizmayı kanıtlarken, kanıt kurulumunun ölçtüğün durumu değiştirmediğini doğrula.**
+Özellikle **boş / varsayılan / sıfır** durumlar: onları kanıtlamak için bir şey *eklemek*, tam da
+o durumu ortadan kaldırır.
+
+Yaşanmış vaka (ADR 0007 F1): boş bir `NEW_MODULES` bildirimi ESLint override'ını geçersiz kılıp
+**tüm repoda `npm run lint`'i kırıyordu**. İlk kanıt koşumu **geçti**, çünkü fixture yolu listeye
+eklenmişti — kurulum, kanıtlanmak istenen boş durumu yok etmişti. Hata ancak gerçek boş bildirime
+karşı koşulunca göründü.
+
+§2.6 ile birlikte bu, **doğrulama maskeleme** sınıfının dördüncü üyesidir:
+
+| # | Vaka | Maskelediği |
+|---|---|---|
+| 1 | `bash -n a.sh b.sh` | 2..n. dosyalar |
+| 2 | `jest \| grep` | exit kodu |
+| 3 | `self-test \| head` | exit kodu |
+| 4 | fixture yolunu bildirime eklemek | **boş-durum davranışı** |
+
+İlk üçü boru hattıydı; dördüncüsü farklı — **test kurulumunun test edilen koşulu değiştirmesi**.
+
+
 ## 3. Ekip (subagent'lar — `.claude/agents/`)
 
 | Agent | Ne zaman delege et |
