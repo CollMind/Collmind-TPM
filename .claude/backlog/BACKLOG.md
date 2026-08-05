@@ -96,7 +96,11 @@ status: active        # planned | active | closed
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
 | [[T-083a]] | Yetim anahtar **tedavisi** — 'pasif mekanik' ↔ 'olmayan kod' ayrımı + iki mesaj | P2 | backend-engineer | review |
-| [[T-084]] | min/max `null` coercion — `max_value` NULL olan mekanikler **hiç PATCH edilemiyor** (canlı: 6'da 3) | P2 | debugger | todo |
+| [[T-088]] | `PATCH mechanics`: açık `null` doğrulanan durumla yazılanı ayırıyor (`??` birleştirmesi) | P2 | backend-engineer | todo |
+| [[T-086]] | **E16** — E15 muafiyeti dosya bazlı olsun, guard'a bağlansın (ratchet laundering yolunu kapatır) | P2 | backend-engineer | todo |
+| [[T-087]] | `boundOf`/`toNullableNumber` tekilleştirmesi — T-086'yı bekler (dürüst taşıma) | P3 | backend-engineer | blocked |
+| [[T-085]] | min/max doğrulaması **string karşılaştırması** — gerçek ihlaller sessizce kaçıyor (canlı rota) | P1 | debugger | todo |
+| [[T-084]] | min/max `null`+string coercion — açık üst sınırlı mekanikler **hiç PATCH edilemiyordu** (canlı: 6'da 3) | P2 | debugger | review |
 | [[T-083b]] | Yetim anahtar **önlemesi** — pasifleştirme kullanan planlardaki anahtarı da temizler (katman sınırı açık) | P3 | backend-engineer | todo |
 | [[T-083]] | ~~Yetim taktik anahtarı~~ → **T-083a (tedavi) + T-083b (önleme)** olarak bölündü | P2 | — | done |
 | [[T-082]] | ~~`null` taktik değeri: yazma/okuma asimetrisi~~ → **ADR 0008: kusur değil, yönü doğru** | P2 | backend-engineer | done |

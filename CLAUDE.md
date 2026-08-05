@@ -343,3 +343,31 @@ implementasyonu, iki CSV parser, üç kez yazılmış scope mantığı.
 > **"Bu yeteneğin mevcut bir implementasyonu var mı? Arandı mı, nerede, hangi terimlerle?"**
 
 Cevap "yok" ise gerekçesiyle yazılır. Aranmadıysa task eksiktir.
+
+## 7.1 Düzeltmeden önce say (ZORUNLU)
+
+§7 "yeni kod yazmadan önce ara" der. Bunun kardeşi: **bir davranışı düzeltirken, o davranışa
+giden TÜM yolları ölç.**
+
+> **"Kardeş yol etkilenmiyor" iddiası ölçülmeden yazılamaz.**
+
+**Altı belgelenmiş vaka** var (biri kendi içinde sekiz vakalık bir aile). Sayı burada
+ölçülmüştür, tahmin değil — sayma disiplinini konu alan bir bölümde başka türlüsü olamazdı:
+
+| Vaka | İddia | Gerçek |
+|---|---|---|
+| C2b | "1 okuyucu" | **18** (sonra 4 dosyada, sonra 2 tane daha) |
+| T-052/T-062 ailesi | "mekanizma var" | ona giden üretim yolu yok (sekiz kez) |
+| T-079 | "alan kullanılıyor" | **sıfır** çağıran |
+| T-080 | "e2e'ler bu vakayı kapsıyor" | 11 test, ayırt etme gücü **sıfır** |
+| T-083a | "okuma tarafını düzelttim" | yazma tarafı açıkta — ve **daha görünür** olan oydu |
+| T-084 | "kardeş karşılaştırmalar güvenli" | ikisi de bozuk, biri **canlı rotada sessiz false negative** |
+
+Sonuncusu en pahalısıydı: yanlış iddia koda **normatif** yazılmıştı — *"must not be fixed to
+match"*. Yani gelecekte biri kusuru fark etse bile yorum ona "dokunma" diyecekti.
+**Bir hatayı belgelemek, onu koruma altına alır.**
+
+Pratik kural: bir düzeltme yaparken "bu deseni başka kim kullanıyor?" sorusunun cevabı bir
+**grep çıktısı** olmalı, bir sezgi değil. Ve "etkilenmiyor" diyorsan, **neden** etkilenmediğini
+ölçtüğün şeyle birlikte yaz — sonraki okuyucu o gerekçeyi doğrulayabilsin.
+
