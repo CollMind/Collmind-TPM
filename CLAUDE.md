@@ -374,6 +374,13 @@ Pratik kural: bir düzeltme yaparken "bu deseni başka kim kullanıyor?" sorusun
 > **Bir kusur sınıfı bulduğun dosyada, aynı sınıfın diğer örneklerini ara.
 > Kusurlar dosya bazlı kümelenir.**
 
+> **Bir kalıbı ararken her iki ucunu ara: neye yazıldığını VE neyin okunduğunu.**
+> Tek uçtan arama kalıbın yarısını görünmez bırakır.
+
+T-091 bunun kanıtı: transformer'lı **hedef** alanları arandı (10 aday, 4 bozuk), transformer'sız
+**kaynak** alanların biriktirilmesi aranmadı — `finance-reporting`'deki aynı kusur (iki canlı
+GET rotası) o yüzden ağa takılmadı.
+
 `spend-validation.service.ts` bunun kanıtı: sıfır testi vardı ve **dört** kusur sınıfı taşıyordu
 (string min/max karşılaştırması, `Number.isInteger(string)`, `v !== 0` tip uyuşmazlığı, ve iki
 ayrı akümülatörde string birleştirme). T-089 birini düzeltirken ikinci akümülatörü kaçırdı —

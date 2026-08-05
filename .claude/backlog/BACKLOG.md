@@ -100,7 +100,8 @@ status: active        # planned | active | closed
 | [[T-086]] | **E16** — E15 muafiyeti dosya bazlı olsun, guard'a bağlansın (ratchet laundering yolunu kapatır) | P2 | backend-engineer | todo |
 | [[T-087]] | `boundOf`/`toNullableNumber` tekilleştirmesi — T-086'yı bekler (dürüst taşıma) | P3 | backend-engineer | blocked |
 | [[T-093]] | `finance-reporting` aynı string birleştirme — **iki canlı GET rotasında** | P1 | debugger | todo |
-| [[T-094]] | `commitBudget`/`releaseBudget`: **tenant izolasyonu yok** + sıralama deterministik değil | P1 | backend-engineer | todo |
+| [[T-095]] | `budget_transaction_logs.idempotency_key` **UNIQUE değil** — ledger'da var, burada yok (çift rezervasyon) | P1 | data-engineer | todo |
+| [[T-094]] | `commitBudget`/`releaseBudget`/`adjustUtilization`: **tenant izolasyonu yok** (üç nokta) | P1 | backend-engineer | review |
 | [[T-092]] | `format`/`lint` değişen dosyalarla sınırlansın — repo genelini kirletiyorlar | P3 | backend-engineer | todo |
 | [[T-091]] | **Para akümülatörleri string birleştiriyor** — biri diske yazıyor, biri yanlış 'yetersiz bütçe' üretiyor | P1 | debugger | review |
 | [[T-089]] | **Birleşik indirim tavanı PERCENT mekaniklerde HİÇ çalışmıyordu** — akümülatör string birleştiriyordu | P1 | debugger | review |
