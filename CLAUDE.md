@@ -381,6 +381,19 @@ T-091 bunun kanıtı: transformer'lı **hedef** alanları arandı (10 aday, 4 bo
 **kaynak** alanların biriktirilmesi aranmadı — `finance-reporting`'deki aynı kusur (iki canlı
 GET rotası) o yüzden ağa takılmadı.
 
+> **Ve değer bir yerel değişkenden geçebilir. Doğrudan kalıbı aramak yetmez.**
+
+T-093'te bu bir kademe daha derinleşti: `+= <entity alanı>` araması 9 nokta buldu, üç noktayı
+kaçırdı — çünkü orada değer önce bir yerele alınıyordu:
+
+```ts
+const spend = pmv.calculatedSpend || 0;   // string
+totalSpend += spend;                       // desenin eşleşmediği biriktirme
+```
+
+Review 3 nokta demişti, tarama 12 buldu. Aradaki fark aramanın şeklinden geliyordu, kusurun
+yaygınlığından değil.
+
 `spend-validation.service.ts` bunun kanıtı: sıfır testi vardı ve **dört** kusur sınıfı taşıyordu
 (string min/max karşılaştırması, `Number.isInteger(string)`, `v !== 0` tip uyuşmazlığı, ve iki
 ayrı akümülatörde string birleştirme). T-089 birini düzeltirken ikinci akümülatörü kaçırdı —
