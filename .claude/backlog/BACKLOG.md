@@ -95,12 +95,12 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
-| [[T-083]] | Taktik anahtarı kaldırma yolu yok — planner'ın kasıtlı silmesi **ve** admin'in ürettiği yetim anahtar (kilit) | P2 | backend-engineer | blocked |
-| [[T-082]] | `null` taktik değeri: yazma kapısı 400 diyor, okuma tarafı sessizce atlıyor (T-078 ailesi) | P2 | backend-engineer | todo |
+| [[T-083]] | Yetim taktik anahtarı planı kilitliyor (P2) + kasıtlı silme yolu yok (P3) — iki ayrı vaka | P2 | backend-engineer | todo |
+| [[T-082]] | ~~`null` taktik değeri: yazma/okuma asimetrisi~~ → **ADR 0008: kusur değil, yönü doğru** | P2 | backend-engineer | done |
 | [[T-081]] | `INVALID_SCALE` mesajı hangi mekanik/hangi sınır olduğunu söylemiyor (`violations` render edilmiyor) | P3 | frontend-engineer | todo |
 | [[T-080]] | `PATCH tactics` replace → **merge**: ikinci mekaniği girmek birincisini artık silmiyor | P1 | debugger | review |
 | [[T-079]] | `POST /plans/:id/fus` açık yazma yolu — `AddFuDto.tactics` kaldırıldı (kapı değil, yolun kendisi) | P1 | backend-engineer | review |
-| [[T-078]] | `mechanicValues[code] \|\| 0` — değer yok ile sıfır ayırt edilmiyor (iş sonucu ölçülmeli) | P2 | backend-engineer | todo |
+| [[T-078]] | ~~`mechanicValues[code] \|\| 0` — değer yok ile sıfır ayırt edilmiyor~~ → **ADR 0008: ayrım yok, bilinçli** | P2 | backend-engineer | done |
 | [[T-077]] | `budget-allocation.service.ts` sayısal dönüşümü — tabanın %33'ü tek dosyada (F1'e bağlı) | P2 | backend-engineer | todo |
 | [[T-072]] | `agreements.mechanic_value` dondurma (ADR 0007 A4/K13) | P3 | backend-engineer | todo |
 | [[T-073]] | 🔴 Bütçe %100+ bloklamıyor (`// TODO`) — CLAUDE.md §2.3 ihlali | P1 | backend-engineer | todo |
