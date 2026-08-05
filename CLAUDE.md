@@ -371,3 +371,14 @@ Pratik kural: bir düzeltme yaparken "bu deseni başka kim kullanıyor?" sorusun
 **grep çıktısı** olmalı, bir sezgi değil. Ve "etkilenmiyor" diyorsan, **neden** etkilenmediğini
 ölçtüğün şeyle birlikte yaz — sonraki okuyucu o gerekçeyi doğrulayabilsin.
 
+> **Bir kusur sınıfı bulduğun dosyada, aynı sınıfın diğer örneklerini ara.
+> Kusurlar dosya bazlı kümelenir.**
+
+`spend-validation.service.ts` bunun kanıtı: sıfır testi vardı ve **dört** kusur sınıfı taşıyordu
+(string min/max karşılaştırması, `Number.isInteger(string)`, `v !== 0` tip uyuşmazlığı, ve iki
+ayrı akümülatörde string birleştirme). T-089 birini düzeltirken ikinci akümülatörü kaçırdı —
+kapsam sınırı makuldü (`validateCombinations` vs `checkBudgetAvailability` ayrı fonksiyonlar),
+ama **dosyayı taramak** onu ilk turda bulurdu.
+
+Test edilmeyen dosya kusur biriktirir; ve biriktirdiği kusurlar birbirine benzer.
+
