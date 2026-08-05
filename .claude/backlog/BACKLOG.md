@@ -99,7 +99,8 @@ status: active        # planned | active | closed
 | [[T-088]] | `PATCH mechanics`: açık `null` doğrulanan durumla yazılanı ayırıyor (`??` birleştirmesi) | P2 | backend-engineer | todo |
 | [[T-086]] | **E16** — E15 muafiyeti dosya bazlı olsun, guard'a bağlansın (ratchet laundering yolunu kapatır) | P2 | backend-engineer | todo |
 | [[T-087]] | `boundOf`/`toNullableNumber` tekilleştirmesi — T-086'yı bekler (dürüst taşıma) | P3 | backend-engineer | blocked |
-| [[T-089]] | **Birleşik indirim tavanı PERCENT mekaniklerde HİÇ çalışmıyor** — akümülatör string birleştiriyor | P1 | debugger | todo |
+| [[T-091]] | **PLAN ONAYINDA BÜTÇE BOZULUYOR** — `utilized +=` string birleştiriyor ve diske yazıyor | P1 | debugger | todo |
+| [[T-089]] | **Birleşik indirim tavanı PERCENT mekaniklerde HİÇ çalışmıyordu** — akümülatör string birleştiriyordu | P1 | debugger | review |
 | [[T-090]] | ÖLÇÜM: `DecimalTransformer`'ı 22 entity'ye yaymak — kökten çözüm mü? (önce transformer'ın kendisi) | P3 | architect | todo |
 | [[T-085]] | min/max doğrulaması **string karşılaştırması** — gerçek ihlaller sessizce kaçıyor (canlı rota) | P1 | debugger | todo |
 | [[T-084]] | min/max `null`+string coercion — açık üst sınırlı mekanikler **hiç PATCH edilemiyordu** (canlı: 6'da 3) | P2 | debugger | review |
