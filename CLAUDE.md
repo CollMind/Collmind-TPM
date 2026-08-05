@@ -150,7 +150,8 @@ Yaşanmış vaka (ADR 0007 F1): boş bir `NEW_MODULES` bildirimi ESLint override
 eklenmişti — kurulum, kanıtlanmak istenen boş durumu yok etmişti. Hata ancak gerçek boş bildirime
 karşı koşulunca göründü.
 
-§2.6 ile birlikte bu, **doğrulama maskeleme** sınıfının dördüncü üyesidir:
+§2.6 ile birlikte bu, **doğrulama maskeleme** sınıfının bir üyesidir. Sınıfın bugüne kadar
+kaydedilmiş yedi vakası:
 
 | # | Vaka | Maskelediği |
 |---|---|---|
@@ -158,8 +159,49 @@ karşı koşulunca göründü.
 | 2 | `jest \| grep` | exit kodu |
 | 3 | `self-test \| head` | exit kodu |
 | 4 | fixture yolunu bildirime eklemek | **boş-durum davranışı** |
+| 5 | hiçbir şeyle eşleşmeyen desen (`grep` BRE'de `\?`) | **filtrenin kendisi** |
+| 6 | doğru kapsam, **yanlış şekil** (tek istekte iki anahtar) | **davranış ayrımı** |
+| 7 | mutasyonu `git diff` ile doğrulamak | **mutasyonun uygulanıp uygulanmadığı** |
 
-İlk üçü boru hattıydı; dördüncüsü farklı — **test kurulumunun test edilen koşulu değiştirmesi**.
+İlk üçü boru hattıydı. Sonraki dördü farklı sınıflar:
+
+**4 — test kurulumunun test edilen koşulu değiştirmesi.**
+
+**5 — desen yazıldı, uygulandı görünüyor, sıfır şey yapıyor.** ADR 0007 E15: `^\./\?<dir>`
+BSD `grep` BRE'de `\?` desteklenmediği için hiç eşleşmedi. Filtre kodda duruyordu, kod
+incelemesinde doğru görünüyordu, hiçbir dosyayı dışlamıyordu. Yalnız **sonucu ölçmek** gösterdi.
+Kural: bir filtre/desen eklediğinde, filtrelenen şeyin gerçekten filtrelendiğini ölç — kodun
+varlığı çalıştığının kanıtı değil.
+
+**6 — kapsam var, ayırt etme gücü yok.** T-080: on bir e2e testi çok mekanikli taktikleri
+kapsıyordu ve hiçbiri replace ile merge'ü ayırt edemiyordu, çünkü hepsi mekanikleri **tek
+istekte** gönderiyordu — orada iki semantik aynı sonucu verir. Eksik test değil, **yanlış
+şekilli test**. Kural: bir davranışı test ederken "bu testin şekli iki alternatifi ayırt
+edebiliyor mu?" diye sor. Yeşil olması, ayırt ettiği anlamına gelmez.
+
+**7 — en tehlikeli olan, çünkü iki yönde birden yanılabilir.** T-080: mutasyon uygulandı,
+`git diff` boş çıktı, "uygulanmadı" sanıldı. Sebep: mutasyon commit **edilmemiş** bir
+değişikliği geri alıyordu, yani dosyayı HEAD'e eşitliyordu — diff bir referansa göredir ve
+mutasyon o referansa eşitlenirse **görünmez**. Bu sefer güvenli yönde yanıldı. Ters yönde
+yanılsaydı — mutasyon uygulanmamışken uygulandı sanmak — testin kırmızıya dönmemesi "kod bu
+mutasyona dayanıklı" diye okunurdu: **sahte kanıt**.
+
+> **Kural: mutasyonu dosya içeriğinden doğrula, `git diff`'ten değil.**
+
+### Dokümanda sayı yazma — niteliksel ayırt edici yaz (ZORUNLU)
+
+Üç ayrı vakada bir yoruma/rapora yazılmış sayı yanlış çıktı ("34 e2e gövdesi" → 38; "eleven
+e2e cases" → 13; aynı ifadenin ikizi 12'yi kastediyordu). **Üçü de yanlış değildi — üçü farklı
+şey sayıyordu**, ve hepsi bir sonraki test eklendiğinde bayatlayacaktı.
+
+Bu, kalibrasyon bulgusunun kardeşidir: **ölçülmemiş sayılar düşük çıkar, ölçülmüş sayılar
+bayatlar.** İkisinin ortak dersi aynı: dokümanda ve kod yorumunda **sayı yerine niteliksel
+ayırt ediciyi** yaz.
+
+- ❌ "on bir e2e testi bunu kapsıyor" · "34 gövdenin hiçbirinde yok"
+- ✅ "her biri mekanikleri **tek istekte** gönderiyor — ayırt edici olan şekil" · "**hiçbiri**"
+
+Sayı bakım gerektiren bir olgudur; şekil ve "hiçbiri/hepsi" gerektirmez.
 
 
 ## 3. Ekip (subagent'lar — `.claude/agents/`)
