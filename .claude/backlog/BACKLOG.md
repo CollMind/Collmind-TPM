@@ -95,7 +95,9 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
-| [[T-083]] | Yetim taktik anahtarı planı **kalıcı kilitliyor** — admin bir mekaniği pasifleştirince | P2 | backend-engineer | todo |
+| [[T-083a]] | Yetim anahtar **tedavisi** — hata dalında 'pasif mekanik' ↔ 'olmayan kod' ayrımı + iki mesaj | P2 | backend-engineer | todo |
+| [[T-083b]] | Yetim anahtar **önlemesi** — pasifleştirme kullanan planlardaki anahtarı da temizler (katman sınırı açık) | P3 | backend-engineer | todo |
+| [[T-083]] | ~~Yetim taktik anahtarı~~ → **T-083a (tedavi) + T-083b (önleme)** olarak bölündü | P2 | — | done |
 | [[T-082]] | ~~`null` taktik değeri: yazma/okuma asimetrisi~~ → **ADR 0008: kusur değil, yönü doğru** | P2 | backend-engineer | done |
 | [[T-081]] | `INVALID_SCALE` mesajı hangi mekanik/hangi sınır olduğunu söylemiyor (`violations` render edilmiyor) | P3 | frontend-engineer | todo |
 | [[T-080]] | `PATCH tactics` replace → **merge**: ikinci mekaniği girmek birincisini artık silmiyor | P1 | debugger | review |
