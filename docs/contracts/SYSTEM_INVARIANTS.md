@@ -134,10 +134,48 @@ in the product and most of them already hold.
   once T-057 is committed (its test data depends on current DB state).
 - **Source:** audit candidate #5, violation #5
 
-### INV-L-006 — Every ledger insert carries a non-empty `idempotency_key` unique within its tenant.
-- **Status:** HOLDS
+### INV-L-006 — Wherever a row carries an `idempotency_key`, that key is unique within its tenant, enforced in the database.
+- **Status:** HOLDS (as of T-095)
 - **Guard:** DB ✅
-- **Source:** audit candidate #6
+- **Scope:** `ledger_entries`, `budget_transactions`, `agreement_transactions`, `on_invoice_entries`, `budget_transaction_logs`
+- **Source:** audit candidate #6; generalised by T-095
+
+Originally written for `ledger_entries` alone. T-095 measured all five tables that carry the
+column and found four already compliant on **both** dimensions (`NOT NULL` **and**
+`UNIQUE (tenant_id, idempotency_key)`) — so generalising the wording cost nothing and closed the
+one gap.
+
+`budget_transaction_logs` is that gap. It took the column in migration `1771169825000` and never
+took the index, while `budget_transactions` had received its own in the original
+`1704067520000` — a later table quietly dropping a guarantee its sibling already held.
+
+⚠️ **Status for that table is OPEN, not closed.** The first attempt (T-095) was reverted: it
+added `NOT NULL`, which would have broken four live routes that legitimately write no key. And
+the measurement that justified it ("0 rows, so NOT NULL is free") had a second explanation
+nobody checked — the table has never been writable at all (`created_by` is mapped twice,
+every INSERT fails with 42701). See T-096, which must land first.
+
+**On `NOT NULL`:** four of the five tables keep the column `NOT NULL`, and there it is right —
+every row on those paths carries a key. `budget_transaction_logs` is different: it also records
+`ADJUSTMENT` rows, and an adjustment is legitimately repeatable, so it has no natural business
+key. Forcing one would impose a uniqueness the domain does not have.
+
+So the invariant is stated over ROWS THAT CARRY A KEY, not over columns. Where every row carries
+one, `NOT NULL` is the honest way to say it; where some rows legitimately do not, a partial
+unique index (`WHERE idempotency_key IS NOT NULL AND transaction_type <> 'ADJUSTMENT'`) says the
+same thing without inventing a key.
+
+The trap this wording avoids: PostgreSQL permits several `NULL`s under a UNIQUE constraint, so a
+nullable column with a plain unique index is protection that looks present and is not — the same
+class as a partially applied transformer (T-091) or a guard whose detector never reaches the code
+it claims to cover (T-094). A PARTIAL index is not that trap: it states exactly which rows it
+governs.
+
+**Both layers are required, and they are not redundant.** The application-side read
+(`where: { idempotencyKey, tenantId, deletedAt: IsNull() }`) answers the normal path cleanly —
+"already written, no-op" — instead of surfacing a raw `23505`. The DB constraint is the last
+line, for the race the read cannot see: two writers can both read "absent" and both proceed.
+Removing either leaves a real hole.
 
 ### INV-L-007 — Consumed spend is computed as `Σ DEBIT − Σ CREDIT` and never as a plain `SUM(amount)`.
 - **Status:** HOLDS
