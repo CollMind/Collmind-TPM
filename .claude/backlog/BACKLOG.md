@@ -106,7 +106,7 @@ status: active        # planned | active | closed
 | [[T-092]] | `format`/`lint` değişen dosyalarla sınırlandı; **`lint:check`** tam repo denetimi | P3 | backend-engineer | review |
 | [[T-091]] | **Para akümülatörleri string birleştiriyor** — biri diske yazıyor, biri yanlış 'yetersiz bütçe' üretiyor | P1 | debugger | review |
 | [[T-089]] | **Birleşik indirim tavanı PERCENT mekaniklerde HİÇ çalışmıyordu** — akümülatör string birleştiriyordu | P1 | debugger | review |
-| [[T-090]] | ÖLÇÜM: `DecimalTransformer`'ı 22 entity'ye yaymak — kökten çözüm mü? (önce transformer'ın kendisi) | P3 | architect | todo |
+| [[T-090]] | ~~ÖLÇÜM: transformer kökten çözüm mü?~~ → **hayır, üç sebeple**; beş faz önerildi, F3 ürün kararı bekliyor | P3 | architect | done |
 | [[T-085]] | `spend-validation` **dört** string-karşılaştırma kusuru — kaçan ihlal + her istekte false positive (canlı rota) | P1 | debugger | review |
 | [[T-084]] | min/max `null`+string coercion — açık üst sınırlı mekanikler **hiç PATCH edilemiyordu** (canlı: 6'da 3) | P2 | debugger | review |
 | [[T-083b]] | Yetim anahtar **önlemesi** — pasifleştirme kullanan planlardaki anahtarı da temizler (katman sınırı açık) | P3 | backend-engineer | todo |
