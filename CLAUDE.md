@@ -151,7 +151,7 @@ eklenmişti — kurulum, kanıtlanmak istenen boş durumu yok etmişti. Hata anc
 karşı koşulunca göründü.
 
 §2.6 ile birlikte bu, **doğrulama maskeleme** sınıfının bir üyesidir. Sınıfın bugüne kadar
-kaydedilmiş yedi vakası:
+kaydedilmiş sekiz vakası:
 
 | # | Vaka | Maskelediği |
 |---|---|---|
@@ -162,6 +162,7 @@ kaydedilmiş yedi vakası:
 | 5 | hiçbir şeyle eşleşmeyen desen (`grep` BRE'de `\?`) | **filtrenin kendisi** |
 | 6 | doğru kapsam, **yanlış şekil** (tek istekte iki anahtar) | **davranış ayrımı** |
 | 7 | mutasyonu `git diff` ile doğrulamak | **mutasyonun uygulanıp uygulanmadığı** |
+| 8 | testin, sınadığı kontrolü **yeniden uygulaması** | **kontroldeki regresyonun tamamı** |
 
 İlk üçü boru hattıydı. Sonraki dördü farklı sınıflar:
 
@@ -187,6 +188,22 @@ yanılsaydı — mutasyon uygulanmamışken uygulandı sanmak — testin kırmı
 mutasyona dayanıklı" diye okunurdu: **sahte kanıt**.
 
 > **Kural: mutasyonu dosya içeriğinden doğrula, `git diff`'ten değil.**
+
+**8 — ailenin en incesi: disiplinli görünen ve tam olarak korumak için yazıldığı şeye kör olan
+test.** ADR 0007 E16: `money-float`'ın self-test'i üç yönü kontrol ediyor, üç fixture'ı var,
+mutasyonla sınanmış görünüyor — ama filtreyi **kendi kopyasıyla** kuruyordu. Taramanın
+filtresini prefix eşleşmesine çevirmek (yani E16'nın engellemek için var olduğu regresyonun ta
+kendisi) self-test'i **yeşil** bıraktı ve guard **exit 0** verdi.
+
+> **Bir kontrolü sınayan test, o kontrolün kendisini yeniden uygulamamalı. Kopya, orijinaldeki
+> regresyonu görmez — ikisi birlikte bozulur.**
+
+Düzeltme şekli: kontrolü tek bir fonksiyona indir, hem üretim yolu hem test oradan geçsin
+(`apply_primitive_filter`).
+
+Bu, 4 ve 6 ile aynı aileden ama **farklı mekanizma**: orada test *kurulumu* ölçülen durumu
+değiştiriyordu (fixture, mock double'ı); burada test, ölçtüğü şeyin **ikinci bir kopyasını**
+çalıştırıyor. İkisi de "test yeşil ama hiçbir şey kanıtlamıyor" ile sonuçlanır.
 
 ### Dokümanda sayı yazma — niteliksel ayırt edici yaz (ZORUNLU)
 

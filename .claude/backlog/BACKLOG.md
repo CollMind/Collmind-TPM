@@ -103,7 +103,7 @@ status: active        # planned | active | closed
 | [[T-096]] | `budget_transaction_logs` 42701 + bakiye log'suz kalıcılaşıyor — üç commit (map · transaction · sıra) | P1 | debugger | review |
 | [[T-095]] | `idempotency_key` **kısmi UNIQUE** (`WHERE key IS NOT NULL`) + okuma deseni | P1 | data-engineer | review |
 | [[T-094]] | `commitBudget`/`releaseBudget`/`adjustUtilization`: **tenant izolasyonu yok** (üç nokta) | P1 | backend-engineer | review |
-| [[T-092]] | `format`/`lint` değişen dosyalarla sınırlansın — repo genelini kirletiyorlar | P3 | backend-engineer | todo |
+| [[T-092]] | `format`/`lint` değişen dosyalarla sınırlandı; **`lint:check`** tam repo denetimi | P3 | backend-engineer | review |
 | [[T-091]] | **Para akümülatörleri string birleştiriyor** — biri diske yazıyor, biri yanlış 'yetersiz bütçe' üretiyor | P1 | debugger | review |
 | [[T-089]] | **Birleşik indirim tavanı PERCENT mekaniklerde HİÇ çalışmıyordu** — akümülatör string birleştiriyordu | P1 | debugger | review |
 | [[T-090]] | ÖLÇÜM: `DecimalTransformer`'ı 22 entity'ye yaymak — kökten çözüm mü? (önce transformer'ın kendisi) | P3 | architect | todo |
