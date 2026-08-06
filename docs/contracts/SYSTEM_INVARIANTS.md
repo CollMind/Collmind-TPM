@@ -496,6 +496,25 @@ counterpart in either codebase's existing documentation.
 
 ---
 
+### Known limit — RAG thresholds survive only on a compensation
+
+`kpi.entity.ts:101,110` hold the RAG threshold columns. They declare no
+`DecimalTransformer`, so they arrive as strings, and every comparison against them works
+today only because the call sites wrap them in `Number()`.
+
+That is a compensation, not a contract. A comparison written without it flips silently —
+and the failure has no symptom: no error, no NaN on screen, just a **RAG colour that is
+wrong**. Measured 2026-08-07 (`docs/analysis/0014`); no comparison is broken today.
+
+It matters more than the column count suggests. RAG sits at the centre of the BRD rule that
+thresholds are never hardcoded and come only from KPI configuration — a threshold read
+through a compensation is one edit away from being no threshold at all.
+
+Not a guard yet: `money-float` does not scan `src/database/`, which is the same gap
+`docs/analysis/0014` records as the F0 precondition.
+
+---
+
 ## 9. Open decisions blocking invariants
 
 Each blocks at least one invariant. Ordered by number of invariants unblocked, then by
@@ -517,6 +536,9 @@ whether a silent wrong number depends on it.
 | **D-12** | Fiscal period timezone | INV-N-003 | UTC vs local, explicitly |
 | **D-13** | Idempotency key formats | INV-L-009 | Three undocumented formats in use |
 | **D-14** | Actuals replace semantics as tenant policy | INV-R-003 | K44 is schema-encoded. Cost to make configurable: **high** — relaxing a uniqueness constraint that current correctness depends on |
+| **D-15** | Is a computed KPI of exactly zero the same as "no KPI"? | INV-N-002 (blocks the transformer phases) | Seven live sites flip direction the moment a `decimal` column stops arriving as a string: `"0.0000"` is truthy, `0` is not. ⚠️ **ADR 0008 does NOT cover this** — that decision was about a planner's ENTERED value; these are computed KPIs and rule ceilings. Different axis, separate decision. Measured in `docs/analysis/0014` |
+| **D-16** | How are scale-3 volume columns represented? | INV-N-002 | 8 columns at `numeric(x,3)`. ADR 0007 settled money (minor units) and rate (micro); volume was never decided, so no parser fits them |
+| **D-17** | Are `unitPrice` / `cogs` money or price? | INV-N-002 | Same distinction C3 already drew for `entered_unit_amount`: a per-unit figure legitimately carries four decimals, so the kuruş rule does not apply to it. Whether these two columns are on that side has not been decided |
 
 ---
 
