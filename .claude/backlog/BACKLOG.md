@@ -97,8 +97,8 @@ status: active        # planned | active | closed
 |---|---|---|---|---|
 | [[T-083a]] | Yetim anahtar **tedavisi** — 'pasif mekanik' ↔ 'olmayan kod' ayrımı + iki mesaj | P2 | backend-engineer | review |
 | [[T-088]] | `PATCH mechanics`: açık `null` doğrulanan durumla yazılanı ayırıyor (`??` birleştirmesi) | P2 | backend-engineer | todo |
-| [[T-086]] | **E16** — E15 muafiyeti dosya bazlı olsun, guard'a bağlansın (ratchet laundering yolunu kapatır) | P2 | backend-engineer | todo |
-| [[T-087]] | `boundOf`/`toNullableNumber` tekilleştirmesi — T-086'yı bekler (dürüst taşıma) | P3 | backend-engineer | blocked |
+| [[T-086]] | **E16** — E15 muafiyeti dosya bazlı oldu, guard'a bağlandı (T-087'yi açar) | P2 | backend-engineer | review |
+| [[T-087]] | `boundOf`/`toNullableNumber` tekilleştirmesi — **blokaj kalktı** (T-086 indi) | P3 | backend-engineer | todo |
 | [[T-093]] | `finance-reporting` string birleştirme — **12 nokta, beş rota** (3 sanılıyordu) | P1 | debugger | review |
 | [[T-096]] | `budget_transaction_logs` 42701 + bakiye log'suz kalıcılaşıyor — üç commit (map · transaction · sıra) | P1 | debugger | review |
 | [[T-095]] | `idempotency_key` **kısmi UNIQUE** (`WHERE key IS NOT NULL`) + okuma deseni | P1 | data-engineer | review |
