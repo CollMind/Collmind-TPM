@@ -100,8 +100,8 @@ status: active        # planned | active | closed
 | [[T-086]] | **E16** — E15 muafiyeti dosya bazlı olsun, guard'a bağlansın (ratchet laundering yolunu kapatır) | P2 | backend-engineer | todo |
 | [[T-087]] | `boundOf`/`toNullableNumber` tekilleştirmesi — T-086'yı bekler (dürüst taşıma) | P3 | backend-engineer | blocked |
 | [[T-093]] | `finance-reporting` string birleştirme — **12 nokta, beş rota** (3 sanılıyordu) | P1 | debugger | review |
-| [[T-096]] | **`budget_transaction_logs` HİÇ yazılamıyor (42701)** + bakiye log'suz kalıcılaşıyor — 4 rota 500 | P1 | debugger | todo |
-| [[T-095]] | `idempotency_key` **kısmi UNIQUE** (ADJUSTMENT hariç) — T-096'yı bekler | P1 | data-engineer | blocked |
+| [[T-096]] | `budget_transaction_logs` 42701 + bakiye log'suz kalıcılaşıyor — üç commit (map · transaction · sıra) | P1 | debugger | review |
+| [[T-095]] | `idempotency_key` **kısmi UNIQUE** (`WHERE key IS NOT NULL`) + okuma deseni | P1 | data-engineer | review |
 | [[T-094]] | `commitBudget`/`releaseBudget`/`adjustUtilization`: **tenant izolasyonu yok** (üç nokta) | P1 | backend-engineer | review |
 | [[T-092]] | `format`/`lint` değişen dosyalarla sınırlansın — repo genelini kirletiyorlar | P3 | backend-engineer | todo |
 | [[T-091]] | **Para akümülatörleri string birleştiriyor** — biri diske yazıyor, biri yanlış 'yetersiz bütçe' üretiyor | P1 | debugger | review |

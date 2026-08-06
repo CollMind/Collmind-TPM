@@ -149,21 +149,32 @@ one gap.
 took the index, while `budget_transactions` had received its own in the original
 `1704067520000` — a later table quietly dropping a guarantee its sibling already held.
 
-⚠️ **Status for that table is OPEN, not closed.** The first attempt (T-095) was reverted: it
-added `NOT NULL`, which would have broken four live routes that legitimately write no key. And
-the measurement that justified it ("0 rows, so NOT NULL is free") had a second explanation
-nobody checked — the table has never been writable at all (`created_by` is mapped twice,
-every INSERT fails with 42701). See T-096, which must land first.
+It is now closed, by a partial index (migration `1798000000000`) rather than the `NOT NULL` +
+plain UNIQUE the other four use — and the detour is worth recording.
+
+A first attempt added `NOT NULL`. It was reverted: three of the six write sites legitimately pass
+no key, so that would have broken live routes. The measurement that justified it ("0 rows, so
+NOT NULL is free") also had a second explanation nobody had checked — the table had never been
+writable at all (`created_by` was mapped twice; every INSERT failed with 42701, fixed in T-096).
+The count was right and the conclusion was wrong.
 
 **On `NOT NULL`:** four of the five tables keep the column `NOT NULL`, and there it is right —
-every row on those paths carries a key. `budget_transaction_logs` is different: it also records
-`ADJUSTMENT` rows, and an adjustment is legitimately repeatable, so it has no natural business
-key. Forcing one would impose a uniqueness the domain does not have.
+every row on those paths carries a key. `budget_transaction_logs` also records `ALLOCATION` and
+`ADJUSTMENT` rows, and creating or adjusting an allocation is a repeatable event with no natural
+business key. Forcing one would assert a uniqueness the domain does not have.
 
-So the invariant is stated over ROWS THAT CARRY A KEY, not over columns. Where every row carries
-one, `NOT NULL` is the honest way to say it; where some rows legitimately do not, a partial
-unique index (`WHERE idempotency_key IS NOT NULL AND transaction_type <> 'ADJUSTMENT'`) says the
-same thing without inventing a key.
+So the invariant is stated over ROWS THAT CARRY A KEY, not over columns:
+
+```sql
+UNIQUE (tenant_id, idempotency_key) WHERE idempotency_key IS NOT NULL
+```
+
+A second draft wrote `AND transaction_type <> 'adjustment'`. Also rejected: uniqueness depends on
+whether a key is present, not on the transaction type — and naming a type would have made a
+silent claim about `transfer`, which exists, is unused, and about which nobody has decided
+anything. The `IS NOT NULL` form is the literal SQL of this invariant's own sentence, and it makes
+the `ALLOCATION` question moot rather than deferring it: no key, no scope; a key one day, scope
+automatically.
 
 The trap this wording avoids: PostgreSQL permits several `NULL`s under a UNIQUE constraint, so a
 nullable column with a plain unique index is protection that looks present and is not — the same
