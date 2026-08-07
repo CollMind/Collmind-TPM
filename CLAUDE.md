@@ -235,6 +235,25 @@ olarak, hiçbir zaman kırmızıya dönmez.
 - ✅ "ölçüldü <tarih>: `numeric(15,2)` NaN'ı kabul ediyor — kanıt: `insert ... values ('NaN')`
   → `INSERT 0 1`" · ya da iddiadan tamamen vazgeç ve korumayı yine de yaz
 
+**Ve kural yalnız "yok" iddialarına değil, "var" iddialarına da uygular — bu ekleme bir
+karşı-örnekten geldi.** T-098, bu kural CLAUDE.md'ye T-097'den sonra eklenmişken, bir sonraki
+task'ta aynı sınıfı tekrarladı:
+
+| task | koda yazılan | gerçek |
+|---|---|---|
+| T-097 | *"not reachable from the database today"* | `numeric(15,2)` NaN'ı **saklıyor** |
+| T-098 | *"context, **which the logger prints**"* | Nest `Error.toString()` basıyor — ne context ne stack |
+
+İkisi de **"başka bir yerde" hakkında** bir iddiaydı ve ikisi de **o başka yerde ölçülmedi**.
+İkincisi daha pahalıydı: değer mesajdan çıkarıldı, hiçbir yere konmadı, ve "orada duruyor"
+denildi — sızıntı kapanırken **teşhis de silindi**.
+
+> **Bir yorum başka bir bileşenin davranışı hakkında iddiada bulunuyorsa, o bileşen
+> KOŞTURULARAK ölçülmeli. "Ulaşılamaz" kadar "hâlâ erişilebilir" de bir iddiadır.**
+
+Pratik test: yorumundaki fiilin öznesi **senin dosyan değilse** (logger basar, DB reddeder,
+çağıran gönderir), o cümle bir ölçüm gerektirir.
+
 Bir sözleşmenin (transformer, guard, invariant) geçerliliği **çağıranın bugünkü şekline bağlı
 olamaz.** "Bugün ulaşılamaz" bir kapsam gerekçesi olabilir, ama asla bir **koruma kaldırma**
 gerekçesi değildir.
