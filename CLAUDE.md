@@ -254,6 +254,20 @@ denildi — sızıntı kapanırken **teşhis de silindi**.
 Pratik test: yorumundaki fiilin öznesi **senin dosyan değilse** (logger basar, DB reddeder,
 çağıran gönderir), o cümle bir ölçüm gerektirir.
 
+**Ve kural tek başına yetmedi — beş vaka sonra ek şart kondu.** Kural yazıldıktan sonra bile
+aynı hata iki task daha tekrarlandı (*"logger prints"*, *"satır-bazlı kanal yok"*). Sebep:
+kural neyi arayacağını söylüyor ama **yazarken** hatırlanmıyor; `code-reviewer` yakalıyor,
+yazar yakalamıyor.
+
+> **Yorumda başka bir bileşen hakkında bir cümle yazıyorsan, ölçüm referansını da yaz.**
+
+- ❌ "`importCustomers` satır hatası toplamıyor"
+- ✅ "`importCustomers` satır hatası topluyor (`customer.service.ts:365`) — kanal var"
+
+Atıf iki iş yapar: iddiayı **sonraki okuyucu için doğrulanabilir** kılar, ve **yazarken
+ölçmeye zorlar** — çünkü satır numarasını yazmak için oraya bakmak gerekir. Kural bir refleks
+üretemedi; atıf şartı üretiyor.
+
 Bir sözleşmenin (transformer, guard, invariant) geçerliliği **çağıranın bugünkü şekline bağlı
 olamaz.** "Bugün ulaşılamaz" bir kapsam gerekçesi olabilir, ama asla bir **koruma kaldırma**
 gerekçesi değildir.

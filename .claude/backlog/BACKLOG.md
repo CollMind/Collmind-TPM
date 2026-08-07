@@ -112,6 +112,7 @@ status: active        # planned | active | closed
 | [[T-104]] | C1 — kanonik sayı ayrıştırma biçim sözleşmesi (ölçüm bitti, karar bekliyor) | P1 | planner | review |
 | [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` | P1 | backend-engineer | review |
 | [[T-106]] | Frontend tr-TR gösterip en-US ayrıştırıyor — 37 çağrı yeri, `\|\| 0` sessiz sıfır | P1 | frontend-engineer | todo |
+| [[T-107]] | Excel seri-tarih (uyuyan, 5 nokta) **sonra** `raw: true` — sıra bağlayıcı | P1 | backend-engineer | todo |
 | [[T-100]] | lint kapısı commit sonrası hiçbir şey ölçmüyor (§2.7 #9) | P2 | backend-engineer | todo |
 | [[T-101]] | `getThresholds` hata dalında hardcoded eşiğe düşüyor — §2.3 + T-098 zinciri | P1 | backend-engineer | todo |
 | [[T-102]] | `formula-parser`: hata-null ile BRD'nin kural-null'ı ayırt edilemiyor | P2 | backend-engineer | todo |
