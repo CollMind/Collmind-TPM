@@ -151,7 +151,7 @@ eklenmişti — kurulum, kanıtlanmak istenen boş durumu yok etmişti. Hata anc
 karşı koşulunca göründü.
 
 §2.6 ile birlikte bu, **doğrulama maskeleme** sınıfının bir üyesidir. Sınıfın bugüne kadar
-kaydedilmiş sekiz vakası:
+kaydedilmiş dokuz vakası:
 
 | # | Vaka | Maskelediği |
 |---|---|---|
@@ -163,6 +163,7 @@ kaydedilmiş sekiz vakası:
 | 6 | doğru kapsam, **yanlış şekil** (tek istekte iki anahtar) | **davranış ayrımı** |
 | 7 | mutasyonu `git diff` ile doğrulamak | **mutasyonun uygulanıp uygulanmadığı** |
 | 8 | testin, sınadığı kontrolü **yeniden uygulaması** | **kontroldeki regresyonun tamamı** |
+| 9 | kapsamı çalışan ağaçla tanımlanan kapı (`lint`) | **commit'in getirdiği her şey** |
 
 İlk üçü boru hattıydı. Sonraki dördü farklı sınıflar:
 
@@ -204,6 +205,39 @@ Düzeltme şekli: kontrolü tek bir fonksiyona indir, hem üretim yolu hem test 
 Bu, 4 ve 6 ile aynı aileden ama **farklı mekanizma**: orada test *kurulumu* ölçülen durumu
 değiştiriyordu (fixture, mock double'ı); burada test, ölçtüğü şeyin **ikinci bir kopyasını**
 çalıştırıyor. İkisi de "test yeşil ama hiçbir şey kanıtlamıyor" ile sonuçlanır.
+
+**9 — kapının kendisi, ölçeceği şeyi işleyişiyle yok ediyor.** T-100: `npm run lint` =
+`changed-ts.sh | xargs -r eslint`, ve `changed-ts.sh` staged+unstaged+untracked basar. **Commit
+sonrası üçü de boştur** → `xargs -r` hiçbir şey çalıştırmaz → **exit 0**. Kapı doğru şeyi
+ölçüyor, sadece ölçecek bir şey bırakılmamış. Bir commit'in getirdiği lint hatası bu yüzden
+görünmedi (T-097, S2).
+
+Önceki sekizde ölçüm hatalıydı ya da yanlış şeyi ölçüyordu; burada **ölçüm doğru, kapsam
+kendini boşaltıyor.** Kural: bir kapının kapsamı dinamikse, "kapsam boşken exit 0" ile "kapsam
+temizken exit 0" **aynı çıktıyı** verir — kapıyı, yakalaması gereken hatayı kasten üreterek
+sına.
+
+### Kod yorumunda "ulaşılamaz" yazmadan önce ölç (ZORUNLU)
+
+**"İmkânsız" · "gelemez" · "ulaşılamaz" · "bu duruma düşmez" — bu ifadeler normatiftir.** Bir
+sonraki okuyucuya kontrolü atlama izni verirler, ve yanlışlarsa koruma **kalıcı olarak** kalkar.
+
+T-097: `DecimalTransformer`'a *"not reachable from the database today"* yazıldı. Ölçüm
+yapılmıştı ama eksikti — `numeric(15,2)` **NaN'ı saklar** ve `NaN` metni olarak döndürür;
+yalnız `Infinity` reddedilir. İddia yanlıştı ve tam da yazma ucunun korumasız kalmasını
+meşrulaştırıyordu.
+
+Bu, §7.1'in T-084 vakasıyla aynı: *"must not be fixed to match"* yorumu bir kusuru koruma
+altına almıştı. **Bir hatayı belgelemek onu koruma altına alır** — ve yorum, testten farklı
+olarak, hiçbir zaman kırmızıya dönmez.
+
+- ❌ "bu değer DB'den gelemez" · "buraya `null` düşmez" · "çağıran hep sayı gönderir"
+- ✅ "ölçüldü <tarih>: `numeric(15,2)` NaN'ı kabul ediyor — kanıt: `insert ... values ('NaN')`
+  → `INSERT 0 1`" · ya da iddiadan tamamen vazgeç ve korumayı yine de yaz
+
+Bir sözleşmenin (transformer, guard, invariant) geçerliliği **çağıranın bugünkü şekline bağlı
+olamaz.** "Bugün ulaşılamaz" bir kapsam gerekçesi olabilir, ama asla bir **koruma kaldırma**
+gerekçesi değildir.
 
 ### Dokümanda sayı yazma — niteliksel ayırt edici yaz (ZORUNLU)
 
