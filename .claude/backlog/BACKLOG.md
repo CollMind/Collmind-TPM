@@ -109,7 +109,7 @@ status: active        # planned | active | closed
 | [[T-097]] | `DecimalTransformer` — NaN/Infinity **iki uçta da** reddediliyor; dört boşluk F4'e kayıtlı | P2 | backend-engineer | done |
 | [[T-098]] | Hata veri kılığından çıkarıldı — **üç** canlı rota + hata nesnesi + UI | P1 | backend-engineer | review |
 | [[T-099]] | `Number.isNaN(Infinity)===false` — **T-105'e devredildi**, iki nokta açık | P1 | debugger | blocked |
-| [[T-104]] | C1 — kanonik sayı ayrıştırma biçim sözleşmesi (ölçüm bitti, karar bekliyor) | P1 | planner | review |
+| [[T-104]] | C1 — kanonik sayı ayrıştırma biçim sözleşmesi (kararlar alındı) | P1 | planner | done |
 | [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` | P1 | backend-engineer | review |
 | [[T-106]] | Frontend tr-TR gösterip en-US ayrıştırıyor — 37 çağrı yeri, `\|\| 0` sessiz sıfır | P1 | frontend-engineer | todo |
 | [[T-107]] | Excel seri-tarih (uyuyan, 5 nokta) **sonra** `raw: true` — sıra bağlayıcı | P1 | backend-engineer | todo |
