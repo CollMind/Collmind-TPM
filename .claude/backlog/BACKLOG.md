@@ -110,6 +110,8 @@ status: active        # planned | active | closed
 | [[T-098]] | Hata veri kılığından çıkarıldı — **üç** canlı rota + hata nesnesi + UI | P1 | backend-engineer | review |
 | [[T-099]] | `Number.isNaN(Infinity)===false` — dört canlı para yolunda daha, biri CSV importer | P1 | debugger | todo |
 | [[T-100]] | lint kapısı commit sonrası hiçbir şey ölçmüyor (§2.7 #9) | P2 | backend-engineer | todo |
+| [[T-101]] | `getThresholds` hata dalında hardcoded eşiğe düşüyor — §2.3 + T-098 zinciri | P1 | backend-engineer | todo |
+| [[T-102]] | `formula-parser`: hata-null ile BRD'nin kural-null'ı ayırt edilemiyor | P2 | backend-engineer | todo |
 | [[T-090]] | ~~ÖLÇÜM: transformer kökten çözüm mü?~~ → **hayır, üç sebeple**; beş faz önerildi, F3 ürün kararı bekliyor | P3 | architect | done |
 | [[T-085]] | `spend-validation` **dört** string-karşılaştırma kusuru — kaçan ihlal + her istekte false positive (canlı rota) | P1 | debugger | review |
 | [[T-084]] | min/max `null`+string coercion — açık üst sınırlı mekanikler **hiç PATCH edilemiyordu** (canlı: 6'da 3) | P2 | debugger | review |
