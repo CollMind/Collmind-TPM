@@ -108,7 +108,9 @@ status: active        # planned | active | closed
 | [[T-089]] | **Birleşik indirim tavanı PERCENT mekaniklerde HİÇ çalışmıyordu** — akümülatör string birleştiriyordu | P1 | debugger | review |
 | [[T-097]] | `DecimalTransformer` — NaN/Infinity **iki uçta da** reddediliyor; dört boşluk F4'e kayıtlı | P2 | backend-engineer | done |
 | [[T-098]] | Hata veri kılığından çıkarıldı — **üç** canlı rota + hata nesnesi + UI | P1 | backend-engineer | review |
-| [[T-099]] | `Number.isNaN(Infinity)===false` — dört canlı para yolunda daha, biri CSV importer | P1 | debugger | todo |
+| [[T-099]] | `Number.isNaN(Infinity)===false` — **T-105'e devredildi**, iki nokta açık | P1 | debugger | blocked |
+| [[T-104]] | C1 — kanonik sayı ayrıştırma biçim sözleşmesi (ölçüm bitti, karar bekliyor) | P1 | planner | review |
+| [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` (T-104'e bağlı) | P1 | backend-engineer | blocked |
 | [[T-100]] | lint kapısı commit sonrası hiçbir şey ölçmüyor (§2.7 #9) | P2 | backend-engineer | todo |
 | [[T-101]] | `getThresholds` hata dalında hardcoded eşiğe düşüyor — §2.3 + T-098 zinciri | P1 | backend-engineer | todo |
 | [[T-102]] | `formula-parser`: hata-null ile BRD'nin kural-null'ı ayırt edilemiyor | P2 | backend-engineer | todo |
