@@ -110,7 +110,8 @@ status: active        # planned | active | closed
 | [[T-098]] | Hata veri kılığından çıkarıldı — **üç** canlı rota + hata nesnesi + UI | P1 | backend-engineer | review |
 | [[T-099]] | `Number.isNaN(Infinity)===false` — **T-105'e devredildi**, iki nokta açık | P1 | debugger | blocked |
 | [[T-104]] | C1 — kanonik sayı ayrıştırma biçim sözleşmesi (ölçüm bitti, karar bekliyor) | P1 | planner | review |
-| [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` (T-104'e bağlı) | P1 | backend-engineer | blocked |
+| [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` | P1 | backend-engineer | review |
+| [[T-106]] | Frontend tr-TR gösterip en-US ayrıştırıyor — 37 çağrı yeri, `\|\| 0` sessiz sıfır | P1 | frontend-engineer | todo |
 | [[T-100]] | lint kapısı commit sonrası hiçbir şey ölçmüyor (§2.7 #9) | P2 | backend-engineer | todo |
 | [[T-101]] | `getThresholds` hata dalında hardcoded eşiğe düşüyor — §2.3 + T-098 zinciri | P1 | backend-engineer | todo |
 | [[T-102]] | `formula-parser`: hata-null ile BRD'nin kural-null'ı ayırt edilemiyor | P2 | backend-engineer | todo |
