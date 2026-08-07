@@ -110,7 +110,7 @@ status: active        # planned | active | closed
 | [[T-098]] | Hata veri kılığından çıkarıldı — **üç** canlı rota + hata nesnesi + UI | P1 | backend-engineer | review |
 | [[T-099]] | `Number.isNaN(Infinity)===false` — **T-105'e devredildi**, iki nokta açık | P1 | debugger | blocked |
 | [[T-104]] | C1 — kanonik sayı ayrıştırma biçim sözleşmesi (kararlar alındı) | P1 | planner | done |
-| [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` | P1 | backend-engineer | review |
+| [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` | P1 | backend-engineer | done |
 | [[T-106]] | Frontend tr-TR gösterip en-US ayrıştırıyor — 37 çağrı yeri, `\|\| 0` sessiz sıfır | P1 | frontend-engineer | todo |
 | [[T-107]] | Excel seri-tarih (uyuyan, 5 nokta) **sonra** `raw: true` — sıra bağlayıcı | P1 | backend-engineer | todo |
 | [[T-100]] | lint kapısı commit sonrası hiçbir şey ölçmüyor (§2.7 #9) | P2 | backend-engineer | todo |
