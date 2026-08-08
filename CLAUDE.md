@@ -221,6 +221,21 @@ görünmedi (T-097, S2).
 Önceki sekizde ölçüm hatalıydı ya da yanlış şeyi ölçüyordu; burada **ölçüm doğru, kapsam
 kendini boşaltıyor.**
 
+**Ve bu kapının iki simetrik bozulma yolu var — ikisi de "kapı yok" demektir.** T-113'te
+ikincisi ölçüldü: frontend `npm run lint` = `eslint .`, repo genelinde **exit 1** (473 hata,
+100'den fazla dosya).
+
+| | kapının hâli | görünen | neden işlevsiz |
+|---|---|---|---|
+| T-100 (backend) | kapsam kendini boşaltıyor | her şey **temiz** | ölçecek bir şey bırakılmamış |
+| [[T-114]] (frontend) | kapsam hep dolu, hep kırmızı | her şey **kırık** | kırmızı hiçbir şey ayırt etmiyor |
+
+Mekanizmalar zıt, sonuç aynı: **lint hatası getiren commit ile getirmeyen commit aynı çıktıyı
+veriyor.** Bir kapının işini yapıp yapmadığının testi çıktısının rengi değil, **iki farklı
+girdide farklı çıktı verip vermediğidir.**
+
+> **Sinyal sabitse, sinyal değildir.** Bir kapı hep yeşilse de hep kırmızıysa da yoktur.
+
 **10 — kanıt kurulumunun kendisi güvenilmez.** T-106'da bir tur içinde **iki kez** oldu:
 `cp` çok satırlı bir dosya listesini tek ad sanıp patladı (şansla hiçbir dosya bozulmadı), ve
 `git stash push` ile alınan "HEAD tabanı" ölçümü ile doğrudan ölçüm **çelişkili sonuç** verdi
