@@ -117,8 +117,9 @@ status: active        # planned | active | closed
 | [[T-101]] | Eşikler bütün olarak alınıyor + `source`/`reason` + aralık CHECK | P1 | backend-engineer | review |
 | [[T-108]] | RAG eşikleri üretimde konfigüre EDİLEMİYOR — admin ucu + provisioning | P2 | architect | todo |
 | [[T-112]] | Escape **yazma** tetikliyor ve geçersiz girdi hücreyi kilitliyor | P1 | frontend-engineer | review |
+| [[T-113]] | `POST /plans/:id/fus` **500** — grid e2e'leri hiç koşamıyor, T-109'u bloke ediyor | P1 | debugger | todo |
 | [[T-109]] | `grid-cells` düzenleme dalı ölü — T-106'nın **kendi ürettiği** erişilemezlik | P1 | frontend-engineer | todo |
-| [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor (T-109 ile birlikte) | P2 | frontend-engineer | todo |
+| [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend'de ratchet/guard yok — `parseFloat` sayılmıyor (T-109/110'dan sonra) | P2 | frontend-engineer | todo |
 | [[T-102]] | `formula-parser`: hata-null ile BRD'nin kural-null'ı ayırt edilemiyor | P2 | backend-engineer | todo |
 | [[T-103]] | `GET /on-invoice/entries` iç mesajı 4xx gövdesine koyuyor — T-098'in dönen ucu | P2 | backend-engineer | todo |
