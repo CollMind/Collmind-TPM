@@ -98,6 +98,11 @@ normatif kaynağı `rules.md` **değildir**.
 - **Budget threshold:** %80 Warning, %95 Critical, %100+ Exceeded. On-Invoice / Off-Invoice ayrı değerlendirilir (ADR 0004).
   ⚠️ **Bilinen belirsizlik:** sınır semantiği (`>95` mi `>=95` mi) çözülmemiştir ve bu eşikler
   bugün birçok dosyada hardcode'dur (BRD ihlali). Bu maddeye dayanarak kod yazma — önce sor.
+  ⚠️ **Ve uyarı eksikti (T-101, ölçüldü):** sorun yalnız hardcode değil — **konfigürasyon
+  üretimde ulaşılamaz.** `BudgetAlertConfiguration`'a dokunan sekiz dosyanın hiçbiri controller
+  değil, seed dışında yazma yok, ve `TenantService.create` eşik satırı kurmuyor. Yani
+  API'den yaratılan her tenant hardcoded eşiklerle **doğuyor** — bir hata dalı değil,
+  varsayılan hâl. §2.3 bu yüzden **yapı gereği** ihlal ediliyor. Yol [[T-108]] ile açılacak.
 - **Audit:** immutable; silinemez/güncellenemez; onay/red dahil her işlem loglanır.
 - Optimistic locking, desktop-first, grid-heavy, real-time recalc.
 
@@ -355,6 +360,11 @@ Alt-ajana iş verirken **kaynağı referansla ver, özetini değil.**
 - [ ] `touches:` alanı gerçekte dokunulan dosyalarla güncel
 - [ ] Migration varsa: **catalogue guard'ları şema-nitelendirilmiş** (`nspname`/`schemaname`
       predicate'i olmadan `pg_constraint`/`pg_indexes` sorgulanmaz)
+- [ ] **Bir DB nesnesinin YOKLUĞUNU iddia etmeden önce iki katalogu da sorgula.**
+      TypeORM'un `@Index({ unique: true })`'i bir **index** yaratır, constraint değil — yani
+      `pg_constraint` boş görünürken `pg_indexes` dolu olabilir. T-101'de tam bu oldu:
+      `pg_constraint`'te yokluk görülüp "UNIQUE yok" denildi, oysa index migration
+      `1771169825000`'den beri duruyordu. **Bir katalogdaki yokluk, yokluk değildir.**
 
 > Üçüncü madde neden var: bu projede "mekanizma var, ona giden yol yok" hatası **sekiz kez**
 > tekrarlandı (T-033, T-036, T-039, T-046d, T-048, T-052, T-053, T-062). Her task kendi
