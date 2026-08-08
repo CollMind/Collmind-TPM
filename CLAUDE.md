@@ -169,6 +169,7 @@ kaydedilmiş dokuz vakası:
 | 7 | mutasyonu `git diff` ile doğrulamak | **mutasyonun uygulanıp uygulanmadığı** |
 | 8 | testin, sınadığı kontrolü **yeniden uygulaması** | **kontroldeki regresyonun tamamı** |
 | 9 | kapsamı çalışan ağaçla tanımlanan kapı (`lint`) | **commit'in getirdiği her şey** |
+| 10 | `git stash` ile taban ölçümü | **stash'in kapsamı beklenenden farklı olabilir** |
 
 İlk üçü boru hattıydı. Sonraki dördü farklı sınıflar:
 
@@ -218,7 +219,18 @@ sonrası üçü de boştur** → `xargs -r` hiçbir şey çalıştırmaz → **e
 görünmedi (T-097, S2).
 
 Önceki sekizde ölçüm hatalıydı ya da yanlış şeyi ölçüyordu; burada **ölçüm doğru, kapsam
-kendini boşaltıyor.** Kural: bir kapının kapsamı dinamikse, "kapsam boşken exit 0" ile "kapsam
+kendini boşaltıyor.**
+
+**10 — kanıt kurulumunun kendisi güvenilmez.** T-106'da bir tur içinde **iki kez** oldu:
+`cp` çok satırlı bir dosya listesini tek ad sanıp patladı (şansla hiçbir dosya bozulmadı), ve
+`git stash push` ile alınan "HEAD tabanı" ölçümü ile doğrudan ölçüm **çelişkili sonuç** verdi
+— çelişki çözülemedi ve iddia geri çekildi.
+
+> **Taban ölçümü için `git stash` kullanma; kapsamı örtük ve untracked dosyalarla etkileşimi
+> sürprizlidir. `git show HEAD:<dosya>` daha dar, daha kesin ve geri alması gerekmez.**
+
+Ve genel kural: **kanıtın kendisi şüpheliyse sonucu da şüphelidir.** İki ölçüm çelişirse
+üçüncüsünü yap ya da iddiayı geri çek — hangisi hoşuna gidiyorsa onu seçme. Kural: bir kapının kapsamı dinamikse, "kapsam boşken exit 0" ile "kapsam
 temizken exit 0" **aynı çıktıyı** verir — kapıyı, yakalaması gereken hatayı kasten üreterek
 sına.
 
@@ -313,6 +325,26 @@ denildi — sızıntı kapanırken **teşhis de silindi**.
 
 > **Bir yorum başka bir bileşenin davranışı hakkında iddiada bulunuyorsa, o bileşen
 > KOŞTURULARAK ölçülmeli. "Ulaşılamaz" kadar "hâlâ erişilebilir" de bir iddiadır.**
+
+**Ve ihlalin maliyeti nerede olduğuna bağlı — yedinci vaka bunu gösterdi.**
+
+| ihlal nerede | maliyeti |
+|---|---|
+| bir **yorumda** | yanlış bilgi; sonraki okuyucu yanılır |
+| bir **kapsam kararında** | **kapatılmamış kusur**; iş hiç yapılmaz |
+
+Altı vaka yorumdaydı ve "yanıltıcı ama zararsız" diye birikti. Yedincisi (T-106) bir kapsam
+gerekçesiydi: *"tarayıcı `type="number"` alanında `1.234,56` yazılmasına izin vermiyor"* —
+ölçülmedi, ve beş para girdisi düzeltmenin dışında bırakıldı. Ölçüm sonradan yapıldığında
+gerçek şu çıktı: kullanıcı `250.000` yazınca **250** kaydediliyordu.
+
+> **Bir kapsam kararı ölçülmemiş bir iddiaya dayanıyorsa, o karar bir tahmindir — ve
+> tahminin bedeli kodda değil, yapılmayan işte birikir.**
+
+⚠️ Ve o vakanın kendisi kalıcı bir tuzak: `type="number"` **programatik atamayı** temizler
+(`el.value = "1.234,56"` → `""`), **klavye girişini temizlemez** (`250.000` → `250.000`,
+`badInput=false`). İki farklı işlem, zıt davranış; iddia birinden diğerine genellendiği için
+yanlıştı.
 
 Pratik test: yorumundaki fiilin öznesi **senin dosyan değilse** (logger basar, DB reddeder,
 çağıran gönderir), o cümle bir ölçüm gerektirir.
