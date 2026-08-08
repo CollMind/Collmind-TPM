@@ -234,6 +234,21 @@ Ve genel kural: **kanıtın kendisi şüpheliyse sonucu da şüphelidir.** İki 
 temizken exit 0" **aynı çıktıyı** verir — kapıyı, yakalaması gereken hatayı kasten üreterek
 sına.
 
+### Ölçüm ortamının bayatlığı da bir maskeleme sınıfıdır (ZORUNLU)
+
+**`start:dev` süreci ayaktayken kaynak düzenlenirse rotalar bozulabilir ve hata kod kusuru gibi
+görünür.** E2E'den önce backend süreci yeniden başlatılmalı.
+
+T-113'te ölçüldü: `POST /plans/:id/fus` **500** dönüyordu. Aynı commit, aynı DB, aynı istek
+gövdesi — süreç yeniden başlatılınca **201**. Yani ölçülen şey koddaki bir kusur değil, ölçüm
+ortamının bayatlığıydı; ve bir saat, olmayan bir kusuru aramakla geçebilirdi.
+
+Bu, §2.7 ailesinin bir üyesi ama tersinden: orada kanıt kurulumu **kusuru gizliyordu**, burada
+**olmayan bir kusur üretiyor**. İkisinin ortak kuralı aynı:
+
+> **Bir hata gördüğünde, önce onu üreten ortamın taze olduğunu doğrula. Yeniden başlat, tekrar
+> ölç — ancak ondan sonra kodu suçla.**
+
 ### Bilinen eksiklik TODO ile değil, TASK ile kaydedilir (ZORUNLU)
 
 **Bir yorum kodu okuyanı bilgilendirir; bir task işi yapılacaklar listesine sokar.** İkisi
@@ -362,6 +377,20 @@ yazar yakalamıyor.
 Atıf iki iş yapar: iddiayı **sonraki okuyucu için doğrulanabilir** kılar, ve **yazarken
 ölçmeye zorlar** — çünkü satır numarasını yazmak için oraya bakmak gerekir. Kural bir refleks
 üretemedi; atıf şartı üretiyor.
+
+**Ama satır numarası da bir sayıdır — yanına grep'lenebilir bir dayanak yaz.**
+
+T-113'te bir atıf **aynı tur içinde** bayatladı: seed'e `spec.ts:74,:77,:84-85` yazıldı, ben aynı
+dosyanın başlığındaki yorumu düzenledim, Prettier yeniden biçimlendirdi ve assertion'lar 99, 102,
+109-110'a kaydı. Atıf hâlâ oradaydı ve artık yanlış yeri gösteriyordu — kimse kod değiştirmemişti.
+
+Bu, "dokümanda sayı yazma" kuralının atıflara uygulanmış hâli. İkisi çelişmez, birleşir:
+
+- ❌ `05-grid-column-alignment.spec.ts:74` (tek başına numara — biçimlendirme bile kırar)
+- ✅ `05-grid-column-alignment.spec.ts`, `toContainText('₺100')` assertion'ı — istersen numarayı
+  da ekle, ama **bulunmayı sağlayan token olsun**
+
+Yani: **numara yazarken ölçmeye zorlar, token bulmayı sürdürür.** İkisini birlikte yaz.
 
 Bir sözleşmenin (transformer, guard, invariant) geçerliliği **çağıranın bugünkü şekline bağlı
 olamaz.** "Bugün ulaşılamaz" bir kapsam gerekçesi olabilir, ama asla bir **koruma kaldırma**
