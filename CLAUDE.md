@@ -222,6 +222,64 @@ kendini boşaltıyor.** Kural: bir kapının kapsamı dinamikse, "kapsam boşken
 temizken exit 0" **aynı çıktıyı** verir — kapıyı, yakalaması gereken hatayı kasten üreterek
 sına.
 
+### Bilinen eksiklik TODO ile değil, TASK ile kaydedilir (ZORUNLU)
+
+**Bir yorum kodu okuyanı bilgilendirir; bir task işi yapılacaklar listesine sokar.** İkisi
+farklı işlevdir ve **birincisi ikincisinin yerini tutmaz.**
+
+T-101'de bulundu: `budget-threshold.service.ts`, `invalidateCache` üzerinde
+*"TODO: BudgetAlertConfiguration güncelleyen admin endpoint eklenirse buna bağlanmalı"*
+diyordu. Yani **eşiklerin üretimde konfigüre edilemediği biliniyordu** — yazılmıştı, ve
+kimse task açmadığı için hiç yapılmadı. §2.3'ün ihlali o TODO'nun içinde bekliyordu.
+
+Sebep basit: **TODO okunmak için beklemek zorundadır.** Kimse o dosyayı açmazsa hiç görünmez.
+Task listeye girer, sprint planında karşına çıkar, backlog taramasında sayılır.
+
+Ve §7.1'in kardeşi: **yorum hiçbir zaman kırmızıya dönmez** — burada kusur tarafında değil,
+**eksiklik** tarafında.
+
+> Bir eksikliği fark ettin ve şimdi yapmayacaksın → **task aç.** Yoruma yazmak, onu
+> unutmanın düzenli görünen hâlidir.
+
+### Bir şema kararını geri alırken entity metadata'sını da geri al (ZORUNLU)
+
+`migration:generate` **entity metadata'sını veritabanına karşı** diff'ler. Entity'de kalan bir
+kısıt, bir sonraki generate'te **gerekçesiz bir migration olarak** geri gelir.
+
+T-101: kısmi UNIQUE taslağı kapsam dışı olduğu için migration'dan çıkarıldı ama **entity'de
+kaldı**. Migration'ın başlığı "bu index'e dokunmuyor" derken entity onun yerine geçtiğini ilan
+ediyordu. Ölçüm (düzeltmeden önce/sonra `migration:generate` çıktısı):
+
+```
+önce:  CREATE UNIQUE INDEX "IDX_b753f…" … WHERE deleted_at IS NULL AND is_active = true
+sonra: (böyle bir satır yok)
+```
+
+Yani bir başka task'a **devredilmiş** karar, bir sonraki generate'te yazarsız olarak inecekti.
+
+⚠️ Bu, `pg_constraint`/`pg_indexes` sorusunun **farklı** bir sorusu. O ikisi doğru sorulmuştu.
+Sorulmayan soru **entity ↔ DB eşitliği**ydi, ve bu repoda o soruyu soran tek araç
+`migration:generate`'dir.
+
+Ayrıca: `@Index`'e **adını yaz.** Adsız bırakılırsa TypeORM hash türetir ve gerçek index'i
+yeniden adlandırmayı önerir — ona atıf yapan her migration'ın adını öksüz bırakarak.
+
+### Fixture, ayırt etmek istediği iki tarafta FARKLI değer taşımalı (ZORUNLU)
+
+**Bir testin fixture'ı, test edilen ayrımın iki tarafında aynı değeri taşıyorsa, test o ayrımı
+ölçemez.** Yeşildir ve hiçbir şey söylemez.
+
+T-101: `returns config-driven thresholds when rows exist` testi `{80, 95, 100}` konfigüre edip
+`{80, 95, 100}` bekliyordu — ve `DEFAULT_THRESHOLDS` **tam olarak o**. Konfigürasyonu tümüyle
+yok sayan bir servis o testi geçerdi.
+
+Ve asıl ders burada: **turun konusu olan kamuflaj** — seed değerlerinin varsayılanla birebir
+aynı olması — **config yolunu kanıtlamak için yazılmış testin içinde duruyordu.** Test kusuru
+sabitlemiyordu; kusurla **aynı körlüğü paylaşıyordu**.
+
+Bu, §2.7'nin "yanlış şekilli test" ailesinin yeni bir yüzü: orada testin *şekli* ayırt
+edemiyordu, burada *verisi*.
+
 ### Kod yorumunda "ulaşılamaz" yazmadan önce ölç (ZORUNLU)
 
 **"İmkânsız" · "gelemez" · "ulaşılamaz" · "bu duruma düşmez" — bu ifadeler normatiftir.** Bir
