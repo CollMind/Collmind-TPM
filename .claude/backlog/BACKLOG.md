@@ -116,6 +116,7 @@ status: active        # planned | active | closed
 | [[T-100]] | lint kapısı commit sonrası hiçbir şey ölçmüyor (§2.7 #9) | P2 | backend-engineer | todo |
 | [[T-101]] | Eşikler bütün olarak alınıyor + `source`/`reason` + aralık CHECK | P1 | backend-engineer | review |
 | [[T-108]] | RAG eşikleri üretimde konfigüre EDİLEMİYOR — admin ucu + provisioning | P2 | architect | todo |
+| [[T-112]] | Escape **yazma** tetikliyor ve geçersiz girdi hücreyi kilitliyor | P1 | frontend-engineer | review |
 | [[T-109]] | `grid-cells` düzenleme dalı ölü — T-106'nın **kendi ürettiği** erişilemezlik | P1 | frontend-engineer | todo |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor (T-109 ile birlikte) | P2 | frontend-engineer | todo |
 | [[T-111]] | Frontend'de ratchet/guard yok — `parseFloat` sayılmıyor (T-109/110'dan sonra) | P2 | frontend-engineer | todo |
