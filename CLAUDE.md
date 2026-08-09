@@ -432,6 +432,30 @@ Atıf iki iş yapar: iddiayı **sonraki okuyucu için doğrulanabilir** kılar, 
 ölçmeye zorlar** — çünkü satır numarasını yazmak için oraya bakmak gerekir. Kural bir refleks
 üretemedi; atıf şartı üretiyor.
 
+### Bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur (ZORUNLU)
+
+Bu dosyaya yeni bir kural eklenen turlarda, **aynı turun diff'i o kuralı ihlal ederken
+yakalandı** — ve her seferinde yakalayan `code-reviewer` oldu, yazar değil. Kural doğruydu;
+eksik olan **refleks**ti.
+
+| kural eklendi | aynı turdaki ihlal |
+|---|---|
+| "başka bileşen hakkındaki iddiayı ölç" | *"logger prints"* — ölçülmedi |
+| "atıfa grep'lenebilir token yaz" | seed'e yazılan satır atfı aynı turda bayatladı |
+| "dokümanda sayı yazma" | ADR E17'ye `47/18` yazıldı, iki satır aşağıdaki karar onu bayatlattı |
+| "§7.1: kusur sınıfını aynı dosyada ara" | B1 düzeltildi, **aynı fonksiyondaki iki kardeş dal** taranmadı |
+
+Sebep basit ve mazeret değil: kural yazmak dikkati **kuralın metnine** çeker, koda değil.
+
+> **Bir kural eklediğin turda, o kuralı KENDİ diff'ine uygula — ayrı bir adım olarak.**
+> "Bu kuralı ihlal eden bir şey bu diff'te var mı?" sorusu, kuralı yazdıktan sonra sorulmalı
+> ve cevabı bir **ölçüm** olmalı.
+
+Bu, `code-reviewer`'ın yerini almaz — yukarıdaki vakaların **hepsinde** o yakaladı ve
+yakalamaya devam edecek. Ama
+yazarın kendi turunda sormadığı soruyu review'a havale etmek, o adımı **zorunlu** kılar; ve
+review'ın koşmadığı bir turda kural sessizce ihlal edilmiş olarak kalır.
+
 **Ama satır numarası da bir sayıdır — yanına grep'lenebilir bir dayanak yaz.**
 
 T-113'te bir atıf **aynı tur içinde** bayatladı: seed'e `spec.ts:74,:77,:84-85` yazıldı, ben aynı
