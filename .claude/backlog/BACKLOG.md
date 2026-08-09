@@ -112,7 +112,7 @@ status: active        # planned | active | closed
 | [[T-104]] | C1 — kanonik sayı ayrıştırma biçim sözleşmesi (kararlar alındı) | P1 | planner | done |
 | [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` | P1 | backend-engineer | done |
 | [[T-106]] | Frontend tr-TR gösterip en-US ayrıştırıyor — 37 çağrı yeri, `\|\| 0` sessiz sıfır | P1 | frontend-engineer | todo |
-| [[T-107]] | Excel seri-tarih (uyuyan, 5 nokta) **sonra** `raw: true` — sıra bağlayıcı | P1 | backend-engineer | todo |
+| [[T-107]] | Excel seri-tarih **adım 1 bitti** (5 nokta → tek yardımcı); adım 2 (`raw: true`) kaldı | P1 | backend-engineer | in-progress |
 | [[T-100]] | lint kapısı commit sonrası hiçbir şey ölçmüyor (§2.7 #9) | P2 | backend-engineer | todo |
 | [[T-101]] | Eşikler bütün olarak alınıyor + `source`/`reason` + aralık CHECK | P1 | backend-engineer | review |
 | [[T-108]] | RAG eşikleri üretimde konfigüre EDİLEMİYOR — admin ucu + provisioning | P2 | architect | todo |
@@ -123,8 +123,9 @@ status: active        # planned | active | closed
 | [[T-116]] | `type-check` artık `tests/`'i kapsıyor — 210 hata düzeltildi, bir kör test bulundu | P2 | frontend-engineer | review |
 | [[T-117]] | Grid düzenleme: sessiz min/max clamp + kaydetme ucunda `canEdit` yok (iki karar) | P2 | architect | todo |
 | [[T-118]] | Ölü `PlanningGrid.tsx` kapattığımız dört kusurun kopyasını taşıyor | P3 | frontend-engineer | todo |
-| [[T-119]] | Guard runner yazıldı (`&&` bulgu gizliyordu); self-test adı + exit-2 politikası kaldı | P2 | frontend-engineer | review |
+| [[T-119]] | Runner yazıldı; **self-test'ler setup dallarına kör** (B4'te sertleştirdiğimiz sınıf) | P2 | frontend-engineer | in-progress |
 | [[T-120]] | Frontend tiplerinde `Date` iddiası ile telden gelen string uyuşmuyor | P2 | frontend-engineer | todo |
+| [[T-121]] | Müşteri import'unda string tarih bir gün geri kayıyor (**canlı**) + sessiz undefined | P1 | backend-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |

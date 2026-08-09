@@ -493,6 +493,20 @@ counterpart in either codebase's existing documentation.
   timezones
 - **Remediation:** blocked on **D-12**
 - **Source:** determinism risk 6, spec gap 22
+- **⚠️ Scope correction (T-107 adım 1, 2026-08-09):** the invariant was written against
+  `getFullYear()`/`getMonth()` only. Measured: the SAME violation class also occurs at **Date
+  EPOCH CONSTRUCTION**, one step earlier in the pipeline — `new Date(1899, 11, 30)` builds a
+  local-midnight epoch, then `.toISOString().split('T')[0]` formats it in UTC. The two clocks
+  disagree by one calendar day in any timezone east of UTC (measured: `Europe/Istanbul`,
+  `Asia/Kolkata` both landed a day early; `UTC`, `America/New_York` did not — so a `TZ=UTC`-only
+  test cannot see this instance either). Found in five Excel serial-date call sites across
+  three importers (`off-invoice-file-parser.service.ts:268,308`,
+  `on-invoice-file-parser.service.ts:281,323`, `customer/services/file-parser.service.ts:434`).
+  **This instance is FIXED** — `src/common/date/excel-serial-date.ts`, `Date.UTC(1899, 11, 30)`
+  throughout, no local-clock construction or formatting anywhere in the path. The
+  `agreement-transaction.service.ts:108-122` instance above is unrelated code (invoice-date
+  string parsing, not Excel serial parsing) and remains VIOLATED, still blocked on **D-12** —
+  fixing one instance does not close the invariant's overall status.
 
 ---
 
