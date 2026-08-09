@@ -553,6 +553,37 @@ her seferinde tüketici göründüğü için. Sonuncusu bu kuralın kendi vakas�
 Pratik: "şunlar port edilmedi" derken kaynağı **tara**, hafızadan sayma. Kaynakta hangi
 dosyalar/mekanizmalar var, hedefte hangileri yok — farkı **komutla** üret.
 
+### Bir ÖLÇÜMÜN geçerliliği de koşullarına bağlıdır — koşulu ölçümle birlikte yaz (ZORUNLU)
+
+Yukarıdaki kural koda yazılan **iddialar** için düşünülmüştü. T-107 adım 2 onu bir adım
+genişletti: aynı şey **ölçüm sonuçları** için de geçerli.
+
+Vaka: T-121'de ölçüldü ve commit mesajına, task'a, kod yorumuna yazıldı —
+
+> *"Gerçek `FALSE` hücresi ile boş hücre kusursuz ayrılıyor: `raw:false` gerçek boolean'ı
+> `"FALSE"` string'ine çevirir, sentinel boolean'dır."*
+
+**Doğruydu.** İki tur sonra T-107 adım 2 `raw: false` → `raw: true` yaptı ve ölçüm **o anda
+geçersizleşti**: gerçek `FALSE` artık boolean geliyor, sentinel'den ayırt edilemiyor, ve
+`stripBlankCellSentinel` onu sessizce `undefined` yapıyor.
+
+Ölçüm yanlış değildi. **Koşulu yazılmamıştı.**
+
+> **Bir ölçümü kaydederken hangi koşul altında yapıldığını da kaydet.** Bir bayrak, bir mod,
+> bir ortam değişkeni, bir kütüphane seçeneği değiştiğinde o ölçüm otomatik olarak geçersizdir
+> — ve koşul yazılıysa, o bayrağı değiştiren kişi onu görür.
+
+- ❌ "gerçek FALSE hücresi ayırt ediliyor — ölçüldü"
+- ✅ "**`raw: false` altında** gerçek FALSE hücresi ayırt ediliyor — ölçüldü; `raw: true`'da bu
+  ayrım kaybolur"
+
+Pratik test: ölçümünü bir cümlede yazarken **"hangi ayarla?"** diye sor. Cevap varsa cümleye
+girer. Cevap yoksa ölçüm muhtemelen eksiktir.
+
+⚠️ Ve bu, testin işini yapmasını engellemez — **tersine, testin değeri budur.** Aynı turda o
+ayrımı pinleyen bir test yazılmıştı ("bir guard'ı yok" bulgusu üzerine); bayrak değişince
+**tek kırmızı o oldu**. Yorum bayatlar, test bayatlamaz — ama test yalnız yazıldıysa vardır.
+
 Bir sözleşmenin (transformer, guard, invariant) geçerliliği **çağıranın bugünkü şekline bağlı
 olamaz.** "Bugün ulaşılamaz" bir kapsam gerekçesi olabilir, ama asla bir **koruma kaldırma**
 gerekçesi değildir.

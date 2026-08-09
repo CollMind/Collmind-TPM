@@ -112,7 +112,7 @@ status: active        # planned | active | closed
 | [[T-104]] | C1 — kanonik sayı ayrıştırma biçim sözleşmesi (kararlar alındı) | P1 | planner | done |
 | [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` | P1 | backend-engineer | done |
 | [[T-106]] | Frontend tr-TR gösterip en-US ayrıştırıyor — 37 çağrı yeri, `\|\| 0` sessiz sıfır | P1 | frontend-engineer | todo |
-| [[T-107]] | Excel seri-tarih **adım 1 bitti** (5 nokta → tek yardımcı); adım 2 (`raw: true`) kaldı | P1 | backend-engineer | in-progress |
+| [[T-107]] | Excel import: seri-tarih + `raw: true` + `pickCell` — **iki adım da bitti** | P1 | backend-engineer | review |
 | [[T-100]] | lint kapısı commit sonrası hiçbir şey ölçmüyor (§2.7 #9) | P2 | backend-engineer | todo |
 | [[T-101]] | Eşikler bütün olarak alınıyor + `source`/`reason` + aralık CHECK | P1 | backend-engineer | review |
 | [[T-108]] | RAG eşikleri üretimde konfigüre EDİLEMİYOR — admin ucu + provisioning | P2 | architect | todo |
