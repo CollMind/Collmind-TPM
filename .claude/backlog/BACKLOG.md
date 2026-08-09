@@ -125,7 +125,8 @@ status: active        # planned | active | closed
 | [[T-118]] | Ölü `PlanningGrid.tsx` kapattığımız dört kusurun kopyasını taşıyor | P3 | frontend-engineer | todo |
 | [[T-119]] | Runner yazıldı; **self-test'ler setup dallarına kör** (B4'te sertleştirdiğimiz sınıf) | P2 | frontend-engineer | in-progress |
 | [[T-120]] | Frontend tiplerinde `Date` iddiası ile telden gelen string uyuşmuyor | P2 | frontend-engineer | todo |
-| [[T-121]] | Müşteri import tarihleri: **bir ay** kayma (ABD biçimi varsayımı) + gün kayması + sessiz undefined | P1 | backend-engineer | todo |
+| [[T-121]] | Müşteri import tarihleri: bir ay kayma + satır-bazlı teslim + katı gramer — **kapandı** | P1 | backend-engineer | review |
+| [[T-122]] | Kalıcılaştırma tarih-yalnız değeri `Date`'e geri sokuyor (batıda bir gün) | P2 | backend-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |

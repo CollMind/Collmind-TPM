@@ -210,6 +210,20 @@ ilk geçişi çoğu zaman onu anlatan yorumdadır.
 Birincisi tehlikeliydi: çalışan bir self-test "kör" ilan edilmek üzereydi, ve o teşhis
 gereksiz bir düzeltme turu başlatırdı. **Yanlış mutasyon, yanlış teşhis.**
 
+**Ve mutasyonun ürettiği kırmızı, testin kırılmasından da gelebilir — hiç KOŞMAMASINDAN da.**
+
+T-121'de yakalandı: `null` literaliyle yapılan bir mutasyon TypeScript derleme hatası verdi
+(`TS2488`). Testler **hiç çalışmadı**, ama koşum kırmızıydı — yani "mutasyon yakalandı" diye
+okunabilirdi. İkisi konsolda benzer görünür.
+
+Fark can alıcı: derlenmeyen bir mutasyon **hiçbir şey kanıtlamaz**. Testin o davranışı ölçüp
+ölçmediği hâlâ bilinmiyor, ve mutasyon "öldürüldü" sanılıp geçilirse test kör kalmaya devam
+eder.
+
+> **Mutasyon kırmızısını kabul etmeden önce testlerin GERÇEKTEN koştuğunu doğrula** — çalışan
+> test sayısı, ya da başarısızlığın bir assertion olduğu. Derleme/çalıştırma hatası bir kanıt
+> değil, **başarısız bir deneydir**; mutasyonu davranışsal olacak şekilde yeniden yaz.
+
 > **Uygulandığını doğrulamak, MEKANİZMAYA uygulandığını doğrulamak değildir.**
 >
 > Mutasyonun hedefi bir yorum, ölü kod ya da kullanılmayan bir dal olabilir. Mutasyonun
