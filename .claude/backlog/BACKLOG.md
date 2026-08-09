@@ -125,7 +125,7 @@ status: active        # planned | active | closed
 | [[T-118]] | Ölü `PlanningGrid.tsx` kapattığımız dört kusurun kopyasını taşıyor | P3 | frontend-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
-| [[T-111]] | Frontend'de ratchet/guard yok — `parseFloat` sayılmıyor (T-109/110'dan sonra) | P2 | frontend-engineer | todo |
+| [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |
 | [[T-102]] | `formula-parser`: hata-null ile BRD'nin kural-null'ı ayırt edilemiyor | P2 | backend-engineer | todo |
 | [[T-103]] | `GET /on-invoice/entries` iç mesajı 4xx gövdesine koyuyor — T-098'in dönen ucu | P2 | backend-engineer | todo |
 | [[T-090]] | ~~ÖLÇÜM: transformer kökten çözüm mü?~~ → **hayır, üç sebeple**; beş faz önerildi, F3 ürün kararı bekliyor | P3 | architect | done |

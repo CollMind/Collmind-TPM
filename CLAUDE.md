@@ -196,6 +196,34 @@ mutasyona dayanıklı" diye okunurdu: **sahte kanıt**.
 
 > **Kural: mutasyonu dosya içeriğinden doğrula, `git diff`'ten değil.**
 
+**Ve bu kural yetmez — T-111'de iki kez, kurala UYULARAK yanılındı.**
+
+Mutasyon dosya içeriğinden doğrulandı (`grep -c` = 1, kural sağlandı) ama değiştirilen metin
+**çalışan kod değil, yorumdu**. `replace(..., 1)` ilk metin eşleşmesine düşer, ve bir desenin
+ilk geçişi çoğu zaman onu anlatan yorumdadır.
+
+| tur | mutasyon nereye düştü | sonuç |
+|---|---|---|
+| 1 | `money-float.sh:6`, **yorum** (gerçek dedektör `:192`) | self-test exit 0 → *"self-test kör"* diye **yanlış teşhis** |
+| 2 | `domain-a.txt`'te **yorumun içindeki** dosya adı | bir yorum satırı bozuldu, listeye ekleme **hiç yapılmadı** |
+
+Birincisi tehlikeliydi: çalışan bir self-test "kör" ilan edilmek üzereydi, ve o teşhis
+gereksiz bir düzeltme turu başlatırdı. **Yanlış mutasyon, yanlış teşhis.**
+
+> **Uygulandığını doğrulamak, MEKANİZMAYA uygulandığını doğrulamak değildir.**
+>
+> Mutasyonun hedefi bir yorum, ölü kod ya da kullanılmayan bir dal olabilir. Mutasyonun
+> uygulandığını değil, **davranışı değiştirdiğini** doğrula — beklenen testin kırılması bunun
+> kanıtıdır. Kırılmıyorsa iki açıklama vardır ve **ikincisi daha olasıdır**: test kör olabilir,
+> ya da mutasyon yanlış yere düşmüştür.
+
+Pratik: mutasyonu satır numarasıyla hedefle (`sed -n '192p'` ile göster), ya da uygulamadan
+sonra değiştirdiğin satırı **bas**. `grep -c` yalnız "bir yerde değişti" der.
+
+**Ve geri almayı da doğrula:** `git checkout` **untracked** bir dosyada çalışmaz — sessizce
+hiçbir şey yapar. T-111'de beş ardışık mutasyon bu yüzden birikti; yakalayan şey
+`shasum -a 256 -c` idi. Yeni dosyalarda geri almayı **içerik hash'i** ile doğrula.
+
 **8 — ailenin en incesi: disiplinli görünen ve tam olarak korumak için yazıldığı şeye kör olan
 test.** ADR 0007 E16: `money-float`'ın self-test'i üç yönü kontrol ediyor, üç fixture'ı var,
 mutasyonla sınanmış görünüyor — ama filtreyi **kendi kopyasıyla** kuruyordu. Taramanın
@@ -406,6 +434,27 @@ Bu, "dokümanda sayı yazma" kuralının atıflara uygulanmış hâli. İkisi ç
   da ekle, ama **bulunmayı sağlayan token olsun**
 
 Yani: **numara yazarken ölçmeye zorlar, token bulmayı sürdürür.** İkisini birlikte yaz.
+
+### Port ederken: davranış taşınır, onu DOĞRU KILAN BAĞLAM taşınmaz (ZORUNLU)
+
+**Kopyalanan bir satır, kaynağında güvenli olduğu için hedefinde de güvenli değildir.**
+
+T-111'de ölçüldü. Backend'in `money-float.sh`'i domain listesi bulunamazsa `SKIPPED` yazıp
+**exit 0** döner — ve bu **güvenlidir**, çünkü `run-all.sh` o işareti grep'leyip bir setup
+hatasına çevirir. Frontend portu `exit 0`'ı aldı, hatta yorumun *"SKIPPED is not a pass"*
+cümlesini de aldı — ama o cümleyi doğru kılan `run-all.sh`'i almadı.
+
+Sonuç: bir dosyayı silmek ya da yeniden adlandırmak kapıyı **kalıcı ve sessiz** yeşile
+çeviriyordu. Aynı kod, farklı bağlamda **zıt anlam**.
+
+> **Bir davranışı port ederken sor: bunu kaynağında doğru kılan şey bu satır mı, yoksa
+> onun etrafındaki bir şey mi? İkincisi ise ya onu da port et, ya davranışı değiştir.**
+
+Bu, ikizlerde atıf şartı koymamızın (`numeric-text.ts` ↔ `numberUtils.ts`) aynı gerekçesidir:
+kopyanın kendisi doğruluğunu taşımaz, **bağı taşır**.
+
+⚠️ Ve port edilmeyeni **kaydet**: T-111'in "WHAT DID NOT PORT" listesi üç madde sayıyordu ve
+`run-all.sh` o listede **yoktu** — yani eksiklik yalnız yapılmamış değil, **bilinmiyor**du da.
 
 Bir sözleşmenin (transformer, guard, invariant) geçerliliği **çağıranın bugünkü şekline bağlı
 olamaz.** "Bugün ulaşılamaz" bir kapsam gerekçesi olabilir, ama asla bir **koruma kaldırma**
