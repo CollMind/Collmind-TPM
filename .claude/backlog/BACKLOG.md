@@ -123,6 +123,7 @@ status: active        # planned | active | closed
 | [[T-116]] | frontend `type-check` hiçbir test dosyasını denetlemiyor (`include: ["src"]`) | P2 | frontend-engineer | todo |
 | [[T-117]] | Grid düzenleme: sessiz min/max clamp + kaydetme ucunda `canEdit` yok (iki karar) | P2 | architect | todo |
 | [[T-118]] | Ölü `PlanningGrid.tsx` kapattığımız dört kusurun kopyasını taşıyor | P3 | frontend-engineer | todo |
+| [[T-119]] | Frontend guard runner yok — ikinci guard eklenmeden önce ön koşul | P3 | frontend-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |

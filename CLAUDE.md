@@ -220,9 +220,20 @@ gereksiz bir düzeltme turu başlatırdı. **Yanlış mutasyon, yanlış teşhis
 Pratik: mutasyonu satır numarasıyla hedefle (`sed -n '192p'` ile göster), ya da uygulamadan
 sonra değiştirdiğin satırı **bas**. `grep -c` yalnız "bir yerde değişti" der.
 
-**Ve geri almayı da doğrula:** `git checkout` **untracked** bir dosyada çalışmaz — sessizce
-hiçbir şey yapar. T-111'de beş ardışık mutasyon bu yüzden birikti; yakalayan şey
-`shasum -a 256 -c` idi. Yeni dosyalarda geri almayı **içerik hash'i** ile doğrula.
+**Ve geri almayı da doğrula — bu ayrı bir delik.** `git checkout` **untracked** bir dosyada
+çalışmaz: hata vermez, sessizce hiçbir şey yapar. T-111'de beş ardışık mutasyon bu yüzden
+**birikti**.
+
+Bedeli yalnız kirli bir ağaç değil: her mutasyon bir öncekinin **üstüne biniyor**, yani
+ikinciden itibaren ölçtüğün şey tek bir değişikliğin etkisi değil, **birikmiş bir durumun**
+etkisidir. Sonuçlar hâlâ "exit 1" der ve doğru görünür; hangi mutasyonun onu ürettiği
+bilinmez.
+
+> **Geri almanın SONUCUNU ölç, komutun çalıştığını değil.** `shasum -a 256 -c` bunu yapar;
+> `git checkout` yalnız bir niyet beyanıdır.
+
+Bu, guard yazarken özellikle geçerlidir — guard dosyaları doğdukları commit'e kadar
+untracked'dır, yani mutasyonla sınanan her yeni guard tam olarak bu tuzağın içindedir.
 
 **8 — ailenin en incesi: disiplinli görünen ve tam olarak korumak için yazıldığı şeye kör olan
 test.** ADR 0007 E16: `money-float`'ın self-test'i üç yönü kontrol ediyor, üç fixture'ı var,
@@ -455,6 +466,16 @@ kopyanın kendisi doğruluğunu taşımaz, **bağı taşır**.
 
 ⚠️ Ve port edilmeyeni **kaydet**: T-111'in "WHAT DID NOT PORT" listesi üç madde sayıyordu ve
 `run-all.sh` o listede **yoktu** — yani eksiklik yalnız yapılmamış değil, **bilinmiyor**du da.
+
+**Ama liste yazmak yetmez: listenin TAM olduğu ölçülmeli.** Kopyalanmayanın listesi de bir
+enumerasyondur, ve §7.1'in tablosundaki vakaların **çoğu** bir enumerasyonun eksik çıkmasıdır —
+her seferinde tüketici göründüğü için. Sonuncusu bu kuralın kendi vakasıydı
+(`run-all.sh`, "port edilmeyenler" listesinde yoktu).
+
+> **Bir enumerasyona dayanan her karar, enumerasyonun kendisi ölçülene kadar bir tahmindir.**
+
+Pratik: "şunlar port edilmedi" derken kaynağı **tara**, hafızadan sayma. Kaynakta hangi
+dosyalar/mekanizmalar var, hedefte hangileri yok — farkı **komutla** üret.
 
 Bir sözleşmenin (transformer, guard, invariant) geçerliliği **çağıranın bugünkü şekline bağlı
 olamaz.** "Bugün ulaşılamaz" bir kapsam gerekçesi olabilir, ama asla bir **koruma kaldırma**
