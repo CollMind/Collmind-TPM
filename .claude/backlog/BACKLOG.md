@@ -120,7 +120,10 @@ status: active        # planned | active | closed
 | [[T-113]] | grid e2e fixture'ı: 500 bayat süreçmiş; asıl kusur paylaşılan FU + teardown yokluğu | P1 | debugger | review |
 | [[T-114]] | frontend `npm run lint` repo genelinde kırmızı (473 hata) → lint kapısı yok | P2 | frontend-engineer | todo |
 | [[T-115]] | `ledger.service.test.tsx` flaky — tam suite'te 4 koşumda 1 düşüyor | P3 | qa-engineer | todo |
-| [[T-109]] | `grid-cells` düzenleme dalı ölü — 2a (koordinatör) bitti ama erişilemez; 2b (silme) kaldı | P1 | frontend-engineer | blocked-unreachable |
+| [[T-116]] | frontend `type-check` hiçbir test dosyasını denetlemiyor (`include: ["src"]`) | P2 | frontend-engineer | todo |
+| [[T-117]] | Grid düzenleme: sessiz min/max clamp + kaydetme ucunda `canEdit` yok (iki karar) | P2 | architect | todo |
+| [[T-118]] | Ölü `PlanningGrid.tsx` kapattığımız dört kusurun kopyasını taşıyor | P3 | frontend-engineer | todo |
+| [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend'de ratchet/guard yok — `parseFloat` sayılmıyor (T-109/110'dan sonra) | P2 | frontend-engineer | todo |
 | [[T-102]] | `formula-parser`: hata-null ile BRD'nin kural-null'ı ayırt edilemiyor | P2 | backend-engineer | todo |
