@@ -235,6 +235,44 @@ bilinmez.
 Bu, guard yazarken özellikle geçerlidir — guard dosyaları doğdukları commit'e kadar
 untracked'dır, yani mutasyonla sınanan her yeni guard tam olarak bu tuzağın içindedir.
 
+**Flaky bir test, ürünün yük altında ARALIKLI bozulduğunun kanıtı olabilir (ZORUNLU).**
+
+Flaky bir sonuç için iki ucuz açıklama vardır ve ikisi de yanlış olmaya elverişlidir:
+*"ortam yavaş"* ve *"test kırılgan yazılmış"*. Üçüncüsü — **ürün gerçekten aralıklı bozuk** —
+daha az akla gelir çünkü daha pahalıdır. **İkisi de ölçülmeden kabul edilmemeli.**
+
+T-114/T-116 turunda ölçüldü: e2e köşe testi **5 koşumun 3'ünde** düştü. Alt-ajan *"pre-existing
+flake, benim kapsamımla ilgisiz"* dedi; Team Lead kendi yazdığı test olduğu için *"test
+kırılgan"* diyebilirdi. Gerçek sebep bir **ürün yarışıydı**: `EditableCell` açılışta `editValue`'yu
+render fazında dolduruyor, kapanışta effect'te temizliyordu — passive effect yük altında bir
+sonraki açılışın doldurduğu değeri siliyor, kutu **boş** açılıyor, ve kullanıcının yazdığı şey
+eski değerin değil **boşluğun** üstüne gidiyordu.
+
+⚠️ **Süre farkı bir ipucudur:** 12-21 sn → düzeltmeden sonra 8-9 sn. Flaky yol 10 sn'lik
+timeout'u yakıyordu. Yani **yavaşlık semptomdu, sebep değil** — "ortam yavaş" açıklaması tam da
+buradan besleniyor ve yanlış.
+
+Ve yanlış hipotezi ölçüp elemek yolu açtı: önce "veri yarışı" sanıldı; hücrenin değerini
+gösterdiğini bekleyen bir probe **geçti** ve kutu yine boş açıldı — hipotez elendi, doğru
+hipoteze sıra geldi.
+
+> **"Test kırılgan" bir teşhis değil, bir tahmindir. Flaky testi düzeltmeden önce neyin
+> aralıklı olduğunu ölç.**
+
+**Mock ile assertion aynı yanlışı paylaşabilir — ikisi de üretimden kopuk, birbiriyle tutarlı.**
+
+T-116'da bulundu: `ledger.service.test.tsx`'in MSW handler'ı `url.searchParams.get('envelopeId')`
+okuyordu, hook ise `budgetEnvelopeId` gönderiyor (`LedgerFilterDto`'nun gerçek alanı). Handler
+**her zaman null** alıyordu. Assertion da `consumedAmount` bekliyordu, gerçek DTO alanı
+`consumed`. Test çalışma zamanında **geçiyordu ve hiçbir şey ölçmüyordu.**
+
+Bu §2.7 #8'in kardeşi ama farklı mekanizma: orada test kontrolün **kopyasını** çalıştırıyordu;
+burada test ile onun sahtesi **birbirine** uyuyor ve ikisi birden üretimden sapmış. İç tutarlılık
+doğruluk gibi görünüyor.
+
+> **Bir mock, taklit ettiği şeyin TİPİNE bağlanmalı.** Tip kapısı test dosyalarını kapsamıyorsa
+> (bkz. [[T-116]]) bu sapma sessizdir — ve o kapı açıldığı ilk gün bu vakayı buldu.
+
 **8 — ailenin en incesi: disiplinli görünen ve tam olarak korumak için yazıldığı şeye kör olan
 test.** ADR 0007 E16: `money-float`'ın self-test'i üç yönü kontrol ediyor, üç fixture'ı var,
 mutasyonla sınanmış görünüyor — ama filtreyi **kendi kopyasıyla** kuruyordu. Taramanın
@@ -540,6 +578,23 @@ Sayı bakım gerektiren bir olgudur; şekil ve "hiçbiri/hepsi" gerektirmez.
   gerektiriyorsa task'ı böl.
 - `code-reviewer` ve `data-analyst` **kod/veri değiştirmez.** Bulgu raporlar.
 - Bir ajan kendi yazdığı kodun testini yazmaz — o `qa-engineer`'ın işidir.
+
+**Her ajan için geçerli ölçüm kuralları (ZORUNLU — Team Lead'e özel değil):**
+
+Bunlar §2.6/§2.7'de gerekçeleriyle duruyor, ama delege edilen ajan o bölümü okumayabilir. En
+pahalıya mal olan dördü burada da:
+
+- **Exit kodunu boruya sokma.** `cmd > log 2>&1; echo $?` — `cmd | grep` değil.
+- **Taban ölçümü için `git stash` KULLANMA.** Kapsamı örtük, untracked dosyalarla etkileşimi
+  sürprizli. `git show HEAD:<dosya>` dar, kesin ve geri alma gerektirmez.
+- **`git checkout` ile geri alma iki yönden yanıltır:** untracked dosyada **sessizce hiçbir şey
+  yapmaz** (mutasyonlar birikir), tracked dosyada ise **HEAD'e** döner — yani commit edilmemiş
+  başkasının işini siler. Her iki durumda da geri almanın **sonucunu** `shasum -a 256 -c` ile
+  doğrula. (İkincisi bu oturumda yaşandı: bir alt-ajanın commit edilmemiş düzeltmeleri
+  `git checkout` ile silindi; kaybı görünür kılan şey [[T-116]] ile açılan tip kapısı oldu.)
+- **Mutasyonun MEKANİZMAYA uygulandığını doğrula**, yalnız "uygulandı"yı değil — `replace(...,1)`
+  ilk metin eşleşmesine düşer ve o çoğu zaman bir yorumdur. Beklediğin test kırılmıyorsa ilk
+  hipotez "mutasyon yanlış yere düştü" olmalı, "test kör" değil.
 
 ---
 

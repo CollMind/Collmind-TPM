@@ -118,12 +118,13 @@ status: active        # planned | active | closed
 | [[T-108]] | RAG eşikleri üretimde konfigüre EDİLEMİYOR — admin ucu + provisioning | P2 | architect | todo |
 | [[T-112]] | Escape **yazma** tetikliyor ve geçersiz girdi hücreyi kilitliyor | P1 | frontend-engineer | review |
 | [[T-113]] | grid e2e fixture'ı: 500 bayat süreçmiş; asıl kusur paylaşılan FU + teardown yokluğu | P1 | debugger | review |
-| [[T-114]] | frontend `npm run lint` repo genelinde kırmızı (473 hata) → lint kapısı yok | P2 | frontend-engineer | todo |
+| [[T-114]] | lint ratchet + self-test kuruldu (taban 488/112); `npm run lint` kapsamı değişmedi | P2 | frontend-engineer | review |
 | [[T-115]] | `ledger.service.test.tsx` flaky — tam suite'te 4 koşumda 1 düşüyor | P3 | qa-engineer | todo |
-| [[T-116]] | frontend `type-check` hiçbir test dosyasını denetlemiyor (`include: ["src"]`) | P2 | frontend-engineer | todo |
+| [[T-116]] | `type-check` artık `tests/`'i kapsıyor — 210 hata düzeltildi, bir kör test bulundu | P2 | frontend-engineer | review |
 | [[T-117]] | Grid düzenleme: sessiz min/max clamp + kaydetme ucunda `canEdit` yok (iki karar) | P2 | architect | todo |
 | [[T-118]] | Ölü `PlanningGrid.tsx` kapattığımız dört kusurun kopyasını taşıyor | P3 | frontend-engineer | todo |
-| [[T-119]] | Frontend guard runner yok — ikinci guard eklenmeden önce ön koşul | P3 | frontend-engineer | todo |
+| [[T-119]] | Guard runner yazıldı (`&&` bulgu gizliyordu); self-test adı + exit-2 politikası kaldı | P2 | frontend-engineer | review |
+| [[T-120]] | Frontend tiplerinde `Date` iddiası ile telden gelen string uyuşmuyor | P2 | frontend-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |
