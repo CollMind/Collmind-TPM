@@ -94,7 +94,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `D-09` | Envelope çözümleme boyutları? | `SYSTEM_INVARIANTS §10` | `INV-B-007` | açık |
 | `D-10` | Claim modeli CTPM'e girecek mi, hangi şekilde? | `SYSTEM_INVARIANTS §10` · [[T-176]] · `0055` | claim portu | açık |
 | `D-14` | Actuals replace semantiği bir **tenant politikası** mı? | `SYSTEM_INVARIANTS §10` | `INV-R-003` | açık |
-| `D-15` | Hesaplanan **sıfır** KPI ile *"KPI yok"* aynı şey mi? | `SYSTEM_INVARIANTS §10` | `INV-N-*` | açık |
+| `D-15` | Hesaplanan **sıfır** KPI ile *"KPI yok"* aynı şey mi? | `SYSTEM_INVARIANTS §10` · `0057` | **`INV-N-002`'nin transformer fazı** (tüm `INV-N-*` değil) | **açık** ✅ *ADR 0008 farklı eksen — doğrulandı, `SYSTEM_INVARIANTS:681` zaten yazıyor* |
 | [[T-144]] | Bütçe eşiği orta kademesi **90** mı **95** mi, ve sınır `>` mi `>=` mi? | `.claude/backlog/tasks/T-144.md` · `0049 §2b` | RAG gösterimi · onay kapısı | açık |
 | [[T-156]] | Konfigürasyon katmanı (altı tablo) hangi şekilde yazılacak? | `.claude/backlog/tasks/T-156.md` | Phase 2'nin tamamı | **açık** — ⚠️ port referansı **yok**, sıfırdan tasarım |
 | [[T-176]] | LTA'nın uygulanabilirliği **dönem etiketinden** mi **tarih aralığından** mı gelir? | `.claude/backlog/tasks/T-176.md` · `0055 §1.2` | claim portu | açık — TTM'de de cevaplanmamış |
@@ -111,9 +111,10 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `0056-K9` | Dört ölü tenant/admin mekanizması: sil mi, bağla mı? | `0056 §C` · [[T-180]] | — | açık — **öneri: sil** |
 | `0056-K10` | Login'in tenant çözümü çok-tenant'ta ne yapacak? | `0056 §C` | çok-tenant login | açık |
 | `0019 #1` | Mod seçimi bağlamla mı çözülür (üç katmanlı yığın)? | `docs/analysis/0019 §kuyruk` · `0037` | [[T-148]] · [[T-156]] | açık — soru **değişti**: *"doğru mu"* değil, *"tablo neden yok"* (`0021:108`) |
-| `0019 #2` | Tactic FU seviyesinde, hacim SKU seviyesinde — doğru mu? | `docs/analysis/0019 §kuyruk` | grid · veri modeli · miras | **bayat?** — 2026-06'dan beri doğrulanmadı |
+| `0019 #2` | Tactic FU seviyesinde, hacim SKU seviyesinde — doğru mu? | `0019 §kuyruk` · **`0057` (ölçüldü 2026-08-11)** | grid · veri modeli · miras | **açık** — yazma yolunda ✅ ve BRD'den **katı**; kullanıcı yüzeyinde ❌ ([[T-187]]) |
 | `0020 #6` | %90'da *"Finance onayı gerekir"* katmanı — üç kademeli bütçe kapısı | `docs/analysis/0020 §6` | [[T-144]] | açık |
 | `0020 #8` | STA ≤30 gün / LTA >30 gün ayrımı | `docs/analysis/0020 §6` | — | 🟡 açık |
+| `§3.1 ↔ §5` | Hacim **FU** seviyesinde mi tahmin edilir, **SKU** seviyesinde mi? Kaynak kendi içinde çelişiyor (`Section_03:112` *"FU → SKU volumes (optional detail)"* ↔ `Section_05:169` *"Volume planning occurs at SKU level"*) | `0057 §1` | grid mimarisi | **açık** ⛔ kod `Section_05`'i uyguluyor **ve** *"optional"*ı kapatıyor |
 | `0023` | `spend_type = ACCRUAL` — tahakkuk ne zaman yazılır, nasıl kapanır? | `docs/analysis/0023 §3` | ledger tahakkuk yolu | **açık** — mekanizma **hiç yok**, LTA'ların çoğu gerektiriyor |
 | `§7.2 ↔ backend` | `import.invoice`: BRD *"Typical Roles: **Planner**, Finance"* diyor, backend `PLANNER`'ı **dışlıyor** — hangisi doğru? | `.claude/backlog/tasks/T-179.md` · `agreement-transaction.controller.ts:288` | fatura yükleme yetkisi | **açık** — [[T-179]] backend'e uydu, çelişki karara bağlanmadı |
 | `ADR 0002 ↔ §7.1` | Finance Manager yalnız `PENDING_FINANCE_REVIEW`'u mu onaylar, yoksa genel Level-2 mi? | `0056 §F.1` · `docs/decisions/0002` | onay akışı | **açık** ⛔ ADR'nin dayanağı **süperseded** (`.cursor/rules.md`) |

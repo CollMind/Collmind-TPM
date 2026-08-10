@@ -189,6 +189,8 @@ status: active        # planned | active | closed
 | [[T-183]] | Blok sınırına bağlanan tarama yardımcısı — `grep -A/-B` **aynı gün üç kez** maskeledi | P2 | backend-engineer | todo |
 | [[T-184]] | Yetkinin **dördüncü** kopyası (`useAgreementPermissions`) — bugün doğru, kalıbı yanlış | P3 | frontend-engineer | todo |
 | [[T-185]] | ⛔ Actuals-first anlaşma KPI'ları **uydurulmuş** SKU'dan — `// 10% uplift assumption` | **P1** | architect | todo |
+| [[T-186]] | 🔴 `finance-reporting` bilinmeyen RAG'ı **`GREEN`** yapıyor — biri **risk** raporu | **P1** | backend-engineer | todo |
+| [[T-187]] | 🔴 Girilen taktik değeri **geri okunamıyor** — grid düşürülmüş kolonu okuyor | **P1** | frontend-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
