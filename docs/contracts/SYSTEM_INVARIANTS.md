@@ -342,7 +342,11 @@ here so they are designed in rather than retrofitted.
   actual > expected → NON_TPM = actual − expected
   actual < expected → UNDER   = expected − actual   (informational; no claim)
   ```
-- **Rationale:** the two extant Addendum V2 versions specify incompatible algorithms.
+- **⚠️ Source status (T-142, 2026-08-10):** the "two extant Addendum V2 versions" could **not
+  be located**. `recognition` appears **zero** times in the binding BRD package
+  (`docs/brd/`), and it carries no allocation rule of any kind. The rule below is a
+  **proposal awaiting a product decision**, not a reading of a source. See ADR 0010.
+- **Rationale (as originally written):** the two extant Addendum V2 versions specify incompatible algorithms.
   Proportional-of-actual overpays whenever a non-TPM discount exists; expected-based books
   spend that was never granted when the actual falls short. The rule above uses `expected`
   as a ceiling and the rate ratio as a distribution key — two different jobs that both
@@ -541,8 +545,8 @@ whether a silent wrong number depends on it.
 | **D-03** | CAP scope and optionality | INV-B-002 | K29 says tactic-level, code is agreement-level. K31 says optional, `cap_total_amount` is `NOT NULL` |
 | **D-04** | Append-only enforcement level | INV-L-001…003 | DB guarantee or application convention? If DB: `deleted_at` arguably should not exist on this table |
 | **D-05** | Numeric contract | INV-N-002, INV-R-008 | Integer minor units · decimal library · SQL-side arithmetic. Plus rounding mode |
-| **D-06** | Settlement base | — (prerequisite for INV-R-007) | Absent entirely. Addendum V2 §5.2 specifies three types frozen per agreement; `LIST_PRICE × VOLUME` is uncomputable because actuals carry no volume |
-| **D-07** | Recognition allocation rule | INV-R-007, INV-R-008 | Two Addendum V2 versions specify incompatible algorithms. Proposal in INV-R-007 |
+| **D-06** | Settlement base | — (prerequisite for INV-R-007) | ⚠️ **Citation corrected (T-142, ADR 0010).** The previous text cited *"Addendum V2 §5.2 — three types frozen per agreement"*. **No such document exists in the repo**: `settlement` appears **zero** times in the Addendum that is here. The binding BRD (`docs/brd/01_Main_BRD/Section_04`) gives **no frozen-type enum** — it gives two concrete **per-mechanic** bases: `250 units × 15 TL` (volume × unit amount) and `125,000 × 5%` (rate × amount). D-06 is to be rebuilt on those. `LIST_PRICE × VOLUME` remains uncomputable — the off-invoice import template carries **Amount only**, no quantity (`0018 §Ö-C`) |
+| **D-07** | Recognition allocation rule | INV-R-007, INV-R-008 | ⚠️ **Measured (T-142): NO normative source exists.** `recognition` appears **zero** times across the whole binding BRD package; no allocation / pro-rata / attribution rule anywhere. The earlier note (*"two Addendum V2 versions conflict"*) cited a document that could not be found. **The rule in INV-R-007 is therefore a new product decision, not an interpretation** — §2.4 applies |
 | **D-08** | Envelope-not-found policy | INV-B-001, INV-B-006 | Reject · auto-provision · catch-all · persisted exception. **Fixing this also closes Tier-1 risk #1** — same `if` |
 | **D-09** | Envelope resolution dimensions | INV-B-007 | One dimension set for both paths |
 | **D-10** | Claim model | INV-R-007 | First-class entity (TTM, Addendum V2) or `agreement_transactions` + ledger? |

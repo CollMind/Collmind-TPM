@@ -176,3 +176,35 @@ R1 ledger çift sayım (Yüksek→Düşük: G1-G5) · R2 audit ihlali (Yüksek�
 
 ## 13. Kapsam dışı → ayrı task
 T-021 CSV parser konsolidasyonu · T-022 recognition-exceptions + actuals↔agreement eşleştirme · T-023 finance-reporting plan-vs-actual varyans · T-024 baseline türetme (BRD onayı + volume + dağıtım kuralı şart) · T-025 frontend actuals upload ekranı.
+
+---
+
+## Doğrulama ve gerekçe güçlenmesi (2026-08-10, [[T-142]] · ADR 0010)
+
+Bu doküman yazıldığında bağlayıcı BRD **bilinmiyordu** — `.cursor/` altındaki PDF normatif
+sanılıyordu ve o PDF actuals'ı *"out of scope for Phase 1"* diye kapsam dışı bırakıyor. Yani
+`0002`'nin kapsam kararı **Wella CSV başlığına** ve TTM karşılaştırmasına dayanıyordu.
+
+Bağlayıcı BRD (`docs/brd/01_Main_BRD/Section_04_Actuals_First_Mode.md`) okundu. **Karar
+doğrulandı, ve gerekçesi güçlendi:**
+
+Off-invoice import şablonu (BRD'nin kendi tanımı) **altı kolon**:
+
+```
+A: LTA_Code    B: Invoice_No    C: Invoice_Date    D: Amount    E: CPL_Code    F: Notes
+```
+
+Hacim yok, adet yok. Ve `❌ Volume-weighted pricing` açıkça dışlanmış.
+
+⚠️ **Görünürdeki çelişkinin açıklaması önemli:** BRD'nin settlement örnekleri per-unit
+hesaplıyor (`250 units × 15 TL = 3.750 TL`) ama import yalnız **tutar** alıyor. Çelişki değil
+— hesabın **nerede yapıldığı** farkı:
+
+> **BRD'nin ekonomisi hacimli, GİRDİSİ hacimsiz.** Per-unit aritmetiği müşteri tarafında
+> yapılıyor; sisteme fatura tutarı giriyor.
+
+Ve modun kendi varlık gerekçesi bunu söylüyor: *"Volume forecasting is impractical or
+unreliable."* Yani hacimsizlik bir eksiklik değil, **modun tanımı**.
+
+**Sonuç:** `0002`'nin *"CTPM'de actuals = tutar agregası, FU/SKU ve hacim boyutu YOKTUR"*
+kararı bağlayıcı kaynakla uyumludur; D-16'nın (`VolumeMilli`) ertelenmesi ayakta kalır.

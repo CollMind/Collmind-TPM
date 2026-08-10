@@ -65,9 +65,18 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 | # | Kaynak | Statü |
 |---|---|---|
 | 1 | `docs/decisions/*.md` — **ADR'ler** | **Bağlayıcı.** Ürün sahibinin verdiği kararlar. BRD ile çelişirse ADR kazanır (BRD'nin bilinçli genişletmesidir). |
-| 2 | `.cursor/` altındaki **BRD PDF'leri** | Asıl kaynak metin. |
+| 2 | **`docs/brd/`** — BRD paketi (12 bölüm + Addendum + Candidate Log) | **Asıl kaynak metin.** `01_Main_BRD/Section_04` actuals-first, `Section_05` planning-first. `02_Addendum` **zorunlu** okumadır. |
 | 3 | `.cursor/rules.md` | **Türetilmiş özet — normatif değil.** |
 | 4 | Bu dosyanın §2.3'ü | Hatırlatma listesi. Normatif değil. |
+| — | `.cursor/*.pdf` | ⛔ **SÜPERSEDED — normatif DEĞİL** (ADR 0010). Arşiv. |
+
+> **⛔ `.cursor/CollMind_TPM_BRD_v1.0.pdf` kullanılmaz.** Kendi künyesinde *"2025-11-04 ·
+> **Initial BRD**"* yazıyor, 62 sayfa, ve `actuals-first`/`planning-first` kelimeleri **hiç
+> geçmiyor** — yani ürünün yarısını kapsamıyor. `docs/brd/` iki ay sonrası, ~200 sayfa,
+> *"Final · LOCKED"*. Karar ve ölçüm: **ADR 0010** · `docs/analysis/0018`.
+>
+> Silinmedi, çünkü *"bu karar neden verilmişti"*nin cevabı kayıtta kalsın. **Ama ona
+> dayanarak kural yazılmaz.**
 
 **Task'a başlamadan önce ilgili ADR'leri tara.** Bugün dokuz ADR var; hiçbiri opsiyonel değil.
 
@@ -82,11 +91,17 @@ pdftotext -layout .cursor/<dosya>.pdf /tmp/brd.txt   # -layout: BRD tabloları b
 `-layout` **şart**: §2.2'nin kayıp örneği (NFR-1.2'nin "Measurement Method" sütunu) tam da
 tablo yapısı düzleştiğinde kaybolan türden bir bilgidir.
 
-⚠️ **Ve `.cursor/` altında BİRDEN ÇOK BRD var — hangisine baktığını yaz.** İlk kullanımda
-ölçüldü (T-137): `max_combined_discount` kuralı `CollMind_TPM_BRD_v1.0.pdf`'te **hiç
-geçmiyor**, `TPM_Base_BRD_Code_Prompts.pdf`'te **şema + mockup + doğrulama örneği** olarak
-duruyor. Yani *"BRD'de yok"* demek, **hangi PDF'e bakıldığı yazılmadan anlamsızdır** — ve o
-tur, kural bulunmasaydı "dayanaksız kolon" diye raporlanacaktı.
+⚠️ **Ve BRD tek bir dosya DEĞİL — hangisine baktığını yaz.** İki tur üst üste ölçüldü:
+
+- **T-137:** `max_combined_discount` kuralı `CollMind_TPM_BRD_v1.0.pdf`'te **hiç geçmiyor**,
+  `TPM_Base_BRD_Code_Prompts.pdf`'te **şema + mockup + doğrulama örneği** olarak duruyor.
+- **[[T-142]]:** o PDF'lerin **hiçbirinde** actuals-first yok — asıl kaynak
+  `docs/brd/01_Main_BRD/` (12 bölüm). `claim`/`settlement`/`accrual` PDF'lerde **sıfır**,
+  `Section_04`'te sırasıyla 2/21/3.
+
+Yani *"BRD'de yok"* demek, **hangi belgeye bakıldığı yazılmadan anlamsızdır** — birincisinde
+kural bulunmasaydı "dayanaksız kolon" diye raporlanacaktı, ikincisinde ürünün yarısı
+"BRD dışı" sayılacaktı.
 
 > **`rules.md` sessiz + PDF okunmadı = ölçüm YOK.** Bugüne kadar bu ikinci yarı teknik olarak
 > imkânsızdı ve o yüzden fark edilmedi; artık mazereti yok.
@@ -105,6 +120,13 @@ bu "kural yok" demek değildir — PDF'e bak, orada da yoksa **DUR** (§2.4).
 `rules.md`'de bugün **hiç geçmeyen** kavramlar: `actuals`, `agreement`, `claim`, `settlement`,
 `ledger`, `reversal`, `invoice`, `recognition`, `tenant`. Yani ürünün actuals-first tarafının
 normatif kaynağı `rules.md` **değildir**.
+
+⚠️ **Ve teşhis eksikti — [[T-142]] düzeltti.** Bunu bir *özetleme kaybı* sanmıştık. Ölçüm
+başka bir şey söyledi: o kavramlar `.cursor/`'daki **PDF'lerin kendisinde de yok**, çünkü o
+PDF'ler farklı (ve süperseded) bir BRD'dir. Kaynak `docs/brd/01_Main_BRD/Section_04`'tür.
+
+> **Bir özetin eksik olduğunu görmek, aslına baktığını sanmaya yol açabilir.** `rules.md`
+> kayıplıydı — doğru; ama karşılaştırdığımız "asıl" da yanlış belgeydi.
 
 ### 2.3 Özet hatırlatmalar (normatif DEĞİL — doğrulamadan uygulama)
 
