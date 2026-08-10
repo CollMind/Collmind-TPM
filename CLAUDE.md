@@ -423,6 +423,38 @@ Ve genel kural: **kanıtın kendisi şüpheliyse sonucu da şüphelidir.** İki 
 temizken exit 0" **aynı çıktıyı** verir — kapıyı, yakalaması gereken hatayı kasten üreterek
 sına.
 
+### Bir DÜZELTME de bir iddiadır (ZORUNLU)
+
+**Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
+
+Bir kusur bulunduğunda dikkat *"kusur gerçek mi"*ye gider ve orada durur. Ama düzeltme
+**ikinci bir iddiadır**: *"doğrusu şudur."* O iddia ayrıca ölçülmezse, gerçek bir kusur
+gerçek bir sapmayla değiştirilir — ve sonuç **bir düzeltme kılığında** kaydedilir.
+
+Bu oturumda **üç kez** oldu:
+
+| # | düzeltme | gerçek |
+|---|---|---|
+| 1 | *"fırlatma kapısı %80"* (tek kaynaktan genelleme) | %95 kapı, %80 **mitigation** |
+| 2 | *"auto-reject Phase 1'de geçersiz"* | `§7.7`: **Phase 1'de geçerli** |
+| 3 | **`migration 1780`: *"DOĞRU (BRD): INCR_GP / INCR_SPEND"*** | dört kaynak **`TOTAL_PLANNED_SPEND`** diyor |
+
+İlk ikisi bizim yorumumuzdaydı ve bir sonraki turda düzeldi. **Üçüncüsü koda girdi ve
+kalıcı** — üstelik doğru payda **aynı migration tarafından** veritabanına eklenmişti,
+birkaç satır ötede.
+
+> ⚠️ **Ve düzeltme daha tehlikelidir, çünkü "iş bitti" hissi aramayı durdurur.** İkinci
+> vakada *"düzelttim"* duygusu üçüncü kaynağa bakmayı engelledi; doğru cevap dördüncü
+> belgedeydi.
+
+**Ve §7.1 ile birleşince:** bir sapma *"uygunluk"* diye etiketlenirse (`DOĞRU (BRD)`)
+**sorguyu kapatır.** Sessiz bir sapma bir gün fark edilir; kaynağa atıf veren bir sapma
+**doğrulanmış görünür.** Atıf boşsa — kaynak okunmamışsa — o etiket kusuru korur.
+
+- ❌ *"BRD kanonik formüle güncelledi"* (kaynak okunmadan)
+- ✅ *"`Section_05 §5.3` ve Glossary `GP ROI` maddesi `TOTAL_PLANNED_SPEND` diyor —
+  ölçüldü <tarih>"*
+
 ### Ölçüm ortamının bayatlığı da bir maskeleme sınıfıdır (ZORUNLU)
 
 **`start:dev` süreci ayaktayken kaynak düzenlenirse rotalar bozulabilir ve hata kod kusuru gibi
