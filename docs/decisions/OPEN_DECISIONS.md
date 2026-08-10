@@ -115,6 +115,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `0020 #6` | %90'da *"Finance onayı gerekir"* katmanı — üç kademeli bütçe kapısı | `docs/analysis/0020 §6` | [[T-144]] | açık |
 | `0020 #8` | STA ≤30 gün / LTA >30 gün ayrımı | `docs/analysis/0020 §6` | — | 🟡 açık |
 | `0023` | `spend_type = ACCRUAL` — tahakkuk ne zaman yazılır, nasıl kapanır? | `docs/analysis/0023 §3` | ledger tahakkuk yolu | **açık** — mekanizma **hiç yok**, LTA'ların çoğu gerektiriyor |
+| `§7.2 ↔ backend` | `import.invoice`: BRD *"Typical Roles: **Planner**, Finance"* diyor, backend `PLANNER`'ı **dışlıyor** — hangisi doğru? | `.claude/backlog/tasks/T-179.md` · `agreement-transaction.controller.ts:288` | fatura yükleme yetkisi | **açık** — [[T-179]] backend'e uydu, çelişki karara bağlanmadı |
 | `ADR 0002 ↔ §7.1` | Finance Manager yalnız `PENDING_FINANCE_REVIEW`'u mu onaylar, yoksa genel Level-2 mi? | `0056 §F.1` · `docs/decisions/0002` | onay akışı | **açık** ⛔ ADR'nin dayanağı **süperseded** (`.cursor/rules.md`) |
 | [[T-169]] | Phase 1 tabanı mı, Phase 2 devamı mı? | `.claude/backlog/tasks/T-169.md` | sıralama | ✅ **karar verildi** 2026-08-10 |
 | [[T-163]] | `GP_ROI_PCT` paydası? | `docs/decisions/0011` | dört eşik | ✅ **karar verildi** — ADR 0011 |
