@@ -149,19 +149,67 @@ sözlük maddesi bir davranış spesifikasyonu değildir; `Section_04`'ün cap b
 
 ---
 
-## 3. Çıktı 3 — Karar envanteri (bu turdan çıkanlar)
+## 3. Çıktı 3 — Karar envanteri
 
-| Karar | Kova | Not |
+### 3.0 ⚠️ Filtre düzeltildi: ayrım gerekçenin VARLIĞI değil, TÜRÜ ve MALİYETİ
+
+Bu bölümün ilk hâli *"gerekçesi yazılı → danışmana sorulmaz"* diyordu. **Yanlış** — ve bu
+oturumun sekiz kez belgelediği sınıfın kendisi: gerekçenin varlığını doğruluğu sanmak.
+
+Ölçülmüş karşı örnekler, hepsi gerekçeliydi ve hepsi yanlıştı:
+
+| yazılı gerekçe | ölçüm |
+|---|---|
+| *"performans için boş satırları atla"* | ters çıktı |
+| *"prototype pollution için `defval: false`"* | ilgisi yoktu |
+| *"tarayıcı virgülü reddediyor"* | reddetmiyordu |
+| *"veritabanından ulaşılamaz"* | ulaşılabiliyordu |
+| *"context, which the logger prints"* | basmıyordu |
+
+Bazılarında gerekçe **kusuru sorgudan korudu** — yani gerekçeli olmak riski *artırdı*.
+
+> **Ve BRD'ninki daha risklidir:** koddaki bir gerekçe **ölçülebilir**. BRD'nin domain
+> gerekçesi ölçülemez — tam da danışmanın alanı.
+
+**Doğru filtre — iki şart birlikte:**
+
+1. Gerekçe bir **domain iddiası** mı? (teknik ya da kapsam değil)
+2. **Yanlış olması pahalı mı?** (mimariye gömülü, geri dönüşü zor)
+
+İkinci şart eleyicidir: bir ekran yerleşimi yanlışsa değiştirilir; *FU seviyesinde tactic
+girme* kararı yanlışsa **veri modeli** değişir.
+
+| Gerekçe türü | Kim doğrular | Danışmana |
 |---|---|---|
-| Bütçe RAG 80/95 | **Gerekçesi yazılı** | Glossary sayıları ve sınırı veriyor → danışmana sorulmaz, **koda uydurulur** (§2.1) |
-| Bütçe RAG dördüncü kova (100) | **Gerekçesi yok (bu turda)** | Kaynağı bulunamadı; aranacak |
-| GP ROI RAG 20/10 | **Gerekçesi yazılı** | Ve kod uyumlu |
-| Baseline ≥%95 SKU kapsama kapısı | **Gerekçesi yazılı** | *"Baseline must have ≥95% SKU coverage for Planning-First plans to be approved (data quality gate)"* — **kodda karşılığı ölçülmedi** |
-| CAP aşımı → Finance override | **Gerekçesi yazılı** (ama tek cümle) | D-01 ile karşılaştırılmalı |
-| `TRANSFER` / `ADJUST` işlem tipleri | **Gerekçesi yok** | BRD'de yok, kodda var → nereden geldi? K1-K45 (Wella) adayı |
-| Mod çözümü *"user-selected değil, context ile"* | **Gerekçesi yazılı** | Dört çözüm faktörü sayılı; **kodda bir resolver var mı ölçülmedi** |
+| Teknik / ölçülebilir | **biz** — ölçeriz | hayır |
+| Kapsam / faz | **ürün sahibi** | hayır |
+| **Domain iddiası** (yazılı **veya** yazısız) | **danışman** | **evet — pahalıysa** |
+| Wella'dan gelmiş (K1-K45) | önce *tenant mı ürün mü* | belki |
 
----
+⚠️ Ve gerekçeli olan, danışman için **daha değerlidir**: gerekçesiz bir karar için soru
+*"neden böyle?"* olur — zayıf. Gerekçeli olan için *"bu gerekçe tutuyor mu?"* — güçlü ve
+cevaplanabilir.
+
+### 3.1 Bu turdan çıkan kararlar, yeni filtreyle
+
+| # | Karar | Gerekçe türü | Maliyet | Danışmana |
+|---|---|---|---|---|
+| 1 | **Mod kullanıcı seçimi DEĞİL, bağlamla çözülür** — dört faktör sayılı (tactic uygunluğu, baseline varlığı, kanal olgunluğu, kullanıcı akışı) | **domain** | **çok yüksek** — `modes/planning-first` ↔ `modes/actuals-first` modül sınırı; resolver mı toggle mı yapısal karar | ✅ **EVET** |
+| 2 | **Tactic FU seviyesinde, hacim SKU seviyesinde** girilir | **domain** | **çok yüksek** — grid, veri modeli, miras kuralı | ✅ **EVET** |
+| 3 | **CAP aşımı → uyarı + Finance override** | **domain** | **yüksek** — D-01 iki invariantı blokluyor, davranış harcama yolunda gömülü | ✅ **EVET** |
+| 4 | **Baseline ≥%95 SKU kapsama** onay kapısı | **domain** | **orta** — kapının *varlığı* mimari, *sayısı* konfigürasyon | ✅ **EVET** (kapının varlığı; sayı değil) |
+| 5 | **GP ROI ≥20 yeşil / 10-20 amber** | domain | **düşük** — konfigüre edilebilir, DB'den okunuyor | ❌ hayır |
+| 6 | **Bütçe RAG 80 / 95** ve sınır semantiği | sınır: **teknik** · sayılar: domain | **düşük** — konfigürasyon | ❌ hayır — [[T-144]] |
+| 7 | Dördüncü kova (`exceeded 100`) | **kaynağı bilinmiyor** | düşük | ⏸️ önce kaynağı bulunsun |
+| 8 | `TRANSFER` / `ADJUST` işlem tipleri | BRD'de yok, kodda var | orta | 🟡 **belki** — önce *tenant mı ürün mü* ([[T-145]]) |
+| 9 | Tek ledger vs iki tablo | **teknik** | yüksek | ❌ hayır — bizim ölçümümüz ([[T-145]]) |
+
+**Danışman kuyruğuna bu turdan dört aday girdi** (1-4). 10-15 soru sınırı içinde;
+sonraki turlar aynı filtreyle ekleyecek.
+
+⚠️ **Sıralama notu:** 1 ve 2 en pahalıları ve **ikisi de Glossary'den geldi** — yani en
+maliyetli iki domain kararı, BRD'nin *sözlüğünde* duruyordu. Davranış bölümleri
+(`Section_04`/`Section_05`) henüz okunmadı; bu kuyruğun büyümesi beklenir.
 
 ## 4. Çıktı 4 — Görsel envanteri (Glossary'den)
 
