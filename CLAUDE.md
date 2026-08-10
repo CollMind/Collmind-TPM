@@ -813,6 +813,40 @@ map'lenmiş, her INSERT `42701` veriyor, dört bütçe rotası 500 dönüyor. "N
 Diğer ölçüm hataları yanlış cevap verir ya da hiçbir şey ölçmez; bu **doğru sayıyı verip yanlış
 sonuç çıkarttırır** — ve o yüzden en zor fark edilenidir.
 
+> **Ve simetriği: bir satırın VARLIĞININ da en az iki açıklaması vardır.**
+
+§7.1'in "neden 0?" maddesi yokluk için yazılmıştı. T-107 adım 2'de tersi yaşandı: bir alt-ajan
+`main.customers`'da 63 satır `E2E-PW-UPLOAD-*` bulup **"pre-existing sızıntı"** diye raporladı,
+ve Team Lead neredeyse bir task açıyordu. Ölçüm başka bir şey söyledi:
+
+```
+canlı: 0   ·   soft_silinmis: 63          ← hepsinde deleted_at dolu
+DELETE /customers/:id -> customerRepository.softRemove(customer)
+```
+
+Temizlik **çalışmıştı**. Kalanlar öksüz değil, ürünün tasarladığı **mezar taşları**.
+
+> **"Neden 0?" kadar "neden var?" da sorulmalı.** Bir satırın varlığı sızıntı da olabilir,
+> tasarım da; sayı ikisini ayırt etmez.
+
+⚠️ Ve bu, bu oturumdaki ölçüm hatalarının ilk **fazla ölçüm** vakasıydı — öncekilerin hepsi
+eksik ölçümdü (bir kusur görülmedi). Yön farkı önemli: eksik ölçüm bir kusuru kaçırır, fazla
+ölçüm **olmayan bir kusur için iş üretir** ve gerçek kusurların önüne geçer.
+
+### "Güvenlik" gerekçeleri en az sorgulananlardır (ZORUNLU)
+
+İki kez ölçülüp çürütüldü:
+
+| gerekçe | gerçek |
+|---|---|
+| *"`defval: false` prototype pollution'ı önlemek için"* | `defval`'ın ilgisi yok — SheetJS `__proto__` başlığını kendi işliyor (`__proto___NaN`); **iki değerde de** kirlenme yok |
+
+Bu gerekçe bir bayrağa dokunmayı **engelliyordu** — ve o bayrak iki uyuyan kusuru perdeliyordu.
+
+> **`security`, `safety`, `pollution`, `injection`, `sanitize` geçen bir gerekçe gördüğünde,
+> ölçülmüş mü diye sor.** Bu kelimeler tartışmayı kapatır; kapattıkları için de en az
+> doğrulananlardır.
+
 > **Ve değer bir yerel değişkenden geçebilir. Doğrudan kalıbı aramak yetmez.**
 
 T-093'te bu bir kademe daha derinleşti: `+= <entity alanı>` araması 9 nokta buldu, üç noktayı
