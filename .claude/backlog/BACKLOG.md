@@ -153,7 +153,7 @@ status: active        # planned | active | closed
 | [[T-147]] | ~~`TRANSFER`/`ADJUST` BRD'de yok~~ → **ikisi de BRD tipi** (§3.3), sapma yok | P3 | backend-engineer | done |
 | [[T-148]] | **`tactic_policies` tablosu YOK** — mod/mekanik izni/süre/onay eşiği mekanizması | **P1** | architect | todo |
 | [[T-149]] | Price Simulation: dört kolon inmiş, **ekran yok** — şema var, giriş yolu yok | P2 | architect | todo |
-| [[T-150]] | `Committed` ile `Reserved` BRD'de ayrı, view'de **birleşik** — kayıp ayrım | P2 | architect | todo |
+| [[T-150]] | ~~kayıp ayrım~~ → `Committed` **Phase 2 durumu**; T-169'un semptomu | P3 | architect | todo |
 | [[T-151]] | `ledger_entries`: BRD'nin `CHECK (amount >= 0)` **yok**, `status` kolonu **yok** | **P1** | data-engineer | todo |
 | [[T-152]] | `spend_type: ACCRUAL` var, **yazan yol yok** — tahakkuk mekanizması tanımsız | P2 | architect | todo |
 | [[T-153]] | Onay **politika katmanı yok** — `approval_policy_id` olmayan tabloya bakıyor | **P1** | architect | todo |
