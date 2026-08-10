@@ -133,6 +133,9 @@ status: active        # planned | active | closed
 | [[T-126]] | Parse hataları satır kanalına bağlandı — kanal zaten vardı, kablolama eksikti | P2 | backend-engineer | review |
 | [[T-127]] | `.slice(0,7)` dönem üretiminde güvenli değil — ISO genişletilmiş yıl sessizce geçiyor | P3 | backend-engineer | todo |
 | [[T-128]] | Mutasyon aracı (`scripts/mutate.sh`) — bu oturumda bir dosya kaybettik | P2 | backend-engineer | todo |
+| [[T-129]] | İki parser'ın dört getter'ı byte-for-byte aynı — §7 turu yarım | P2 | backend-engineer | todo |
+| [[T-130]] | on/off-invoice import'ta HTTP e2e yok — T-126'nın vaadi iddia edilmiyor | P2 | qa-engineer | todo |
+| [[T-131]] | `getDiscountType`'ın iki Türkçe yazımı ulaşılamaz (`toUpperCase` tuzağı) | P3 | backend-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |
