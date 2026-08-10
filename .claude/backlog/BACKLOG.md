@@ -169,6 +169,7 @@ status: active        # planned | active | closed
 | [[T-163]] | ⛔ **`GP_ROI_PCT` paydası BRD'den farklı** — ana metrik, onay eşikleri ona uygulanıyor | **P1** | architect | todo |
 | [[T-164]] | **Koruma:** BRD pseudo-kodunun `\|\| 0`'ı ve doğrulanmayan sırası bize bulaşmamalı | P2 | architect | todo |
 | [[T-165]] | Yetki: BRD **yetenek** tabanlı (`agreements.create`), bizde **rol enum'u** | P2 | architect | todo |
+| [[T-166]] | D-13: **altı biçim, ikisi çakışan** + actuals overwrite guardrail'i ölçülmedi | P2 | architect | todo |
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
