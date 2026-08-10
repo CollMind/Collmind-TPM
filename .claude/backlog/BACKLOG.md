@@ -141,9 +141,11 @@ status: active        # planned | active | closed
 | [[T-134]] | Onay ekranında "Ortalama ROI" **iki+ planda `NaN%`** (tek planda kazara doğru) | P1 | frontend-engineer | todo |
 | [[T-135]] | `null` ROI raporda/ekranda `0` — T-027'nin "never a fabricated 0" ihlali | P1 | backend-engineer | todo |
 | [[T-136]] | **Alan B çıktısı para olarak kalıcılaşıyor** (`PLANNED_GP`→`total_gp`) — ADR 0007 R1 gerçekleşti | P1 | architect | todo |
-| [[T-137]] | **ÖLÇÜM:** `max_combined_discount` semantiği — `0` = "mekanik kullanılamaz"; BRD DUR | P1 | architect | review |
-| [[T-138]] | Birleşik indirim tavanının üç hardcoded kardeşi (50/30/**60**) — §2.3 ihlali | P2 | architect | todo |
+| [[T-137]] | **ÖLÇÜM:** `max_combined_discount` semantiği — `0` = "mekanik kullanılamaz"; BRD okundu | P1 | architect | done |
+| [[T-138]] | Hardcoded 50/30/**60** — BRD'de 50 ve 60 **dayanaksız**, ve BRD *uyarı* diyor kod *ERROR* | P2 | architect | todo |
 | [[T-139]] | Yaptırım en katıyı, tavsiye en gevşeği söylüyor (`Math.max`) — sıfırdan bağımsız | P2 | backend-engineer | todo |
+| [[T-140]] | BRD'nin `can_combine_with_others` + `typical_range_*` alanları bizde **hiç yok** | P2 | architect | todo |
+| [[T-141]] | **ADR 0009 uygulaması** — `max_combined` için `CHECK (IS NULL OR > 0)` | P1 | data-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |

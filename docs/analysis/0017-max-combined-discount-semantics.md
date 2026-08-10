@@ -308,3 +308,114 @@ edilebilir tavanın yanında konfigüre edilemez bir tavan durmaya devam eder** 
 | **2** | 50 / 30 / 60 sabitlerinin kaynağı | aynı — BRD'den mi geliyor, uydurma mı | aynı |
 | **3** | Gerçek Wella verisinde tavan kullanımı | `mechanics` 6 satır, 6/6 NULL, seed yazmıyor | müşteri master datası |
 | **4** | `POST /mechanics` ile `0` yazıldığında uçtan uca davranış | canlı HTTP koşumu bu turun kapsamı dışı (salt-okunur ölçüm; sunucu ayağa kaldırılmadı) | e2e — [[T-137]]'nin kabul ölçütüne konabilir |
+
+---
+
+## 7. BRD ölçümü — §2'nin DUR'u kapandı (2026-08-10, `poppler` kurulumundan sonra)
+
+`brew install poppler` (ürün sahibi onayı) → `pdftotext -layout` ile üç PDF de metne çevrildi.
+Bu **kalıcı bir kapasitedir**: §2.1'in birinci sıra kaynağı bu oturuma kadar **bir kez bile**
+okunamamıştı.
+
+⚠️ Ve ilk bulgu, aramanın **hangi belgede** yapıldığının önemli olduğu: ana BRD
+(`CollMind_TPM_BRD_v1.0.pdf`) `combined` için **hiç eşleşme vermiyor**. Kural
+`TPM_Base_BRD_Code_Prompts.pdf`'te. *"BRD'de yok"* demek, hangi PDF'e bakıldığını yazmadan
+anlamsızdır.
+
+### 7.1 Kolonun BRD dayanağı **VAR** — ve `0`'a rol vermiyor
+
+Mekanik yönetimi ekranının mockup'ı:
+
+```
+│ Combination Rules:                                    │
+│ [✓] Can combine with other on-invoice discounts       │
+│ [ ] Maximum combined discount: [____] %               │
+```
+
+Aynı belgedeki şema taslağı:
+
+```sql
+-- Combination Rules
+can_combine_with_others BOOLEAN DEFAULT true,
+mutually_exclusive_with JSONB,                -- Array of mechanic codes
+max_combined_discount   DECIMAL(15,4),
+```
+
+**Üç sonuç, üçü de karara giriyor:**
+
+1. **Tavan bir "onay kutusu + değer" çiftidir.** Kutu işaretsizken tavan **yok**; işaretliyken
+   alan bir yüzde taşır. `0`'ın bu tasarımda **hiçbir rolü yok** → **Ö3 doğrulandı.**
+2. **"Birleşemez" ayrı bir alanla ifade ediliyor:** `can_combine_with_others BOOLEAN`. Yani
+   Ö3'ün ön koşulu olarak sorduğumuz *"hiç indirim olmasın nasıl ifade edilir"* sorusunun
+   BRD'de **zaten bir cevabı var** — ve bizde o alan **yok** (§7.3).
+3. **`DECIMAL(15,4)`** — bizde `numeric(5,2)`. ADR 0007 **E8**'in (`numeric(9,4)`'e yükselt)
+   artık bir BRD dayanağı var; ve BRD ondan da geniş bir ölçek istiyor.
+
+### 7.2 ⚠️ 50 / 30 / 60 sabitleri — BRD ölçümü T-138'i **ağırlaştırdı**
+
+BRD'de indirim tavanı bağlamında bulunan **tek** sayı **30**'dur, ve iki yerde geçiyor:
+
+```
+│ ⚠ Note: High combined discount may impact margin │
+│   Recommended max: 30%                           │
+│   Current: 25% - OK                              │
+
+- Check: Not exceeds max allowed (e.g., 30%) ✓
+```
+
+Ve ana BRD'nin kullanıcı hikâyesi:
+
+```
+• System shows warning if discount exceeds typical range
+```
+
+**Karşılaştırma:**
+
+| kod | değer | severity | BRD karşılığı |
+|---|---|---|---|
+| `MAX_ON_INVOICE_DISCOUNT` | 50 | WARNING | **yok** |
+| `MAX_OFF_INVOICE_DISCOUNT` | 30 | WARNING | 30 var ama **combined ON-invoice** için |
+| `MAX_COMBINED_DISCOUNT` | **60** | **ERROR** | **yok** |
+
+Üç fark, üçü de tek yönde:
+
+- **50 ve 60 için BRD'de hiçbir dayanak yok.** (`50%` geçen tüm satırlar iş vakası
+  metrikleri — *"50% reduction in time-to-plan"*; `60%` yalnız bir çubuk grafikte.)
+- **30 var ama başka bir büyüklüğe bağlı:** BRD onu *combined on-invoice* için söylüyor,
+  bizde `MAX_OFF_INVOICE_DISCOUNT`. Aynı sayı, farklı kavram.
+- **Dil farkı belirleyici:** BRD *"Recommended max"*, *"e.g., 30%"*, *"shows **warning**"*
+  diyor. Bizim `MAX_COMBINED_DISCOUNT` **`severity: ERROR`** — yani **bloklayan** bir kapı.
+
+> **BRD tavsiye yazmış, kod yasak uygulamış — ve sayıyı da uydurmuş.**
+> Bu, [[T-138]]'i "hardcode'u konfigürasyona taşı"dan **"eşiğin hem değeri hem sertliği
+> BRD'ye aykırı"** hâline getiriyor.
+
+⚠️ Ve BRD'nin *"typical range"* dediği şeyin şemada karşılığı var: `typical_range_min` /
+`typical_range_max` / `industry_average` / `company_average`. **Dördü de bizde yok** (§7.3) —
+yani BRD'nin **tavsiye** mekanizması hiç yazılmadığı için, tavsiye olması gereken kural bir
+**sabit yasak** olarak doğmuş olabilir.
+
+### 7.3 BRD'de olan, bizde olmayan üç alan → [[T-140]]
+
+```bash
+grep -rn "canCombine|can_combine|typicalRange|typical_range|industry_average"   collmind.backend/src --include="*.ts"     # → BOŞ
+```
+
+| BRD alanı | Bizdeki karşılığı |
+|---|---|
+| `can_combine_with_others BOOLEAN DEFAULT true` | **YOK** — yalnız `mutuallyExclusiveWith` var, o **ikili** dışlama, blanket değil |
+| `typical_range_min` / `typical_range_max` | **YOK** — BRD'nin uyarı mekanizmasının dayanağı |
+| `industry_average` / `company_average` | **YOK** (benchmark; kapsam dışı ama kayda geçer) |
+
+Birincisi doğrudan bu kararın konusu: *"bu mekanik başkalarıyla birleşemez"* BRD'de bir
+boolean'dır, bizde ifade edilemiyor — ve tam bu boşluk `0`'ın o anlama gelmesi ihtimalini
+akla getirmişti.
+
+### 7.4 Ölçülemeyenlerin güncel hâli
+
+| # | Durum |
+|---|---|
+| 1 — BRD dayanağı ve olası çelişki | ✅ **kapandı** — dayanak var, çelişki yok; BRD `0`'a rol vermiyor |
+| 2 — 50/30/60'ın kaynağı | ✅ **kapandı** — 50 ve 60 **dayanaksız**, 30 **başka bir büyüklüğe** ait, ve BRD **tavsiye** diyor |
+| 3 — gerçek Wella verisinde tavan kullanımı | ⛔ **açık** — müşteri master datası gerekiyor |
+| 4 — `POST /mechanics` ile `0` yazıldığında uçtan uca davranış | ⛔ **açık** — ADR 0009 uygulanırken e2e ile kapanır |

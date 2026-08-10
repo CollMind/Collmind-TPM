@@ -71,6 +71,26 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 
 **Task'a başlamadan önce ilgili ADR'leri tara.** Bugün dokuz ADR var; hiçbiri opsiyonel değil.
 
+### 2.1.1 BRD PDF'leri artık OKUNABİLİR — ve hangisine baktığını yaz (ZORUNLU)
+
+`poppler` kuruldu (2026-08-10). BRD'nin asıl metnine erişim artık bir komuttur:
+
+```bash
+pdftotext -layout .cursor/<dosya>.pdf /tmp/brd.txt   # -layout: BRD tabloları bozulmasın
+```
+
+`-layout` **şart**: §2.2'nin kayıp örneği (NFR-1.2'nin "Measurement Method" sütunu) tam da
+tablo yapısı düzleştiğinde kaybolan türden bir bilgidir.
+
+⚠️ **Ve `.cursor/` altında BİRDEN ÇOK BRD var — hangisine baktığını yaz.** İlk kullanımda
+ölçüldü (T-137): `max_combined_discount` kuralı `CollMind_TPM_BRD_v1.0.pdf`'te **hiç
+geçmiyor**, `TPM_Base_BRD_Code_Prompts.pdf`'te **şema + mockup + doğrulama örneği** olarak
+duruyor. Yani *"BRD'de yok"* demek, **hangi PDF'e bakıldığı yazılmadan anlamsızdır** — ve o
+tur, kural bulunmasaydı "dayanaksız kolon" diye raporlanacaktı.
+
+> **`rules.md` sessiz + PDF okunmadı = ölçüm YOK.** Bugüne kadar bu ikinci yarı teknik olarak
+> imkânsızdı ve o yüzden fark edilmedi; artık mazereti yok.
+
 ### 2.2 `.cursor/rules.md` hakkında uyarı (ZORUNLU)
 
 `rules.md` BRD değildir. BRD PDF'inin bir LLM özetidir ve **kayıplıdır** — dosyanın sonunda
