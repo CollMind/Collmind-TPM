@@ -164,6 +164,7 @@ status: active        # planned | active | closed
 | [[T-158]] | `EXPIRED` durumu + 7 gün zaman aşımı ailesi yok; gece işi altyapısı da yok | P2 | architect | todo |
 | [[T-159]] | **§2.1 boşluğu:** BRD paketinin **iç önceliği** tanımsız — üç somut çelişki | **P1** | architect | todo |
 | [[T-160]] | Formül motoru: BRD'nin sekiz `Math.*`'ı yazılamıyor + yetenek **iki kez** yazılmış | P2 | architect | todo |
+| [[T-161]] | `04_Reviews` (**5.249 satır**) hiç açılmadı — H1-H5'i doğuran belge olabilir | P2 | architect | todo |
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
