@@ -293,3 +293,7 @@ status: active        # planned | active | closed
 - [[T-003]] Reversals akışı port — reversal modülü + ledger CREDIT + audit; çift-restore bug'ı yakalandı — `backend-engineer` — 2026-06-24
 - [[T-002]] Karar & dondurma — CTPM ana ürün kararı (ADR + governance) — `architect` — 2026-06-24
 - [[T-001]] Wella Customer.xlsx'ten CPL + müşteri master-data tanımı — `backend-engineer` — 2026-06-23
+
+> **Açık kararlar:** [docs/decisions/OPEN_DECISIONS.md](../../docs/decisions/OPEN_DECISIONS.md)
+> — ürün sahibi · hukuk · danışman · teknik ölçüm bekleyen tüm kararların **indeksi**
+> (içerik taşımaz, yere işaret eder). Yeni bir açık karar doğduğunda oraya satır eklenir.

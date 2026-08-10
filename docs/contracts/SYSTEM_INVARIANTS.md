@@ -652,6 +652,13 @@ oluşmuyor. Tetikleyici bir kod değişikliği değil, bir **entegrasyon kararı
 
 ## 10. Open decisions blocking invariants
 
+> **Kapsam, başlığın kendisidir ve bilinçli olarak dardır:** yalnız cevabı bir **invariant**
+> açan kararlar. Invariantı olmayan domain soruları buraya girmez.
+>
+> Tüm açık kararların haritası (ürün sahibi · hukuk · danışman · ölçüm bekleyen) için:
+> **`docs/decisions/OPEN_DECISIONS.md`** — o bir **indekstir**, bu listeyi yutmaz, ona
+> işaret eder.
+
 Each blocks at least one invariant. Ordered by number of invariants unblocked, then by
 whether a silent wrong number depends on it.
 
