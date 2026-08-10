@@ -127,9 +127,10 @@ status: active        # planned | active | closed
 | [[T-120]] | Frontend tiplerinde `Date` iddiası ile telden gelen string uyuşmuyor | P2 | frontend-engineer | todo |
 | [[T-121]] | Müşteri import tarihleri: bir ay kayma + satır-bazlı teslim + katı gramer — **kapandı** | P1 | backend-engineer | review |
 | [[T-122]] | Kalıcılaştırma tarih-yalnız değeri `Date`'e geri sokuyor (batıda bir gün) | P2 | backend-engineer | todo |
-| [[T-123]] | Tarih grameri kararı 3 parser'dan 1'inde — diğer ikisi **bir ay** kaydırıyor | P1 | backend-engineer | todo |
+| [[T-123]] | Tarih grameri üç parser'da birleşti — `3.4.2026` artık 3 Nisan | P1 | backend-engineer | review |
 | [[T-124]] | `amount <= 0` off-invoice'ta ret, on-invoice'ta serbest — dayanaksız asimetri | P3 | architect | todo |
 | [[T-125]] | Yüzde biçimli para hücresi `raw:true` altında sessizce 100'e bölünüyor | P2 | backend-engineer | todo |
+| [[T-126]] | on/off-invoice importlarında satır-bazlı hata kanalı yok — tek hücre dosyayı düşürüyor | P2 | backend-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |

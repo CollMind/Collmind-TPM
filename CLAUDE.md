@@ -793,6 +793,46 @@ Pratik kural: bir düzeltme yaparken "bu deseni başka kim kullanıyor?" sorusun
 **grep çıktısı** olmalı, bir sezgi değil. Ve "etkilenmiyor" diyorsan, **neden** etkilenmediğini
 ölçtüğün şeyle birlikte yaz — sonraki okuyucu o gerekçeyi doğrulayabilsin.
 
+### `new Date(kullanıcıGirdisi)` — beş sessiz hata biçimi, hepsi ölçüldü (ZORUNLU)
+
+`parseFloat` için söylediğimizin tarih karşılığı: **hata vermez, yanlış yapar.** T-107/T-121/
+T-123 boyunca beş ayrı biçim ölçüldü ve **beşi de sessiz**:
+
+| girdi | `new Date` ne yapıyor |
+|---|---|
+| `"3/4/26"` | sessizce **ABD** sırası — Türk kullanıcının 3 Nisan'ı **4 Mart** oluyor (bir AY) |
+| `"15/1/26"` | `Invalid` → çağıran sessizce `undefined` döndürüyordu |
+| `"46037"` | **yıl 46036** — `Invalid` değil |
+| `"2026-01-15"` ↔ `"1/15/26"` | biri **UTC**, diğeri **yerel** gece yarısı olarak ayrıştırılıyor |
+| `"2026-02-30"` | sessizce **Mart'a taşıyor** (rollover) |
+
+Dördüncüsü kurumsal olarak en sinsi: aynı fonksiyon, girdi biçimine göre **farklı takvim** —
+bu yüzden hiçbir biçimlendirici ikisini birden düzeltemez.
+
+> **`new Date()` bir kullanıcı girdisi için hiçbir zaman doğru araç değildir.** Tarih-yalnız
+> değer bir **takvim günüdür**, `Date` ise bir **an**; ikisini aynı tipte temsil etmek saat
+> dilimi belirsizliğini yapısal olarak davet eder.
+>
+> Katı bir gramerden geçir (`src/common/date/date-text.ts`), kanonik `YYYY-MM-DD` **string**
+> taşı, `Date` kurma.
+
+### Sessiz VARSAYILAN ile sessiz FALLBACK aynı şey değildir (ZORUNLU — §2.5'in sınırı)
+
+§2.5 *bilgi uydurmayı* yasaklıyor. Başka bir **kaynağa** düşmek farklı bir şeydir:
+
+| | ne yapıyor | statü |
+|---|---|---|
+| sessiz **varsayılan** | bilgi **uyduruyor** — `?? 0`, `catch { return 0 }` | **YASAK** |
+| sessiz **fallback** | başka bir **kaynak** kullanıyor — `agreement.periodMonth`, `invoiceDate`'ten türetilen dönem | iyileştirilmeli, ama **uydurma değil** |
+
+Vaka (T-123, ürün sahibi kararı 2026-08-10): `off-invoice.getFiscalPeriod`'a §2.5 gereği bir
+`throw` konmuştu — **kural doğruydu**, ama o importer'da satır-bazlı hata kanalı **yok**, yani
+tek bozuk hücre **tüm dosyayı** düşürüyordu. Throw geri alındı, gerekçesi **koda** yazıldı ve
+kanal task'ına ([[T-126]]) atıf verildi.
+
+> **Katılığı, teslimi olmayan bir yere ekleme.** Ve geri alıyorsan **neden**ini koda yaz —
+> yoksa altı ay sonra biri *"burada neden katılık yok?"* diye sorar ve cevabı bulamaz.
+
 ### Bir doğrulamanın "çalıştığı" sanılması, girdinin ona hiç ULAŞMAMASINDAN gelebilir (ZORUNLU)
 
 "Mekanizma var, ona giden yol yok" sınıfının **doğrulama tarafındaki** hâli — ve daha sinsi,
