@@ -823,3 +823,115 @@ iki adım **scale-2 para kolonları** taşıyor ve üç karardan hiçbirine bağ
 ölçek) üç cevaba da bağımlıdır** — `0014` bunu zaten en sona koymuştu.
 
 Yani üç karar **F4'ün başlamasını** değil, **F4'ün bitmesini** blokluyor.
+
+---
+
+## 7. Veri ölçümü — §5'in Ö1/Ö2/Ö3'ü kapandı (2026-08-10, Team Lead)
+
+`collmind-tpm-postgres` kaldırıldı (`docker start` → `EXIT=0`, `pg_isready` 2. denemede,
+port 5434 `EXIT=0`). Tüm sorgular **şema-nitelendirilmiş** (`main`), exit kodları boruya
+sokulmadı.
+
+### 7.0 ⚠️ Önce bir ölçüm hijyeni vakası — tahmini sayı, gerçek sayı
+
+İlk envanter `pg_stat_user_tables.n_live_tup` ile alındı ve `migrations = 7` dedi. Repoda
+**58** migration dosyası var; bu, `INV-M-001`'in ta kendisi gibi görünüyordu.
+
+`SELECT count(*) FROM main.migrations` → **58**.
+
+`n_live_tup` bir **tahmindir** (son `ANALYZE`'a bağlı), sayım değil. Yani bir kapı ölçüsü
+olarak kullanılamaz.
+
+> **Bu, §2.7 ailesinin bu turdaki üyesi:** ölçüm koştu, sayı döndü, sayı **yanlıştı** — ve
+> yanlışlığı tam olarak aranan kusuru **uydurma** yönündeydi. Bir `INV-M-001` alarmı,
+> ölçümün kendisinden doğacaktı.
+
+### 7.1 `INV-M-001` — bu turun iddiaları için **HOLDS**
+
+| Kontrol | Sonuç |
+|---|---|
+| `main.migrations` satırı ↔ repo migration dosyası | **58 = 58** |
+| Sekiz `scale: 3` kolonun DB tipi | **sekizi de** `numeric(18,3)` — entity bildirimiyle birebir |
+| Fiyat kolonları (`unit_price`, `cogs`, `base_price`, `list_price`, `actual_price`, `entered_unit_amount`) | **hepsi** `numeric(18,4)` — birebir |
+| C3/E13'ün üç bölünmüş kolonu | `entered_rate_pct`, `entered_unit_amount`, `entered_total_amount` **var**; `entered_value` **düşmüş** (1797 indi) |
+| `skus.default_base_volume` | **YOK** — [[T-133]]'ün kamuflaj teşhisi DB'de de doğrulandı |
+
+§2.1/§3.2'nin entity+DDL üzerinden kurulmuş **tüm tip iddiaları** doğrulandı. **Ö2 kapandı.**
+
+### 7.2 ⚠️ B7 artık bir *entity* iddiası değil, bir *şema* olgusu
+
+```
+lta_rates.on_invoice_percentage         numeric(5,2)     ← ADR 0007 Karar 5: numeric(9,4) olmalıydı
+lta_rates.off_invoice_percentage        numeric(5,2)     ← aynı
+mechanics.max_combined_discount_pct     numeric(5,2)     ← ADR 0007 E8: numeric(9,4) olmalıydı
+```
+
+Üçü de **veritabanında** hâlâ eski ölçekte. ADR'nin kaydettiği iş yapılmamış.
+
+### 7.3 D-15 — üç eksenin **üçü de bugün UYKUDA**, ve üçü ayrı sebeple
+
+| Eksen | Ölçüm | Neden uykuda |
+|---|---|---|
+| **A — hesaplanmış KPI** | `plans` · `plan_fus` · `plan_skus` = **0 satır** (soft-silinmiş dahil 0 — yani hiç yaratılmamış, silinmemiş) | ölçülecek plan yok |
+| **B — kural tavanı** | `mechanics.max_combined_discount_percentage` **6/6 NULL**, `= 0` olan **hiç yok** | hiçbir mekanikte tavan tanımlı değil |
+| **C — formül girdisi** | `MECHANIC_VAL` içeren KPI formülü **sıfır** (27 formül tarandı); `agreements.mechanic_value` **3/3 NULL** (A4'ün 2026-08-04 ölçümü bugün de geçerli) | ne yazan var ne okuyan |
+
+**Ama "uykuda" ile "zararsız" aynı şey değil — ve fark B ekseninde keskin.**
+
+`spend-validation` ile `mechanic.service`'in **zıt** okumaları bugüne kadar hiç karşılaşmadı
+çünkü **hiçbir mekaniğin tavanı yok.** Yani çelişki bir hata dalında değil, **hiç
+tetiklenmemiş** bir dalda duruyor. Tavan tanımlayan ilk tenant, hangi kod yolundan geçtiğine
+göre **en kısıtlayıcı** ya da **en gevşek** davranışı alacak.
+
+> Bu, CLAUDE.md'nin *"bir doğrulamanın çalıştığı sanılması, girdinin ona hiç ULAŞMAMASINDAN
+> gelebilir"* kuralının bu turdaki vakasıdır. İki implementasyon da bugün "doğru" görünüyor
+> çünkü ikisi de hiç ateşlemedi.
+
+### 7.4 A ekseninin **yapısal** cevabı veriden değil, ustalık verisinden geldi
+
+`plans` boş olduğu için "gerçek bir `0` var mı" doğrudan ölçülemedi. Ama zincir ölçüldü:
+
+```
+GP_ROI_PCT    = INCR_GP / INCR_SPEND * 100      ← bölme; INCR_SPEND=0 → formula-parser null
+PLANNED_GP    = PLANNED_TO - PLANNED_COGS
+PLANNED_COGS  = PLAN_VOL * COGS                 ← COGS eksikse null (T-027)
+```
+
+Ve **master data ölçüldü:**
+
+```
+skus = 170        cogs DOLU = 4 / 170        cogs = 0 olan: hiç        unit_price = 0 olan: hiç
+```
+
+**166 SKU'da `cogs` yok.** Yani bugünkü master data ile `PLANNED_COGS` → `null` →
+`PLANNED_GP` → `null` → `GP_ROI_PCT` → `null`, SKU'ların **%97,6'sında**.
+
+> **A ekseninde bugün baskın hâl `null`'dır, `0` değil.** Ve tam bu yüzden `null`'ı `0`'a
+> çeviren kusurlar ([[T-135]], B3/B4) **en görünür** olanlardır: raporda `%0,0` gösterilen
+> her satır, bugün büyük olasılıkla *"COGS girilmemiş"* demek.
+
+⚠️ Bu, D-15'in yönünü değiştirmez ama **B3/B4'ün önceliğini** yükseltir: D-15 hangi yöne
+karar verilirse verilsin, bugünkü verinin %97,6'sı yanlış tarafta raporlanıyor.
+
+### 7.5 D-16 ve D-17 için veri
+
+| | Ölçüm | Karara etkisi |
+|---|---|---|
+| `on_invoice_entries` | **0 satır** | `quantity`/`list_price` kolonları var, veri **yok** → D-06 kararı hâlâ veriye değil tasarıma dayanacak |
+| `sales_actuals` | 3 satır, hacim kolonu **yok** | `0002` doğrulandı, üçüncü kez |
+| `skus.unit_price` | **170/170 dolu**, hiç `0` yok | D-17'nin **canlı** yarısı |
+| `skus.cogs` | **4/170 dolu** | D-17'nin **şema-yalnız** yarısı |
+| `plan_mechanic_values` · `lta_rates` · `budget_transaction_logs` | **0 satır** | F4'ün ilk iki adımı veri dönüşümü **gerektirmiyor** — `0011`'in "veri dönüşümü sıfır" ölçümü bugün de geçerli |
+
+> **D-17 kendi içinde bölünüyor:** `unit_price` 170 satırda dolu ve canlı çarpımda;
+> `cogs` fiilen boş bir kolon. §3.5 Ö4'ün ("kolon bazında ayrı karar") dayanağı ölçümle
+> güçlendi.
+
+### 7.6 Kalan ölçülemeyenler
+
+Ö4 (NFR-1.2 recalc süresi), Ö5 (D-06'nın durumu — ürün kararı), Ö6 (`PriceMinor`'ın akıbeti —
+ürün kararı), Ö7 (TTM karşılıkları), Ö8 (spec dosyaları) **açık kalıyor.** Ö1/Ö2/Ö3 kapandı.
+
+⚠️ Ve Ö1'in kapanışı bir **koşul** taşıyor (§2.7): bu ölçümler **boş bir planning-first
+veritabanında** yapıldı. `plans` dolduğunda A ekseninin sayıları yeniden ölçülmelidir —
+bugünkü "uykuda" hükmü o an geçersizdir.
