@@ -85,6 +85,32 @@ document is about.
 
 ## 3. Ledger — `INV-L`
 
+### ⛔ Kapsam sınırı (bağlayıcı kaynak, `docs/brd/01_Main_BRD/Section_03_Core_Components.md` §3.6)
+
+> *"Ledger is a financial traceability mechanism, **not an accounting system**. It tracks
+> promotional spend attribution and audit trails, but does not replace GL accounting,
+> accounts payable processing, or ERP financial modules."*
+
+Bu cümle `INV-L-*` ailesinin **üst sınırıdır**: ledger'dan muhasebe düzeyinde garanti
+beklenmez. `account_code`'un BRD'de *"Optional GL mapping"* olması da bunu destekler.
+Gelecekte *"ledger şunu da yapmalı"* denildiğinde referans budur.
+(Kaydeden: [[T-143]] turu 5 · `docs/analysis/0023 §2.7`)
+
+### ⚠️ Bu ailenin kaçırdığı bir kaynak maddesi ([[T-151]])
+
+BRD `§3.6` şeması `amount NUMERIC(18,2) NOT NULL **CHECK (amount >= 0)**` diyor ve
+*"amount always positive; sign indicated by direction"* kuralını yazıyor. **Bu kısıt bizde
+yok** (ölçüldü: `pg_constraint contype='c'` boş) ve **aşağıdaki dokuz invariantın hiçbiri
+onu içermiyor.** Negatif bir `amount` + `DEBIT`, `INV-L-007`'nin `Σ DEBIT − Σ CREDIT`
+hesabını sessizce bozar.
+
+### 📌 `deleted_at` ve **D-04**
+
+BRD'nin `ledger_entries` şemasında `deleted_at` **hiç yok**. `INV-L-003` *"hiçbir satır
+non-null `deleted_at` taşıyamaz"* demek zorunda kalıyor — **bir invariant'ın bunu söylemek
+zorunda olması, kolonun hiç olmaması gerektiğinin işaretidir.** D-04 için kaynak tarafı
+artık cevaplı; karar ürün sahibinin.
+
 The ledger is the system's financial system of record. These are the strongest invariants
 in the product and most of them already hold.
 

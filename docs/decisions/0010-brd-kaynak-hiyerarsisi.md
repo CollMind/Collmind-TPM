@@ -82,6 +82,22 @@ ne Addendum'da.
 > **Kaynak değişikliği bir boşluğu kapatmadı — boşluğun gerçekten boşluk olduğunu
 > kanıtladı.**
 
+⚠️ **Gerekçe güncellendi ([[T-143]] turu 5, `docs/analysis/0023 §1`):** ilk yazımda
+*"kaynak onu ertelemedi bile, hiç düşünmedi"* denmişti. Ölçüm bunu **kısmen çürüttü** —
+`accrual` ledger `spend_type`'ının dört değerinden biri (§3.6), `settlement` STA/LTA'yı
+ayırt eden özellik (§4.2), `reconciliation` ERP mutabakatı anlamında var.
+
+**Karar değişmiyor, gerekçesi değişiyor:**
+
+> Kaynak bu kavramların bir kısmını **adlandırmış, hiçbirini tanımlamamış.**
+> `accrual` bir **etiket**, `settlement` bir **özellik** — hesabı, akışı, tablosu yok.
+> `claim`, `recognition`, `gross-to-net` gerçekten **hiç yok**.
+
+Ve bu **daha tedirgin edicidir**: *"hiç düşünülmemiş"* bir **boşluk**tur, *"adı konmuş,
+mekanizması yazılmamış"* bir **yarım bırakılmışlık**tır. Somut kanıtı [[T-152]]:
+`LedgerSpendType.ACCRUAL` kodda var ve onu yazan hiçbir yol yok — yani *"mekanizma var,
+yol yok"* sınıfı **kaynak belgede doğmuş**, kod onu sadakatle kopyalamış.
+
 Ve bu bir kazanımdır: `INV-R-007`'nin `min(actual, expected)` kuralı tasarlanırken
 *"Addendum V2'nin iki sürümü çelişiyor"* denmişti. Şimdi biliniyor ki o çelişki dışında
 **hiçbir normatif kaynak yok**. Yani kural bir **yorum** değil, **yeni bir ürün kararı**

@@ -156,6 +156,7 @@ status: active        # planned | active | closed
 | [[T-150]] | `Committed` ile `Reserved` BRD'de ayrı, view'de **birleşik** — kayıp ayrım | P2 | architect | todo |
 | [[T-151]] | `ledger_entries`: BRD'nin `CHECK (amount >= 0)` **yok**, `status` kolonu **yok** | **P1** | data-engineer | todo |
 | [[T-152]] | `spend_type: ACCRUAL` var, **yazan yol yok** — tahakkuk mekanizması tanımsız | P2 | architect | todo |
+| [[T-153]] | Onay **politika katmanı yok** — `approval_policy_id` olmayan tabloya bakıyor | **P1** | architect | todo |
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
