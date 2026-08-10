@@ -148,8 +148,10 @@ status: active        # planned | active | closed
 | [[T-141]] | **ADR 0009 uygulaması** — `max_combined` için `CHECK (IS NULL OR > 0)` | P1 | data-engineer | todo |
 | [[T-142]] | İki BRD çatışması **çözüldü** — paket bağlayıcı, PDF süperseded ([[ADR 0010]]) | P0 | architect | done |
 | [[T-143]] | **Bağlayıcı BRD okuması** — tur 1/N bitti (Glossary); ~11.700 satır okunmadı | **P0** | architect | in-progress |
-| [[T-144]] | Bütçe RAG sınırı BRD ile sapıyor — **%95,00'de** BRD amber, kod kırmızı | P2 | backend-engineer | todo |
-| [[T-145]] | BRD **tek ledger** anlatıyor, ürün **iki tablo** kullanıyor — gerekçe yazılı değil | P2 | architect | todo |
+| [[T-144]] | Bütçe eşikleri: BRD'de **iki sistem** (RAG 80/95 · alert 80/**90**/100), kod birleştirmiş | **P1** | backend-engineer | todo |
+| [[T-146]] | BRD `agreements` şemasının yedi kısıtı kodla hiç karşılaştırılmadı | P2 | data-engineer | todo |
+| [[T-147]] | `TRANSFER`/`ADJUST` BRD'de yok — kullanılıyorlar mı, toplamalara giriyorlar mı | P3 | backend-engineer | todo |
+| [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |
