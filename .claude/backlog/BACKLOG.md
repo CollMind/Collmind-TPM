@@ -180,7 +180,7 @@ status: active        # planned | active | closed
 | [[T-174]] | **UOM dönüşümü yok:** birim taşınıyor, dönüştürülmüyor — uykuda 12× sessiz hata | P2 | architect | todo |
 | [[T-175]] | Kaynak-doğruluk **sahipliği işaretli değil** — ilk ERP entegrasyonunun ön koşulu | P3 | architect | todo |
 | [[T-176]] | Port öncesi iki karar: **LTA dönem↔tarih** semantiği · **CAP aşımında üç davranış** | P2 | architect | todo |
-| [[T-177]] | ⛔ Plan seviyesindeki `GP_ROI_PCT` **formül değil** — null'ları elenmiş ağırlıksız ortalama | **P1** | architect | todo |
+| [[T-177]] | Oran KPI'ları üst seviyede yeniden hesaplanıyor + `coverageRatio`; RAG yalnız tam kapsamada | **P1** | architect | review |
 | [[T-178]] | Üçüncü KPI varsayılan listesi bir **HTTP rotasında**, hiçbir test bağlamıyor | P2 | backend-engineer | todo |
 | [[T-179]] | 🔴 `CATEGORY_MANAGER` onay ekranına giremiyordu — **12 kapı** düzeltildi + regresyon guard'ı | **P1** | frontend-engineer | review |
 | [[T-180]] | Dört ölü tenant/admin mekanizması — ikisi `x-tenant-id`'ye **JWT'siz** güveniyor → sil | P2 | backend-engineer | todo |
@@ -188,6 +188,7 @@ status: active        # planned | active | closed
 | [[T-182]] | 🔴 Sayfa içi rol kontrolleri hizalandı — `hasRole`, ADMIN bypass'ı geri geldi | **P1** | frontend-engineer | review |
 | [[T-183]] | Blok sınırına bağlanan tarama yardımcısı — `grep -A/-B` **aynı gün üç kez** maskeledi | P2 | backend-engineer | todo |
 | [[T-184]] | Yetkinin **dördüncü** kopyası (`useAgreementPermissions`) — bugün doğru, kalıbı yanlış | P3 | frontend-engineer | todo |
+| [[T-185]] | ⛔ Actuals-first anlaşma KPI'ları **uydurulmuş** SKU'dan — `// 10% uplift assumption` | **P1** | architect | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
