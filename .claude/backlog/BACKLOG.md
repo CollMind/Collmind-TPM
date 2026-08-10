@@ -161,7 +161,7 @@ status: active        # planned | active | closed
 | [[T-155]] | ~~H5.4 tarayıcıda emrediyor~~ → **dört katmandan biri**; §2.3 ayakta | P1 | architect | done |
 | [[T-156]] | **EPIC:** BRD konfigürasyon modeli tanımlamış, ürün sabit koda çevirmiş — altı vaka | **P1** | architect | todo |
 | [[T-157]] | Phase 2 kapısının üç ölçütü karşılanmadı — CI/CD perf regresyonu **yapısal yok** | P2 | architect | todo |
-| [[T-158]] | `EXPIRED` durumu + 7 gün zaman aşımı ailesi yok; gece işi altyapısı da yok | P2 | architect | todo |
+| [[T-158]] | `EXPIRED` + zaman aşımı → **UAT'ye ertelenmiş edge case** (CANDIDATE-004) | P3 | architect | todo |
 | [[T-159]] | ~~§2.1 boşluğu~~ → **çelişki yokmuş**: Candidate Log Addendum'dan türetilmiş | P1 | architect | done |
 | [[T-160]] | Formül motoru: BRD'nin sekiz `Math.*`'ı yazılamıyor + yetenek **iki kez** yazılmış | P2 | architect | todo |
 | [[T-161]] | ~~`04_Reviews`~~ → review **girdisi**, çıktı değil; H1-H5 tartışması yok | P2 | architect | done |

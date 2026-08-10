@@ -1024,6 +1024,25 @@ T-091 bunun kanıtı: transformer'lı **hedef** alanları arandı (10 aday, 4 bo
 **kaynak** alanların biriktirilmesi aranmadı — `finance-reporting`'deki aynı kusur (iki canlı
 GET rotası) o yüzden ağa takılmadı.
 
+> **Kelime sınırlı sayım da bir gürültü ölçüsü olabilir. Yüksek sayı bir okuma gerekçesi
+> değil; örnekleyip ANLAMI doğrula.**
+
+Alt-string sayımının yanıltıcılığı bilinen bir tuzaktı (`\bRAG\b` = 0 iken `grep -c RAG` = 8;
+`average`/`storage`/`leverage` içindeydi). Kelime sınırı onu kapatır — **ama anlamı
+kapatmaz.**
+
+Ölçüldü (BRD envanter turu): `Section_01`'de `grep -owci capability` → **15**. Sayıya bakarak
+*"CBAC burada tartışılıyor"* denip bölüm okuma listesine alınacaktı. Örneklendi:
+
+> *"a next-generation **solution** designed to address the diverse operational needs"* ·
+> *"the platform **recognizes** that maturity is not binary"*
+
+**İş anlamında "yetenek" — CBAC'ın `capability`'si değil.** Aynı kelime, farklı kavram.
+
+> Sorun **yazımda değil, anlamda**. Kelime sınırı yazımı çözer; anlamı yalnız **örnekleme**
+> çözer. Bir terim sayısına dayanarak karar veriyorsan (oku/atla, var/yok), **en az bir
+> geçişi bağlamıyla oku.**
+
 > **Bir ölçüm beklediğin sonucu verdiğinde, o sonucun BAŞKA bir açıklaması olup olmadığını sor.
 > Özellikle sıfır, boş ve yokluk sonuçlarında — onların her zaman en az iki açıklaması vardır.**
 
