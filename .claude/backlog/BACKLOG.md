@@ -178,6 +178,7 @@ status: active        # planned | active | closed
 | [[T-172]] | **Hesaplanamayan ROI bir yargıya çöküyor:** `null` → `BELOW_TARGET` / `0` → kırmızı | P2 | architect | todo |
 | [[T-173]] | Onay kaydı `who`'yu tutuyor, **`on what basis`'i tutmuyor** — `metadata`'nın 0 yazarı | P2 | architect | todo |
 | [[T-174]] | **UOM dönüşümü yok:** birim taşınıyor, dönüştürülmüyor — uykuda 12× sessiz hata | P2 | architect | todo |
+| [[T-175]] | Kaynak-doğruluk **sahipliği işaretli değil** — ilk ERP entegrasyonunun ön koşulu | P3 | architect | todo |
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
