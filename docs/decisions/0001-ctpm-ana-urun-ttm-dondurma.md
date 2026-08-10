@@ -84,3 +84,42 @@ geliştirilmez. TTM yalnızca, UAT'de kanıtlanmış akışların CTPM'e
 - Branch/release modeli: `CLAUDE.md` §5
 - Konsolidasyon backlog'u: `.claude/backlog/epics/E-001.md`
 - Port stratejisi prensipleri: bu ADR'nin sonuçları + backlog port task'ları
+
+---
+
+## Geriye dönük doğrulama (2026-08-10)
+
+`ADR 0001` 2026-06-24'te, **bağlayıcı BRD paketi görülmeden** verildi. `T-143`'ün 36 turluk
+BRD okuması ve ardından yapılan TTM ölçümü
+(`docs/analysis/0055-ttm-olcumu-claim-settlement-ve-adr-0001-sinamasi.md`) kararı geriye
+dönük sınadı.
+
+**Karar teyit edildi — ve artık ölçümle.**
+
+| gerekçe | ölçüm |
+|---|---|
+| *"Mimari üstünlük"* | **Ayakta.** TTM `apps/api` **entity'siz**, ham SQL (`queryRunner.query`) üzerine kurulu; kapsam modeli daha dar (`user_cpl_assignments` yalnız CPL ↔ CTPM `user_scopes` cpl+category+channel) |
+| *"Jenerik/çok kiracılı ana ürün"* | **Ayakta.** Wella bağlantısı TTM'de belge ve seed düzeyinde yoğun |
+| *"BRD uyumu"* (o gün ölçülemezdi) | **TTM daha uyumlu DEĞİL.** CTPM'de eksik bulunan Phase 1 konfigürasyon tablolarının (`scope_policies` · `tactic_policies` · `budget_policies` · `approval_policies` · `permissions` · `capabilities` · `tenant_features`) **hiçbiri TTM'de de yok**; RLS de yok |
+
+### İki nitelendirme
+
+**1. *"Kanıtlanmış finansal akışlar"* fazla geniş.** Son kayıtlı UAT koşusunda (2026-05-08)
+dört beklenen claim'in **dördü** tutarıyla ve statüsüyle tuttu, ledger doğruydu — ama koşum
+`BLOCKED_AT_CLAIM_GENERATION_FINANCIAL_VALIDATION` ile kapandı ve tıkanan nokta **bugün de
+cevaplanmamış** bir domain sorusu (LTA dönem etiketi ↔ tarih aralığı → [[T-176]]).
+
+> Port edilecek şey *"kanıtlanmış bir akış"* değil, **"dört vakada kanıtlanmış bir akış +
+> bir açık domain sorusu"**.
+
+**2. Kararın kapsamı genişliyor: TTM yalnız AKIŞ kaynağı değil, DOĞRULAMA kaynağı da.**
+
+`GP_ROI_PCT` paydası bunun kanıtı: TTM hem seed'inde hem **testinde** BRD'nin formülünü
+(`INCR_GP / TOTAL_PLANNED_SPEND`) taşıyor; sapma estate'te tek bir yerde — CTPM'in
+`migration 1780`'inde, üstelik *"BRD paritesi düzeltmesi"* olarak etiketlenmiş
+([[T-163]]).
+
+> **Bir CTPM kararı şüpheliyse, TTM'de karşılığı olup olmadığına bakılabilir.** `1780`
+> yazılırken bakılsaydı cevap oradaydı.
+
+Bu, *"TTM yeni iş almaz"* kuralını değiştirmez — TTM'e yazılmaz, TTM'den **okunur**.

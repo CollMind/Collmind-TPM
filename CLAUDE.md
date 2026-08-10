@@ -1043,6 +1043,22 @@ kapatmaz.**
 > çözer. Bir terim sayısına dayanarak karar veriyorsan (oku/atla, var/yok), **en az bir
 > geçişi bağlamıyla oku.**
 
+**Ve kelime sınırı gürültüyü keserken TÜREV BİÇİMLERİ de keser (ZORUNLU).**
+
+TTM ölçümünde yaşandı: `grep -ow 'settlement'` → **16**, ve `apps/api/src/settlements/`
+**modülünün kendisi bu sayının dışındaydı** — `-w` çoğulu eşleştirmez.
+
+Sayı makul göründüğü için uyarı vermedi. (Aynı turdaki diğer hata — `grep -c | wc -l`'in
+beş terim için de `501` vermesi — **anormal** olduğu için hemen yakalandı; bu ise
+**normal göründüğü için** neredeyse geçiyordu.)
+
+> **Kelime sınırı bir gürültü filtresidir, bir kapsam garantisi değil.** Çoğullar, ekli
+> hâller ve bileşikler (`settlements`, `claiming`, `recognition` ↔ `recognized`) ayrıca
+> aranmalı — ya da gövde ile ara ve gürültüyü **örnekleyerek** ele.
+
+- ❌ `grep -owc 'settlement'` tek başına → modül adını kaçırır
+- ✅ gövde (`grep -oi 'settlement'`) + örnekleme, ya da her iki ölçümü de yaz
+
 > **Bir ölçüm beklediğin sonucu verdiğinde, o sonucun BAŞKA bir açıklaması olup olmadığını sor.
 > Özellikle sıfır, boş ve yokluk sonuçlarında — onların her zaman en az iki açıklaması vardır.**
 
