@@ -150,9 +150,10 @@ status: active        # planned | active | closed
 | [[T-143]] | **Bağlayıcı BRD okuması** — tur 1/N bitti (Glossary); ~11.700 satır okunmadı | **P0** | architect | in-progress |
 | [[T-144]] | Bütçe eşikleri: BRD'de **iki sistem** (RAG 80/95 · alert 80/**90**/100), kod birleştirmiş | **P1** | backend-engineer | todo |
 | [[T-146]] | BRD `agreements` şemasının yedi kısıtı kodla hiç karşılaştırılmadı | P2 | data-engineer | todo |
-| [[T-147]] | ~~`TRANSFER` BRD'de yok~~ → **var** (§4.10, manuel); `ADJUST` hâlâ bulunamadı | P3 | backend-engineer | todo |
+| [[T-147]] | ~~`TRANSFER`/`ADJUST` BRD'de yok~~ → **ikisi de BRD tipi** (§3.3), sapma yok | P3 | backend-engineer | done |
 | [[T-148]] | **`tactic_policies` tablosu YOK** — mod/mekanik izni/süre/onay eşiği mekanizması | **P1** | architect | todo |
 | [[T-149]] | Price Simulation: dört kolon inmiş, **ekran yok** — şema var, giriş yolu yok | P2 | architect | todo |
+| [[T-150]] | `Committed` ile `Reserved` BRD'de ayrı, view'de **birleşik** — kayıp ayrım | P2 | architect | todo |
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
