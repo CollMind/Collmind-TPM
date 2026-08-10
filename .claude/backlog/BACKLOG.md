@@ -173,6 +173,7 @@ status: active        # planned | active | closed
 | [[T-167]] | **D-11 KAPANDI:** RLS **Phase 1 gereksinimi** — karar değil, yazılmamış koruma | **P1** | architect | todo |
 | [[T-168]] | **`INV-A-*` audit ailesi YOK** — kaynak 20 olay tanımlıyor, sözleşme boş | P2 | architect | todo |
 | [[T-169]] | **Ürün Phase 1 kapsamının ÖNÜNDE** — iki sinyal, hiçbir yerde yazılı değil | **P1** | architect | todo |
+| [[T-170]] | **Regülasyon boyutu yok:** 7 yıl saklama · KVKK anonimleştirme · E-Fatura arşivi | **P1** | architect | todo |
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
