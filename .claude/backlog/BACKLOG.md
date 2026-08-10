@@ -164,7 +164,7 @@ status: active        # planned | active | closed
 | [[T-158]] | `EXPIRED` durumu + 7 gün zaman aşımı ailesi yok; gece işi altyapısı da yok | P2 | architect | todo |
 | [[T-159]] | ~~§2.1 boşluğu~~ → **çelişki yokmuş**: Candidate Log Addendum'dan türetilmiş | P1 | architect | done |
 | [[T-160]] | Formül motoru: BRD'nin sekiz `Math.*`'ı yazılamıyor + yetenek **iki kez** yazılmış | P2 | architect | todo |
-| [[T-161]] | `04_Reviews` (**5.249 satır**) hiç açılmadı — H1-H5'i doğuran belge olabilir | P2 | architect | todo |
+| [[T-161]] | ~~`04_Reviews`~~ → review **girdisi**, çıktı değil; H1-H5 tartışması yok | P2 | architect | done |
 | [[T-162]] | RAG toplama kuralı + negatif ROI *"flag for review"* ölçülmedi | P3 | qa-engineer | todo |
 | [[T-163]] | ⛔ **`GP_ROI_PCT` paydası BRD'den farklı** — ana metrik, onay eşikleri ona uygulanıyor | **P1** | architect | todo |
 | [[T-164]] | **Koruma:** BRD pseudo-kodunun `\|\| 0`'ı ve doğrulanmayan sırası bize bulaşmamalı | P2 | architect | todo |
