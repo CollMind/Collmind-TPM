@@ -79,8 +79,29 @@ tur 18  → §2.6: scope_policies — eşleşme motoru, HYBRID, CPL override
 tur 19  → resolveWorkflow: üç katmanın kesişimi; üçü de yok
 ```
 
-> **Soru artık tam cevaplı.** Ve cevap *"ayrım gereksiz"* değil, *"ayrım gerekli ama
-> **üç katmanı da yazılmamış**"*.
+> ⚠️ **DÜZELTME (ürün sahibi, 2026-08-10):** ilk yazımda *"ayrım **gerekli**, üç katmanı da
+> yazılmamış"* denmişti. **Bu, kaynağı kanıt saymaktır.**
+>
+> **Ölçülen şey:** BRD ayrımı üç katmanlı bir çözümleyici olarak **tanımlıyor**, ve o üç
+> katman bizde **yok**.
+> **Ölçülmeyen şey:** ayrımın **gerekli olup olmadığı**. O bir tasarım kararıdır ve
+> doğruluğu ayrı bir sorudur.
+>
+> Bu oturum BRD'nin **üç kez** yanıldığını ölçtü (`|| 0` sessiz sıfır · `%60` sabit ·
+> `topologicalSort` yanlış adlandırma). **"BRD böyle demiş" bir kanıt değil, bir girdidir.**
+
+### 📌 Kaydedilen alternatif (danışman kuyruğu kuralı gereği)
+
+| | model |
+|---|---|
+| **BRD** | `scope_policies` (bağlam) + yetenek izinleri (kullanıcı) + `tenant_features` (faz) → üç katmanın kesişimi |
+| **Alternatif (daha sade)** | **tek akış** + **opsiyonel hacim alanı**; baseline yoksa hacim-bağımlı KPI'lar `null` |
+
+Alternatifin sonucu: mod bir **veri durumu** olur (hacim var/yok), bir **konfigürasyon
+katmanı** değil. `HYBRID` kavramı gerekmez; `autoSelect` gerekmez; üç tablo gerekmez.
+
+⚠️ **Alternatif bir öneri değil, bir karşıtlıktır** — danışmana *"BRD şöyle kurmuş, daha
+sadesi şu; sizin gördüğünüz pratik hangisine yakın?"* diye sorulabilsin diye kaydedildi.
 
 ---
 

@@ -126,6 +126,27 @@ listesi, çekirdekte tanımlı bir kavramı **saymaz** — o kavram zaten o modu
 > Faz kapsamı → `10`/`11`. Aramayı **tüm pakete** yay (`grep -rin` `docs/brd/`), tek bölüme
 > değil.
 
+### 2.1.2 Bağlayıcı kaynak bir GİRDİ'dir, kanıt değil (ZORUNLU)
+
+§2.1 BRD'yi **bağlayıcı** ilan eder — yani *"ne yapacağız"* sorusunda söz sahibidir. Ama
+**doğru olduğu** anlamına gelmez. BRD bir **tasarım kararıdır**; kararlar yanılır.
+
+Ölçülmüş vakalar (2026-08-10, BRD okuma turları):
+
+| BRD ne diyor | ölçüm |
+|---|---|
+| `context.get(dep) \|\| 0` (KPI motoru pseudo-kodu) | **sessiz sıfır** — §2.5 ihlali. Bizim `null` propagasyonumuz **daha doğru**; uygulansaydı COGS'suz 166 SKU'da ROI şişerdi |
+| `deleteActuals({period})` (düzeltme akışı) | **siliyor** — `INV-R-004`'ün sürümlü `REPLACED` modeli **daha güçlü** |
+| `topologicalSort` | bağımlılık grafiğini **hiç kullanmıyor**, yalnız bir tamsayıya göre sıralıyor |
+| `amount: -2,000` (düzeltme) ↔ `CHECK (amount >= 0)` (şema) | **kendi içinde çelişiyor** |
+
+> **"BRD böyle demiş" bir kanıt değil, bir girdidir.** Bir kaynak maddesini uygularken
+> sor: *bu doğru mu?* — ve doğru değilse **sapmayı gerekçesiyle kaydet**, sessizce uyma.
+
+⚠️ Ve tersi de geçerli: **bizim davranışımız kaynaktan daha katıysa, bir "uyum" turu onu
+zayıflatmamalı.** Bu yüzden böyle vakalar bir **koruma task'ına** bağlanır ([[T-164]]) ve
+testin yorumuna *"BRD şunu diyor, bilinçli olarak uyulmuyor, çünkü …"* yazılır.
+
 ### 2.2 `.cursor/rules.md` hakkında uyarı (ZORUNLU)
 
 `rules.md` BRD değildir. BRD PDF'inin bir LLM özetidir ve **kayıplıdır** — dosyanın sonunda
