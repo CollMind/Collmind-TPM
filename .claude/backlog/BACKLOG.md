@@ -130,7 +130,8 @@ status: active        # planned | active | closed
 | [[T-123]] | Tarih grameri üç parser'da birleşti — `3.4.2026` artık 3 Nisan | P1 | backend-engineer | review |
 | [[T-124]] | `amount <= 0` off-invoice'ta ret, on-invoice'ta serbest — dayanaksız asimetri | P3 | architect | todo |
 | [[T-125]] | Yüzde biçimli para hücresi `raw:true` altında sessizce 100'e bölünüyor | P2 | backend-engineer | todo |
-| [[T-126]] | on/off-invoice importlarında satır-bazlı hata kanalı yok — tek hücre dosyayı düşürüyor | P2 | backend-engineer | todo |
+| [[T-126]] | Parse hataları satır kanalına bağlandı — kanal zaten vardı, kablolama eksikti | P2 | backend-engineer | review |
+| [[T-127]] | `.slice(0,7)` dönem üretiminde güvenli değil — ISO genişletilmiş yıl sessizce geçiyor | P3 | backend-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |

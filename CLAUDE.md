@@ -825,13 +825,37 @@ bu yüzden hiçbir biçimlendirici ikisini birden düzeltemez.
 | sessiz **varsayılan** | bilgi **uyduruyor** — `?? 0`, `catch { return 0 }` | **YASAK** |
 | sessiz **fallback** | başka bir **kaynak** kullanıyor — `agreement.periodMonth`, `invoiceDate`'ten türetilen dönem | iyileştirilmeli, ama **uydurma değil** |
 
-Vaka (T-123, ürün sahibi kararı 2026-08-10): `off-invoice.getFiscalPeriod`'a §2.5 gereği bir
-`throw` konmuştu — **kural doğruydu**, ama o importer'da satır-bazlı hata kanalı **yok**, yani
-tek bozuk hücre **tüm dosyayı** düşürüyordu. Throw geri alındı, gerekçesi **koda** yazıldı ve
-kanal task'ına ([[T-126]]) atıf verildi.
-
 > **Katılığı, teslimi olmayan bir yere ekleme.** Ve geri alıyorsan **neden**ini koda yaz —
 > yoksa altı ay sonra biri *"burada neden katılık yok?"* diye sorar ve cevabı bulamaz.
+
+### ⚠️ AMA fallback'in meşruiyeti dar: birincil kaynak GERÇEKTEN okunamıyor olmalı
+
+Bu kural bir kez fazla geniş uygulandı ve **sessiz yanlış değer** üretti. T-123'te
+`off-invoice.getFiscalPeriod`'un throw'u geri alındı; gerekçe *"tek bozuk hücre tüm dosyayı
+düşürüyor"*du ve **tek bir girdi şekli** (`"çöp"`) ölçülüp genellenmişti.
+
+Review başka şekilleri ölçtü — **önceden doğru okunanları**:
+
+| hücre | geri almadan önce | geri almadan sonra |
+|---|---|---|
+| `2026/01` · `2026-1` | `2026-01` ✓ | **`undefined`** → fallback |
+| `2026-01-15 00:00:00` · ISO datetime | `2026-01` ✓ | **`undefined`** → fallback |
+| `2026/01/15` · `01/15/2026` · `Jan 2026` | `2026-01` ✓ | **`undefined`** → fallback |
+
+Bunlar çöp değildi. Yedisi de sessizce `agreement.periodMonth`'a düşüyordu — çok dönemli bir
+anlaşmada **başka bir ay**, yani `findEnvelopeByDimensions` **başka bir zarfı** buluyor ve
+bütçe yanlış zarftan iniyor. Kullanıcı hiçbir hata görmüyor.
+
+> **Fallback, birincil kaynak YOKSA meşrudur. Birincil kaynak VARKEN ona düşmek ikamedir —
+> ve ikame sessiz olamaz.**
+>
+> ⚠️ *"Gramerimiz tanımıyor"* okunamamak **değildir**. Değer oradaydı ve okunabiliyordu;
+> onu başka bir kaynakla sessizce değiştirmek, `?? 0` kadar bilgi kaybıdır — yalnız daha az
+> görünür.
+
+Ve kararın kendisi bir ölçüm hatasından doğdu: **bir girdi şekli ölçülüp genellendi.** Bir
+kapsam kararı vermeden önce, o kararın etkilediği girdi kümesini **tara** — tek örnek bir
+kümeyi temsil etmez.
 
 ### Bir doğrulamanın "çalıştığı" sanılması, girdinin ona hiç ULAŞMAMASINDAN gelebilir (ZORUNLU)
 
