@@ -1,8 +1,10 @@
-# SYSTEM_INVARIANTS.md — v0.3 (DRAFT)
+# SYSTEM_INVARIANTS.md — v0.4 (DRAFT)
 
 > **Status:** Draft for review. Not yet normative.
 > **Subject:** Collmind-TPM (`collmind.backend`) @ `876010f` + guards Phase 2 + uncommitted T-057 delta
-> **Count:** 33 invariants — **16 HOLDS · 10 VIOLATED · 7 BLOCKED** · 14 open decisions
+> **Count:** 38 invariants — **20 HOLDS · 10 VIOLATED · 8 BLOCKED** · 14 open decisions
+> (sayıldı 2026-08-10, `### INV-X-NNN` başlıkları + her girdinin **ilk** `Status:` satırı;
+> `INV-X-000` §2 şablonudur ve sayıma girmez. İki `HOLDS` **kazara** sağlanıyor — bkz. §9.)
 > **Derived from:** `docs/verification/CTPM_BASELINE_AND_PORT_AUDIT.md` (2026-08-03)
 > **Supersedes for invariant purposes:** nothing yet. Coexists with `.cursor/rules.md`
 > until §Adoption is executed.
@@ -559,7 +561,96 @@ Not a guard yet: `money-float` does not scan `src/database/`, which is the same 
 
 ---
 
-## 9. Open decisions blocking invariants
+## 9. Compliance & Retention — `INV-C`
+
+**Bu aile 2026-08-10'da, bir BRD okuma turu bunun bir boyut olarak hiç var olmadığını
+ölçtükten sonra açıldı** (`docs/analysis/0050`). Kaynak: `Section_09_NFR.md` §9.5, üç Türk
+düzenlemesini **adıyla** sayıyor (Vergi Usul · KVKK · E-Fatura) ve `§9.8` 7 yıllık saklamayı
+bir **Phase 1 taahhüdü** olarak listeliyor.
+
+### ⚠️ Bu ailenin özel niteliği: şartlar bugün **kazara** sağlanıyor
+
+Diğer aileler bir davranışı **koruma altına alır**. Bu aile, bugün doğru olan ama **hiçbir
+şeyin koruması altında olmayan** şartları yazıya döker: 7 yıl saklama sağlanıyor çünkü
+**hiçbir şey silinmiyor** — bir temizlik/arşivleme işi eklendiği gün sessizce ihlal edilir.
+
+> **Guard'ı olmayan bir invariant bir temennidir** — ama yazılmamış bir invariant, ihlal
+> edildiğinde **fark bile edilmez**. Bu aile ikincisini kapatır.
+
+⚠️ **Bağlayıcılık burada iddia EDİLMİYOR.** BRD'nin listesi bir **girdi**dir
+(`CLAUDE.md §2.1.2`); hangi düzenlemenin bu ürüne, hangi kayıtlara, hangi biçimde
+uygulandığı bir **hukuk sorusudur** ve karara bağlanmamıştır ([[T-170]]). Buradaki
+maddeler *"mevzuat şunu emrediyor"* demez — *"kaynak bunu istiyor, bugün şu durumda,
+korunmuyor"* der.
+
+### INV-C-001 — No financial record is ever hard-deleted.
+```
+Status:   HOLDS (accidentally)
+Guard:    NONE
+Evidence: INV-L-003 (ledger) · INV-R-004 (sales-actuals batches: REPLACED, not deleted)
+          Hiçbir zamanlanmış temizlik/arşivleme işi yok — ölçüldü 2026-08-10:
+          retention|anonymiz|archive → backend'de ilgili sonuç yok
+Source:   BRD §9.5 (Vergi Usul, 7 yıl) · §9.8 Phase 1 · docs/analysis/0050
+```
+`INV-L-003` bunun ledger'a özel hâli ve **DB guard'ı var**. Bu madde onu tüm finansal
+kayıtlara genişletir ve **guard'ı yoktur**.
+
+⚠️ Bu bir *"asla silinmeyecek"* taahhüdü değil; **7 yıl** bir süredir ve süreyi uygulayan
+bir mekanizma yoktur. Bir arşivleme işi yazıldığı gün bu madde bir **karar** gerektirir,
+bir engel değil.
+
+### INV-C-002 — A deleted user's identity is anonymized, and the audit trail that references it survives.
+```
+Status:   BLOCKED
+Guard:    NONE
+Evidence: users soft-delete var (deleted_at); ANONİMLEŞTİRME ÖLÇÜLMEDİ
+Source:   BRD §9.5 (KVKK + GDPR Right to Erasure) · docs/analysis/0050
+```
+Kural **ikili**: *sil* değil, **anonimleştir + audit izini koru**. İkinci yarısı `INV-A-*`
+ailesine bağlı ve o aile **henüz yok** ([[T-168]]).
+
+**BLOCKED sebebi:** anonimleştirmenin bugün var olup olmadığı ölçülmedi, ve KVKK'nın bu
+ürüne uygulanma biçimi karara bağlanmadı.
+
+### INV-C-003 — An imported invoice file is retained in its original form.
+```
+Status:   VIOLATED
+Guard:    NONE
+Evidence: import_batches tablosu YOK (docs/analysis/0028 §5). sales_actuals.raw_row
+          satır düzeyinde ham veri tutuyor — dosya değil.
+Source:   BRD §9.5 (E-Fatura: "archived in original format (XML/PDF)") · docs/analysis/0050
+```
+⚠️ *"Dosya saklanmıyor"* **tablo yokluğundan çıkarıldı**, doğrudan ölçülmedi — kanıt bir
+sinyaldir, ölçüm değil ([[T-170]]).
+
+### INV-C-004 — Master data owned by an external system of record is never overwritten by this product.
+```
+Status:   HOLDS (accidentally)
+Guard:    NONE
+Evidence: Bir ERP entegrasyonu yok — çelişecek kaynak da yok (§6.7: "❌ Pre-built ERP
+          connectors"). master-data altında 39 yazma ucu var, beşi BRD'ye göre ERP'nin
+          olan veriyi yazıyor (sku · brand · category · generic-unit · channel).
+Source:   BRD §6.5 ("source-of-truth system always prevails", "non-negotiable")
+          docs/analysis/0053 §4 · [[T-175]]
+```
+`INV-C-001` ile **aynı şekil**: şart sağlanıyor çünkü onu ihlal edebilecek durum henüz
+oluşmuyor. Tetikleyici bir kod değişikliği değil, bir **entegrasyon kararı**.
+
+### 📌 Ailenin ortak deseni — ve neden birlikte duruyorlar
+
+| madde | bugün neden doğru | ne zaman bozulur |
+|---|---|---|
+| `INV-C-001` | hiçbir şey silinmiyor | bir temizlik/arşivleme işi eklendiğinde |
+| `INV-C-004` | ERP yok | ilk entegrasyonda |
+| [[T-174]] (UOM) | birim kolonları **boş** | kolonlar dolduğunda ya da faturalar koli cinsinden geldiğinde |
+
+> **Üçü de bir KOD değişikliğiyle değil, bir VERİ ya da ENTEGRASYON değişikliğiyle bozulur
+> — ve o gün hiçbir test kırmızıya dönmez.** Bu, ailenin `NONE` guard'ının neden özellikle
+> tehlikeli olduğunu açıklar: normal regresyon ağı bu sınıfı hiç görmez.
+
+---
+
+## 10. Open decisions blocking invariants
 
 Each blocks at least one invariant. Ordered by number of invariants unblocked, then by
 whether a silent wrong number depends on it.
@@ -586,7 +677,7 @@ whether a silent wrong number depends on it.
 
 ---
 
-## 10. Guard backlog
+## 11. Guard backlog
 
 Ranked by risk closed per unit of effort.
 
@@ -612,7 +703,7 @@ labelling them `CI` would assert protection that is not there.
 
 ---
 
-## 11. Adoption
+## 12. Adoption
 
 This document becomes normative when:
 
@@ -630,11 +721,12 @@ a tenant profile — and TTM's copy marked historical.
 
 ---
 
-## 12. Changelog
+## 13. Changelog
 
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-08-03 | Initial draft from CTPM baseline audit. 14 open decisions. Header count of "25 invariants: 15 HOLDS · 10 VIOLATED/BLOCKED" was an estimate and is corrected in 0.2 by counting the entries. |
+| 0.4 | 2026-08-10 | **`INV-C` — Compliance & Retention ailesi açıldı** (§9, dört madde). Bir BRD okuma turu (`docs/analysis/0050`) bu boyutun ne kodda ne sözleşmede var olduğunu ölçtü: `Section_09_NFR` §9.5 üç Türk düzenlemesini adıyla sayıyor, `§9.8` 7 yıllık saklamayı bir **Phase 1 taahhüdü** olarak listeliyor, ve `compliance|KVKK|GDPR|retention|INV-C-` bu belgede **0** geçiyordu. Ailenin özel niteliği: `INV-C-001` ve `INV-C-004` bugün **kazara** sağlanıyor — biri hiçbir şey silinmediği, diğeri hiçbir ERP olmadığı için. İkisi de bir **kod** değişikliğiyle değil, bir **veri/entegrasyon** değişikliğiyle bozulur, ve o gün hiçbir test kırmızıya dönmez; normal regresyon ağı bu sınıfı hiç görmez. Bağlayıcılık **iddia edilmiyor** — BRD'nin listesi bir girdidir (`CLAUDE.md §2.1.2`) ve hukuki kapsam [[T-170]]'te açıktır. Sayı 33 → 38, ve **sayılarak** güncellendi (v0.1'in tahmin hatası tekrarlanmadı). Bölüm numaraları 9→10, 10→11, 11→12, 12→13 kaydı.
 | 0.3 | 2026-08-03 | **Guards now carry their own tests.** Two review rounds each found a real silent false negative, and in both the evidence was a throwaway fixture that was deleted afterwards — the most valuable output of each round was never recorded. `scripts/guards/fixtures/` makes those five cases permanent (round-2 regression, round-1 blocker, the false-positive counterpart, the schema-safe forms, and a **positive control** that fails if a guard has stopped measuring at all), and `self-test.sh` runs the matrix at the start of every `npm run guards`; a red matrix stops the run before any finding is counted. Verified by negative test: reinstating the round-2 pre-pass drops `star-line` from 2 findings to 1 and the self-test goes red. This closes the guard-infrastructure work — a future defect adds a fixture, not a review round. |
 | 0.2.2 | 2026-08-03 | Phase 2 code review, round 2. The round-1 fix for the backtick-parity blind spot **introduced a regression of its own class**: its comment pre-pass treated any line starting with `*` as a comment, so a SQL line like `  * FROM pg_indexes …` had its backtick stripped and the parity shifted — one masked query in a two-query fixture, silently. Both heuristics are now gone: `migration-schema.awk` is a real lexer tracking literal-in/out state, so a `//` is a comment only outside a literal and an unterminated literal is reported. Four fixtures cover it (star-line, comment-backtick, mid-line comment, schema-safe forms). Also: guard-name list is now single-sourced from `lib.sh` (`run-all.sh` reads it), `filter_allowlist` accepts exactly what `validate_allowlist` accepts (they had drifted — `n < 3` vs `n != 3`, and `ENV` accepted for any guard), and `financial-ordering` excludes spec/e2e files. Counts unchanged. |
 | 0.2.1 | 2026-08-03 | Phase 2 code review follow-up. Two blockers closed in the guards themselves: (1) `migration-schema.sh` split template literals on backticks, so a backtick inside a `//` comment shifted the parity and blinded the guard **silently** — comment backticks are now stripped and any file with odd parity or an escaped backtick is reported, not skipped (fixture-verified: pre-fix guard 0 findings, post-fix 1). (2) `financial-ordering.sh` scanned 132 of 273 module files — `finance-reporting`, `spend-calculation`, `kpi-engine` were outside it — so INV-N-001's "0 findings across the codebase" claimed more than was measured; scope widened to 176 files (still 0) and the guard's blind spot for runtime-built sort keys is now stated (T-066 opened). Also: `SKIPPED` no longer counts as green (a source-code guard that cannot run exits 1; a DB guard without a database reports `ÖLÇÜLMEDİ`), allowlist-suppressed findings are now printed in the summary instead of vanishing into `0 bulgu`, and the `schema-isolation` entry uses the narrow key `db:collmind_tpm` rather than the `ENV` wildcard. |
