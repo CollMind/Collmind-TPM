@@ -1020,6 +1020,38 @@ bir parser, bir tip gevşemesi) uykudaki kuralları **uyandırır** — o deği�
 > **Bir kalıbı ararken her iki ucunu ara: neye yazıldığını VE neyin okunduğunu.**
 > Tek uçtan arama kalıbın yarısını görünmez bırakır.
 
+**Ve iki uç da yetmeyebilir — kapsamı DOSYA TİPİYLE değil, YAZAN HER YOLLA tanımla
+(ZORUNLU).**
+
+T-163'te bir değer **üç** yerde tanımlıydı ve üçü de **sırayla**, her biri bir öncekinin
+düzeltmesinden **sonra** bulundu:
+
+| # | yer | nasıl bulundu |
+|---|---|---|
+| 1 | `migration` | task'ın kendisi |
+| 2 | `seeds/kpi.seed.ts` (CLI, idempotent upsert) | `data-engineer` |
+| 3 | **`kpi.service.ts` `seedDefaults()`** | `code-reviewer` |
+
+Üçüncüsü diğer ikisinden **tür olarak** farklıydı: bir seed dosyası değil, **canlı bir HTTP
+rotası** (`@Roles(ADMIN)`), ve upsert alan kümesi değeri **üzerine yazıyordu**. Düzeltilmiş
+bir tenant'ta tek bir admin çağrısı ADR'yi **sessizce geri alırdı**.
+
+> **Arama sorusu *"bu dosya tipinde başka var mı"* değil, *"bu değeri YAZAN başka hangi yol
+> var"* olmalı** — seed · migration · servis varsayılanı · test fixture'ı · e2e seed ·
+> HTTP ucu · frontend sabiti. Tür listesi hafızadan değil, **kalıbın kendisiyle** taranır.
+
+**Ve bir taramanın PENCERESİ girdi sınırına bağlanmalı, sabit bir uzunluğa değil (ZORUNLU).**
+
+Aynı turda Team Lead iki listeyi karşılaştırırken sabit **1400 karakterlik** pencere
+kullandı; bir girdinin penceresi bir sonrakine taştı ve **sahte bir fark** üretti. Sınır
+"bir sonraki girdinin başlangıcı" yapılınca fark **sıfır** çıktı.
+
+Bu, `migration-schema.sh`'ın `±10 satır` penceresiyle **aynı sınıf** — orada da sabit
+pencere maskeleme üretmişti ve çözüm blok sınırı olmuştu. Fark yön: orada **kusur
+gizleniyordu**, burada **olmayan kusur üretildi**.
+
+> **Sabit pencere iki yönde birden yanılır.** Pencereyi ölçtüğün şeyin doğal sınırına bağla.
+
 T-091 bunun kanıtı: transformer'lı **hedef** alanları arandı (10 aday, 4 bozuk), transformer'sız
 **kaynak** alanların biriktirilmesi aranmadı — `finance-reporting`'deki aynı kusur (iki canlı
 GET rotası) o yüzden ağa takılmadı.
