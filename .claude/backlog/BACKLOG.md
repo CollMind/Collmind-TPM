@@ -191,6 +191,8 @@ status: active        # planned | active | closed
 | [[T-185]] | ⛔ Actuals-first anlaşma KPI'ları **uydurulmuş** SKU'dan — `// 10% uplift assumption` | **P1** | architect | todo |
 | [[T-186]] | 🔴 `finance-reporting` bilinmeyen RAG'ı **`GREEN`** yapıyor — biri **risk** raporu | **P1** | backend-engineer | todo |
 | [[T-187]] | 🔴 Girilen taktik değeri **geri okunamıyor** — grid düşürülmüş kolonu okuyor | **P1** | frontend-engineer | todo |
+| [[T-188]] | 🔴 **1231 ledger satırının %100'ünde zarf NULL** — ₺1,12M net DEBIT hiçbir zarfa düşmüyor | **P1** | debugger | todo |
+| [[T-189]] | 🔴 `/finance` **çöküyor** (hooks ihlali) + 6× 400 — ve ESLint zaten söylüyordu | **P1** | frontend-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
