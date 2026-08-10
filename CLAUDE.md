@@ -793,6 +793,28 @@ Pratik kural: bir düzeltme yaparken "bu deseni başka kim kullanıyor?" sorusun
 **grep çıktısı** olmalı, bir sezgi değil. Ve "etkilenmiyor" diyorsan, **neden** etkilenmediğini
 ölçtüğün şeyle birlikte yaz — sonraki okuyucu o gerekçeyi doğrulayabilsin.
 
+### Bir doğrulamanın "çalıştığı" sanılması, girdinin ona hiç ULAŞMAMASINDAN gelebilir (ZORUNLU)
+
+"Mekanizma var, ona giden yol yok" sınıfının **doğrulama tarafındaki** hâli — ve daha sinsi,
+çünkü burada mekanizma yalnız ölü değil, **sağlıklı görünüyor.**
+
+T-107 adım 2'de ölçüldü: `off-invoice`'un *"Amount değeri pozitif olmalıdır"* kuralı yıllardır
+kodda duruyor. Ama `raw: true` öncesinde gerçek bir `0`, `||` alias zinciri tarafından **zaten
+düşürülüyordu** — yani kurala hiç `0` ulaşmıyordu. Kural hiç ateşlemedi, hiç kırmızıya
+dönmedi, ve tam bu yüzden **hiç sorgulanmadı**.
+
+`pickCell` sıfırları oraya vardırınca kural **ilk kez gerçekten tetiklenecek**. Yanlışsa,
+bugüne kadar görünmeyen bir ret üretmeye başlayacak ([[T-124]]).
+
+> **Bir kuralın doğru olduğunu, kırmızıya dönmemesinden çıkarma.** Önce sor: o kuralın
+> reddedeceği girdi ona **ulaşıyor mu**? Ulaşmıyorsa kural test edilmemiştir — ne doğru
+> olduğu bilinir, ne yanlış.
+
+Pratik: bir doğrulama kuralı bulduğunda, onu **kasten tetikle**. Tetiklenemiyorsa kuralın
+kendisinden önce **yolunu** araştır. Ve bir girdi yolunu genişleten her değişiklik (bir bayrak,
+bir parser, bir tip gevşemesi) uykudaki kuralları **uyandırır** — o değişikliğin kapsamına
+"hangi kurallar ilk kez ateşleyecek?" sorusu dahildir.
+
 > **Bir kusur sınıfı bulduğun dosyada, aynı sınıfın diğer örneklerini ara.
 > Kusurlar dosya bazlı kümelenir.**
 
