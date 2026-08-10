@@ -106,6 +106,26 @@ kural bulunmasaydı "dayanaksız kolon" diye raporlanacaktı, ikincisinde ürün
 > **`rules.md` sessiz + PDF okunmadı = ölçüm YOK.** Bugüne kadar bu ikinci yarı teknik olarak
 > imkânsızdı ve o yüzden fark edilmedi; artık mazereti yok.
 
+### Ve yokluk iddiası için üçüncü soru: HANGİ BÖLÜM (ZORUNLU)
+
+*"Hangi belge"* ([[T-142]]) ve *"hangi PDF"* (yukarısı) yetmedi. Üçüncüsü **bölüm
+seviyesinde** ve bu oturumda **üç kez** aynı hataya yol açtı:
+
+| iddia | nereden üretildi | neyle çürüdü |
+|---|---|---|
+| *"`TRANSFER` BRD'de yok"* | `Section_04` | **§4.10** |
+| *"`ADJUST` BRD'de yok"* | `Section_04` | **§3.3** (çekirdek) |
+| *"`accrual`/`settlement`/`reconciliation` hiç düşünülmemiş"* | `Section_04`'ün kapsam listeleri | **§3.6** (`spend_type` değeri!) |
+
+Sebep yapısal: **mod bölümleri (`Section_04`/`Section_05`) türetilmiştir ve yalnız o modun
+kullandığı şeyi anlatır.** Çekirdek tanımlar `Section_03`'tedir. Bir modun *"kapsam dışı"*
+listesi, çekirdekte tanımlı bir kavramı **saymaz** — o kavram zaten o modun konusu değildir.
+
+> **Bir kavramın yokluğunu iddia etmeden önce, o kavramın HANGİ BÖLÜMDE tanımlanacağını sor.**
+> Şema/enum/tablo → `Section_03`. Mod davranışı → `04`/`05`. Kavram tanımı → `12`.
+> Faz kapsamı → `10`/`11`. Aramayı **tüm pakete** yay (`grep -rin` `docs/brd/`), tek bölüme
+> değil.
+
 ### 2.2 `.cursor/rules.md` hakkında uyarı (ZORUNLU)
 
 `rules.md` BRD değildir. BRD PDF'inin bir LLM özetidir ve **kayıplıdır** — dosyanın sonunda
