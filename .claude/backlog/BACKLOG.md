@@ -160,6 +160,9 @@ status: active        # planned | active | closed
 | [[T-154]] | Addendum H2: `SERIALIZABLE` yok, retry ölçülmedi, **kabul testi yazılmadı** | P2 | qa-engineer | todo |
 | [[T-155]] | ⛔ **H5.4 formülü TARAYICIDA emrediyor** — §2.3 + ADR 0007 K1 ile çelişiyor | **P1** | architect | blocked |
 | [[T-156]] | **EPIC:** BRD konfigürasyon modeli tanımlamış, ürün sabit koda çevirmiş — altı vaka | **P1** | architect | todo |
+| [[T-157]] | Phase 2 kapısının üç ölçütü karşılanmadı — CI/CD perf regresyonu **yapısal yok** | P2 | architect | todo |
+| [[T-158]] | `EXPIRED` durumu + 7 gün zaman aşımı ailesi yok; gece işi altyapısı da yok | P2 | architect | todo |
+| [[T-159]] | **§2.1 boşluğu:** BRD paketinin **iç önceliği** tanımsız — üç somut çelişki | **P1** | architect | todo |
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
