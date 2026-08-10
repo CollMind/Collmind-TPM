@@ -182,6 +182,9 @@ status: active        # planned | active | closed
 | [[T-176]] | Port öncesi iki karar: **LTA dönem↔tarih** semantiği · **CAP aşımında üç davranış** | P2 | architect | todo |
 | [[T-177]] | ⛔ Plan seviyesindeki `GP_ROI_PCT` **formül değil** — null'ları elenmiş ağırlıksız ortalama | **P1** | architect | todo |
 | [[T-178]] | Üçüncü KPI varsayılan listesi bir **HTTP rotasında**, hiçbir test bağlamıyor | P2 | backend-engineer | todo |
+| [[T-179]] | 🔴 **`CATEGORY_MANAGER` plan onay ekranına giremiyor** — frontend kapıları deprecated rollere kurulu | **P1** | frontend-engineer | todo |
+| [[T-180]] | Dört ölü tenant/admin mekanizması — ikisi `x-tenant-id`'ye **JWT'siz** güveniyor → sil | P2 | backend-engineer | todo |
+| [[T-181]] | `RolesGuard` **fail-open** — 236 route'un 77'sinde rol filtresi yok, biri gerçek yazma | P2 | architect | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |

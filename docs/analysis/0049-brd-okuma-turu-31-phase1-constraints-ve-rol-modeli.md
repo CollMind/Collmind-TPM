@@ -108,7 +108,7 @@ Policies:
 | **Approver (Category Manager)** | `CATEGORY_MANAGER` ? / `MANAGER` ? |
 | **Finance Approver** | `FINANCE_MANAGER` ? / `FINANCE` ? |
 | **Admin** | `ADMIN` |
-| **Read-Only (Analyst / Executive)** | ❌ **karşılığı yok** |
+| **Read-Only (Analyst / Executive)** | ~~❌ karşılığı yok~~ → **`READONLY`** ✅ |
 
 ⚠️ **Eşleme belirsiz ve ölçülmedi:** bizdeki `MANAGER` ve `FINANCE`'ın hangi BRD rolüne denk
 düştüğü kodda **doğrulanmadı**. *"Fazla rol"* ya da *"eksik rol"* **iddia edilmiyor**;
@@ -166,3 +166,29 @@ Ve `§3.3` **bütçe boyutu** olarak `Region`'ı **Phase 2**'ye koyuyor
 1. `§9` NFR kısa sondaj — `audit=16`, **`retention=8`**, `500ms=4` ([[T-168]], [[T-157]])
 2. `§5.4` What-If — [[T-169]]'un en büyük eksiğinin tarifi
 3. `§3.1/3.2` · `§6.3/6.5` · `§11.2`+P2/P3 · `§10.3` · Addendum H5.2/5.3
+
+---
+
+## ⚠️ DÜZELTME (2026-08-11) — §4'ün *"Read-Only karşılığı yok"* satırı **yanlıştı**
+
+`docs/analysis/0056` ölçtü, Team Lead doğruladı:
+
+```sql
+select unnest(enum_range(null::main.users_role_enum));
+→ ADMIN · PLANNER · APPROVER · FINANCE · FINANCE_MANAGER · CATEGORY_MANAGER · MANAGER · READONLY   (8 etiket)
+
+select role, count(*) from main.users group by role;
+→ ADMIN 1 · CATEGORY_MANAGER 3 · FINANCE_MANAGER 2 · PLANNER 2 · READONLY 1        (5 etiket kullanımda)
+```
+
+`READONLY` migration `1775000000000`'den beri var ve **bir kullanıcı taşıyor**.
+
+> **Ve asıl çerçeve de değişiyor:** *"altı rol"* diye yazmıştım — DB'de **sekiz** etiket var,
+> üretimde **beş** kullanılıyor, ve o beş **BRD'nin beşiyle hizalı** (migration `1791`
+> `MANAGER→CATEGORY_MANAGER`, `FINANCE→FINANCE_MANAGER` yeniden adlandırmasını yapmış).
+> Yani [[T-165]]'in *"fazla rol mü eksik rol mü"* sorusu, **ölçüldüğünde çözülüyor**:
+> kanonik küme zaten hizalı, kalan üç etiket **deprecated**.
+
+**Hatanın sınıfı:** enum etiketlerini saymadan bir rol kümesi iddia ettim — `§2.1.1`'in
+*"hangi bölüm"* kuralının şema tarafındaki karşılığı. Kaynak bir kod dosyası değil,
+**katalog** olmalıydı.
