@@ -206,7 +206,7 @@ status: active        # planned | active | closed
 | [[T-010]] | Wella demo dataset (CTPM) | P1 | data-engineer | in-progress (ürün ✅, actuals→T-020) |
 | [[T-021]] | CSV parser konsolidasyonu + entity kaydı tek kaynağa | P2 | backend-engineer | todo |
 | [[T-022]] | Actuals ↔ agreement eşleştirme + recognition-exceptions | P2 | architect | todo |
-| [[T-024]] | Baseline türetme (actuals→BASE_VOL) — BRD onayı şart | P3 | architect | **blocked** |
+| [[T-024]] | Baseline türetme — **blokaj kalktı**, onay Addendum H4'te (MVB kademeleri) | P2 | data-engineer | todo |
 | [[T-025]] | Frontend actuals upload ekranı + batch geçmişi | P1 | frontend-engineer | todo |
 | [[T-031]] | Encumbrance relief (ACTIVE dönem çifte blokaj) | P2 | architect | todo |
 | [[T-011]] | TTM repo freeze formalizasyonu (README+tag/archive) | P2 | architect | todo |
