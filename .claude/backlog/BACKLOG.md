@@ -136,6 +136,10 @@ status: active        # planned | active | closed
 | [[T-129]] | İki parser'ın dört getter'ı byte-for-byte aynı — §7 turu yarım | P2 | backend-engineer | todo |
 | [[T-130]] | on/off-invoice import'ta HTTP e2e yok — T-126'nın vaadi iddia edilmiyor | P2 | qa-engineer | todo |
 | [[T-131]] | `getDiscountType`'ın iki Türkçe yazımı ulaşılamaz (`toUpperCase` tuzağı) | P3 | backend-engineer | todo |
+| [[T-132]] | **ÖLÇÜM:** D-15/D-16/D-17 — üç DUR da tetiklendi; F4'ün *bitişini* blokluyorlar | P1 | architect | review |
+| [[T-133]] | "Toplam Hacim" aslında birim fiyat toplamı — alan `skus`'ta değil, FU'da | P2 | frontend-engineer | todo |
+| [[T-134]] | Onay ekranında "Ortalama ROI" **iki+ planda `NaN%`** (tek planda kazara doğru) | P1 | frontend-engineer | todo |
+| [[T-135]] | `null` ROI raporda/ekranda `0` — T-027'nin "never a fabricated 0" ihlali | P1 | backend-engineer | todo |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |
