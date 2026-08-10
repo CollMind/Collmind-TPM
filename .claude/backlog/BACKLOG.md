@@ -162,7 +162,7 @@ status: active        # planned | active | closed
 | [[T-156]] | **EPIC:** BRD konfigürasyon modeli tanımlamış, ürün sabit koda çevirmiş — altı vaka | **P1** | architect | todo |
 | [[T-157]] | Phase 2 kapısının üç ölçütü karşılanmadı — CI/CD perf regresyonu **yapısal yok** | P2 | architect | todo |
 | [[T-158]] | `EXPIRED` durumu + 7 gün zaman aşımı ailesi yok; gece işi altyapısı da yok | P2 | architect | todo |
-| [[T-159]] | **§2.1 boşluğu:** BRD paketinin **iç önceliği** tanımsız — üç somut çelişki | **P1** | architect | todo |
+| [[T-159]] | ~~§2.1 boşluğu~~ → **çelişki yokmuş**: Candidate Log Addendum'dan türetilmiş | P1 | architect | done |
 | [[T-160]] | Formül motoru: BRD'nin sekiz `Math.*`'ı yazılamıyor + yetenek **iki kez** yazılmış | P2 | architect | todo |
 | [[T-161]] | `04_Reviews` (**5.249 satır**) hiç açılmadı — H1-H5'i doğuran belge olabilir | P2 | architect | todo |
 | [[T-162]] | RAG toplama kuralı + negatif ROI *"flag for review"* ölçülmedi | P3 | qa-engineer | todo |
@@ -172,6 +172,7 @@ status: active        # planned | active | closed
 | [[T-166]] | D-13: **altı biçim, ikisi çakışan** + actuals overwrite guardrail'i ölçülmedi | P2 | architect | todo |
 | [[T-167]] | **D-11 KAPANDI:** RLS **Phase 1 gereksinimi** — karar değil, yazılmamış koruma | **P1** | architect | todo |
 | [[T-168]] | **`INV-A-*` audit ailesi YOK** — kaynak 20 olay tanımlıyor, sözleşme boş | P2 | architect | todo |
+| [[T-169]] | **Ürün Phase 1 kapsamının ÖNÜNDE** — iki sinyal, hiçbir yerde yazılı değil | **P1** | architect | todo |
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
