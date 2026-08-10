@@ -355,6 +355,21 @@ Bu, §2.7 ailesinin bir üyesi ama tersinden: orada kanıt kurulumu **kusuru giz
 > **Bir hata gördüğünde, önce onu üreten ortamın taze olduğunu doğrula. Yeniden başlat, tekrar
 > ölç — ancak ondan sonra kodu suçla.**
 
+### Testler bir ŞARTNAMEDİR — kod silinse bile (ZORUNLU, ve bir kurtarmayla ölçüldü)
+
+Testlerin bilinen getirisi regresyonu yakalamaktır. T-126'da **ikinci bir getirisi** ölçüldü:
+`git checkout` commit edilmemiş bir dosyanın işini sildiğinde, o iş **yeniden inşa edilebildi**
+— çünkü spec dosyaları, tüketici servisi ve ikiz modül ayakta kalmıştı.
+
+Ve envanteri **`tsc` çıkardı**: beş tip hatası, kaybın tam listesiydi. ([[T-116]]'nın —
+`type-check`'in `tests/`'i kapsaması — ikinci somut getirisi; birincisi kör bir testi bulmaktı.)
+
+> **Kod silinebilir; spec duruyorsa yeniden yazılabilir.** Bu, testleri koddan **önce** ya da
+> **ayrı** commit'lemenin ölçülmüş bir gerekçesidir.
+
+⚠️ Tersi de doğru: spec'i olmayan bir dosya kaybolduğunda geriye **hiçbir şartname** kalmaz —
+yalnız hatırlanan niyet.
+
 ### Bilinen eksiklik TODO ile değil, TASK ile kaydedilir (ZORUNLU)
 
 **Bir yorum kodu okuyanı bilgilendirir; bir task işi yapılacaklar listesine sokar.** İkisi
@@ -637,6 +652,11 @@ pahalıya mal olan dördü burada da:
   başkasının işini siler. Her iki durumda da geri almanın **sonucunu** `shasum -a 256 -c` ile
   doğrula. (İkincisi bu oturumda yaşandı: bir alt-ajanın commit edilmemiş düzeltmeleri
   `git checkout` ile silindi; kaybı görünür kılan şey [[T-116]] ile açılan tip kapısı oldu.)
+- **Mutasyon için `git checkout` ile geri alma — kullanma, ARAÇ kullan.** Bu oturumda kuralı
+  yazan kişi onu ihlal etti ve commit edilmemiş bir dosyanın işini sildi: `grep` boş döndü,
+  değişken `-1` oldu, `git checkout` tracked dosyayı HEAD'e döndürdü. Doğru şekil:
+  **dosyayı kopyala → mutasyonu uygula → kopyadan geri yükle → `shasum -a 256 -c` ile doğrula.**
+  ([[T-128]] bunu bir script'e indiriyor — kuralı hatırlamak yerine aracı çağırmak.)
 - **Mutasyonun MEKANİZMAYA uygulandığını doğrula**, yalnız "uygulandı"yı değil — `replace(...,1)`
   ilk metin eşleşmesine düşer ve o çoğu zaman bir yorumdur. Beklediğin test kırılmıyorsa ilk
   hipotez "mutasyon yanlış yere düştü" olmalı, "test kör" değil.
