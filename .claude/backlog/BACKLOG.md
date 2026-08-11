@@ -196,7 +196,8 @@ status: active        # planned | active | closed
 | [[T-190]] | `aggregationMethodFu` API'den yazılabiliyor — oran dalı iki sessiz regresyon üretiyor | P2 | backend-engineer | todo |
 | [[T-191]] | ⛔ **B1 plan seviyesinde AÇIK** — kesişim FU'lar üzerinde, kusur SKU'larda | **P1** | architect | todo |
 | [[T-192]] | ⚠️ `docs/brd/` kökünde **envanterlenmemiş altı dosya** — biri bağlayıcı (`Sprint_0`) | **P1** | architect | todo |
-| [[T-193]] | ⛔ **Bütçe hareketleri audit'lenmiyor** — 1231 yazıma karşı 16 audit satırı | **P1** | architect | todo |
+| [[T-193]] | ⛔ Bütçe hareketinin **log tablosu VAR ve BOŞ** (T-096); audit kapsamı ölçülecek | **P1** | architect | todo |
+| [[T-194]] | `budget_reservations` türev mi, **ikinci hakikat kaynağı** mı? — veri yok, `blocked` | P2 | data-analyst | blocked |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |

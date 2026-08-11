@@ -1,6 +1,7 @@
 # 0012 — Finansal kayıtlar fiziksel olarak silinemez; silme yolu **soft delete + RESTRICT**
 
-- **Durum:** Önerilen (Proposed) — ürün sahibi onayı bekliyor
+- **Durum:** **Kabul edildi (Accepted)** — 2026-08-11, ürün sahibi
+- **Ön koşullar:** üçü de karşılandı — backfill yollarının sayımı · `*/users` kova düzeltmesi · beş tablonun sarkık satır ölçümü
 - **Tarih:** 2026-08-11
 - **Kapsar:** [[T-188]] · **`D-04`** (append-only zorlama seviyesi) — *ikisi tek karardır*
 - **Ölçüm:** `.claude/backlog/tasks/T-188.md` · `docs/contracts/SYSTEM_INVARIANTS.md §3`
@@ -38,15 +39,30 @@ o tabloda zarf kolonu                → YOK
 p4 → agreement_transactions eşleşen  → 0 / 1231
 ```
 
-**2. Audit log — kapalı, ve bu ayrı bir P1.**
+**2. Audit log — kapalı, ve sebebi kusurdan büyük.**
+
+⚠️ İlk ölçüm `table_name ~ 'audit'` deseniyle yapıldı ve *"yalnız `admin_audit_logs`"*
+dedi — **eksik desen**. Genişletilince:
+
 ```
-main'de audit tablosu    → yalnız admin_audit_logs
-admin_audit_logs satır   → 16
-ledger yazımı            → 1231
+audit|event|log|history|trail deseni → admin_audit_logs · budget_transaction_logs · plan_approval_history
+admin_audit_logs        16 satır   (dört jenerik action_type, hiçbiri bütçe hareketi değil)
+budget_transaction_logs  0 satır   ← bütçe hareketinin KENDİ log tablosu
+plan_approval_history    0 satır
+ledger yazımı         1231
 ```
-`Section_09` audit kapsamı *"**All budget state changes** (reserve, commit, consume)"* ve
-öncesi/sonrası değerler diyor, saklama 7 yıl. **16 satır 1231 yazımı kapsayamaz.**
-→ [[T-193]] — kaynağın tasarım gereği koyduğu ikinci kopya **yok**.
+
+> **İkinci kopya "hiç düşünülmemiş" değil — TABLOSU VAR ve BOŞ.**
+> `budget_transaction_logs` sıfır satır, çünkü [[T-096]] ölçtü: `created_by` iki kez
+> map'lenmiş, her `INSERT` `42701` veriyor, dört bütçe rotası **500** dönüyor.
+
+Yani zincir şu: yazma hatası → log boş → `SET NULL` atfı sildi → **geri kuracak kopya yok**.
+
+⚠️ **Ve `budget_transaction_logs`'un grain'i zarf değil** (`budget_allocation_id`,
+`plan_id`) — yani çalışsaydı bile **zarf atfını taşır mıydı, ölçülmedi**. İddia şu kadar:
+*bütçe hareketinin log yüzeyi vardı ve yazmıyordu.*
+
+→ [[T-193]] · [[T-096]]
 
 **3. `description` — kapalı.**
 ```
@@ -133,9 +149,37 @@ hiçbir şey uyarmadı.
 | kova | FK'lar | gerekçe |
 |---|---|---|
 | **⛔ Kapsam içi — değişmeli** | `ledger_entries → budget_envelopes` (SET NULL) · `ledger_entries → tenants` (CASCADE) · `agreement_transactions → agreements/tenants` (CASCADE) · `budget_transactions → budget_envelopes/tenants` (CASCADE) · `on_invoice_entries → budget_envelopes` (SET NULL) · `on_invoice_entries → tenants/customers/skus/on_invoice_batches` (CASCADE) | çocuk satır **7 yıl saklama kapsamında finansal kayıt** |
-| **⚠️ Tartışmalı — karar gerekli** | `budget_reservations → budget_envelopes/tenants` (CASCADE) · `sales_actuals → tenants/sales_actual_batches` (CASCADE) | rezervasyon **türev** bir kayıt; actuals **kaynak veri**. `Section_09`'un tablosunda ikisi de adıyla geçmiyor |
+| **⛔ Kapsam içi — `sales_actuals`** | `→ tenants` · `→ sales_actual_batches` (CASCADE) | **saklama yükümlülüğü** — aşağıda |
+| **⛔ Kapsam içi — `budget_reservations`** | `→ budget_envelopes` · `→ tenants` (CASCADE) | **tasarım tekdüzeliği** — aşağıda |
 | **⛔ Kapsam içi — `*/users → SET NULL`** (6 adet) | `agreement_transactions` ×2 · `on_invoice_entries` ×2 · `sales_actuals` ×2 | aşağıda |
 | **📌 Kapsam dışı** | `agreement_transactions → customers` (SET NULL) | müşteri finansal kayıt değil; `Section_09` saklama tablosunda geçmiyor |
+
+### İki tablo ⛔'ye alındı — ama **gerekçeleri ayrı**, ve bu ayrım kalıcı
+
+*"7 yıl saklama kapsamında finansal kayıt mı"* sorusu bu ikisinde net cevap vermiyor. Asıl
+ayırt edici başka:
+
+> **Satır, kendisi saklama korumalı olan yetkili bir kaynaktan yeniden kurulabilir mi?**
+
+**`sales_actuals` — saklama yükümlülüğünden.** Hiçbir şeyden türetilemez; **kaynak
+veridir**, ve settlement'ın deterministik yeniden hesaplanabilirliği buna bağlıdır.
+`Section_09`'un saklama tablosunda `Baseline Data · 5 yıl` satırına oturuyor (7 değil, ama
+sıfır da değil), ve `FINAL` upload değişmezliği K-kararlarında zaten var.
+→ **`RESTRICT`, tartışmasız.**
+
+**`budget_reservations` — tasarım tekdüzeliğinden.** *"Türev"* etiketi doğruysa ledger'dan
+yeniden kurulabilir demektir, ve `RESTRICT` teknik olarak **zorunlu değildir**. Ama:
+
+> **Bugün ölçtüğümüz kusurun mekanizması tam olarak buydu:** bir tablo kardeşlerinden
+> **farklı** bir silme kuralı taşıyordu ve fark **hiçbir yerde gerekçelendirilmemişti**.
+> İki kuralın bir arada yaşadığı pencere **kusurun kendisidir** — süresi ne kadar kısa
+> olursa olsun.
+
+→ **`RESTRICT`, gerekçe *"türev olduğu için değil, sapma maliyetli olduğu için"*.**
+
+⚠️ **Bu ayrım ileride işe yarayacak:** *"`RESTRICT`'i gevşetebilir miyiz"* sorusu geldiğinde
+**hangisinin** gevşetilebilir olduğunu bu belirler. `sales_actuals`'ınki bir yükümlülük;
+`budget_reservations`'ınki bir tercih.
 
 ### ⛔ `*/users → SET NULL` **kapsam dışı değil, ihlal**
 
@@ -230,6 +274,29 @@ INV-C-001  "No financial record …"
 
 Beşi de *"kod ne yapıyor"* üzerinden yazılmış. **Şema aynı etkiyi hiç kod olmadan
 üretebiliyor mu?** — her biri için ayrı sorulmalı. `INV-L-003`'te cevap **evet** ve ölçüldü.
+
+---
+
+## ⛔ Bu ADR'nin **kapsamadığı**
+
+**Audit boşluğu bu kararla kapanmıyor.**
+
+> Backfill'i imkânsız kılan `SET NULL` değil — **ikinci kopyanın hiç yazılmamış olmasıydı.**
+> FK kuralı `RESTRICT` olduğunda bu boşluk **olduğu yerde kalır**.
+
+`budget_transaction_logs` bugün **0 satır** ([[T-096]]: `42701`, her `INSERT` düşüyor). Bu
+ADR onu düzeltmiyor, düzeltiyormuş izlenimi de vermemeli. → [[T-193]] (ve [[T-168]] ·
+[[T-170]] · [[T-173]] ile birlikte, **tek** audit sözlüğü işi olarak)
+
+**İki ölçülmemiş nokta, karara engel değil ama açık:**
+
+1. **`budget_reservations` gerçekten türev mi, yoksa ikinci hakikat kaynağı mı?**
+   `Section_12`: *"ledger bütçe kullanımının **tek** hakikat kaynağıdır."* Rezervasyonlar
+   ledger'daki `RESERVE` ile aynı niceliği tutuyorsa o ifade **zaten ihlal** ediliyor ve
+   `Available` iki yerden beslenebilir.
+   ⚠️ **Bugün ölçülemiyor** — `budget_reservations` **0 satır**. → [[T-194]]
+2. **`budget_transaction_logs`'un grain'i zarf atfını taşır mıydı?** Kolonları
+   `budget_allocation_id`/`plan_id`; **ölçülmedi**.
 
 ---
 

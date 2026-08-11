@@ -423,6 +423,31 @@ Ve genel kural: **kanıtın kendisi şüpheliyse sonucu da şüphelidir.** İki 
 temizken exit 0" **aynı çıktıyı** verir — kapıyı, yakalaması gereken hatayı kasten üreterek
 sına.
 
+### Yazma ile commit arasına bir DOĞRULAMA koy (ZORUNLU)
+
+Bir dosyayı yazan adım ile onu commit'leyen adım arasında **hiçbir kontrol yoksa**, sessizce
+başarısız olan bir düzenleme **tutarsız bir commit** üretir — ve o commit'in ömrü, onu okuyan
+bir sonraki kişiye kadar sürer.
+
+Ölçülmüş vaka (2026-08-11, `ADR 0012`): iki `str.replace` içeren bir python bloğu
+**ikincisindeki tırnak hatasıyla** tümüyle düştü (`SyntaxError`), ama shell zinciri devam
+etti ve `git commit` çalıştı. Sonuç: ADR'nin bir bölümü güncel, uygulama sırası **eski**
+metni taşıyor — ve commit mesajı ikisinin de güncellendiğini söylüyor.
+
+> **Bir script'in çalıştığını çıktısından değil, ÜRETTİĞİ DOSYADAN doğrula.**
+> `python3 - <<'PY' … PY` bloğu bir `SyntaxError` verdiğinde `&&` zinciri kopmaz, çünkü
+> hata **python'un içinde** değil, **parse aşamasındadır** ve exit kodu bir sonraki
+> komutu engellemez.
+
+Pratik: commit'ten **önce** değiştirdiğin şeyi `grep` ile geri oku. Bu, `§2.7`'nin
+*"mutasyonu dosya içeriğinden doğrula"* kuralının yazma tarafındaki hâli.
+
+- ❌ `python3 … ; git add -A && git commit`
+- ✅ `python3 … ; grep -q '<yeni metin>' <dosya> && git add -A && git commit`
+
+⚠️ **Ve bu özellikle ADR/sözleşme dosyalarında önemli:** kodda tutarsızlık bir sonraki test
+koşumunda kırmızıya döner; bir **karar belgesinde** hiçbir zaman dönmez.
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
