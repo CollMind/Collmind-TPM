@@ -95,7 +95,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `D-10` | Claim modeli CTPM'e girecek mi, hangi şekilde? | `SYSTEM_INVARIANTS §10` · [[T-176]] · `0055` | claim portu | açık |
 | `D-14` | Actuals replace semantiği bir **tenant politikası** mı? | `SYSTEM_INVARIANTS §10` | `INV-R-003` | açık |
 | `D-15` | Hesaplanan **sıfır** KPI ile *"KPI yok"* aynı şey mi? | `SYSTEM_INVARIANTS §10` · `0057` | **`INV-N-002`'nin transformer fazı** (tüm `INV-N-*` değil) | **açık** ✅ *ADR 0008 farklı eksen — doğrulandı, `SYSTEM_INVARIANTS:681` zaten yazıyor* |
-| [[T-144]] | Bütçe eşiği orta kademesi **90** mı **95** mi, ve sınır `>` mi `>=` mi? | `.claude/backlog/tasks/T-144.md` · `0049 §2b` | RAG gösterimi · onay kapısı | açık |
+| [[T-144]] | Bütçe eşiği orta kademesi **90** mı **95** mi, ve sınır `>` mi `>=` mi? | `.claude/backlog/tasks/T-144.md` · `0049 §2b` · **`0059 §2.3`** | RAG gösterimi · onay kapısı | **açık** ⚠️ *tanık sayısı 3→5: `Section_10:72` ve `Section_08:164-166` **95** diyor, ikincisi 95'e **kapı** koyuyor — önceki "çözüldü" okuması eksik enumerasyona dayanıyordu* |
 | [[T-156]] | Konfigürasyon katmanı (altı tablo) hangi şekilde yazılacak? | `.claude/backlog/tasks/T-156.md` | Phase 2'nin tamamı | **açık** — ⚠️ port referansı **yok**, sıfırdan tasarım |
 | [[T-176]] | LTA'nın uygulanabilirliği **dönem etiketinden** mi **tarih aralığından** mı gelir? | `.claude/backlog/tasks/T-176.md` · `0055 §1.2` | claim portu | açık — TTM'de de cevaplanmamış |
 | [[T-177]] | Oran KPI'ları üst seviyede nasıl toplanır, ve **kısmi null** bir plan ne gösterir? | `.claude/backlog/tasks/T-177.md` | Gate 3 (*"%70 yeşil"*) ölçülebilirliği | açık |
@@ -118,6 +118,9 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `0023` | `spend_type = ACCRUAL` — tahakkuk ne zaman yazılır, nasıl kapanır? | `docs/analysis/0023 §3` | ledger tahakkuk yolu | **açık** — mekanizma **hiç yok**, LTA'ların çoğu gerektiriyor |
 | `§7.2 ↔ backend` | `import.invoice`: BRD *"Typical Roles: **Planner**, Finance"* diyor, backend `PLANNER`'ı **dışlıyor** — hangisi doğru? | `.claude/backlog/tasks/T-179.md` · `agreement-transaction.controller.ts:288` | fatura yükleme yetkisi | **açık** — [[T-179]] backend'e uydu, çelişki karara bağlanmadı |
 | `ADR 0002 ↔ §7.1` | Finance Manager yalnız `PENDING_FINANCE_REVIEW`'u mu onaylar, yoksa genel Level-2 mi? | `0056 §F.1` · `docs/decisions/0002` | onay akışı | **açık** ⛔ ADR'nin dayanağı **süperseded** (`.cursor/rules.md`) |
+| `0060-EA001` | **Super Admin**: altıncı rol mü, Admin'in bölünmesi mi, yoksa bir **yetenek** mi? | `0060 §5` · [[T-192]] — karar [[T-165]] ile birlikte | rol modeli · `0056-K1`/`K2`/`K3` | açık — ⚠️ kaynak **imzalanmamış Sprint-0 taslağı** |
+| `0060-AI001` | `AI-001`'in kalan dört maddesi uygulanacak mı: hata raporu **CSV**, başarı ekranı + re-import, boş/tümü-geçersiz dosya mesajları, **duplike → skip with warning**? | `0060 §2` · [[T-126]] (kapalı) · [[T-130]] | import hata yüzeyi e2e'si | açık — ⚠️ satır-bazlı ret **zaten uygulandı**, soru üstündeki yüzey |
+| `0060-MC001` | Phase 1 eşzamanlılık kabul ölçütü **`H2`'nin 10×1.500'ü** mü, **`MC-001`'in 5×2.500'ü** mü? | `0060 §3` · [[T-154]] | bütçe eşzamanlılık testi | açık — ⚠️ çelişki **iddia edilmiyor**: gevşetme önerisi olabilir, ölçülmedi |
 | [[T-169]] | Phase 1 tabanı mı, Phase 2 devamı mı? | `.claude/backlog/tasks/T-169.md` | sıralama | ✅ **karar verildi** 2026-08-10 |
 | [[T-163]] | `GP_ROI_PCT` paydası? | `docs/decisions/0011` | dört eşik | ✅ **karar verildi** — ADR 0011 |
 | `D-05` | Sayısal sözleşme | `docs/decisions/0007` | `INV-N-*` | ✅ **karar verildi** — ADR 0007 |

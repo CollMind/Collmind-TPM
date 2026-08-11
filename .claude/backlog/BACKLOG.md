@@ -95,6 +95,8 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-192]] | `Super Admin` altıncı rol olarak beliriyor — karar **[[T-165]] ile birlikte** verilmeli | P2 | architect | todo |
+| [[T-193]] | `EA-001` admin yasak matrisi — üç madde karşılığı **aranmadan** duruyor (önce ölç) | P2 | architect | todo |
 | [[T-083a]] | Yetim anahtar **tedavisi** — 'pasif mekanik' ↔ 'olmayan kod' ayrımı + iki mesaj | P2 | backend-engineer | review |
 | [[T-088]] | `PATCH mechanics`: açık `null` doğrulanan durumla yazılanı ayırıyor (`??` birleştirmesi) | P2 | backend-engineer | todo |
 | [[T-086]] | **E16** — E15 muafiyeti dosya bazlı oldu, guard'a bağlandı (T-087'yi açar) | P2 | backend-engineer | review |
