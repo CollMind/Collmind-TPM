@@ -24,22 +24,56 @@ FK ledger_entries → tenants            ON DELETE = CASCADE
 FK ledger_entries → agreements         YOK
 ```
 
-### ⛔ Ve bilgi taşınmadı — **yok edildi**
+### Bilgi taşınmadı — **yok edildi**. Dört yol sayıldı, dördü de kapalı
 
-İlk okuma *"`SET NULL` bilgiyi yok etmedi, yer değiştirdi"* olabilirdi. **Ölçüldü, yanlış:**
+⚠️ **Bir yokluk iddiası ancak yolların sayımıyla kanıtlanır.** İlk turda tek yol
+(`idempotency_key`) kapatılmış ve *"imkânsız"* denilmişti — o çıkarım geçersizdi. Dört yol
+ölçüldü:
 
+**1. `idempotency_key` — kapalı.** Biçim `ledger.service.ts:50,:69`:
 ```
-idempotency_key biçimi (ledger.service.ts:50,:69):
-    LEDGER|AGREEMENT|{agreement_id}|{transaction_id}
-                                    ↑ zarf DEĞİL, işlem kimliği
-
-main.agreement_transactions               → 0 satır (o da silinmiş)
-o tabloda zarf kolonu                     → YOK
-p4 → agreement_transactions eşleşen       → 0 / 1231
+LEDGER|AGREEMENT|{agreement_id}|{transaction_id}      ← p4 zarf DEĞİL, işlem kimliği
+main.agreement_transactions          → 0 satır (o da silinmiş)
+o tabloda zarf kolonu                → YOK
+p4 → agreement_transactions eşleşen  → 0 / 1231
 ```
 
-> **Backfill imkânsız.** `CASCADE` ve `SET NULL` birlikte hem atfı hem onu yeniden kurmanın
-> aracını sildi. 1231 satır artık hangi bütçeye ait olduğunu **hiçbir yerden** bilmiyor.
+**2. Audit log — kapalı, ve bu ayrı bir P1.**
+```
+main'de audit tablosu    → yalnız admin_audit_logs
+admin_audit_logs satır   → 16
+ledger yazımı            → 1231
+```
+`Section_09` audit kapsamı *"**All budget state changes** (reserve, commit, consume)"* ve
+öncesi/sonrası değerler diyor, saklama 7 yıl. **16 satır 1231 yazımı kapsayamaz.**
+→ [[T-193]] — kaynağın tasarım gereği koyduğu ikinci kopya **yok**.
+
+**3. `description` — kapalı.**
+```
+DEBIT satırlarda description  → 689 / 689 NULL
+non-null 542 kayıt            → "Reversal of ledger entry {uuid}" — ledger id'si, zarf değil
+```
+
+**4. Zarfların kendisinden türetme — kapalı, ve sebebi ayırt edici.**
+```
+ledger tarafı DOLU:   period_month 2026-02 (tek çift) · spend_type OFF_INVOICE
+                      channel NKA · cpl_id/fu_id/tactic_id 1231/1231
+budget_envelopes:     4 satır · deleted_at dolu 0  → orijinaller HARD DELETE edilmiş
+2026-02 zarfı:        2 adet, ve ikisinde de channel/category/spend_type NULL
+```
+
+> **Boyut bilgisi ledger tarafında duruyor; eşleşecek zarf yok.** Orijinal zarflar fiziksel
+> olarak silindi (kalan 4'ün hiçbiri soft-silinmiş değil), ve `2026-02` için kalan **iki**
+> zarfın ikisi de boyutsuz — yani ayırt edici yok.
+>
+> Mevcut bir zarfa yazmak **atfı geri getirmek değil, uydurmak** olurdu.
+
+**Sonuç: backfill dört yoldan da mümkün değil** — ve ikinci yolun kapalı olma sebebi
+kusurun kendisinden büyük.
+
+⚠️ Ve bir idempotency sonucu: anahtar **zarf-kapsamlı değil** (`agreement|transaction`).
+Yani hipotetik bir backfill anahtarı **değiştirmezdi** — bu, kararın veri tarafını
+basitleştiriyor; ama backfill zaten mümkün değil.
 
 `v_budget_summary` ledger'ı okuyor ama zarfsız satırları join edemiyor → **₺1.120.000 net
 DEBIT bütçe özetine hiç girmiyor.** Bütçe panosu *"harcama ₺0"* diyor, ledger sayfası 1231
@@ -100,10 +134,39 @@ hiçbir şey uyarmadı.
 |---|---|---|
 | **⛔ Kapsam içi — değişmeli** | `ledger_entries → budget_envelopes` (SET NULL) · `ledger_entries → tenants` (CASCADE) · `agreement_transactions → agreements/tenants` (CASCADE) · `budget_transactions → budget_envelopes/tenants` (CASCADE) · `on_invoice_entries → budget_envelopes` (SET NULL) · `on_invoice_entries → tenants/customers/skus/on_invoice_batches` (CASCADE) | çocuk satır **7 yıl saklama kapsamında finansal kayıt** |
 | **⚠️ Tartışmalı — karar gerekli** | `budget_reservations → budget_envelopes/tenants` (CASCADE) · `sales_actuals → tenants/sales_actual_batches` (CASCADE) | rezervasyon **türev** bir kayıt; actuals **kaynak veri**. `Section_09`'un tablosunda ikisi de adıyla geçmiyor |
-| **📌 Kapsam dışı** | `*/users → SET NULL` (6 adet) · `agreement_transactions → customers` (SET NULL) | `Section_09:303`: silinen kullanıcı **anonimleştirilir**, `user_id` audit için kalır. `SET NULL` burada **kaynağın modeliyle uyumlu** — ama anonimleştirme uygulanmadan bu da eksik ([[T-170]], `INV-C-002`) |
+| **⛔ Kapsam içi — `*/users → SET NULL`** (6 adet) | `agreement_transactions` ×2 · `on_invoice_entries` ×2 · `sales_actuals` ×2 | aşağıda |
+| **📌 Kapsam dışı** | `agreement_transactions → customers` (SET NULL) | müşteri finansal kayıt değil; `Section_09` saklama tablosunda geçmiyor |
 
-⚠️ **Sarkık satır sayısı bu tabloda ölçülmedi** — yalnız `ledger_entries` ölçüldü. Diğer
-beş tablonun bugünkü durumu **bilinmiyor**.
+### ⛔ `*/users → SET NULL` **kapsam dışı değil, ihlal**
+
+İlk taslak bunu *"kaynağın anonimleştirme modeliyle uyumlu"* diye kapsam dışına koymuştu.
+**Yanlış okuma.** `Section_09:303`'ün ifadesi:
+
+> *"Deleted users: **Anonymized** (`user_id` **retained** for audit trail)"*
+
+**Korunan şey tam olarak kimlik referansının kendisi.** `created_by`'ı `NULL`'lamak referansı
+korumaz — **imha eder**; anonimleştirmenin **karşıtıdır**.
+
+Doğru kalıp: `users` satırı **kalır**, PII alanları anonimleştirilir, FK **`RESTRICT`**.
+→ [[T-170]] · `INV-C-002` ile aynı iş.
+
+### Bugünkü sarkık satır maliyeti — ölçüldü (2026-08-11)
+
+```
+ledger_entries         1231 satır · budget_envelope_id NULL 1231   ⛔
+budget_transactions       4 satır · envelope NULL 0
+budget_reservations       0 satır
+on_invoice_entries        0 satır
+agreement_transactions    0 satır
+sales_actuals             3 satır
+ledger.created_by NULL    0 / 1231   ·  users 9 satır
+```
+
+> **Sarkık satır yalnız `ledger_entries`'te.** Yani *"karar gerekli"* kovasının bedeli
+> **bugün sıfır** — ve tam olarak bu, pencerenin açık olduğu an.
+>
+> ⚠️ Bu maliyet ölçümü **dev veritabanına** özeldir; veri taşıyan bir ortam doğduğunda
+> aynı kararın maliyeti başkadır.
 
 ---
 
@@ -135,6 +198,26 @@ select … from pg_constraint where contype='f' and confdeltype not in ('a','r')
 > Bu bir **invariant testidir, bir migration kontrolü değil** — her koşuda çalışmalı.
 > `npm run guards`'a bağlanır.
 
+⚠️ **Guard bir tablo allowlist'i taşımalı.** Finansal olmayan tablolarda `CASCADE` meşrudur
+(`plan_skus → plans` gibi); allowlist'siz bir guard **gürültü üretir**, ve gürültü üreten
+guard **kapatılır**. Kapsam listesi bu ADR'nin ⛔ kovasıdır, ve listeye ekleme bir
+**karardır** — `money-float-domain-a.txt` ile aynı şekil.
+
+### ⚠️ Ve `deleted_at` yeni bir ihlal yüzeyi açıyor — ADR bunu yazmazsa kardeş kusur doğar
+
+`RESTRICT` + `deleted_at` doğru karar. Ama `deleted_at`'in kendisi **`INV-T-001`'in
+(*"No financial query…"*) ihlal yüzeyidir:
+
+> Soft-silinmiş bir zarf, `Available = Allocated − COMMIT − RESERVE − CONSUME + RELEASE`
+> hesabına **sessizce girmeye devam eder** — her sorgu `deleted_at IS NULL` filtresini
+> taşımazsa.
+
+**Ve çözüm kodda filtre aramak değildir** — bu, `INV-L-001`'in düştüğü tuzağın aynısı:
+yanlış yüzeyde ölçmek. Kalıcı çözüm **görünüm (view)** ya da **RLS predicate'i**, yani
+[[T-167]] ile aynı yere bakıyor.
+
+> **Bir kusuru kapatırken kardeşini açmamak, bu ADR'nin kabul koşuludur.**
+
 ### Aynı kalıp beş invariant'ta var — taranmalı
 
 ```
@@ -152,8 +235,12 @@ Beşi de *"kod ne yapıyor"* üzerinden yazılmış. **Şema aynı etkiyi hiç k
 
 ## Uygulama sırası (ürün sahibinin sıralaması)
 
-1. ✅ `idempotency_key` ölçümü — **backfill imkânsız** (yukarıda)
-2. FK sınıflandırması — yukarıdaki üç kova, **tartışmalı kova karara bağlanacak**
+1. ✅ **Backfill yollarının sayımı** — dört yol, dördü de kapalı (yukarıda). Ve ikinci
+   yolun (audit) kapalı olma sebebi ayrı ve daha büyük bir P1: [[T-193]]
+2. ✅ **FK sınıflandırması** — kovalar yukarıda, ve bugünkü sarkık satır maliyeti ölçüldü:
+   sarkık satır **yalnız `ledger_entries`'te**. Açık kalan tek şey *"karar gerekli"*
+   kovası: `budget_reservations` (türev kayıt) · `sales_actuals` (kaynak veri) —
+   **ürün sahibinin çağrısı**
 3. Şema: `budget_envelopes.deleted_at` + FK `RESTRICT` + `agreement_id` FK'sı
    — **tek migration**, `data-engineer`, numara `MIGRATION_SEQUENCE.md`'den
 4. Invariant kalıbı taraması + durum-tabanlı yeniden ifade + şema guard'ı
