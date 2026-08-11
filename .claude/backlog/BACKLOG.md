@@ -180,7 +180,7 @@ status: active        # planned | active | closed
 | [[T-174]] | **UOM dönüşümü yok:** birim taşınıyor, dönüştürülmüyor — uykuda 12× sessiz hata | P2 | architect | todo |
 | [[T-175]] | Kaynak-doğruluk **sahipliği işaretli değil** — ilk ERP entegrasyonunun ön koşulu | P3 | architect | todo |
 | [[T-176]] | Port öncesi iki karar: **LTA dönem↔tarih** semantiği · **CAP aşımında üç davranış** | P2 | architect | todo |
-| [[T-177]] | Oran KPI'ları üst seviyede yeniden hesaplanıyor + `coverageRatio`; RAG yalnız tam kapsamada | **P1** | architect | review |
+| [[T-177]] | Kesişim + `coverageRatio` JSONB'ye indi — **FU seviyesi kapandı**, plan seviyesi T-191'de | **P1** | backend-engineer | review |
 | [[T-178]] | Üçüncü KPI varsayılan listesi bir **HTTP rotasında**, hiçbir test bağlamıyor | P2 | backend-engineer | todo |
 | [[T-179]] | 🔴 `CATEGORY_MANAGER` onay ekranına giremiyordu — **12 kapı** düzeltildi + regresyon guard'ı | **P1** | frontend-engineer | review |
 | [[T-180]] | Dört ölü tenant/admin mekanizması — ikisi `x-tenant-id`'ye **JWT'siz** güveniyor → sil | P2 | backend-engineer | todo |
@@ -193,6 +193,8 @@ status: active        # planned | active | closed
 | [[T-187]] | 🔴 Girilen taktik değeri **geri okunamıyor** — grid düşürülmüş kolonu okuyor | **P1** | frontend-engineer | todo |
 | [[T-188]] | 🔴 **1231 ledger satırının %100'ünde zarf NULL** — ₺1,12M net DEBIT hiçbir zarfa düşmüyor | **P1** | debugger | todo |
 | [[T-189]] | 🔴 `/finance` **çöküyor** (hooks ihlali) + 6× 400 — ve ESLint zaten söylüyordu | **P1** | frontend-engineer | todo |
+| [[T-190]] | `aggregationMethodFu` API'den yazılabiliyor — oran dalı iki sessiz regresyon üretiyor | P2 | backend-engineer | todo |
+| [[T-191]] | ⛔ **B1 plan seviyesinde AÇIK** — kesişim FU'lar üzerinde, kusur SKU'larda | **P1** | architect | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
