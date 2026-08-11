@@ -61,3 +61,33 @@ ise null base olan SKU doğal olarak pay alamaz. Kanıt TTM parite analizinden g
 
 **Ayrıca:** `total === on + off` özdeşliği ([[T-056]] adım 4) bozulmamalı; lumpsum off-invoice
 tarafına yazılır.
+
+---
+
+## ⚠️ SONRADAN ÖLÇÜLDÜ (2026-08-11) — bu ADR'nin "BRD kanıt durumu" öncülü **yanlış**
+
+> **Bu bölüm kararı değiştirmez.** Karar ürün sahibinindir ve yürürlüktedir. Kaydedilen
+> şey, kararın dayandığı **öncülün** ölçümle yanlışlanmış olmasıdır → [[T-194]].
+
+Yukarıda *"BRD'de lumpsum dağıtımı için **açık formül yok**"* yazıyor. `docs/analysis/0067`
+(okuma turu 44) ölçtü — **var**:
+
+```
+Section_05 §5.2:360-363
+  Display Fee (Lumpsum):
+  - Distributed to SKUs proportionally by PLANNED VOLUME
+  - SKU_DisplayFee = FU_DisplayFee × (SKU_PlannedVol / FU_PlannedVol)
+```
+
+**Karar 2 `base volume` seçti; kaynak `planned volume` diyor.**
+
+Neden görülmemişti: `§5.3:956-958` *"proportionally"* diyor ama **tabanı vermiyor**, ve
+tabanı tanımlayan `§5.2` o tarihte `docs/analysis/0047`'de ⚪ *"gerekçeyle atla"*
+işaretliydi. `0059`'un ölçüt değişikliği onu girer kovasına aldı.
+
+⚠️ Ve Karar 2'nin gerekçesi (*"null base'e pay yok"*) planned-volume tabanında **geçersiz**:
+`base = 0`, `planned > 0` olan yeni ürün SKU'su pay **alır** — ve `§5.6 Scenario 2` bunu
+desteklenen bir senaryo olarak anlatıyor.
+
+📌 Üçüncü sinyal: `§5.2`'nin **kendi kolon örneği** (1.667 / 2.133) **kendi formülünü**
+(1.500 / 2.000) izlemiyor. Üç sinyal [[T-194]]'te tek tabloda toplanıyor.

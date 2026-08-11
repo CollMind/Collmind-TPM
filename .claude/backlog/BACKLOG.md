@@ -95,6 +95,7 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-194]] | Lumpsum dağıtım tabanı: `ADR 0006` base seçti, BRD `§5.2` **planned** yazıyor — ADR'nin öncülü yanlışlandı | P1 | architect | todo |
 | [[T-192]] | `Super Admin` altıncı rol olarak beliriyor — karar **[[T-165]] ile birlikte** verilmeli | P2 | architect | todo |
 | [[T-193]] | `EA-001` admin yasak matrisi — üç madde karşılığı **aranmadan** duruyor (önce ölç) | P2 | architect | todo |
 | [[T-083a]] | Yetim anahtar **tedavisi** — 'pasif mekanik' ↔ 'olmayan kod' ayrımı + iki mesaj | P2 | backend-engineer | review |
