@@ -191,7 +191,7 @@ status: active        # planned | active | closed
 | [[T-185]] | ⛔ Actuals-first anlaşma KPI'ları **uydurulmuş** SKU'dan — `// 10% uplift assumption` | **P1** | architect | todo |
 | [[T-186]] | 🔴 `finance-reporting` bilinmeyen RAG'ı **`GREEN`** yapıyor — biri **risk** raporu | **P1** | backend-engineer | todo |
 | [[T-187]] | 🔴 Girilen taktik değeri **geri okunamıyor** — grid düşürülmüş kolonu okuyor | **P1** | frontend-engineer | todo |
-| [[T-188]] | 🔴 **1231 ledger satırının %100'ünde zarf NULL** — ₺1,12M net DEBIT hiçbir zarfa düşmüyor | **P1** | debugger | todo |
+| [[T-188]] | ⛔ **Kök neden: FK `ON DELETE SET NULL`** — şema `INV-L-001`'i ihlal ediyor, 22 FK taranacak | **P1** | data-engineer | review |
 | [[T-189]] | 🔴 `/finance` **çöküyor** (hooks ihlali) + 6× 400 — ve ESLint zaten söylüyordu | **P1** | frontend-engineer | todo |
 | [[T-190]] | `aggregationMethodFu` API'den yazılabiliyor — oran dalı iki sessiz regresyon üretiyor | P2 | backend-engineer | todo |
 | [[T-191]] | ⛔ **B1 plan seviyesinde AÇIK** — kesişim FU'lar üzerinde, kusur SKU'larda | **P1** | architect | todo |

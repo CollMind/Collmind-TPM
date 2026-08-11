@@ -116,6 +116,28 @@ artık cevaplı; karar ürün sahibinin.
 The ledger is the system's financial system of record. These are the strongest invariants
 in the product and most of them already hold.
 
+### ⛔ Bu aile ŞEMA tarafından ihlal ediliyor — ölçüldü 2026-08-11 ([[T-188]])
+
+`INV-L-001` mutasyonu **ifadelerde** arıyor (*"No statement may modify…"*). Ama iki
+mutasyon yolu **şemada**, ve hiçbir `UPDATE`/`DELETE` ifadesi içermiyor:
+
+```sql
+FK ledger_entries → budget_envelopes   ON DELETE = SET NULL   -- 1704067540000:243
+FK ledger_entries → tenants            ON DELETE = CASCADE
+FK ledger_entries → agreements         YOK
+```
+
+**Ölçülmüş bedeli:** `main.ledger_entries` 1231 satır, ₺6.080.000, `budget_envelope_id`
+**%100 NULL** — zarflar silindiğinde FK sessizce NULL'ladı. Ve `agreement_id`'de FK
+olmadığı için **1231 satırın hepsi var olmayan bir anlaşmaya** işaret ediyor.
+
+Sonuç: `v_budget_summary` ledger'ı okuyor ama zarfsız satırları **join edemiyor** →
+₺1.120.000 net DEBIT bütçe özetine **hiç girmiyor**. Bütçe panosu *"harcama ₺0"* diyor.
+
+> **Değişmezliği kodda arayan bir invariant, şemadaki bir kuralı göremez.**
+> `INV-L-001`'in `budget_envelope_id` maddesi bugün **yanlış** — ya FK değişmeli
+> (`RESTRICT`), ya madde düzeltilmeli. Karar [[T-188]]'de, `D-04` ile aynı yöne bakıyor.
+
 ### INV-L-001 — No statement may modify `ledger_entries.amount`, `entry_direction`, `budget_envelope_id`, or `period_month` after insert.
 - **Status:** HOLDS
 - **Guard:** NONE → target `DB` (BEFORE UPDATE trigger rejecting changes to these columns)
