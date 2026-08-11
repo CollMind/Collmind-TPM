@@ -87,7 +87,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `D-01` | CAP aşımında ne olur: skip · clamp · reject? | `SYSTEM_INVARIANTS §10` · [[T-176]] | `INV-B-002` · `INV-B-005` · claim portu | **açık** ⛔ *iki yerde tanımlı* |
 | `D-02` | CAP'in doğruluk kaynağı nedir? | `SYSTEM_INVARIANTS §10` | `INV-B-004` | açık |
 | `D-03` | CAP zorunlu mu, kapsamı ne? | `SYSTEM_INVARIANTS §10` | `INV-B-002` | açık |
-| `D-04` | Append-only hangi seviyede zorlanır (kolon mu, trigger mı)? | `SYSTEM_INVARIANTS §10` · `§3` | `INV-L-003` | açık |
+| `D-04` | Append-only hangi seviyede zorlanır (kolon mu, trigger mı)? | **`ADR 0012`** (birleşti) · `SYSTEM_INVARIANTS §10` · `§3` | `INV-L-001` · `INV-L-003` | **öneri hazır** — [[T-188]] ölçümü + kaynak üç yerde yazıyor |
 | `D-06` | Settlement tabanı nedir? | `SYSTEM_INVARIANTS §10` | `INV-R-007` | açık |
 | `D-07` | Recognition dağıtım kuralı? | `SYSTEM_INVARIANTS §10` | `INV-R-007` · `INV-R-008` | açık |
 | `D-08` | Envelope bulunamazsa: reddet mi, otomatik yarat mı? | `SYSTEM_INVARIANTS §10` · `0020 §6 #7` | `INV-B-006` (+1) | **açık** ⛔ *iki yerde* |

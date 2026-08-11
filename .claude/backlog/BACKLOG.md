@@ -195,6 +195,7 @@ status: active        # planned | active | closed
 | [[T-189]] | 🔴 `/finance` **çöküyor** (hooks ihlali) + 6× 400 — ve ESLint zaten söylüyordu | **P1** | frontend-engineer | todo |
 | [[T-190]] | `aggregationMethodFu` API'den yazılabiliyor — oran dalı iki sessiz regresyon üretiyor | P2 | backend-engineer | todo |
 | [[T-191]] | ⛔ **B1 plan seviyesinde AÇIK** — kesişim FU'lar üzerinde, kusur SKU'larda | **P1** | architect | todo |
+| [[T-192]] | ⚠️ `docs/brd/` kökünde **envanterlenmemiş altı dosya** — biri bağlayıcı (`Sprint_0`) | **P1** | architect | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
