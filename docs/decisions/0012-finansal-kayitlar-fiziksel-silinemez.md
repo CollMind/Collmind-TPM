@@ -53,10 +53,26 @@ ledger yazımı         1231
 ```
 
 > **İkinci kopya "hiç düşünülmemiş" değil — TABLOSU VAR ve BOŞ.**
-> `budget_transaction_logs` sıfır satır, çünkü [[T-096]] ölçtü: `created_by` iki kez
-> map'lenmiş, her `INSERT` `42701` veriyor, dört bütçe rotası **500** dönüyor.
 
-Yani zincir şu: yazma hatası → log boş → `SET NULL` atfı sildi → **geri kuracak kopya yok**.
+**Neden boş — ve burada bir tarih ölçümü gerekti.** [[T-096]] `created_by`'ın iki kez
+map'lendiğini, her `INSERT`'in `42701` verdiğini ve dört bütçe rotasının **500** döndüğünü
+ölçmüştü. Ama o kusur **bugün kodda değil**:
+
+```
+T-096 düzeltmeleri indi   → 2026-08-06  (e915da4 · 1bce53f)
+ledger satırlarının tarihi → 2026-06-24 … 2026-07-29
+```
+
+> **Tablo boş çünkü düzeltme o koşumlardan SONRA geldi** — ve o günden beri hiçbir bütçe
+> rotası çalıştırılmadı. Yani *"yazma hatası bugün de var"* **denemez**.
+
+⚠️ Ve bu, `CLAUDE.md`'nin *"başka bir bileşen hakkındaki iddiayı ölç"* kuralının bir vakası:
+ilk taslak T-096'nın bulgusunu **bugünkü durum** gibi yazmıştı. T-096 `review` durumunda,
+yani **doğrulanmamış** — ama **düzeltilmemiş değil**.
+
+Zincir şöyle düzeltilir: **log o dönemde yazamıyordu → kopya oluşmadı → `SET NULL` atfı
+sildi → geri kuracak kopya yok.** Bugünkü yazma yolunun çalışıp çalışmadığı **ayrı bir
+ölçüm** ve tasfiyenin ön koşulu (aşağıda).
 
 ⚠️ **Ve `budget_transaction_logs`'un grain'i zarf değil** (`budget_allocation_id`,
 `plan_id`) — yani çalışsaydı bile **zarf atfını taşır mıydı, ölçülmedi**. İddia şu kadar:
@@ -301,6 +317,67 @@ ADR onu düzeltmiyor, düzeltiyormuş izlenimi de vermemeli. → [[T-193]] (ve [
 ---
 
 ## Uygulama sırası (ürün sahibinin sıralaması)
+
+### ⛔ Sıralama düzeltildi — **tasfiye FK'dan ÖNCE, ve migration'ın İÇİNDE**
+
+İlk taslak tasfiyeyi 5. adım yapmıştı. **Yanlış:** `agreement_id`'ye FK **eklenemez** —
+1231 satırın hepsi var olmayan anlaşmalara işaret ediyor, PostgreSQL constraint'i reddeder.
+
+İki seçenek vardı ve ikisi de bugün seçildi:
+
+| seçenek | sonuç |
+|---|---|
+| **tasfiye önce, sonra FK** | ✅ temiz |
+| `NOT VALID` | ⛔ **kalıcı olarak doğrulanmamış** bir constraint + ledger'da sonsuza kadar atfedilemez 1231 satır — **bugünkü kusuru şemaya yazılı hâle getirir** |
+
+> **Migration sırası: `purge → FK → RESTRICT → deleted_at`.** Tasfiye ayrı bir adım olarak
+> sonraya bırakılamaz; migration'ın **içindedir**.
+
+### ⚠️ Ve tasfiye bu ADR'nin **ihlalidir** — açık, tek seferlik istisna olarak yazılır
+
+Bu belgeyi imzaladıktan sonra yapılacak ilk iş **1231 finansal kaydı fiziksel olarak
+silmek**. Gerekçesiz yapılırsa belgenin ilk uygulaması onun karşıtı olur, ve bir sonraki
+okuyan kişi **kuralın esnetilebilir olduğunu** öğrenir.
+
+**İstisnanın gerekçesi — ve sınırı:**
+
+> Bu satırlar kuralın **koruduğu şeyi zaten kaybetmiş** durumda: atfı yok, kanıtı yok,
+> dört yoldan da yeniden kurulamıyor. Silme kararı **deploy öncesi** ve dışarıda hiçbir
+> kaydı yok. **Kural atfı olan kayıtları koruyor; bunlar o kümede değil.**
+
+- [ ] **Silmeden önce 1231 satırın tam dökümü bir dosyaya alınır ve commit'lenir.**
+      Ucuz sigorta, ve istisnanın **kanıtı**.
+- [ ] **Tasfiyeden ÖNCE [[T-096]] doğrulanır** — `budget_transaction_logs`'a bugün gerçekten
+      yazılabildiği **ölçülür** (bir bütçe rotası koşturulur, satır oluştuğu görülür).
+
+      ⚠️ Gerekçe sıralamayı belirliyor: **istisnayı kaydeden mekanizma, istisnayı uygularken
+      çalışıyor olmalı.** Log yazmıyorken tasfiye yapılırsa, 1231 satırın silinmesi de
+      **loglanmaz** — yani ADR'nin tek istisnası, kaydı olmayan bir işlem olur.
+
+### Migration kapsamı: `ledger_entries` değil, **⛔ kovasının tamamı**
+
+⚠️ Yalnız `ledger_entries` düzeltilirse **iki saat önce reddettiğimiz yapı kurulur**: bazı
+tablolar `RESTRICT`, bazıları `CASCADE`, fark gerekçesiz. Sınıflandırmanın **tamamı** tek
+migration'da uygulanır — `*/users` dahil.
+
+📌 Diğer beş tablo **temiz** çıktığı için bu ucuz: constraint değişikliği dışında iş yok.
+
+### ⛔ `tenants` bu migration'a GİRMİYOR — offboarding yolu tanımlı değil
+
+Zarf için *"`RESTRICT` tek başına eksik"* dedik ve `deleted_at` ekledik. `tenants`
+`CASCADE → RESTRICT` olduğunda **aynı tuzak**: tenant artık silinemez, ve tenant
+offboarding için **tanımlı bir yol yok**.
+
+**Bu ADR onu kapatmıyor.** Kaynağın kalıbı kurulu (kullanıcı silme = anonimleştirme);
+tenant için aynısı **yazılmamış**.
+
+> Bu yüzden `*/tenants` FK'ları bu migration'ın **dışında**. Ya offboarding yolu (deaktivasyon
+> + anonimleştirme) tanımlanır ve beraberinde girer, ya da ayrı bir kararla gelir.
+> → [[T-195]]
+
+---
+
+## Uygulama sırası — düzeltilmiş
 
 1. ✅ **Backfill yollarının sayımı** — dört yol, dördü de kapalı (yukarıda). Ve ikinci
    yolun (audit) kapalı olma sebebi ayrı ve daha büyük bir P1: [[T-193]]
