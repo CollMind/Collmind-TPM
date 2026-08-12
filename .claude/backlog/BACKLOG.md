@@ -191,7 +191,7 @@ status: active        # planned | active | closed
 | [[T-185]] | ⛔ Actuals-first anlaşma KPI'ları **uydurulmuş** SKU'dan — `// 10% uplift assumption` | **P1** | architect | todo |
 | [[T-186]] | 🔴 `finance-reporting` bilinmeyen RAG'ı **`GREEN`** yapıyor — biri **risk** raporu | **P1** | backend-engineer | todo |
 | [[T-187]] | 🔴 Girilen taktik değeri **geri okunamıyor** — grid düşürülmüş kolonu okuyor | **P1** | frontend-engineer | todo |
-| [[T-188]] | ⛔ **Kök neden: FK `ON DELETE SET NULL`** — şema `INV-L-001`'i ihlal ediyor, 22 FK taranacak | **P1** | data-engineer | review |
+| [[T-188]] | ✅ Migration indi (`1802`) — 22 FK `RESTRICT`, 1231 satır tasfiye, tablo boşaldı | **P1** | data-engineer | review |
 | [[T-189]] | 🔴 `/finance` **çöküyor** (hooks ihlali) + 6× 400 — ve ESLint zaten söylüyordu | **P1** | frontend-engineer | todo |
 | [[T-190]] | `aggregationMethodFu` API'den yazılabiliyor — oran dalı iki sessiz regresyon üretiyor | P2 | backend-engineer | todo |
 | [[T-191]] | ⛔ **B1 plan seviyesinde AÇIK** — kesişim FU'lar üzerinde, kusur SKU'larda | **P1** | architect | todo |
@@ -201,6 +201,7 @@ status: active        # planned | active | closed
 | [[T-195]] | **Tenant offboarding yolu yok** — `*/tenants` FK'ları ADR 0012 migration'ının dışında | P2 | architect | todo |
 | [[T-196]] | 🔴 `type: 'date'` entity'de `Date` diye tipli, **string** dönüyor — iki canlı 500 | **P1** | debugger | todo |
 | [[T-197]] | **71 `decimal` kolonu** `number` diye tipli, transformer yok — migration'ı bloklamıyor | **P1** | architect | todo |
+| [[T-198]] | `migration:generate` taban çizgisi bozuk — ilgisiz **188 FK** DROP+RECREATE istiyor | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |

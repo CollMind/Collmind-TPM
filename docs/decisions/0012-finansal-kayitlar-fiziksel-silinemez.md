@@ -173,7 +173,16 @@ silme hakkı ile vergi saklama yükümlülüğü çatışmasının kaynaktaki ç
 
 ### 2. Silme yolu **soft delete**, ve FK `RESTRICT`
 
-`budget_envelopes`'a `deleted_at` eklenir **ve** FK `RESTRICT`/`NO ACTION` olur.
+`budget_envelopes` **soft-delete edilebilir olmalı** ve FK `RESTRICT`/`NO ACTION` olur.
+
+> ⚠️ **DÜZELTME (2026-08-11, uygulama turu):** bu madde *"`deleted_at` **eklenir**"* diyordu.
+> **Yanlış — kolon zaten vardı**, ilk migration'dan beri
+> (`1704067500000-CreateBudgetEnvelopes.ts:142`, `BaseEntity.@DeleteDateColumn`), ve beş
+> kısmi index de `WHERE deleted_at IS NULL` taşıyor.
+>
+> Yani bu ADR'nin *"tek parça inmeli"* gerekçesi **zaten karşılanmıştı**; eksik olan yalnız
+> FK tarafıydı. Gerekçe değişmiyor, **iddia düzeltiliyor** — kaynak okunmadan yazılmış bir
+> cümleydi (`CLAUDE.md`: *"başka bir bileşen hakkındaki iddiayı ölç"*).
 
 > **`RESTRICT` tek başına eksik bir karardır.** Zarf artık hiç silinemez, operasyonel bir
 > ihtiyaç kapatılmış olur — ve bir süre sonra biri onu `DELETE` yerine `TRUNCATE` ya da
