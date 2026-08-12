@@ -1254,3 +1254,24 @@ ama **dosyayı taramak** onu ilk turda bulurdu.
 
 Test edilmeyen dosya kusur biriktirir; ve biriktirdiği kusurlar birbirine benzer.
 
+
+### Assert taşıyan migration ÜÇ durumu ayırt etmeli (ZORUNLU)
+
+Tek seferlik veri düzeltmesi içeren bir migration, `rowcount`'u iki değere indirirse
+**yalnız bir ortamda çalışabilir** hâle gelir.
+
+Ölçülmüş vaka (2026-08-11, `1802000000000`): brief *"silinen satır 1231 değilse başarısız
+olur"* diyordu. İkili yazılsaydı migration **taze/prod bir DB'de kalıcı olarak tıkanırdı**
+— orada silinecek **0** satır var, 1231 değil, ve `migrations` tablosuna asla
+giremeyeceği için hata **her deploy'da** tekrarlanırdı.
+
+| durum | davranış |
+|---|---|
+| **beklenen** (ör. 1231 satır mevcut) | işlemi yap + assert |
+| **zaten uygulanmış / taze** (0 satır) | **no-op**, sessizce geç |
+| **beklenmeyen** (ara bir sayı) | **İPTAL** — küme değişmiş, sessizce geçme |
+
+> **İkiliye indirmek, migration'ı yalnız bugünkü veritabanında çalışabilir kılar.**
+
+⚠️ Ve dalların **en az ikisi ampirik doğrulanmalı** (`run` → `revert` → `run` döngüsü);
+yazılmış bir dal, çalıştığı anlamına gelmez.
