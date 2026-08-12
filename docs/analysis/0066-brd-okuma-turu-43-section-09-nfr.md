@@ -130,9 +130,9 @@ Ve iki ağ/oturum kuralı daha, yine tek yerde:
 §7.3:243-245  approval kontrolünde kod seviyesinde: 'Cannot approve own submission'
 ```
 
-> [[T-193]]'ün matrisindeki *"Admin kendi yarattığı agreement'ı onaylayamaz"* maddesi
+> [[T-201]]'ün matrisindeki *"Admin kendi yarattığı agreement'ı onaylayamaz"* maddesi
 > `EA-001`'e özgü **değil** — paket bunu **tüm kullanıcılar için** dört yerde söylüyor ve
-> biri *"system blocks"* diyerek **zorlayıcı** kılıyor. T-193'ün ölçüm adımında bu madde
+> biri *"system blocks"* diyerek **zorlayıcı** kılıyor. T-201'ün ölçüm adımında bu madde
 > öncelikli olmalı.
 
 ---
@@ -174,7 +174,7 @@ gerekçesidir** — bugüne kadar hiçbir analiz belgesinde atıf verilmemişti.
 
 ## 6. Bu turun sınırları (ZORUNLU)
 
-- **Kod ölçülmedi.** §4'ün T-193 önerisi ve §5'in para biçimi bağlantısı kaynak
+- **Kod ölçülmedi.** §4'ün T-201 önerisi ve §5'in para biçimi bağlantısı kaynak
   tarafındadır; ürün karşılığı **aranmadı**.
 - `§9.1`'in tablosu (`0059`'da okunmuştu) bu turda **yeniden ölçülmedi**; buradaki atıflar
   ondan.

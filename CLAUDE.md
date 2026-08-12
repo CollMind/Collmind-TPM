@@ -440,6 +440,104 @@ Ve genel kural: **kanıtın kendisi şüpheliyse sonucu da şüphelidir.** İki 
 temizken exit 0" **aynı çıktıyı** verir — kapıyı, yakalaması gereken hatayı kasten üreterek
 sına.
 
+### Negatif sonuçlu tarama, POZİTİF KONTROLSÜZ rapor edilemez (ZORUNLU)
+
+**`0 bulgu` çıktısı hiçbir zaman kendini yanlış olarak göstermez.** Onu yakalayan tek şey,
+desenin gerçekten eşleştiğini kanıtlayan ayrı bir ölçümdür.
+
+Ölçülmüş çift vaka (2026-08-11, `decimal` taraması) — **aynı turda iki kez**:
+
+| # | desen | pozitif kontrol | gerçek |
+|---|---|---|---|
+| 1 | `@Column({…})` tek satır varsayıldı | **0 eşleşme** | dekoratör çok satırlı |
+| 2 | `type: 'numeric'` arandı | **0 eşleşme** | entity'ler `'decimal'` yazıyor |
+| 3 | `type: 'decimal'` | **89 eşleşme** ✅ | **71 kusur** |
+
+İlk iki tur *"0 bulgu, temiz"* diye raporlanacaktı. **Kural olsaydı raporlanamazlardı** — ve
+üçüncü tur zaten gerçekleşti.
+
+> **Bir taramanın sonucu negatifse (`0`, *"yok"*, *"hiçbiri"*), yanında pozitif kontrolü
+> olmadan yazılamaz.**
+
+**İki şart:**
+
+1. **Beklenen sayı ÖNCEDEN yazılır.** Kontrolü koşup çıkan sayıya bakmak, sonucu gördükten
+   sonra *"evet bu makul"* demeye açıktır. `decimal` taramasında beklenen *"en az bir avuç"*
+   idi ve **89** çıktı — makul. Beklenen yazılmasaydı **3** çıksa da makul görünürdü.
+2. **Kapsam yalnız negatif sonuçlar.** Pozitif bulgu **kendi kendini doğrular** — 71 vaka
+   bulduysan desen çalışıyor demektir.
+
+⚠️ Kuralı tüm taramalara genişletme: her aramaya ek iş binerse **uygulanmaz** hâle gelir.
+Ve **uygulanmayan bir kural, olmayan kuraldan kötüdür** — çünkü uyulduğu sanılır.
+
+### Kapsam maskelemesi — desen çalışır, EVREN eksiktir (ZORUNLU)
+
+`§2.7`'nin doğrulama-maskeleme ailesi *"ölçüm yanlış"* vakalarını topluyor. Bu **farklı bir
+sınıf**: ölçüm doğru, desen çalışıyor, ve sonuç yine yanlış — çünkü **sayılan küme eksik**.
+
+Bugün **iki kez** oldu, ve ikisi de sayınca değişti:
+
+| iddia | neyden çıkarıldı | gerçek |
+|---|---|---|
+| *"İki aile, kesişmiyorlar"* | **iki** tablo | üçüncü tablo (`budget_transactions`) zarf atfını **taşıyor** |
+| *"Backfill imkânsız"* | **bir** yol | **dört** yol vardı; ikincisi kapalıydı ve sebebi kusurdan büyüktü |
+
+> **Pozitif kontrol bunları yakalamaz** — desen çalışıyordu, evren eksikti.
+
+**Kural: bir küme hakkında sonuç yazılıyorsa, kümenin NASIL SINIRLANDIĞI aynı cümlede
+yazılır.**
+
+- ❌ *"İki aile kesişmiyor"*
+- ✅ *"İki tablo ölçüldü, üçüncüsü sayılmadı"* — yazılabilir, ve sonraki okuyucu farkı görür
+
+İkincisi bir sonuç değil, **ölçümün sınırı**. Sınırı yazmak sonucu zayıflatmaz; **yanlış
+genellemeyi** engeller.
+
+### Arama terimi, ARANAN YERİN DİLİYLE seçilir (ZORUNLU)
+
+Aynı kavramın iki yüzeyde iki adı olabilir:
+
+| kavram | entity dili (TypeORM) | katalog dili (PostgreSQL) |
+|---|---|---|
+| ondalık sayı | **`decimal`** | **`numeric`** |
+| zarf referansı | `budgetEnvelopeId` | `budget_envelope_id` |
+| pasiflik | `isActive` / `deleted_at` | — |
+
+`decimal` vakası bunun bedelini ölçtü: katalog dilinde arandı, entity dosyalarında **0**
+eşleşti.
+
+> **İki dilli bir kavram ararken her iki token da aranır, ve hangisinin hangi yüzeyde
+> geçtiği tarama notuna yazılır.**
+
+⚠️ Ve bu **guard yazarken de** geçerli: `confdeltype` guard'ı **katalog** dilinde,
+`decimal` guard'ı **entity** dilinde yazılır. Yanlış dildeki bir guard sessizce hiçbir şey
+ölçmez.
+
+### Yazma ile commit arasına bir DOĞRULAMA koy (ZORUNLU)
+
+Bir dosyayı yazan adım ile onu commit'leyen adım arasında **hiçbir kontrol yoksa**, sessizce
+başarısız olan bir düzenleme **tutarsız bir commit** üretir — ve o commit'in ömrü, onu okuyan
+bir sonraki kişiye kadar sürer.
+
+Ölçülmüş vaka (2026-08-11, `ADR 0012`): iki `str.replace` içeren bir python bloğu
+**ikincisindeki tırnak hatasıyla** tümüyle düştü (`SyntaxError`), ama shell zinciri devam
+etti ve `git commit` çalıştı. Sonuç: ADR'nin bir bölümü güncel, uygulama sırası **eski**
+metni taşıyor — ve commit mesajı ikisinin de güncellendiğini söylüyor.
+
+> **Bir script'in çalıştığını çıktısından değil, ÜRETTİĞİ DOSYADAN doğrula.**
+> `python3 - <<'PY' … PY` bloğu bir `SyntaxError` verdiğinde `&&` zinciri kopmaz, çünkü
+> hata **python'un içinde** değil, **parse aşamasındadır** ve exit kodu bir sonraki
+> komutu engellemez.
+
+Pratik: commit'ten **önce** değiştirdiğin şeyi `grep` ile geri oku. Bu, `§2.7`'nin
+*"mutasyonu dosya içeriğinden doğrula"* kuralının yazma tarafındaki hâli.
+
+- ❌ `python3 … ; git add -A && git commit`
+- ✅ `python3 … ; grep -q '<yeni metin>' <dosya> && git add -A && git commit`
+
+⚠️ **Ve bu özellikle ADR/sözleşme dosyalarında önemli:** kodda tutarsızlık bir sonraki test
+koşumunda kırmızıya döner; bir **karar belgesinde** hiçbir zaman dönmez.
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
@@ -1173,3 +1271,24 @@ ama **dosyayı taramak** onu ilk turda bulurdu.
 
 Test edilmeyen dosya kusur biriktirir; ve biriktirdiği kusurlar birbirine benzer.
 
+
+### Assert taşıyan migration ÜÇ durumu ayırt etmeli (ZORUNLU)
+
+Tek seferlik veri düzeltmesi içeren bir migration, `rowcount`'u iki değere indirirse
+**yalnız bir ortamda çalışabilir** hâle gelir.
+
+Ölçülmüş vaka (2026-08-11, `1802000000000`): brief *"silinen satır 1231 değilse başarısız
+olur"* diyordu. İkili yazılsaydı migration **taze/prod bir DB'de kalıcı olarak tıkanırdı**
+— orada silinecek **0** satır var, 1231 değil, ve `migrations` tablosuna asla
+giremeyeceği için hata **her deploy'da** tekrarlanırdı.
+
+| durum | davranış |
+|---|---|
+| **beklenen** (ör. 1231 satır mevcut) | işlemi yap + assert |
+| **zaten uygulanmış / taze** (0 satır) | **no-op**, sessizce geç |
+| **beklenmeyen** (ara bir sayı) | **İPTAL** — küme değişmiş, sessizce geçme |
+
+> **İkiliye indirmek, migration'ı yalnız bugünkü veritabanında çalışabilir kılar.**
+
+⚠️ Ve dalların **en az ikisi ampirik doğrulanmalı** (`run` → `revert` → `run` döngüsü);
+yazılmış bir dal, çalıştığı anlamına gelmez.

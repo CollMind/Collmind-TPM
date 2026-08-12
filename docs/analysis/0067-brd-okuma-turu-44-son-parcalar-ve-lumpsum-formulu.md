@@ -54,7 +54,7 @@ tek okuma — taban base ise null base olan SKU doğal olarak pay alamaz."*
 ürünün desteklediği bir senaryo olarak anlatıyor.
 
 > **Bu bir çelişki tespitidir, bir düzeltme önerisi değil** (`§2.1.2`: kaynak bir girdidir).
-> İki taban iki farklı ürün davranışı verir ve **karar ürün sahibinindir** → [[T-194]] +
+> İki taban iki farklı ürün davranışı verir ve **karar ürün sahibinindir** → [[T-202]] +
 > `OPEN_DECISIONS → 0067-LUMPSUM`.
 
 ---
@@ -79,7 +79,7 @@ mümkün: `95 TL` ve `89 TL` liste fiyatlarıyla oranlar 1.667/2.133'e **yaklaş
 
 📌 Yani kaynak lumpsum tabanı konusunda **üç sinyal** veriyor: `§5.3` *"proportionally"*
 (tabansız) · `§5.2` metni **planned volume** · `§5.2` örneği **ikisi de değil**.
-[[T-194]] bu üçünü birlikte taşımalı.
+[[T-202]] bu üçünü birlikte taşımalı.
 
 ---
 
@@ -196,7 +196,7 @@ kuralıyla **aynı aile** — ikisinin ilişkisi bu turda **aranmadı**.
 ## 9. Bu turun sınırları (ZORUNLU)
 
 - **Kod hiç ölçülmedi.** §4'ün `EditableCell` bağlantısı, §1'in ürün etkisi: hiçbiri
-  doğrulanmadı. [[T-194]]'ün ilk adımı **bizim bugünkü tabanımızı ölçmek** olmalı —
+  doğrulanmadı. [[T-202]]'ün ilk adımı **bizim bugünkü tabanımızı ölçmek** olmalı —
   `ADR 0006` Karar 1 uygulandı mı, uygulandıysa hangi tabanla.
 - §2'nin *"ciro tabanlı"* hipotezi **doğrulanamadı** (üçüncü SKU fiyatı belgede yok).
 - `§5.2`'nin `Input Patterns` pseudo-kodundaki uyarı eşikleri (`planned < base × 0.5` →

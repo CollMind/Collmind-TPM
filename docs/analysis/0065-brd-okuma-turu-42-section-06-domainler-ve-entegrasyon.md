@@ -98,7 +98,7 @@ saatli SLA** de aynı altyapıyı istiyor. **Kod ölçülmedi** — kaynak taraf
 > Ve üçünün alıcısı `MC-002`'nin rol kümesinde bile yok (`Data Engineering`).
 
 Bu, `CLAUDE.md`'nin **enumerasyon** kuralının bir vakası: *"altı olay"* bir sayıdır ve
-**kaynağın tamamı taranmadan** yazılmıştır. [[T-158]]/[[T-192]] ailesine değil, **yeni
+**kaynağın tamamı taranmadan** yazılmıştır. [[T-158]]/[[T-200]] ailesine değil, **yeni
 BRD'nin bildirim bölümüne** iş çıkarıyor.
 
 ---

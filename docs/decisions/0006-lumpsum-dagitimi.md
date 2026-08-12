@@ -67,7 +67,7 @@ tarafına yazılır.
 ## ⚠️ SONRADAN ÖLÇÜLDÜ (2026-08-11) — bu ADR'nin "BRD kanıt durumu" öncülü **yanlış**
 
 > **Bu bölüm kararı değiştirmez.** Karar ürün sahibinindir ve yürürlüktedir. Kaydedilen
-> şey, kararın dayandığı **öncülün** ölçümle yanlışlanmış olmasıdır → [[T-194]].
+> şey, kararın dayandığı **öncülün** ölçümle yanlışlanmış olmasıdır → [[T-202]].
 
 Yukarıda *"BRD'de lumpsum dağıtımı için **açık formül yok**"* yazıyor. `docs/analysis/0067`
 (okuma turu 44) ölçtü — **var**:
@@ -90,4 +90,4 @@ işaretliydi. `0059`'un ölçüt değişikliği onu girer kovasına aldı.
 desteklenen bir senaryo olarak anlatıyor.
 
 📌 Üçüncü sinyal: `§5.2`'nin **kendi kolon örneği** (1.667 / 2.133) **kendi formülünü**
-(1.500 / 2.000) izlemiyor. Üç sinyal [[T-194]]'te tek tabloda toplanıyor.
+(1.500 / 2.000) izlemiyor. Üç sinyal [[T-202]]'te tek tabloda toplanıyor.
