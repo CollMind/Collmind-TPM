@@ -52,7 +52,33 @@ plan_approval_history    0 satır
 ledger yazımı         1231
 ```
 
-> **İkinci kopya "hiç düşünülmemiş" değil — TABLOSU VAR ve BOŞ.**
+### ⛔ DÜZELTME (2026-08-11, `T-096` doğrulama turu) — **bu tablo ledger'ın ikinci kopyası DEĞİL**
+
+İlk taslak *"ikinci kopya tablosu var ve boş"* diyordu. **Ölçüldü, yanlış.**
+
+```
+budget_transaction_logs kolonları → budget_allocation_id · plan_id
+                                     budget_envelope_id YOK · agreement_id YOK
+ledger_entries                    → budget_envelope_id VAR · agreement_id VAR
+```
+
+| tablo | yazan | grain |
+|---|---|---|
+| `budget_transaction_logs` | yalnız `budget-allocation.service.ts` (**planning-first**) | allocation + plan |
+| `ledger_entries` | `agreement-transaction` · `on-invoice` · `reversal` · `settlement` (**actuals-first**) | envelope + agreement |
+
+> **İki ayrı aile, ve kesişmiyorlar.** 1231 sarkık ledger satırının burada karşılığı **yok
+> ve olamaz** — tablo o hareketi kaydeden yol tarafından **hiç yazılmıyor**.
+
+**Sonuç:** `T-096` kapansa bile bugünkü senaryo tekrarlandığında bu tablo **işe yaramaz**.
+İkinci kopya isteniyorsa **yeni bir kolon/tablo kararı** gerekir — ölçümle kapanmaz,
+[[T-193]]'ün konusudur. Ve bu, T-193'ün kapsamını **daraltıyor**: aranan şey *"boş bir
+tabloyu doldurmak"* değil, **olmayan bir atıf yolunu tasarlamak**.
+
+⚠️ Aşağıdaki *"tablosu var ve boş"* okuması bu düzeltmeyle **geçersizdir**; tarihsel kayıt
+olarak bırakılıyor.
+
+> ~~**İkinci kopya "hiç düşünülmemiş" değil — TABLOSU VAR ve BOŞ.**~~
 
 **Neden boş — ve burada bir tarih ölçümü gerekti.** [[T-096]] `created_by`'ın iki kez
 map'lendiğini, her `INSERT`'in `42701` verdiğini ve dört bütçe rotasının **500** döndüğünü
