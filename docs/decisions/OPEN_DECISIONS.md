@@ -169,10 +169,24 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 
 ⚠️ **Aşağıdakiler bilinçli olarak eksik ve iddia edilmiyor:**
 
-1. **Tur 1–19 kuyruğunun tam envanteri çıkarılmadı.** Yukarıya `0019`/`0020`/`0023`'ün
-   tablolarından **açık** görünenler alındı. `0024` ve `0027` *"bu turdan yeni domain
-   sorusu çıkmadı"* diyor. Kuyruğun turu 6 ve 9'da *"~9-10'da sabit"* olduğu yazılı — bu
-   indekste **8 madde** var, yani ya bir kısmı çözüldü ya da kaçtı. **Ölçülmedi.**
+1. ~~**Tur 1–19 kuyruğunun tam envanteri çıkarılmadı.**~~ ✅ **ÖLÇÜLDÜ (2026-08-12)** —
+   ve *"~9-10 mu 8 mi"* farkı **kayıp değilmiş, iki farklı şeyi sayıyorlarmış**:
+
+   | tur | kuyruğa giren | ID'ler |
+   |---|---|---|
+   | `0019` (tur 1) | **4** ✅ | `#1` mod seçimi · `#2` tactic-FU/hacim-SKU · `#3` CAP aşımı · `#4` baseline ≥%95 |
+   | `0020` (tur 2) | **3** ✅ + **1** 🟡 | `#5` CAP satırı geçirir · `#6` %90 katmanı · `#7` envelope reddi · `#8` STA/LTA 🟡 |
+   | `0023` (tur 5) | **1** ✅ + **1** 🟡 | `ACCRUAL` · ledger sınırı 🟡 |
+   | `0021` · `0024` · `0027` | **0** | *"bu turdan yeni domain sorusu çıkmadı"* (kendi ifadeleri) |
+
+   **Toplam: 8 ✅ + 2 🟡 = 10.** Turu 6/9'un *"~9-10"*'u **10'u** (🟡 dahil), indeksteki
+   *"8 madde"* ise `0019/0020/0023` **etiketli satırları** sayıyordu. Kalan ikisi
+   **kaybolmadı, başka ID altında duruyor**: `0020 #5` → `D-01`, `0020 #7` → `D-08`
+   (satırın *"Nerede tanımlı"* sütunu zaten `0020 §6 #7` diyor).
+
+   > **Hiçbir kuyruk maddesi kaçmamış.** Fark, iki sayımın **farklı kümeleri** saymasından
+   > geliyordu — `CLAUDE.md`'nin *"sayı yerine niteliksel ayırt edici yaz"* kuralının bir
+   > vakası daha.
 2. **`bayat?` işaretli maddeler** kaydedildiklerinden beri doğrulanmadı.
 3. **Statü sütunu türetilmiş değil, elle yazıldı** — bir karar başka bir belgede
    cevaplandıysa burada hâlâ `açık` görünebilir.
@@ -180,6 +194,24 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 > **Bu dosyanın kendisi bir enumerasyondur, ve `CLAUDE.md` der ki: bir enumerasyona dayanan
 > her karar, enumerasyonun kendisi ölçülene kadar bir tahmindir.** Bu indeks o ölçümü
 > **başlatır**, tamamlamaz.
+
+### 📏 İndeksin kendi sayımı (ölçüldü 2026-08-12, tahmin değil)
+
+```
+A. Ürün sahibi kararı   45
+B. Hukuk kararı          1
+C. Danışman              3
+D. Teknik ölçüm bekliyor 6
+                        ──
+TOPLAM satır            55
+```
+
+Sayım komutu: bölüm başlıklarına göre `| \`` veya `| [[` ile başlayan satırlar (açıklama
+tablolarının satırları hariç — `D-*` serisi tablosu ve ID uzayı tablosu **sayılmadı**).
+
+⚠️ **Bu sayı hızla bayatlar** (`CLAUDE.md`: *"dokümanda sayı yazma"*). Buraya yazılmasının
+tek gerekçesi, bir sonraki sayımın **neyi saydığını** bilmesi: satır sayısı ≠ karar sayısı —
+`D-01`/`D-08` gibi satırlar birden çok kuyruk maddesini taşıyor (bkz. §1 yukarıda).
 
 ---
 
