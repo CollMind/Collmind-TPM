@@ -307,6 +307,21 @@ guard **kapatılır**. Kapsam listesi bu ADR'nin ⛔ kovasıdır, ve listeye ekl
 > hesabına **sessizce girmeye devam eder** — her sorgu `deleted_at IS NULL` filtresini
 > taşımazsa.
 
+⛔ **DÜZELTME (2026-08-11, review turu): `v_budget_summary`'de yön TERS.**
+
+```sql
+v_budget_summary … FROM main.budget_envelopes be WHERE (deleted_at IS NULL);
+```
+
+View **zaten filtreliyor** — yani soft-silinen bir zarf özetten **tümüyle düşüyor**,
+ledger satırları o zarfa atfedilmiş hâlde **kalmasına rağmen**.
+
+> **Korkulan:** silinen zarf hesaba **girmeye devam eder**.
+> **Gerçek:** silinen zarfın **gerçek harcaması sessizce kayboluyor**.
+
+İkisi de sessiz, ama ikinci yön **daha kötü**: `Allocated` da `consumed` da gider, ve
+harcanmış para hiçbir toplamda görünmez. → [[T-201]]
+
 **Ve çözüm kodda filtre aramak değildir** — bu, `INV-L-001`'in düştüğü tuzağın aynısı:
 yanlış yüzeyde ölçmek. Kalıcı çözüm **görünüm (view)** ya da **RLS predicate'i**, yani
 [[T-167]] ile aynı yere bakıyor.
@@ -397,7 +412,31 @@ migration'da uygulanır — `*/users` dahil.
 
 📌 Diğer beş tablo **temiz** çıktığı için bu ucuz: constraint değişikliği dışında iş yok.
 
-### ⛔ `tenants` bu migration'a GİRMİYOR — offboarding yolu tanımlı değil
+### ⛔ DÜZELTME (2026-08-11, uygulama turu) — **`tenants` GİRDİ**
+
+Aşağıdaki bölüm **inen şemayla çelişiyor** ve tarihsel kayıt olarak bırakılıyor.
+
+**Gerçek:** migration `1802000000000` altı finansal tablodan `tenants`'e giden **6 FK'nın
+6'sını da `RESTRICT`** yaptı (ölçüldü: `confdeltype='r'`, 6/6).
+
+**Gerekçe** ürün sahibinin üçüncü seçeneği (`.claude/backlog/tasks/T-188.md`, not 3):
+
+> `RESTRICT`, offboarding yolu tanımlanmadan. Bugün hiçbir şey kırmıyor (tenant silme yolu
+> yok — ölçüldü: `tenant.service.ts:100` `softRemove`), ve ihtiyaç doğduğunda **bir hata
+> mesajıyla durup** [[T-195]]'i tetikleyecek. *"Dışarıda kalsın"* seçeneği bugünkü
+> `CASCADE`'in kalması demekti — yani `Section_09`'un 7 yıl maddesinin **ihlalinin
+> sürmesi**.
+
+⚠️ **Ve bu düzeltme geç kaldı:** karar T-188'in gövdesinde verildi, ADR metni
+güncellenmedi. `CLAUDE.md §2.1`'e göre **ADR en üstte** — bunu okuyan biri şemayı *"ADR
+ihlali"* sanıp geri çevirebilirdi. Aynı commit `deleted_at` iddiasını düzeltirken bunu
+**atladı**.
+
+> **Bir kararı task gövdesinde vermek, ADR'yi güncellemek değildir.**
+
+---
+
+### ~~⛔ `tenants` bu migration'a GİRMİYOR — offboarding yolu tanımlı değil~~ *(süperseded)*
 
 Zarf için *"`RESTRICT` tek başına eksik"* dedik ve `deleted_at` ekledik. `tenants`
 `CASCADE → RESTRICT` olduğunda **aynı tuzak**: tenant artık silinemez, ve tenant
