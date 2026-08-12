@@ -197,7 +197,7 @@ status: active        # planned | active | closed
 | [[T-191]] | ⛔ **B1 plan seviyesinde AÇIK** — kesişim FU'lar üzerinde, kusur SKU'larda | **P1** | architect | todo |
 | [[T-192]] | ⚠️ `docs/brd/` kökünde **envanterlenmemiş altı dosya** — biri bağlayıcı (`Sprint_0`) | **P1** | architect | todo |
 | [[T-193]] | ⛔ Bütçe hareketinin **log tablosu VAR ve BOŞ** (T-096); audit kapsamı ölçülecek | **P1** | architect | todo |
-| [[T-194]] | `budget_reservations` türev mi, **ikinci hakikat kaynağı** mı? — veri yok, `blocked` | P2 | data-analyst | blocked |
+| [[T-194]] | ⛔ `Available` **iki aileyi topluyor** — `consumed` yarısı bugün **sessizce sıfır** | **P1** | architect | todo |
 | [[T-195]] | **Tenant offboarding yolu yok** — `*/tenants` FK'ları ADR 0012 migration'ının dışında | P2 | architect | todo |
 | [[T-196]] | 🔴 `type: 'date'` entity'de `Date` diye tipli, **string** dönüyor — iki canlı 500 | **P1** | debugger | todo |
 
