@@ -423,6 +423,79 @@ Ve genel kural: **kanıtın kendisi şüpheliyse sonucu da şüphelidir.** İki 
 temizken exit 0" **aynı çıktıyı** verir — kapıyı, yakalaması gereken hatayı kasten üreterek
 sına.
 
+### Negatif sonuçlu tarama, POZİTİF KONTROLSÜZ rapor edilemez (ZORUNLU)
+
+**`0 bulgu` çıktısı hiçbir zaman kendini yanlış olarak göstermez.** Onu yakalayan tek şey,
+desenin gerçekten eşleştiğini kanıtlayan ayrı bir ölçümdür.
+
+Ölçülmüş çift vaka (2026-08-11, `decimal` taraması) — **aynı turda iki kez**:
+
+| # | desen | pozitif kontrol | gerçek |
+|---|---|---|---|
+| 1 | `@Column({…})` tek satır varsayıldı | **0 eşleşme** | dekoratör çok satırlı |
+| 2 | `type: 'numeric'` arandı | **0 eşleşme** | entity'ler `'decimal'` yazıyor |
+| 3 | `type: 'decimal'` | **89 eşleşme** ✅ | **71 kusur** |
+
+İlk iki tur *"0 bulgu, temiz"* diye raporlanacaktı. **Kural olsaydı raporlanamazlardı** — ve
+üçüncü tur zaten gerçekleşti.
+
+> **Bir taramanın sonucu negatifse (`0`, *"yok"*, *"hiçbiri"*), yanında pozitif kontrolü
+> olmadan yazılamaz.**
+
+**İki şart:**
+
+1. **Beklenen sayı ÖNCEDEN yazılır.** Kontrolü koşup çıkan sayıya bakmak, sonucu gördükten
+   sonra *"evet bu makul"* demeye açıktır. `decimal` taramasında beklenen *"en az bir avuç"*
+   idi ve **89** çıktı — makul. Beklenen yazılmasaydı **3** çıksa da makul görünürdü.
+2. **Kapsam yalnız negatif sonuçlar.** Pozitif bulgu **kendi kendini doğrular** — 71 vaka
+   bulduysan desen çalışıyor demektir.
+
+⚠️ Kuralı tüm taramalara genişletme: her aramaya ek iş binerse **uygulanmaz** hâle gelir.
+Ve **uygulanmayan bir kural, olmayan kuraldan kötüdür** — çünkü uyulduğu sanılır.
+
+### Kapsam maskelemesi — desen çalışır, EVREN eksiktir (ZORUNLU)
+
+`§2.7`'nin doğrulama-maskeleme ailesi *"ölçüm yanlış"* vakalarını topluyor. Bu **farklı bir
+sınıf**: ölçüm doğru, desen çalışıyor, ve sonuç yine yanlış — çünkü **sayılan küme eksik**.
+
+Bugün **iki kez** oldu, ve ikisi de sayınca değişti:
+
+| iddia | neyden çıkarıldı | gerçek |
+|---|---|---|
+| *"İki aile, kesişmiyorlar"* | **iki** tablo | üçüncü tablo (`budget_transactions`) zarf atfını **taşıyor** |
+| *"Backfill imkânsız"* | **bir** yol | **dört** yol vardı; ikincisi kapalıydı ve sebebi kusurdan büyüktü |
+
+> **Pozitif kontrol bunları yakalamaz** — desen çalışıyordu, evren eksikti.
+
+**Kural: bir küme hakkında sonuç yazılıyorsa, kümenin NASIL SINIRLANDIĞI aynı cümlede
+yazılır.**
+
+- ❌ *"İki aile kesişmiyor"*
+- ✅ *"İki tablo ölçüldü, üçüncüsü sayılmadı"* — yazılabilir, ve sonraki okuyucu farkı görür
+
+İkincisi bir sonuç değil, **ölçümün sınırı**. Sınırı yazmak sonucu zayıflatmaz; **yanlış
+genellemeyi** engeller.
+
+### Arama terimi, ARANAN YERİN DİLİYLE seçilir (ZORUNLU)
+
+Aynı kavramın iki yüzeyde iki adı olabilir:
+
+| kavram | entity dili (TypeORM) | katalog dili (PostgreSQL) |
+|---|---|---|
+| ondalık sayı | **`decimal`** | **`numeric`** |
+| zarf referansı | `budgetEnvelopeId` | `budget_envelope_id` |
+| pasiflik | `isActive` / `deleted_at` | — |
+
+`decimal` vakası bunun bedelini ölçtü: katalog dilinde arandı, entity dosyalarında **0**
+eşleşti.
+
+> **İki dilli bir kavram ararken her iki token da aranır, ve hangisinin hangi yüzeyde
+> geçtiği tarama notuna yazılır.**
+
+⚠️ Ve bu **guard yazarken de** geçerli: `confdeltype` guard'ı **katalog** dilinde,
+`decimal` guard'ı **entity** dilinde yazılır. Yanlış dildeki bir guard sessizce hiçbir şey
+ölçmez.
+
 ### Yazma ile commit arasına bir DOĞRULAMA koy (ZORUNLU)
 
 Bir dosyayı yazan adım ile onu commit'leyen adım arasında **hiçbir kontrol yoksa**, sessizce
