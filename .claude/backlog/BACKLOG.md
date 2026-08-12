@@ -200,6 +200,7 @@ status: active        # planned | active | closed
 | [[T-194]] | ⛔ `Available` **iki aileyi topluyor** — `consumed` yarısı bugün **sessizce sıfır** | **P1** | architect | todo |
 | [[T-195]] | **Tenant offboarding yolu yok** — `*/tenants` FK'ları ADR 0012 migration'ının dışında | P2 | architect | todo |
 | [[T-196]] | 🔴 `type: 'date'` entity'de `Date` diye tipli, **string** dönüyor — iki canlı 500 | **P1** | debugger | todo |
+| [[T-197]] | **71 `decimal` kolonu** `number` diye tipli, transformer yok — migration'ı bloklamıyor | **P1** | architect | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
