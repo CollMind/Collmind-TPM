@@ -1,7 +1,43 @@
 # BRD v2.0 — Paket İndeksi
 
 - **Sürüm:** taslak, 2026-08-12
-- **Durum:** L0 taslak · L1/L2/L3 yazıldı · 6 kural açık
+- **Durum:** taslak — `L0` onay bekliyor, `L1`/`L2`/`L3` yazıldı
+
+## Durum sayımı — tek kanonik yer
+
+> ⚠️ Bu blok **script ile sayılır**, elle yazılmaz. Paketin başka hiçbir yerinde durum
+> sayısı tutulmaz (dış denetim `F8`: sayı dört yerde dört farklıydı).
+
+**Ölçüm: 2026-08-12**
+
+| | |
+|---|---|
+| `L2` kural tanımı | **351** |
+| Açık (⛔) kural | **3** — `K-2.5.12` onay hattı · `K-2.6.4` rol kümesi · `K-2.9.6` kişi raporlaması |
+| Bölüm dağılımı | veri/bütçe/defter/hesap **144** · veri kalitesi/entegrasyon/bildirim/denetim **48** · onay/yetki/uyum **71** · hakediş/AI/kurulum **89** |
+| Açık karar (kural dışı) | **3** — `ADR 0002` · veri ayrımı modeli · iade temsili |
+
+**Sayım ve doğrulama:**
+
+```bash
+bash guard.sh .
+```
+
+`guard.sh` üç kontrol yapar ve sayıyı **indeksle karşılaştırır** — bu blok bayatlarsa
+kırmızı verir:
+
+| Kontrol | Neyi yakalar |
+|---|---|
+| Kural sayımı | `F8` — elle tutulan sayının bayatlaması |
+| Kimlik tekilliği | `F2` — aynı numaranın iki kurala verilmesi |
+| Sarkan atıf | Var olmayan bir kurala referans |
+
+> ⚠️ **İlk koşuşunda iki gerçek ihlal yakaladı:** sayı uyuşmazlığı ve **dokuz sarkan atıf**
+> — `2.12` `Ek A`'ya taşınırken atıflar eski numarada kalmıştı. Elle bulunamazdı.
+
+> ⚠️ **Ve bir kalibrasyon notu:** paket boyunca `~120`, `~145`, `~160` sayıları yazılmıştı.
+> Gerçek sayı **351** — iki katından fazla. Elle tutulan her sayı bayatlar; bu oturumda
+> beşinci kez ölçüldü.
 - **Yeri:** `docs/brd-v2/`
 
 ---
@@ -25,7 +61,7 @@ taşır (*ne geldi, ne değişti, ne düştü, ne okunmadı*).
 |---|---|---|---|
 | `01_KONUMLANMA.md` | L0 | Herkes | Baştan sona — diğer her şeyin ölçütü |
 | `02_YETENEK_HARITASI.md` | L1 | Herkes | Baştan sona — ürün ne yapar, bugün ne var |
-| `03_IS_KURALLARI/` | L2 | Geliştirici · analist | **Referans** — bir kural aranır |
+| `03_IS_KURALLARI/L2_*` | L2 | Geliştirici · analist | **Referans** — bir kural aranır |
 | `04_KARAR_KAYDI.md` | L3 | Herkes | Referans — *"bu neden böyle"* |
 | `EK_A_NFR.md` | — | Teknik | İşlevsel olmayan gereksinimler |
 | `EK_B_TASARIM_KARARLARI.md` | L3 | Danışman | 11 ADR, domain dilinde |
@@ -62,10 +98,10 @@ Diğer belgeler ve kod yorumları bu numaraya **atıf verir**, kuralı tekrar et
 
 | Dosya | Bölümler |
 |---|---|
-| `01_veri_butce_defter_hesaplama` | 2.1 veri modeli · 2.2 bütçe · 2.3 defter · 2.4 hesaplama |
-| `02_veri_kalitesi_entegrasyon_bildirim_denetim` | 2.7 · 2.8 · 2.10 · 2.11 |
-| `03_onay_yetki_uyum` | 2.5 onay · 2.6 yetki · 2.9 uyum |
-| `04_hakedis_ai_kurulum` | 2.13 hakediş · 2.4.8 AI sınırı · 2.14 kurulum |
+| `L2_01_veri_butce_defter_hesaplama` | 2.1 veri modeli · 2.2 bütçe · 2.3 defter · 2.4 hesaplama |
+| `L2_02_veri_kalitesi_entegrasyon_bildirim_denetim` | 2.7 · 2.8 · 2.10 · 2.11 |
+| `L2_03_onay_yetki_uyum` | 2.5 onay · 2.6 yetki · 2.9 uyum |
+| `L2_04_hakedis_ai_kurulum` | 2.13 hakediş · 2.4.8 AI sınırı · 2.14 kurulum |
 
 > `2.12 Ölçek` bu katmandan **çıkarıldı** — işlevsel olmayan gereksinim, iş kuralı değil.
 > `EK_A_NFR.md`'de `NFR-*` olarak yaşıyor.
@@ -86,18 +122,16 @@ Diğer belgeler ve kod yorumları bu numaraya **atıf verir**, kuralı tekrar et
 
 ## Açık kalanlar
 
-Altı madde, ve türleri farklı:
+Altı madde. **Kanonik liste burada değil** — `04_KARAR_KAYDI.md §Hâlâ açık`'ta.
 
-| Konu | Bekliyor |
+| nerede | işlevi |
 |---|---|
-| Rol kümesi | Karar — kaynak üç farklı küme veriyor |
-| Finans yöneticisinin onay hattı | Karar — `ADR 0002`'nin dayanağı düştü |
-| Saklama sürelerinin bağlayıcılığı | **Hukuk** |
-| Kişi bazlı performans raporlaması | **Hukuk** |
-| Veri ayrımı modeli | Teknik ölçüm — geçiş maliyetleri |
-| İadenin veri temsili | Teknik ölçüm — tek sorgu |
+| `04_KARAR_KAYDI.md §Hâlâ açık` | **kanonik** — konu + neyi beklediği |
+| `docs/decisions/OPEN_DECISIONS.md` | **indeks** — her madde `v2-*` ID'siyle, neyi blokladığı ve türü (karar · hukuk · teknik ölçüm) |
 
-`OPEN_DECISIONS.md` bunları indeksler.
+> ⚠️ Bu bölüm bilerek **kopya taşımıyor**. Üç yerde üç liste `F8` üretir: biri güncellenir,
+> ikisi bayatlar, ve okuyan hangisinin geçerli olduğunu bilemez. Sayı bile yazılmadı —
+> *"altı"* dışında bir ayrıntı istiyorsan kanonik listeye git.
 
 ---
 

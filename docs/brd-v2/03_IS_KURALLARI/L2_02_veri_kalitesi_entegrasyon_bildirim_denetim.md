@@ -110,7 +110,10 @@ müşteri listesi · müşteri detayı · ürün listesi · ürün detayı (fiya
 
 **K-2.8.2** — Entegrasyon **çekme** modelidir: ürün zamanlanmış olarak sorar, ERP itmez.
 
-**K-2.8.3** — Yanıt süresi bütçesi: ortalama < 500ms, P95 < 2s, zaman aşımı 10s.
+**K-2.8.3** — ERP yanıt süresi bütçeleri → **`Ek A`** (`NFR-14`).
+
+> Taşındı (2026-08-12, dış denetim): bu bir işlevsel olmayan gereksinimdir — `2.12`'nin
+> taşınma gerekçesi buna da uygulanır.
 
 **K-2.8.4** — ERP bağlı değilse ürün çalışır; ana veri elle yönetilir ve bu durum
 işaretlidir.
@@ -230,13 +233,11 @@ gider. Bilgilendirme amaçlı olanlar yalnız uygulama içi.
 
 ## 2.10.3 Yükseltme
 
-**K-2.10.4** — Bir onay bildirimi cevapsız kalırsa **yükseltilir**: önce hatırlatma, sonra
-bir üst seviyeye bildirim.
+**K-2.10.4** — Yükseltme merdiveni ve süreleri `K-2.5.10`'da tanımlıdır. Bu bölüm yalnız
+**kanal ve alıcıyı** belirler.
 
-**K-2.10.5** — Yükseltme merdiveni ve süreleri konfigürasyondur.
-
-> ⛔ Süreler bugün tanımlı değil. Kaynak iki farklı merdiven tarif ediyor ve zaman aşımı
-> maddesini kendi tablosunda *"bu bölüme ait değil"* diye işaretliyor.
+> Kopya kaldırıldı (2026-08-12, dış denetim): merdiven iki yerde tanımlıydı ve buradaki
+> **bayat** kalmıştı.
 
 ## 2.10.4 Bildirim ≠ durum değişikliği
 
@@ -341,12 +342,16 @@ olayın bildirileceğini tanımlar, metnini değil.
 
 ---
 
-# Açık kalanlar — bu kümede
+# Açık kalanlar
+
+> ⚠️ **Bu bölüm 2026-08-12'de kaldırıldı.** Açık kural listesi tek bir yerde yaşar:
+> `00_PAKET_INDEKSI.md`. Bölüm sonlarında tutulan kopyalar karar turundan sonra **bayat**
+> kaldı (dış denetim `F8`) — ve bayat bir durum listesi, olmayan bir listeden kötüdür.
 
 | Kural | Neyi bekliyor |
 |---|---|
 | `K-2.7.11` | Mod açılma eşiği — müşteri karması ölçümü |
-| `K-2.10.5` | Yükseltme merdiveni ve süreleri |
+| `K-2.5.10e` | Yükseltme merdiveni ve süreleri |
 
 Ve dört bölüm hâlâ yazılmadı: **2.5 onay · 2.6 yetki · 2.9 uyum · 2.12 ölçek** — dördü de
 açık karara bağlı.

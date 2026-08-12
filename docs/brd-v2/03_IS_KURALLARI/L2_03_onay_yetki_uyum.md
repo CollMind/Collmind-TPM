@@ -44,15 +44,39 @@ TASLAK → ONAY BEKLİYOR → ONAYLANDI
 ```
 
 **K-2.5.4** — `ONAY BEKLİYOR` durumundaki bir plan **doğrudan taslağa dönemez.** Önce
-reddedilmeli ya da geri çekilmelidir.
+reddedilmeli ya da **gönderen tarafından geri çekilmelidir.**
+
+**K-2.5.4a** — Geri çekme bir **durum geçişidir** ve `GERİ ÇEKİLDİ` durumundan taslağa dönüş
+serbesttir.
+
+> Dış denetim (`F3`) bu durumun makinede tanımsız olduğunu ölçtü — kural onu varsayıyordu.
 
 **K-2.5.5** — Reddedilen bir plan düzenlenip yeniden gönderilebilir. Bu döngü sınırsızdır.
 
-**K-2.5.6** — Bir plan onaylandığında bütçe rezervasyonu **aynı işlemde** yazılır. Onay
-kaydedilip rezervasyon yazılmayan bir durum oluşamaz.
+**K-2.5.6** — Bir plan onaylandığında bütçe **taahhüdü** aynı işlemde yazılır. Onay
+kaydedilip taahhüt yazılmayan bir durum oluşamaz.
 
-**K-2.5.7** — Reddedilen ya da geri çekilen bir planın rezervasyonu **aynı işlemde** iade
-edilir.
+> ⚠️ **Kelime ayrımı bağlayıcıdır** (`K-2.2.4`): plan onayı **TAAHHÜT**, anlaşma onayı
+> **REZERVE** yazar. Bu bölümde *"rezervasyon"* jenerik olarak kullanılmaz — `K-2.2.6`'nın
+> ölçülmüş ihlali (iki kovanın birleştirilmesi) tam olarak bu belirsizlikten doğuyor.
+
+**K-2.5.7** — ⚠️ **Bekleyen bir planın bütçe kaydı yoktur.**
+
+Gönderilmiş ama onaylanmamış bir plan **hiçbir kova yazmaz** (`K-2.2.9i`). Dolayısıyla
+`ONAY BEKLİYOR` durumundan çıkışlar (ret, geri çekme, süre dolumu) **iade üretmez** — iade
+edilecek bir şey yoktur.
+
+**K-2.5.7a** — İade yalnız **onaylanmış** bir planın geri alınmasında oluşur: taahhüt aynı
+işlemde serbest bırakılır.
+
+> **Düzeltme kaydı (2026-08-12, dış denetim `F3`):** bu kural önceki hâlinde *"reddedilen ya
+> da geri çekilen planın rezervasyonu iade edilir"* diyordu — ve `K-2.2.9i` ile **sessizce
+> çelişiyordu.**
+>
+> Çelişkinin bedeli görünürdü: `K-2.5.10`'un (zaman aşımı) gerekçelerinden biri *"durum ve
+> defter yazan bir iş, tehlikeli"*ydi. Çelişki temizlenince o bacak düşüyor — **bekleyen plan
+> bütçe yazmadığı için zaman aşımının finansal riski zaten yok.** Karar değişmiyor; gerekçesi
+> sadeleşiyor.
 
 ## 2.5.3 Zaman aşımı
 
@@ -87,7 +111,9 @@ bildirim üretir:
 verilir: hangi kurulumda gerçekten plan çürüyor?
 
 **K-2.5.10b** — Faz 2'de otomatik zaman aşımı geldiğinde davranış **`SÜRESİ DOLDU`**'dur.
-Plan yeniden gönderilebilir; rezervasyon aynı işlemde iade edilir (`K-2.5.7`).
+Plan yeniden gönderilebilir.
+
+> Bir bütçe hareketi **oluşmaz** — bekleyen plan zaten kova yazmamıştı (`K-2.5.7`).
 
 **K-2.5.10c** — ⚠️ **Otomatik yükseltme reddedildi.**
 
@@ -116,9 +142,16 @@ kontrolü, gecelik veri yenileme, veri tazelik denetimi, onay gecikme bildirimi.
 | Sınıf | İşler | Neden önce |
 |---|---|---|
 | Idempotent okuma | Dosya kontrolü · gecelik yenileme | Çift tetikleme, kaçırılan tik, saat dilimi hatası **zararsız** |
-| Durum/defter yazan | Onay zaman aşımı | Aynı hatalar **tehlikeli** — rezervasyon iadesi üretiyor |
+| Durum yazan | Onay zaman aşımı | Orta — durum değiştirir, **deftere dokunmaz** |
 
 > **Motoru zararsız işlerle pişir, finansal işi sonra bağla.**
+
+> ⚠️ **Güncelleme (2026-08-12, `F3` yan sonucu):** zaman aşımı önce *"durum ve defter yazan"*
+> sınıfına konmuştu. Çelişki temizlenince (bekleyen plan kova yazmıyor) **deftere dokunmadığı**
+> ortaya çıktı — risk sınıfı **idempotent durum**'a indi.
+>
+> Sıralama yine de değişmiyor: idempotent-okuma işleri hâlâ önce. Ama zaman aşımının
+> gerekçesi artık *"finansal risk"* değil, yalnız **sıra.**
 
 ## 2.5.4 Kim onaylar
 
@@ -179,9 +212,13 @@ Yönetici planın yazarıysa kural aynen işler — kendine atayamaz, üçüncü
 
 | Şablon | Akış | Kime |
 |---|---|---|
-| **Standart** (varsayılan) | Kategori müdürü onaylar; bütçe eşiği aşımı finansa yükselir | Bugünkü akışın tablolaşmış hâli |
+| **Standart** (varsayılan) | Kategori müdürü onaylar; bütçe eşiği aşımı finansa yükselir ⚠️ | Bugünkü akışın tablolaşmış hâli |
 | **Çift kademe** | Her plan kategori müdürü + finans, tutara bakılmaz | Küçük veya temkinli kurulum |
 | **Eşikli** | Tutar < X tek onay · ≥ X finans eklenir | Orta ölçeğin en yaygın deseni |
+
+> ⚠️ **Şerh (dış denetim `F10`):** *"finansa yükselir"* yalnız `FINANCE_REVIEW = ONAY`
+> modunda bir **onay adımıdır.** Varsayılan `BİLDİRİM` modunda (`K-2.2.7b`) yükselme bir
+> bildirimdir, akış durmaz. Faz 1'de yükselecek bir onay kademesi **yoktur.**
 
 **K-2.5.13b** — Şablonlar tablonun **satır kümeleridir**, ayrı kod yolları değil (`İlke 4`).
 
@@ -309,7 +346,7 @@ tablodadır ama tenant'ın kural yazacağı bir yüzey değildir.
 
 > `K-2.5.13c` ile aynı disiplin: seç, ayarla — yazma.
 
-**K-2.6.5a** — ✅ **Karar verildi** (2026-08-12, Oturum 1.5). Fatura ve hakediş belgesi içe
+**K-2.6.14** — ✅ **Karar verildi** (2026-08-12, Oturum 1.5). Fatura ve hakediş belgesi içe
 aktarma yetkisi **planlamacıda ve finansta** olmalıdır — ama yürürlüğü eşleştirme katmanına
 bağlıdır.
 
@@ -424,9 +461,60 @@ veritabanı seviyesinde zorlama. Biri diğerinin yerine geçmez.
 **K-2.6.13** — Veritabanı izolasyonu, **ayrıcalıklı olmayan** bir bağlantı rolü gerektirir.
 
 > Gerekçe: ayrıcalıklı bir rol izolasyon politikalarına tabi değildir. Ölçüldü: bugün tek
-> giriş rolü ayrıcalıklı — politika yazılsa bile uygulanmaz, ve testler yeşil geçer.
+> giriş rolü ayrıcalıklı — politika yazılsa bile uygulanmaz, **ve testler yeşil geçer.**
 >
 > Bu, izolasyonun ön koşuludur ve ondan önce yapılmalıdır.
+
+**K-2.6.13a** — ⚠️ **İki ayrı rol gerekir**, tek rol yetmez:
+
+| Rol | Ne yapar | İzolasyona tabi mi |
+|---|---|---|
+| `app_runtime` | Veri okuma/yazma — uygulamanın çalışma bağlantısı | ✅ **evet** |
+| `app_migrate` | Şema değişikliği ve seed — yalnız göç koşusunda | hayır |
+
+> Gerekçe: göçler şema değiştirme hakkı ister, çalışma zamanı istemez. **Tek bağlantı rolü
+> ikisini birden taşırsa ayrıcalıksızlık kâğıt üstünde kalır.**
+
+**K-2.6.13b** — Tablo sahibi **`app_migrate`**'tir. Ayrı bir sahip rolü tanımlanmaz.
+
+> Sahiplik ayrımının koruduğu şey — *sahip, politikalara tabi değildir* — `app_runtime` sahip
+> olmadığı için **zaten sağlanıyor.** Üçüncü bir rol, kanıtlanmış ihtiyaç üzerine eklenir
+> (`İlke 1`).
+
+**K-2.6.13c** — Roller bir **kurulum betiğinde** tanımlanır, bir göçte değil.
+
+> Roller bir **küme yönetimi nesnesidir**, şema geçmişi değil: aynı roller birden çok
+> veritabanında yaşayabilir, göç zinciri ise tek bir şemanın tarihidir.
+>
+> Ve pratik gerekçe: göç `app_migrate` ile koşuyorsa, rolleri yaratan şey **kendisi olamaz.**
+
+**K-2.6.13d** — ⚠️ **Sessiz geri dönüş yasaktır.**
+
+Bağlantı havuzunda ya da hata yakalama katmanında *"bağlanamadı, ayrıcalıklı dizgeyle
+dene"* türünde bir yedek yol bulunamaz.
+
+> Böyle bir yol kalırsa **bütün iş kâğıt üstünde kalır** — ve bunu hiçbir yeşil test
+> göstermez. Bu, `K-2.6.13`'ü doğuran sessiz-yeşil sınıfına geri düşmenin tek yoludur.
+
+**K-2.6.13e** — Kabul ölçütü, kuralın doğuş gerekçesinin **tersini** sınar:
+
+```
+1  test ortamına kısıtlayıcı bir deneme politikası yaz
+2  app_runtime ile eriş
+3  erişimin REDDEDİLDİĞİNİ doğrula      ← rol gerçekten tabiyse kırmızı
+4  politikayı kaldır, yeşile dön
+```
+
+> Rol tabi değilse politika **sessizce delinir** ve test ilk günden yakalar. Bu tek test,
+> `K-2.6.12`'nin (veritabanı izolasyonu) tamamının **güven zeminidir.**
+
+**K-2.6.13f** — İşin çıktısı yalnız rol değil, bir **izin envanteridir:** uygulamanın fiilen
+hangi yetkileri kullandığı.
+
+> Yöntem: rol yarat → test ortamında bağlan → testleri koştur → **düşen izinlerin listesi =
+> gerçek ihtiyaç** → yalnız onları ver.
+>
+> Envanter saklanır ve `K-2.6.12`'nin politikalarını yazarken **doğrudan girdidir.**
 
 ---
 
@@ -530,7 +618,11 @@ katmana alınmadı — bunlar bir kimlik doğrulama standardına aittir, iş kur
 
 ---
 
-# Açık kalanlar — bu kümede
+# Açık kalanlar
+
+> ⚠️ **Bu bölüm 2026-08-12'de kaldırıldı.** Açık kural listesi tek bir yerde yaşar:
+> `00_PAKET_INDEKSI.md`. Bölüm sonlarında tutulan kopyalar karar turundan sonra **bayat**
+> kaldı (dış denetim `F8`) — ve bayat bir durum listesi, olmayan bir listeden kötüdür.
 
 | Kural | Neyi bekliyor | Tür |
 |---|---|---|
@@ -542,8 +634,8 @@ katmana alınmadı — bunlar bir kimlik doğrulama standardına aittir, iş kur
 | `K-2.6.8` | Kapsam ekseni (kategori ↔ bölge) | **domain** |
 | `K-2.9.2` | Taslak silme ↔ silinmezlik sınırı | hukuk |
 | `K-2.9.6` | Kişi bazlı raporlama | hukuk |
-| `K-2.12.3` | Veri ayrımı modeli | **teknik + maliyet** |
-| `K-2.12.4` | Kapasite hedefi | kapsam |
+| `NFR-3` | Veri ayrımı modeli | **teknik + maliyet** |
+| `NFR-4` | Kapasite hedefi | kapsam |
 
 ---
 

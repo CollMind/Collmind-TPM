@@ -87,6 +87,11 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 > ve `EK_E`'nin iki `🔒` vakası bu oturumda **koddan ölçülmüştü**: anlaşma kapanışı
 > (`0068 §6`) ve formül doğrulaması (`0054 §1`). **`🔒` bir kabul değil, bir alarmdır.**
 >
+> ⚠️ **`brd-v2` ile `brd` çeliştiğinde `brd-v2` kazanır** — ve sapma
+> `docs/brd-v2/04_KARAR_KAYDI.md §Kaynak ilişkisi — tek tablo`'da **kayıtlıdır.**
+> **Ölçülmemiş bir sapma iddiası yazılmaz:** *"v2 kaynaktan sapıyor"* demeden önce o
+> tabloda satırı olduğunu doğrula; yoksa sapma değil, **senin okuman** eksik olabilir.
+>
 > 📌 **Bir kural ararken `docs/brd/`'de bulup v2'de bulamadıysan, bu "kural yok" demek
 > değildir — "v2'ye taşınmamış" demektir.** `00_PAKET_INDEKSI.md`'nin *"Kapsam dışı —
 > bilerek"* bölümüne bak: bazı şeyler **reddedilerek** düştü, ve reddediliş gerekçesiyle
