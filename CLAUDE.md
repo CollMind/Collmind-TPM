@@ -64,11 +64,28 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 
 | # | Kaynak | Statü |
 |---|---|---|
-| 1 | `docs/decisions/*.md` — **ADR'ler** | **Bağlayıcı.** Ürün sahibinin verdiği kararlar. BRD ile çelişirse ADR kazanır (BRD'nin bilinçli genişletmesidir). |
-| 2 | **`docs/brd/`** — BRD paketi (12 bölüm + Addendum + Candidate Log) | **Asıl kaynak metin.** `01_Main_BRD/Section_04` actuals-first, `Section_05` planning-first. `02_Addendum` **zorunlu** okumadır. |
-| 3 | `.cursor/rules.md` | **Türetilmiş özet — normatif değil.** |
-| 4 | Bu dosyanın §2.3'ü | Hatırlatma listesi. Normatif değil. |
+| 1 | `docs/decisions/*.md` — **ADR'ler** | **Bağlayıcı.** Ürün sahibinin verdiği kararlar. BRD ile çelişirse ADR kazanır. |
+| **2** | **`docs/brd-v2/`** — **BRD v2.0 paketi** (L0 konumlanma · L1 yetenek haritası · L2 iş kuralları · L3 karar kaydı + EK_A/EK_B) | **BİRİNCİL BELGE.** Bir kural aranırken **önce buraya bakılır.** `L2` kuralları `K-<bölüm>.<sıra>` ile tekil numaralı ve **bir kez** yazılı; diğer belgeler ve kod yorumları o numaraya **atıf verir, kuralı tekrar etmez.** |
+| **3** | **`docs/brd/`** — eski BRD paketi (12 bölüm + Addendum + Candidate Log, ~19.800 satır) | **KAYNAK REFERANSI — artık birincil değil.** Silinmedi ve silinmez: v2'nin her bölümü buraya bir kaynak haritası ile bağlı (*ne geldi · ne değişti · ne düştü · ne okunmadı*). **v2 ile çeliştiğinde v2 kazanır.** |
+| 4 | `.cursor/rules.md` | **Türetilmiş özet — normatif değil.** |
+| 5 | Bu dosyanın §2.3'ü | Hatırlatma listesi. Normatif değil. |
 | — | `.cursor/*.pdf` | ⛔ **SÜPERSEDED — normatif DEĞİL** (ADR 0010). Arşiv. |
+
+> ### ⚠️ v2 neden birincil oldu — ölçülmüş gerekçe
+>
+> Eski paket **aynı soruya birden çok cevap veriyor** ve okuyan hangisinin geçerli olduğunu
+> bilemiyor. Bu oturumda madde madde ölçüldü: **üç farklı rol kümesi** (`§2.1.2` dört ·
+> `§7.1` beş · `EA-001` + Super Admin — `0063 §1`) · **iki farklı GP ROI eşiği** (`≥20` yedi
+> tanık ↔ `150%` iki anlatı örneği — `0064 §1`) · **üç farklı ölçek beyanı** (`0064 §3`) ·
+> **iki farklı bütçe kapısı** (`0059 §2.3`).
+>
+> v2 **sıfırdan yazıldı** ve her kural **bir kez** yazılı. Kaynak izlenebilirliği kaybolmadı;
+> kaynak **hiyerarşideki yerini** kaybetti.
+>
+> 📌 **Bir kural ararken `docs/brd/`'de bulup v2'de bulamadıysan, bu "kural yok" demek
+> değildir — "v2'ye taşınmamış" demektir.** `00_PAKET_INDEKSI.md`'nin *"Kapsam dışı —
+> bilerek"* bölümüne bak: bazı şeyler **reddedilerek** düştü, ve reddediliş gerekçesiyle
+> `04_KARAR_KAYDI.md`'de yazılı.
 
 > **⛔ `.cursor/CollMind_TPM_BRD_v1.0.pdf` kullanılmaz.** Kendi künyesinde *"2025-11-04 ·
 > **Initial BRD**"* yazıyor, 62 sayfa, ve `actuals-first`/`planning-first` kelimeleri **hiç

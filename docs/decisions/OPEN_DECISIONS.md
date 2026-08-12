@@ -77,6 +77,26 @@ Bu indeks **yeni ID üretmez**; her kararın kendi yerel ID'sini kullanır. Ama 
 
 # İndeks
 
+## 📦 BRD v2.0 paketi — bu indeksin ikinci evi (2026-08-12)
+
+`docs/brd-v2/` indi ve **birincil belge** oldu (`CLAUDE.md §2.1`). İki dosya bu indeksle
+doğrudan ilişkili:
+
+| dosya | bu indeksle ilişkisi |
+|---|---|
+| **`00_PAKET_INDEKSI.md`** | *"Açık kalanlar"* bölümünde **altı maddeyi** türleriyle listeliyor (2 karar · 2 **hukuk** · 2 teknik ölçüm) ve *"`OPEN_DECISIONS.md` bunları indeksler"* diyor |
+| **`04_KARAR_KAYDI.md`** | **21 kararın** tamamı — soru · karar · gerekçe · açtığı `K-*` kuralları. Aşağıdaki satırların çoğunun **cevabı burada** |
+
+⚠️ **Bu indeks henüz o kararlara göre GÜNCELLENMEDİ.** Satırların statü sütunu
+`04_KARAR_KAYDI.md` işlenmeden **bayattır** — `açık` görünen bir madde 2026-08-12'de
+kapanmış olabilir. Güncelleme ayrı bir turda yapılacak (kapananlar `✅` olur, **silinmez**).
+
+📌 Ve iki kayıt yeri **çelişmemeli**: paket indeksi altı maddeyi **özetler**, bu dosya
+onları **işaret eder**. İçerik ikisinde de yaşamaz — `04_KARAR_KAYDI.md`'de yaşar.
+
+---
+
+
 **Durum:** `açık` · `karar verildi` · `ölçüm bekliyor` (soru sorulabilmesi için önce bir
 teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 
