@@ -29,7 +29,17 @@ taşır (*ne geldi, ne değişti, ne düştü, ne okunmadı*).
 | `04_KARAR_KAYDI.md` | L3 | Herkes | Referans — *"bu neden böyle"* |
 | `EK_A_NFR.md` | — | Teknik | İşlevsel olmayan gereksinimler |
 | `EK_B_TASARIM_KARARLARI.md` | L3 | Danışman | 11 ADR, domain dilinde |
+| `EK_C_VERI_SOZLUGU.md` | L2 eki | Geliştirici | Tablo · alan · tip · kısıt |
+| `EK_D_AKIS_DIYAGRAMLARI.md` | L1 eki | Herkes | Durum makineleri, akışlar |
+| `EK_E_YETENEK_ARAYUZ_ESLEMESI.md` | L1 eki | Ürün · geliştirici | **Boşluk haritası** |
 | `URUN_OZETI.md` | — | Dışarıya | 5 sayfa, teknik terim yok |
+
+⚠️ **`EK_C` bir ek, ayrı katman değil.** Ayrı katman olsaydı şema kararları kurallardan
+koparadı — her tablo dayandığı kurala atıf verir.
+
+⚠️ **`EK_E` ürünün en somut boşluk haritasıdır.** Ve iki durum ayrı işaretlenir: `❌` yetenek
+yok · `🔒` **yetenek var, arayüzü yok.** İkincisi daha pahalıdır — yapılmış ama erişilemeyen
+iş.
 
 **Alt çizgiyle başlayanlar** süreç belgeleridir, ürün belgesi değil: `_ISKELET`
 (yapı kararı), `_YAPI_DENETIMI` (yapının konumlanmaya karşı denetimi).
@@ -109,9 +119,11 @@ karma çalışma biçimi · serbest biçimli kural motoru · orantısal atıf ·
    girer.
 2. **Uzunluk hedefleri tahmindir.** Ölçülmedi — ve bu kod tabanında kapsam tahminleri beş kez
    düşük çıktı.
-3. **`L1`/`L2` sınırı bazı bölümlerde sınanmadı** — onay modeli ikisinde de var.
-4. **Ekran katmanının nerede yaşayacağı kararlaştırılmadı.** BRD'den çıkarıldı, yeni yeri
-   yazılmadı.
+3. ✅ **`L1`/`L2` sınırı sınandı** (`_YAPISAL_TAMAMLAMA.md`). Ölçüt resmileşti:
+   *anlaşılamaz → L1, yanlış uygulanır → L2*.
+4. ✅ **Ekran katmanının yeri kararlaştırıldı** — üçe bölündü: bilgi gereksinimi `L2`'de,
+   yetenek↔arayüz eşlemesi `EK_E`'de, görsel tasarım BRD dışı.
+   ⛔ Ama o tasarım katmanı **bugün yok** ve nerede yaşayacağı ayrı bir karardır.
 5. **Müşteri karması bilinmiyor** — ve üç kararı askıda tutuyor: kârlılık kademesinin ilk
    günden zorunlu olup olmayacağı, artımsallık katmanının zamanlaması, genel amaçlı iş akışı
    motorunun gerekliliği.

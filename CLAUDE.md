@@ -65,7 +65,7 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 | # | Kaynak | Statü |
 |---|---|---|
 | 1 | `docs/decisions/*.md` — **ADR'ler** | **Bağlayıcı.** Ürün sahibinin verdiği kararlar. BRD ile çelişirse ADR kazanır. |
-| **2** | **`docs/brd-v2/`** — **BRD v2.0 paketi** (L0 konumlanma · L1 yetenek haritası · L2 iş kuralları · L3 karar kaydı + EK_A/EK_B) | **BİRİNCİL BELGE.** Bir kural aranırken **önce buraya bakılır.** `L2` kuralları `K-<bölüm>.<sıra>` ile tekil numaralı ve **bir kez** yazılı; diğer belgeler ve kod yorumları o numaraya **atıf verir, kuralı tekrar etmez.** |
+| **2** | **`docs/brd-v2/`** — **BRD v2.0 paketi** (L0 konumlanma · L1 yetenek haritası · L2 iş kuralları · L3 karar kaydı · **EK_A** NFR · **EK_B** tasarım kararları · **EK_C** veri sözlüğü · **EK_D** akış diyagramları · **EK_E** yetenek↔arayüz eşlemesi) | **BİRİNCİL BELGE.** Bir kural aranırken **önce buraya bakılır.** `L2` kuralları `K-<bölüm>.<sıra>` ile tekil numaralı ve **bir kez** yazılı; diğer belgeler ve kod yorumları o numaraya **atıf verir, kuralı tekrar etmez.** |
 | **3** | **`docs/brd/`** — eski BRD paketi (12 bölüm + Addendum + Candidate Log, ~19.800 satır) | **KAYNAK REFERANSI — artık birincil değil.** Silinmedi ve silinmez: v2'nin her bölümü buraya bir kaynak haritası ile bağlı (*ne geldi · ne değişti · ne düştü · ne okunmadı*). **v2 ile çeliştiğinde v2 kazanır.** |
 | 4 | `.cursor/rules.md` | **Türetilmiş özet — normatif değil.** |
 | 5 | Bu dosyanın §2.3'ü | Hatırlatma listesi. Normatif değil. |
@@ -81,6 +81,11 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 >
 > v2 **sıfırdan yazıldı** ve her kural **bir kez** yazılı. Kaynak izlenebilirliği kaybolmadı;
 > kaynak **hiyerarşideki yerini** kaybetti.
+>
+> 📌 **`EK_E` bir boşluk haritasıdır ve iki durumu ayırır:** `❌` yetenek yok · **`🔒` yetenek
+> var, arayüzü yok.** İkincisi *"mekanizma var, yol yok"* sınıfının belge tarafındaki hâli —
+> ve `EK_E`'nin iki `🔒` vakası bu oturumda **koddan ölçülmüştü**: anlaşma kapanışı
+> (`0068 §6`) ve formül doğrulaması (`0054 §1`). **`🔒` bir kabul değil, bir alarmdır.**
 >
 > 📌 **Bir kural ararken `docs/brd/`'de bulup v2'de bulamadıysan, bu "kural yok" demek
 > değildir — "v2'ye taşınmamış" demektir.** `00_PAKET_INDEKSI.md`'nin *"Kapsam dışı —
