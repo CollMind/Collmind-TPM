@@ -651,6 +651,55 @@ kataloğu) bir **şema tanımı değildir**. `L2`'nin her yerinde kavramlar Tür
 (`TAHAKKUK`, `GÖZLENEN`) ve **hiçbiri enum değeri olsun diye yazılmadı**. Bu, `K-2.2.7`'nin
 renk/davranış ayrımının aynısı: **görüntü katmanı davranışa sızmaz.**
 
+### Bir TOPLAMIN azalması, bir SINIFIN girmediğinin kanıtı değildir (ZORUNLU)
+
+> **Bir toplamın azalması, bir sınıfın girmediğinin kanıtı değildir.**
+
+`mode-split` guard'ı bunu şöyle yazıyor: *"sayı-baseline 'biri düştü, biri girdi' gerilemesini
+görmez."* O ders bir **guard tasarımı** için yazılmıştı. Aynı körlük bir **savunmanın içinde**
+tekrarlandı — ve orada guard yoktu, yalnız bir cümle vardı.
+
+Ölçülmüş vaka (2026-08-13, `B` dalgası): `migration:generate` boş çıkmadı. Savunma:
+*"repo çapında önceden var olan drift; taban 1174 satırdı, benimkinden sonra **658** — yani
+**azaldı**."* Sayılar doğruydu. Ama toplam düşerken **yeni bir sınıf girmişti**:
+
+```
+düşürülen CHECK kısıtı        14  →  12'si YENİ (bu dalganın indirdiği iş kuralları)
+düşürülen bileşik FK           9  →  9'u da YENİ, ve up()'ta geri eklenmiyor
+NULLS NOT DISTINCT             2  →  0   (joker tekilliği sessizce düz UNIQUE'e düşüyor)
+```
+
+Yani *"azaldı"* doğruydu **ve** *"yeni sapma yok"* yanlıştı. İkisi aynı ölçümden çıkarılamaz.
+
+**Kural:** bir toplamı taban olarak kullanan her savunma, **sınıf kırılımını** da vermek
+zorundadır. *"Öncekinden az"* bir güvence değildir; güvence **"şu sınıflardan hiçbiri yeni
+değil"**dir, ve o cümle ancak sınıflar sayıldıktan sonra yazılabilir.
+
+### Bir SAYI, eşleşmeleri ÖRNEKLENMEDEN raporlanamaz (ZORUNLU)
+
+`§7.1` *"bir terim sayısına dayanarak karar veriyorsan en az bir geçişi bağlamıyla oku"*
+diyor. Bu **bir tavsiyeydi ve tutmadı** — aynı oturumda **üç kez** ihlal edildi:
+
+| # | sayılan | sanılan | gerçek |
+|---|---|---|---|
+| 1 | `grep -owci capability` → 15 | CBAC tartışılıyor | iş anlamında *"yetenek"* — başka kavram |
+| 2 | `grep -w S1/S2/R1` → 17/31/17 | dalga kalemleri | başka bir raporun **bulgu** ve **risk** numaraları |
+| 3 | `grep -r FiscalPeriod` → 6 dosya | entity tüketicisi var | **`getFiscalPeriod`** adlı bir parser metodu |
+
+Üçü de kendi turunda yakalandı — ama **üç kez tekrarlaması, tavsiyenin yetmediğini gösterir.**
+Ve üçüncüsü en pahalıya mal olacaktı: bir `code-reviewer` bulgusunu (*"tüketici 0"*)
+çürütmek üzereydi, yani **doğru bir blocker'ı yanlış yere gömecekti.**
+
+> **Bir eşleşme sayısı, en az bir eşleşme bağlamıyla okunmadan raporlanamaz** — ne bir
+> karara dayanak yapılabilir, ne bir bulguyu çürütmek için kullanılabilir.
+
+**İki şart:**
+
+1. **Sayıyla birlikte bir örnek yaz.** `"6 dosya"` değil, `"6 dosya — ör.
+   `sales-actuals.service.ts:81` `resolveFiscalPeriod`"`. Örneği yazmak, ona bakmayı zorlar.
+2. **Bir sayı bir bulguyu ÇÜRÜTÜYORSA, örnek zorunludur.** Doğrulayan bir sayı yanılırsa
+   fazladan iş üretir; **çürüten** bir sayı yanılırsa **gerçek bir kusuru kapatır.**
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**

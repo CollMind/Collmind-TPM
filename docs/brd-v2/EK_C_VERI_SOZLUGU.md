@@ -573,7 +573,7 @@ yeni kalemler `S`/`R` alır, `B` almaz.
 | `S8` | `eslestirmeler` bağ varlığı (n:m) + `taktik_gerceklesmeleri` | `K-2.13.5f` · `K-2.13.14j` |
 | `S9` | Fatura-içi kayıtlara **anlaşma referansı** | `K-2.13.14l` |
 | `S10` | Defter: `TAHAKKUK`+`TÜKETİM` tipleri · `TAHAKKUK` harcama tipinden çıkar · `duzeltme_alt_turu` (4 değer) + **çift yönlü** `CHECK` | `K-2.3.13`–`13d` |
-| `S11` | `donemler` tablosu + nullable FK + **biçim doğrulamalı** backfill | `K-2.13.21` · `Ö4` |
+| `S11` | `donemler` tablosu + **biçim doğrulamalı** backfill · ⛔ **FK YOK** (aşağı) | `K-2.13.21` · `Ö4` |
 | `S12` | SKU: `satis_birimi` + `cevrim_carpani`; girilen değer kolonları **FU'ya** | `K-2.1.12c` · `K-2.1.11a` |
 | `S13` | ⚠️ **Yeniden şekillendi** — kolon **var** (`updated_by`); iş: `updateVersioned` çağıran yolların **enumerasyonu** + kontrolün genişletilmesi | `K-2.5.11` · `K-2.5.16` |
 | `S14` | 🆕 `sales_actuals`: **SKU kırılımı + hacim** | `K-2.1.8a` |
@@ -587,6 +587,40 @@ yeni kalemler `S`/`R` alır, `B` almaz.
 >
 > Yeni kolon eklenseydi **iki ayrı "son değiştiren" alanı** doğardı ve hangisinin
 > bağlayıcı olduğu belirsiz kalırdı — `İlke 4`'ün veri tarafındaki hâli.
+
+### ⛔ `S11`'in FK'leri GERİ ÇEKİLDİ — `F12` kararının sınırına dönüş (2026-08-13)
+
+İlk uygulama sekiz dönem kolonuna + `claims`'e **bileşik FK** ekledi. Ölçüldü (pozitif
+kontrollü, `ROLLBACK` içinde):
+
+```
+UPDATE main.agreements SET period_month='2026-02';  → UPDATE 3        ← pozitif kontrol
+UPDATE main.agreements SET period_month='2028-01';  → ERROR 23503     ← FK canlı
+```
+
+Ve **dönem yaratan bir üretim yolu yok**: `FiscalPeriod` için controller **0**, servis **0**,
+`TenantService.create` dönem kurmuyor. Yani **API'den doğan her yeni tenant sıfır dönemle
+doğuyor** ve ilk anlaşma/plan/sales-actual yazması ham `23503` ile `500` döner. Tek pencere
+bir seed dosyasında sabit: `2025-01..2027-12` — 2028'e geçildiğinde ürün, **hiçbir kod
+değişmeden** durur.
+
+> Bu `T-101`'in sınıfının **sertleşmiş** hâli: orada konfigürasyon ulaşılamıyordu, burada
+> **veri yokluğu daha önce çalışan bir yolu kapatıyor.**
+
+**Karar: FK'ler çıkar, tablo ve backfill kalır.**
+
+```
+S11 bu dalgada:   donemler tablosu + backfill + FK YOK
+sonraki dalgada:  FK — ön koşulu DÖNEM YARATMA YOLU
+```
+
+📌 **Bu kararı geri almak değil, kararın kendi sınırına dönmektir.** `F12` yumuşatması zaten
+şunu söylüyordu: *tablo + backfill bu dalgada; `NOT NULL` bir sonraki dalgada, ön koşulu bir
+ölçüm.* FK'ler o sınırın **ötesine** geçmişti — ve nullable bir FK bile referans bütünlüğü
+zorlar, yani dönem yaratma yolu yokken yeni tenant'ı **ölü doğurur.**
+
+⚠️ Dönem yaratma bir **ürün yeteneğidir** (`K-2.13.21`, dönem kapanışı ailesi) ve tasarım
+gerektirir: **kim yaratır · ne zaman · hangi pencere.** Bir migration kalemi değildir.
 
 ## `R` · Çıkarmalar
 

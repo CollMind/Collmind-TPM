@@ -212,7 +212,7 @@ status: active        # planned | active | closed
 | [[T-203]] | `ADR 0012`'nin 4. adımı **inmedi** — şema guard'ı yok, `INV-L-001` hâlâ `HOLDS` | **P1** | backend-engineer | todo |
 | [[T-204]] | 🔴 Soft-delete yolu **yok**, ve `v_budget_summary`'de yön ADR'nin korktuğunun **tersi** | **P1** | architect | todo |
 | [[T-210]] | 🔴 Gönderen `PLANNER` taslağa dönen planına **erişemiyor** (`404 OUT_OF_SCOPE`) | **P1** | backend-engineer | todo |
-| [[T-211]] | **`B` dalgası** — `L2`'nin şema tarafı: tek migration, tek `down`. ✅ iki karar verildi; `R2`→`R2a`/`R2b`, `K-2.7.4a` dalgada değil | **P1** | data-engineer | todo |
+| [[T-211]] | **`B` dalgası** — indi ama ⛔ 4 blocker (review): `S11` FK'leri geri çekilir · view-entity · SKU dto · `migration:generate`. Seed 1/5 | **P1** | data-engineer | blocked-unreachable |
 | [[T-212]] | Backend ratchet'leri **kapı değil**, elle — frontend'de kapı. Baseline liste olsun, sonra bağlansın | P2 | qa-engineer | todo |
 | [[T-213]] | `agreement_transactions.fiscal_period` sekiz kolonun tek nullable'ı — bilinçli mi kaza mı, ölçülmedi | P2 | data-analyst | todo |
 
