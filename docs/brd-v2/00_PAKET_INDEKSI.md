@@ -8,13 +8,14 @@
 > ⚠️ Bu blok **script ile sayılır**, elle yazılmaz. Paketin başka hiçbir yerinde durum
 > sayısı tutulmaz (dış denetim `F8`: sayı dört yerde dört farklıydı).
 
-**Ölçüm: 2026-08-12** (son güncelleme: `K-2.5.16` ailesi eklendi — köken alanları)
+**Ölçüm: 2026-08-13** (son güncelleme: `K-2.1.8a1` eklendi — fatura-içi kayıtlar dağıtım
+tabanı olamaz)
 
 | | |
 |---|---|
-| `L2` kural tanımı | **354** |
+| `L2` kural tanımı | **355** |
 | Açık (⛔) kural | **3** — `K-2.5.12` onay hattı · `K-2.6.4` rol kümesi · `K-2.9.6` kişi raporlaması |
-| Bölüm dağılımı | veri/bütçe/defter/hesap **144** · veri kalitesi/entegrasyon/bildirim/denetim **48** · onay/yetki/uyum **74** · hakediş/AI/kurulum **88** |
+| Bölüm dağılımı | veri/bütçe/defter/hesap **145** · veri kalitesi/entegrasyon/bildirim/denetim **48** · onay/yetki/uyum **74** · hakediş/AI/kurulum **88** |
 | Açık karar (kural dışı) | **3** — `ADR 0002` · veri ayrımı modeli · iade temsili |
 
 **Sayım ve doğrulama:**

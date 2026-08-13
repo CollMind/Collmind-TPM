@@ -93,6 +93,16 @@ dört dönemin toplamı.
 
 > **Ciro payı değil** — hacim dağıtılıyor, fiyat farkları payı bozar.
 
+**K-2.1.8a1** — ⚠️ **Fatura-içi kayıtlar dağıtım tabanı olarak kullanılamaz.**
+
+O veri yalnız fatura-içi mekaniğe giren ürünleri kapsar. Kısmi kapsama, dağıtım payında
+**sistematik yanlılık** üretir — `K-2.4.22`'nin *"eksik dilim rastgele değildir"*
+argümanının aynısı.
+
+> Ölçüldü (`F16`): gerçekleşen satış verisi SKU kırılımı taşımıyor, ama fatura-içi
+> kayıtlar taşıyor. Bu, *"veri zaten var"* kestirmesine davet eder — ve o kestirme
+> yanlıştır.
+
 **K-2.1.8b** — Geçmişi olmayan bir SKU **sıfır pay alır** ve *"tarihsiz"* olarak işaretlenir.
 
 > ⚠️ Eşit pay vermek cazip ama yanlıştır: **yeni ürünün lansman hacmi tarihsel bir türetme

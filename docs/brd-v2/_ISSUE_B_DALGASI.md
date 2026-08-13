@@ -99,6 +99,13 @@ Entity'nin kendi başlığı gerekçeyi yazıyor:
 bağlıyor; bugünkü model o veriyi taşımıyor. Yani `A2` **bugün uygulanamaz** — ya kaynak
 genişler ya kural taban değiştirir.
 
+📌 Ve bir **kestirme kapatıldı:** `on_invoice_entries` SKU kırılımı **taşıyor**
+(`on-invoice-entry.entity.ts:53` `sku_id`, `:56` `sku_code`), yani *"veri zaten var"*
+denip oradan dağıtım tabanı türetilmesi cazip. `K-2.1.8a1` bunu **yasaklıyor**: o küme
+yalnız fatura-içi mekaniğe giren ürünleri kapsar → **sistematik yanlılık**.
+⚠️ Üstelik o tabloda **hacim/adet kolonu da yok** (`quantity`/`volume`: 0) — kestirme
+zaten hacim payı üretemezdi.
+
 **(b) Daha ağır olan ikinci sınır:** aynı entity şunu da yazıyor —
 
 > *"`discountAmount` **satış iskontosudur**; asla bütçeye/ledger'a/spend'e yazılmaz.
@@ -175,7 +182,8 @@ gerekçesi ölçülsün).
 
 📌 **`C1` artık yalnız bir ölçüm değil, yazılı bir kural:** `K-2.5.16` ailesi
 (`L2_03 §2.5.4a`) köken alanlarını yaşam döngüsü alanlarından ayırıyor — *güncellenebilir,
-asla boşaltılamaz*. Kural sayısı **351 → 354**.
+asla boşaltılamaz*. Ve `F16` de bir kurala dönüştü: `K-2.1.8a1` (`L2_01 §Dağıtım kuralı`).
+Kural sayısı **351 → 355**.
 
 ---
 
