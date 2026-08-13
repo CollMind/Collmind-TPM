@@ -607,6 +607,50 @@ karşı yazılmıştı ve *"self-test yakalar"* diyordu. Yakalayamadı: self-tes
 Ve bir kapı yazdıktan sonra `§2.7 #9`'u uygula: **iki farklı girdide iki farklı çıktı**
 verdiğini göster. Temiz halde yeşil olması, kirlide kırmızı olduğunun kanıtı değildir.
 
+### Bir DUR listesi, değişikliğin geçtiği HER SINIRI saymalıdır (ZORUNLU)
+
+> **Bir `DUR` koşulu listesi, değişikliğin geçtiği HER sınırı saymalıdır.**
+> **Şema · API · tel protokolü · dosya biçimi — her sınır bir sözleşmedir, ve tek repoda
+> ölçülen bir kapı, sınırın öbür tarafını görmez.**
+
+Ölçülmüş vaka (2026-08-13, `B` dalgası `R2a`): rol enum'unun **değerleri** Türkçeye taşındı
+(`ADMIN = 'YÖNETİCİ'`). Enum **key**'leri korunduğu için backend derlendi, testler geçti,
+altı guard yeşil verdi. Ama değer bir **tel protokolüdür**:
+
+```
+backend   UserRole.ADMIN = 'YÖNETİCİ'
+frontend  UserRole.ADMIN = 'ADMIN'            ← dokunulmadı
+
+hasRole(): 'YÖNETİCİ' === 'ADMIN'          → false   (admin bypass'ı gitti)
+           requiredRoles.includes(...)      → false   (her rol kapılı rota reddedildi)
+```
+
+**Ve hiçbir kapı görmedi:** backend `tsc` 0 · backend testleri 0 (frontend'i bilmez) ·
+`guards` 0 · **frontend `type-check` 0** — çünkü `user.role as UserRole` cast'i tipi
+susturuyor. Kırılma yalnız **çalışan üründe** ortaya çıkar.
+
+⚠️ **Ve delegasyon tarafındaki ders daha keskin:** alt-ajan hatalı davranmadı. Brief'in
+`DUR` listesinde *"çapraz-repo sözleşme kırılması"* **yoktu**, ve kapsam
+*"ölü referans temizliği ayrı PR"* diye yazılmıştı — oysa asıl tehlike **silinen**
+etiketler değil, **yeniden adlandırılan** etiketlerdi.
+
+> Bir kapsamı *"temizlik"* diye adlandırmak, onu **ertelenebilir** ilan eder. Yeniden
+> adlandırma bir temizlik değil, bir **sözleşme değişikliğidir**.
+
+**Pratik — bir değişikliği delege etmeden önce sınırları say:**
+
+| sınır | soru |
+|---|---|
+| şema | başka bir migration/entity bu tanıma yaslanıyor mu |
+| **tel protokolü** | bu **değer** JWT/API/URL üzerinden geçiyor mu — öbür uçta kim karşılaştırıyor |
+| dosya biçimi | bir içe/dışa aktarma bu biçimi okuyor/yazıyor mu |
+| başka repo | aynı kavramın **ikinci bir tanımı** var mı (`grep` ile, hafızadan değil) |
+
+Ve **görüntü ↔ tel ayrımını koru:** bir iş belgesinin Türkçe adlandırması (`K-2.6.4`'ün rol
+kataloğu) bir **şema tanımı değildir**. `L2`'nin her yerinde kavramlar Türkçe yazılı
+(`TAHAKKUK`, `GÖZLENEN`) ve **hiçbiri enum değeri olsun diye yazılmadı**. Bu, `K-2.2.7`'nin
+renk/davranış ayrımının aynısı: **görüntü katmanı davranışa sızmaz.**
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**

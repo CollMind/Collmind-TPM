@@ -593,7 +593,7 @@ yeni kalemler `S`/`R` alır, `B` almaz.
 | # | Kalem | Gerekçe |
 |---|---|---|
 | `R1` | `ledger_entries.deleted_at` **kaldırılır** | `K-2.3.4` — *"hep boş olmalı"* diyen bir kural, kolonun **olmaması gerektiğinin** işaretidir |
-| `R2a` | `users.role` **enum + veri** — beş yeniden adlandırma, üç silme (migration) | `K-2.6.4d` |
+| `R2a` | `users.role` **enum + veri** — değerler **ASCII kalır**; bir ad değişikliği (`FINANCE_MANAGER`→`FINANCE`), üç silme. **Önce sil, sonra adlandır.** ⚠️ **frontend uyumu DAHİL** | `K-2.6.4d` · `K-2.6.10` |
 | `R2b` | **ölü referans temizliği** — `APPROVER` (7 dosya) · `MANAGER` (13 dosya) · `FINANCE` (6 dosya) · **ayrı PR** | `K-2.6.4d` |
 | `R3` | `skus.unit_of_measure` serbest alanı **kaldırılır** (yerine `S12`) | `K-2.1.12b` |
 
@@ -607,14 +607,36 @@ yeni kalemler `S`/`R` alır, `B` almaz.
 `K-2.6.4d` sırayı bağlıyor: **önce sayım → sonra eşleme → sonra silme.** Sayım yapıldı
 (CTPM'in deploy edilmiş ortamı yok, yani `main` **tek** ortam — 9 kullanıcı):
 
-| bugünkü etiket | kullanıcı | → | `K-2.6.4` rolü |
-|---|---|---|---|
-| `ADMIN` | 1 | → | `YÖNETİCİ` |
-| `PLANNER` | 2 | → | `PLANLAMACI` |
-| `CATEGORY_MANAGER` | 3 | → | `KATEGORİ MÜDÜRÜ` |
-| **`FINANCE_MANAGER`** | **2** | → | **`FİNANS`** |
-| `READONLY` | 1 | → | `İZLEYİCİ` |
-| `APPROVER` · `MANAGER` · **`FINANCE`** | 0 · 0 · 0 | ⛔ | **silinir** |
+| bugünkü etiket | kullanıcı | → | **enum değeri** (tel) | **görüntü** (`K-2.6.4`) |
+|---|---|---|---|---|
+| `ADMIN` | 1 | → | `ADMIN` | `YÖNETİCİ` |
+| `PLANNER` | 2 | → | `PLANNER` | `PLANLAMACI` |
+| `CATEGORY_MANAGER` | 3 | → | `CATEGORY_MANAGER` | `KATEGORİ MÜDÜRÜ` |
+| **`FINANCE_MANAGER`** | **2** | → | **`FINANCE`** ⚠️ ad değişiyor | `FİNANS` |
+| `READONLY` | 1 | → | `READONLY` | `İZLEYİCİ` |
+| `APPROVER` · `MANAGER` · **(eski) `FINANCE`** | 0 · 0 · 0 | ⛔ | **silinir** | — |
+
+> ⚠️ **MIGRATION SIRASI: önce SİL, sonra YENİDEN ADLANDIR.** Eski `FINANCE` siliniyor **ve**
+> `FINANCE_MANAGER` `FINANCE` oluyor — ters sırada çakışır.
+
+### ⛔ Enum DEĞERLERİ ASCII kalır — `K-2.6.4`'ün Türkçe adları GÖRÜNTÜ katmanına ait
+
+Karar (ürün sahibi, 2026-08-13), üç gerekçeyle:
+
+1. **Enum değeri bir TEL PROTOKOLÜDÜR** — JWT'de, API'de, URL'de geçer. `KATEGORİ MÜDÜRÜ`
+   boşluk ve Türkçe noktalı `İ` taşır; JS'te `toUpperCase()`/`toLowerCase()` locale
+   duyarlıdır ve bir gün biri normalize eder (`İ` → `i̇`).
+2. **`K-2.6.4` bir İŞ KATALOĞUDUR, bir şema tanımı değil.** `L2`'nin her yerinde kavramlar
+   Türkçe yazılı (`TAHAKKUK` · `FİNANSA DEVRET` · `GÖZLENEN`) ve **hiçbiri enum değeri
+   olsun diye yazılmadı**.
+3. **`K-2.2.7`'nin renk/davranış ayrımının aynısı:** görüntü katmanı davranışa sızmaz.
+   **Türkçe ad kullanıcıya, `ADMIN` tele.**
+
+⚠️ **Ölçülmüş bedel:** ilk uygulama değerleri Türkçeye taşıdı; enum **key**'leri korunduğu
+için backend derlendi ve altı guard yeşil verdi, ama frontend `UserRole.ADMIN = 'ADMIN'`
+karşılaştırıyordu → **her rol kapılı rota, her kullanıcı için reddedildi** (admin bypass'ı
+dahil). Frontend `type-check` de **0** verdi — `user.role as UserRole` cast'i tipi
+susturuyor. → `CLAUDE.md` · *"bir DUR listesi her sınırı saymalıdır"*
 
 > ⚠️ **Eşleme ilk okumada TERS kurulmuştu ve düzeltildi.** `FINANCE`'ın adı `FİNANS`'a
 > benziyor diye onun karşılığı sanıldı. Değil: `K-2.6.4`'ün `FİNANS`'ı *"eşik üstü
