@@ -95,6 +95,8 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-205]] | `submittedById` yeniden atanabilir + bir yolda **`null`** — dar self-approval kontrolü delinebiliyor | P1 | backend-engineer | todo |
+| [[T-206]] | `sales_actuals`'ta SKU/hacim yokluğu: **veri kaynağı sınırı mı, domain kararı mı** | P2 | architect | todo |
 | [[T-202]] | Lumpsum dağıtım tabanı: `ADR 0006` base seçti, BRD `§5.2` **planned** yazıyor — ADR'nin öncülü yanlışlandı | P1 | architect | todo |
 | [[T-200]] | `Super Admin` altıncı rol olarak beliriyor — karar **[[T-165]] ile birlikte** verilmeli | P2 | architect | todo |
 | [[T-201]] | `EA-001` admin yasak matrisi — üç madde karşılığı **aranmadan** duruyor (önce ölç) | P2 | architect | todo |

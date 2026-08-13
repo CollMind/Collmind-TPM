@@ -18,11 +18,14 @@
 | Durum | Sayı |
 |---|---|
 | ✅ Uygulandı | 12 |
-| 🔬 Ölçüm bekliyor | 4 |
+| 🔬 Ölçüm bekliyor | 4 → **1** (2026-08-12) |
 | 📋 Domain kararı olarak kuyruğa | 1 |
 | ⏸️ Ertelendi | 1 |
 | ❌ Reddedildi (kısmi kabul) | 1 |
 
+> **Güncelleme 2 (2026-08-12):** `F14` · `F16` · `Ö4` **ölçüldü** — kod tarafı kapandı,
+> `F13` tek başına kaldı (veri gerektiriyor). Kayıt: `docs/analysis/0069`.
+>
 > **Güncelleme (2026-08-12):** `F12` ertelemeden **uygulanana** geçti (kapsamı yumuşatılmış
 > hâlde), ve bu turda **bir yeni ölçüm doğdu** (`Ö4`).
 
@@ -157,14 +160,24 @@ ve `İlke 4`'ün veri hâli.
 
 # 🔬 Ölçüm bekleyenler
 
-## F14 · Planın organizasyon bağlantısı şemada görünmüyor
+## F14 · Planın organizasyon bağlantısı şemada görünmüyor  ✅ **ÖLÇÜLDÜ 2026-08-12**
+
+> **Sonuç:** bağ **var** — `plans` üzerinde dört denormalize kolon (`cpl_id`·`channel_id`·
+> `category_id` **NOT NULL**, `region_id` nullable). Zarf çözümlemesi tanımsız **değil**.
+> Gövde: `docs/analysis/0069` · `_ISSUE_B_DALGASI.md` §3.
 
 `planlar` tablosunda müşteri/kanal alanı yok — ama taahhüt, zarfı (kanal × kategori × dönem)
 çözmek zorunda.
 
 **Ölçüm:** gerçek şemada bu bağ nerede? Yoksa zarf çözümlemesi tanımsız.
 
-## F16 · `TÜRETİLEBİLİR` sınıf bugünkü veriyle hesaplanamaz
+## F16 · `TÜRETİLEBİLİR` sınıf bugünkü veriyle hesaplanamaz  ✅ **ÖLÇÜLDÜ 2026-08-12**
+
+> **Sonuç: iddia doğrulandı** — `sales_actuals`'ta `sku`/`quantity`/`volume` kolonu **yok**
+> (grain: CPL × Kategori × Kanal × Dönem, tutar agregası). Ve bu bir eksiklik değil,
+> entity'de gerekçesiyle yazılı bir **karar**. `A2`'nin dağıtım tabanı (`K-2.1.8a`) bugünkü
+> modelle **beslenemez**. ⚠️ Gerekçenin türü (veri kaynağı sınırı ↔ domain kararı) ayrıca
+> ölçülecek → [[T-206]]. Gövde: `docs/analysis/0069` · `_ISSUE_B_DALGASI.md` §4.
 
 `sales_actuals.hacim` yok — ve `A2`'nin dağıtım tabanı da **SKU kırılımlı** satış verisi
 istiyor.
@@ -257,7 +270,11 @@ kararında ölçüldü ki bypass **daraltıldı, kapanmadı**, ve telafisi denet
 > çünkü kaynakları farklı: `F`'ler dışarıdan geldi, `Ö`'ler kendi kararlarımızın yan
 > çıktısı.
 
-## Ö4 · Dönem alanlarının biçim tutarlılığı
+## Ö4 · Dönem alanlarının biçim tutarlılığı  ✅ **ÖLÇÜLDÜ 2026-08-12**
+
+> **Sonuç: ikisinin arası.** Biçim **tek** (`varchar(7)` ×8 tablo), ama ad **iki**
+> (`fiscal_period` ×5 / `period_month` ×3) ve biri **nullable**. Yani tek jenerik backfill
+> mümkün — **kolon adı parametreli** olmak şartıyla. Gövde: `docs/analysis/0069` · `_ISSUE_B_DALGASI.md` §6.
 
 **Doğuşu:** `F12`'nin kapsamı yumuşatılırken soruldu — *"zarf.dönem ile satış.dönem aynı
 biçimde mi?"*

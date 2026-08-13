@@ -110,13 +110,17 @@ Diğer belgeler ve kod yorumları bu numaraya **atıf verir**, kuralı tekrar et
 
 ## Okuma sırası önerisi
 
-**Ürünü ilk kez tanıyan:** `URUN_OZETI` → `01_YETENEK_HARITASI`
+**Ürünü ilk kez tanıyan:** `URUN_OZETI` → **`02_YETENEK_HARITASI`**
 
-**Bir kararı sorgulayan:** `03_KARAR_KAYDI` → ilgili `L2` kuralı
+**Bir kararı sorgulayan:** **`04_KARAR_KAYDI`** → ilgili `L2` kuralı
 
-**Kod yazan:** `03_IS_KURALLARI` — ilgili bölüm
+**Kod yazan:** `03_IS_KURALLARI/L2_*` — ilgili bölüm
 
-**Ürün yönü tartışan:** `00_KONUMLANMA`
+**Ürün yönü tartışan:** **`01_KONUMLANMA`**
+
+> ⚠️ Bu blok 2026-08-12'de düzeltildi: üç dosya adı **bayattı** (`01_YETENEK`, `03_KARAR_KAYDI`,
+> `00_KONUMLANMA`) ve o adlarda dosya **yok**. `guard.sh` yakalayamadı — üç kontrolü de kural
+> kimliğine bakıyor, **dosya adı atıflarına bakmıyor**. Dördüncü kontrol adayı.
 
 ---
 
@@ -149,8 +153,10 @@ karma çalışma biçimi · serbest biçimli kural motoru · orantısal atıf ·
 
 ## Bu paketin sınırları
 
-1. **`L0` bir taslaktır** ve onaylanmadı. Onaylandığında `ADR 0012` olarak karar defterine
-   girer.
+1. **`L0` bir taslaktır** ve onaylanmadı. Onaylandığında **`ADR 0013`** olarak karar
+   defterine girer.
+   ⚠️ `ADR 0012` **dolu** — `0012-finansal-kayitlar-fiziksel-silinemez.md` (2026-08-12).
+   Numara ölçülerek düzeltildi.
 2. **Uzunluk hedefleri tahmindir.** Ölçülmedi — ve bu kod tabanında kapsam tahminleri beş kez
    düşük çıktı.
 3. ✅ **`L1`/`L2` sınırı sınandı** (`_YAPISAL_TAMAMLAMA.md`). Ölçüt resmileşti:

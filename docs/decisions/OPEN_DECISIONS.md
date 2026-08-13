@@ -125,7 +125,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `0056-K2` | Çok-rol gerekiyor mu (junction ↔ enum)? | `0056 §C` | [[T-165]] | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §B3` — çok rollülük **evet** (birleştirme tablosu, union çözümleme) |
 | `0056-K3` | Yetenek granularitesi: `§7.2`'nin 20 yeteneği mi, daha kaba mı? | `0056 §C` | [[T-167]] · [[T-156]] | açık |
 | `0056-K4` | `user_permission_overrides` gelecek mi? | `0056 §C` | [[T-165]] | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §B3` — kişiye özel yetki istisnası **HAYIR** — kaynaktan bilinçli sapma |
-| `0056-K5` | Kapsam eksenleri: `category` kalsın mı, `region` eklensin mi? | `0056 §C` · `0052 §1` | [[T-165]] | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §A7` — kapsam **kanal + müşteri + kategori** kalır; **bölge Faz 2** |
+| `0056-K5` | Kapsam eksenleri: `category` kalsın mı, **`region` ZORUNLU olsun mu**? | `0056 §C` · `0052 §1` | [[T-165]] | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §A7` — kapsam **kanal + müşteri + kategori**, bölge Faz 2. ⚠️ **Ama soru şekil değiştirdi** (`0069 §F14`): `plans.region_id` **kolonu zaten var, nullable** — yani *"eklensin mi"* değil, **"zorunlu olsun mu"**. Bu `A7`'yi etkilemiyor, Faz 2'nin şeklini belirliyor |
 | `0056-K6` | `SCOPE_ENFORCEMENT_ENABLED` ne zaman açılacak? | `0056 §C` | planner kapsam izolasyonu | açık — **bugün kapalı** |
 | `0056-K7` | `RolesGuard` fail-open kalacak mı? | `0056 §C` · [[T-181]] | 77 route | açık |
 | `0056-K8` | Yetki **veri** mi olacak (üretimden konfigüre edilebilir mi)? | `0056 §C` · [[T-108]] | [[T-156]] | açık |
