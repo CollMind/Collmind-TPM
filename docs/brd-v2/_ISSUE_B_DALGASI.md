@@ -2,6 +2,12 @@
 
 > `B` dalgası, `L2` kurallarının **şema tarafına** inen işlerin dalgası. Bu dosya o dalganın
 > **ön koşul tablosunu** ve ölçüm sonrası **kapsam değişikliklerini** tutar.
+>
+> 📌 **Kalem listesi burada DEĞİL — kanonik yeri `EK_C_VERI_SOZLUGU.md §B dalgası — kanonik
+> kalem listesi`.** `S1`–`S14` · `R1`–`R3` · seed · `kabul-1`…`kabul-8` orada yaşar; bu
+> dosya onlara **atıf verir, kopyalamaz**. (2026-08-13'e kadar liste hiçbir belgede yoktu:
+> bir kez yazıldı, iki kez numaralandı — `B1`–`B9` ↔ `S`/`R` — ve eşleme yalnız issue
+> gövdesinde kaldı.)
 
 - **Ölçüm tarihi:** 2026-08-12
 - **Ölçüm kaydı:** `docs/analysis/0069-b-dalgasi-on-kosul-olcumu-kod-tarafi.md` — **kanonik**;
@@ -91,9 +97,15 @@ yazıyor: *"bir PLANNER yaratıp başka biri gönderebilir"*) ve bir yolda **`nu
 ### Şema kalemi — `S13` (yeni)
 
 ```
-plans.last_modified_by            yeni kolon
+son değiştiren alanı              ⛔ "yeni kolon" DEĞİL — updated_by zaten var (base.entity.ts:31)
+                                  ve düzenleme yolu yazıyor (plan.service.ts:450 → updateVersioned)
 gönderen alanının değişmezliği    submittedById bir kez yazılır, sonra sabit
 ```
+
+⚠️ Yukarıdaki `grep "lastModifiedBy|updatedById|modifiedBy" → 0` ölçümü **kapsamı doğru,
+terim listesi yanlış** bir aramaydı: üç adın hiçbiri ne katalog dilinde (`updated_by`) ne
+entity dilinde (`updatedBy`). Yeni kolon eklenseydi **iki ayrı son-değiştiren alanı**
+doğardı. → [[T-207]]
 
 📌 `INV-T-002`'nin bugünkü *"Status: HOLDS"* etiketi **dar tanıma göre doğru** (sözleşme
 cümlesi *"submitted"* diyor). `K-2.5.11`'in kapsamı uygulanınca **invariant metni de**
@@ -317,7 +329,7 @@ ya da `2026/01` **saklanabilir**. `0060 §2` bu şekillerin *parser'da* reddedil
 | kalem | değişiklik | kaynağı |
 |---|---|---|
 | **`S3`** | ⛔ **DALGADAN ÇIKTI** — sıralanmaz: sıralanacak şey veri düzeltmesi değil, bir **tanım** (`v2-UC-ALAN` → [[T-209]]). Yerine `K-2.7.4a`: akıl sağlığı kontrolü (`net ≤ brüt`), kendisi de ⛔ `C2` kararına bağlı | `C3` veri ölçümü |
-| **`S13`** | **yeni** — `plans.last_modified_by` ([[T-207]]) + gönderen **boşaltılamazlığı** (`K-2.5.16`, [[T-205]]) · ⚠️ **kapsam büyüdü**, aşağıda | `C1` + `0070 §B4` |
+| **`S13`** | ⚠️ **ÖNERMESİ ÇÜRÜDÜ 2026-08-13** — *"yeni kolon"* değil: `updated_by` `BaseEntity`'de **var** ve yazılıyor ([[T-207]]). Kalan iş: yazma yollarının enumerasyonu + kontrolün genişletilmesi + gönderen **boşaltılamazlığı** (`K-2.5.16`, [[T-205]]) · ⚠️ **kapsam büyüdü**, aşağıda | `C1` + `0070 §B4` |
 | **`S11`** | backfill **kolon adı parametreli** (iki ad, biri nullable) **+ biçim doğrulamalı**, ve `CHECK` **ayrı bir dalga kalemi** | `Ö4` + probe |
 
 ### ⛔ `S13` bir YETKİ YÜZEYİ değişikliği — ayrı madde (`0070 §B4`)
@@ -375,10 +387,10 @@ bugün iki adreste anılıyor:
 `T-206`'nın sonucu üç yoldan birine çıkar ve biri `A2`'nin tabanını yeniden karara götürür.
 Dalga kapanışında ikinciyi de çevirmek, `T-206`'yı **önceden yargılamak** olur.
 
-📌 **Ölçüldü (2026-08-13): `kabul-1`…`kabul-8` listesi bu repoda YOK** — `kabul-[0-9]`
+📌 **Ölçülmüştü (2026-08-13): `kabul-1`…`kabul-8` listesi bu repoda YOKTU** — `kabul-[0-9]`
 taraması tüm `*.md` üzerinde **0** eşleşme verdi (pozitif kontrol: *"B dalgası"* üç dosyada
-geçiyor). Yani kanonik kabul listesi dalganın kendi kaydında, repo dışında; buradaki blok
-o maddenin **CTPM tarafındaki karşılığıdır**, listenin kendisi değil.
+geçiyor). ✅ **Aynı gün `EK_C`'ye yazıldı** ve kanonik yeri orasıdır; buradaki blok
+`kabul-8`'in **CTPM tarafındaki karşılığıdır**, listenin kendisi değil.
 
 ---
 
@@ -386,6 +398,7 @@ o maddenin **CTPM tarafındaki karşılığıdır**, listenin kendisi değil.
 
 - **Gövde burada değil.** Her ölçümün nasıl yapıldığı, hangi satırda ne bulunduğu
   `docs/analysis/0069`'da. Bu dosya **sonuç ve kapsam** taşır — `F8` sınıfına üye olmamak için.
-- **`S3`/`S11`'in tam metni bu dosyada yok** — yalnız **değişiklik** yazılı. Kalemlerin
-  kanonik tanımı `B` dalgasının kendi kaydındadır.
+- **`S3`/`S11`'in tam metni bu dosyada yok** — yalnız **değişiklik** yazılı. ✅ Kalemlerin
+  kanonik tanımı **2026-08-13'te `EK_C`'ye yazıldı**; o güne kadar hiçbir belgede yoktu ve
+  bu satır *"dalganın kendi kaydındadır"* diyerek var olmayan bir belgeye işaret ediyordu.
 - **Veri tarafı ölçülmedi:** `C2`, `F13`, ve `Ö4`'ün değer kontrolü. DB gerektiriyor.

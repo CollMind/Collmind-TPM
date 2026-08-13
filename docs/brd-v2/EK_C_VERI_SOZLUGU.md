@@ -452,10 +452,109 @@ genişletilmelidir (`K-2.11.2`).
 | Yeni tablo | **8** — bütçe politikası · onay politikası · rol ailesi (4) · talep · eşleştirme · taktik gerçekleşmesi |
 | Yeni alan | **~20** |
 | Kaldırılacak | **3** — defter silinme tarihi · kullanıcı rol enum'u · SKU serbest birim alanı |
-| Kısıt eklemesi | defter tutarı ≥ 0 · bütçe politikası tekilliği · net = brüt − indirim |
+| Kısıt eklemesi | defter tutarı ≥ 0 · bütçe politikası tekilliği · ~~net = brüt − indirim~~ |
 
 ⚠️ **Hepsi deploy öncesi.** Ve birkaçı için ek gerekçe var: alan olmazsa **karar yeniden
 icat edilir** — `hesaplaşma kadansı` bunun en net örneği.
+
+📌 `net = brüt − indirim` **üstü çizili**: `S3` dalgadan çıktı (2026-08-13). Sıralanacak
+şey bir veri düzeltmesi değil, bir **tanım** — `discount_amount` satış iskontosu mu toplam
+indirim mi. Kısıt bugün eklenemiyor (ölçüm: **3/3 satır** ihlal). → `v2-UC-ALAN` · [[T-209]]
+
+---
+
+# `B` dalgası — kanonik kalem listesi
+
+> **Bu bölüm KANONİKTİR.** `_ISSUE_B_DALGASI.md` ve GitHub issue **atıf verir, kopyalamaz**.
+> Kalemlerin gerekçesi ve ölçümü `docs/analysis/0069` (kod tarafı) ve `0070` (TTM kanıtı)
+> içinde yaşar; bu tablo **ne yapılacağını** taşır, **neden**ini değil.
+
+⚠️ **Neden buraya yazıldı — ölçülmüş bir boşluk (2026-08-13).** Liste **bir kez yazıldı,
+iki kez numaralandı**: ürün sahibi `TEAM_LEAD_IS_LISTESI`'nde `B1`–`B9` olarak verdi,
+Team Lead `S`/`R` numaralarına çevirdi, ve o eşleme **yalnız issue gövdesinde** yaşadı.
+Yani kanonik hâli **hiç oluşmadı** — ve dalga uygulanmak istendiğinde repoda `S1`,`S2`,
+`S4`–`S12`,`R1`–`R3` için **sıfır tanım** çıktı (pozitif kontrol: `S13` yedi dosyada).
+
+> Bu `F2`'nin akrabası: orada **bir numara iki şeye** verilmişti, burada **bir şeye iki
+> numara**. İkisinin de sonucu aynı: atıf çözümlemesi okuyana göre değişir.
+
+📌 `B1`–`B9` ↔ `S`/`R` eşlemesi **yeniden kurulmadı** — kurmak için `TEAM_LEAD_IS_LISTESI`
+gerekir ve o belge bu repoda yok. Aşağıdaki `S`/`R` numaraları **bundan sonra kanoniktir**.
+
+## `S` · Şema
+
+| # | Kalem | Kural |
+|---|---|---|
+| `S1` | mekanikler: kadans · tahakkuk takvimi · taban · azami süre · kanıt sınıfı | `K-2.1.13` · `K-2.13.14f` · `K-2.13.14h3` |
+| `S2` | İçe aktarma köken bloğu: kim · ne zaman · dosya özeti · çevrim izi | `K-2.13.12b` · `K-2.1.12d` |
+| `S3` | ⛔ **DÜŞTÜ** — net = brüt − indirim kısıtı | `K-2.7.4a` |
+| `S4` | `butce_politikalari` tablosu — iki boyut, `UNIQUE(tenant,kanal,kategori)`, **öncelik kolonu yok** | `K-2.2.8a`–`d` |
+| `S5` | `onay_politikalari` tablosu + üç şablon + `mode` · `devir_izni` | `K-2.5.13a`–`f` |
+| `S6` | Rol ailesi: `roller` · `yetenekler` · `rol_yetenekleri` · `kullanici_rolleri` | `K-2.6.4` · `K-2.6.5a` |
+| `S7` | `talepler` tablosu — kaynak: `İÇ`\|`DIŞ`, kaynağa duyarlı durum | `K-2.13.5`–`5g` |
+| `S8` | `eslestirmeler` bağ varlığı (n:m) + `taktik_gerceklesmeleri` | `K-2.13.5f` · `K-2.13.14j` |
+| `S9` | Fatura-içi kayıtlara **anlaşma referansı** | `K-2.13.14l` |
+| `S10` | Defter: `TAHAKKUK`+`TÜKETİM` tipleri · `TAHAKKUK` harcama tipinden çıkar · `duzeltme_alt_turu` (4 değer) + **çift yönlü** `CHECK` | `K-2.3.13`–`13d` |
+| `S11` | `donemler` tablosu + nullable FK + **biçim doğrulamalı** backfill | `K-2.13.21` · `Ö4` |
+| `S12` | SKU: `satis_birimi` + `cevrim_carpani`; girilen değer kolonları **FU'ya** | `K-2.1.12c` · `K-2.1.11a` |
+| `S13` | ⚠️ **Yeniden şekillendi** — kolon **var** (`updated_by`); iş: `updateVersioned` çağıran yolların **enumerasyonu** + kontrolün genişletilmesi | `K-2.5.11` · `K-2.5.16` |
+| `S14` | 🆕 `sales_actuals`: **SKU kırılımı + hacim** | `K-2.1.8a` |
+
+> ⚠️ **`S13` bir kolon eklemiyor.** Önermesi (*"dayanacağı kolon yok"*) 2026-08-13'te
+> çürüdü: `updated_by` `BaseEntity`'de yaşıyor (`base.entity.ts:31`) ve düzenleme yolu
+> dahil yedi noktada yazılıyor (`plan.service.ts:450` → `updateVersioned`, kalıcı).
+> Çürüten şey bir kapsam hatası değil, **terim listesi**ydi: aranan üç ad ne katalog
+> dilindeydi (`updated_by`) ne entity dilinde (`updatedBy`). → [[T-207]]
+>
+> Yeni kolon eklenseydi **iki ayrı "son değiştiren" alanı** doğardı ve hangisinin
+> bağlayıcı olduğu belirsiz kalırdı — `İlke 4`'ün veri tarafındaki hâli.
+
+## `R` · Çıkarmalar
+
+| # | Kalem | Gerekçe |
+|---|---|---|
+| `R1` | `ledger_entries.deleted_at` **kaldırılır** | `K-2.3.4` — *"hep boş olmalı"* diyen bir kural, kolonun **olmaması gerektiğinin** işaretidir |
+| `R2` | `users.role` enum kolonu **kaldırılır** — ⚠️ **önce sayım, sonra eşleme, sonra silme** | `K-2.6.4d` |
+| `R3` | `skus.unit_of_measure` serbest alanı **kaldırılır** (yerine `S12`) | `K-2.1.12b` |
+
+> ✅ Üçünün de bugün **var olduğu** ölçüldü (2026-08-13, `main` şeması):
+> `ledger_entries.deleted_at` nullable timestamp · `users_role_enum` **sekiz** değer
+> (`ADMIN, PLANNER, APPROVER, FINANCE, FINANCE_MANAGER, CATEGORY_MANAGER, MANAGER,
+> READONLY`) · `skus.unit_of_measure` varchar.
+
+## Seed — **atomik**
+
+| # | Kalem | Bağlı |
+|---|---|---|
+| 1 | joker bütçe politikası satırı | `K-2.2.8d` — **zorunlu** |
+| 2 | üç onay şablonu | `K-2.5.13a` |
+| 3 | rol kataloğu (**beş** rol) | `K-2.6.4` |
+| 4 | aktif dönemler | `S11` backfill'inin **hedefi** |
+| 5 | mekanik kütüphanesi — kadans/taban/kanıt alanlarıyla | `S1` |
+
+## Kabul ölçütleri
+
+| # | Ölçüt |
+|---|---|
+| `kabul-1` | `down` gidiş-dönüş: **boş VE seed'li** ortamda, sonrası şema diff = **BOŞ** |
+| `kabul-2` | Σ(transfer bacakları) = 0 — **ihlal ekle, test kırılsın** |
+| `kabul-3` | Σ(SKU hacimleri) = FU hacmi — aynı yöntem |
+| `kabul-4` | `REZERVE` + `TAHAKKUK` + `TÜKETİM` ≤ tavan; tahakkuk **DÖNÜŞÜM** (çift düşüm yok) |
+| `kabul-5` | defter tutarı ≥ 0 · bütçe politikası tekilliği — **kısıt ihlali reddedilsin** |
+| `kabul-6` | işaretsiz `DÜZELTME` = 0 (backfill sonrası) · alt-türlü `REZERVE` **reddedilsin** |
+| `kabul-7` | `R1`–`R3` sonrası **veri kayıpsızlığı sorguyla ispat**; `R2`'de **sayım kaydı** |
+| `kabul-8` | kapattığı `❌` işaretleri `✅`'ya çevrilir: `K-2.5.11` · `K-2.1.8a` |
+
+⚠️ `kabul-2`/`kabul-3`/`kabul-5`/`kabul-6` **aynı şekli** paylaşıyor: bir ölçütün
+sağlandığını göstermek yetmez, **ihlali kasten üretip testin kırıldığı** gösterilir.
+Bu, `§2.7 #9`'un kabul tarafındaki hâli — sinyal sabitse, sinyal değildir.
+
+### Üç bağlayıcı kısıt (ürün sahibi, 2026-08-13)
+
+1. **Tek geri dönüş noktası** — tek migration seti, tek `down`. Kalemler ayrı ayrı
+   indirilmez.
+2. **Çıkarmalar dalganın parçası** — `R1`–`R3` ertelenmez.
+3. **Seed atomik** — beş kalem tek işlemde, kısmi seed yok.
 
 ---
 
