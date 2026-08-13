@@ -22,7 +22,7 @@
 | **C1** | `INV-T-002` nereye bakıyor | ✅ ölçüldü | ⛔ **yalnız gönderen** — ve dayanacağı kolon yok |
 | **C3** | net = brüt − indirim kısıtı yazılabilir mi | ✅ ölçüldü → **karar geçersizleşti** (§5) | ⛔ **HAYIR** — kısıt reddediliyor, ve soru alan tanımına döndü |
 | **F14** | planın organizasyon bağlantısı | ✅ ölçüldü → **bulgu satırına geçti** (§3) | dört denormalize kolon |
-| **F16** | satış verisinde SKU + hacim | ✅ ölçüldü → **bulgu satırına geçti** (§4) | ⛔ ikisi de yok, **karar** |
+| **F16** | satış verisinde SKU + hacim | ✅ **KAPANDI 2026-08-13** — TTM kanıtıyla (§4) | sınıf: **pilot profili** → `İlke 5`; `A2` **ayakta** |
 | **Ö4** | dönem alanları tutarlı mı | ✅ ölçüldü + probe | biçim tek, **ad iki**, biri nullable — ve temizlik **tesadüf** (§6) |
 | **C2** | iade `sales_actuals`'ta nasıl temsil ediliyor | ✅ ölçüldü (2026-08-13) | ⛔ **temsil yok, kanal AÇIK** → [[T-208]] |
 | `F13` | tutarlar KDV dahil mi hariç mi | ⚠️ **kod ölçüldü, veri ölçülemedi** | kodda KDV kavramı **hiç yok**; ölçek sorusu üretim verisi ister |
@@ -31,14 +31,16 @@
 > yani migration'ı bloklayan bir soru **doğdu** ([[T-209]], alan tanımı). Kalan iki
 > soru davranış tarafındaydı; biri (`C2`) kapandı ve bir task'a döndü.
 
-## ⚡ Dalga onayının ön koşulu — artık **tek madde**
+## ✅ Dalga onayının ön koşulu **KALMADI** (2026-08-13)
 
 ```
-[[T-206]]   gerçekleşen satış tablosunun sözleşmesi
+[[T-206]]   ✅ KAPANDI — sınıf: pilot profili (TTM kanıtıyla, §4)
 ```
 
-Ve [[T-209]] onunla **aynı oturumda** koşar (`K-2.1.19a`: aynı sorunun iki yüzü, aynı
-yöntem — `git blame` + commit bağlamı + besleyen içe aktarma yolunun kaynak kolonu).
+[[T-209]] onunla aynı oturumda koşacaktı; `T-206` kapandı, `T-209` **açık kaldı** ama
+dalgayı **bloklamıyor** — ikisi `K-2.1.19a`'nın *"aynı sorunun iki yüzü"* iddiasını
+paylaşıyor — aynı yöntem: `git blame` + commit bağlamı + besleyen içe aktarma yolunun
+kaynak kolonu.
 
 ✅ **Ve `L2`'de açık kural kalmadı** (2026-08-13): `K-2.6.4` (rol kataloğu) ve `K-2.5.12`
 (tek onay hattı) ürün sahibi kararıyla kapandı — ikisi de **karar sınıfıydı**, bir ölçümle
@@ -135,19 +137,51 @@ zaten hacim payı üretemezdi.
 📌 Bu, `K-2.13.14h3`'ün (**net taban**) gerekçesiyle **doğrudan kesişiyor**: hakediş tabanı
 "net satış" ise, o netin içindeki iskonto **bütçe tarafında zaten sayılmış** olabilir.
 
-> ⚠️ **İkisi de `L2`'ye not olarak girdi — ama sınıf hâlâ ölçülmeli**, ve şık **iki değil
-> üç**: veri kaynağı sınırı (ERP veremiyordu) · **pilot profili kararı** (o müşterinin
-> CSV'sinde yoktu → `İlke 5`, tenant profiline iner) · gerçek domain kararı (model
-> değişmez). → [[T-206]]
->
-> 📌 **Kısmi ölçüm 2026-08-13'te yapıldı ve `pilot profili`ne işaret ediyor:** gerekçe
-> `dd7eaaf`'te (dosyayı yaratan commit) **tek bir müşterinin CSV başlığına** dayanıyor
-> (`0002 §Kritik bulgu`), ERP'nin veremediğine dair cümle **yok**, ve aynı belge TTM'in
-> `validateRow`'unun o kolonları **zorunlu tuttuğunu** söylüyor — yani kardeş üründe veri
-> vardı. ⚠️ TTM iddiası **yeniden ölçülmedi** (repo oturumda yok).
->
+### ✅ `F16` YENİDEN YAZILDI (2026-08-13) — sınıf **`pilot profili`**
+
+[[T-206]] kapandı. `CollMind/TTM` bu oturumda klonlandı (`19c6376`) ve bir turdur ölçülmeden
+taşınan iddia **doğrudan doğrulandı:**
+
+```
+apps/api/src/actuals/actuals.service.ts — validateRow()
+  :991   if (!row.fu_code?.trim()) throw new Error('fu_code is required');
+  :1045  if (volume === 0 && grossAmount > 0) throw new Error('…must have a positive volume')
+```
+
+Ve ikinci, daha güçlü kanıt — TTM'in **kanonik** biçimi:
+
+```
+apps/web/public/templates/actuals_template.csv
+  cpl_code,fu_code,gross_amount,net_amount,discount_amount,volume
+
+TTM'de cpl_code ile başlayan CSV : 22
+  fu_code + volume taşıyan       : 16
+  CTPM'in biçimi (hacimsiz)      :  4  — hepsi eski/ikincil test verisi
+```
+
+| şık | sonuç |
+|---|---|
+| kaynak sınırı (ERP veremiyordu) | ⛔ **ELENDİ** — kardeş ürün aynı veriyi **zorunlu tutuyor** ve şablonuyla topluyor |
+| **pilot profili kararı** | ✅ **SEÇİLDİ** — gerekçe tek müşterinin dosya başlığı, ve o başlık TTM'de bile ikincil |
+| gerçek domain kararı | ⛔ ELENDİ — ürün ilkesi olsaydı TTM'in kanonik şablonu onu ihlal ederdi |
+
+**İki sonuç değişti:**
+
+1. **`A2` / `K-2.1.8a` AYAKTA ve uygulanabilir.** Taban değişikliği gerekmiyor — gereken şey
+   kaynağın genişlemesi, ve o genişleme kardeş üründe **zaten yazılmış.**
+2. **Karar tenant profiline iner** (`İlke 5`): ürün varsayılanı FU + hacim **taşıyabilmelidir**;
+   hacimsiz alım bir **müşteri profili**, ürün kuralı değil.
+
+⚠️ **Şema etkisi:** `sales_actuals`'a `fu_id`/`sku_id` + `volume` **eklenebilir olmalı**
+(nullable) — bu dalganın değil, ama `A2` uygulanacaksa bir sonraki dalganın kalemi.
+
 > **`(b)` alan sorusunun sınıfı ayrı ve `0069 §5`'te:** üç şık, `(c)` ölçümle elendi,
-> ön karar `(a)`. → [[T-209]]
+> ön karar `(a)` — ve TTM ölçümü onu da güçlendirdi (`discount_amount` ∩ ledger/budget/claim
+> → **0 satır**). → [[T-209]]
+>
+> ⚠️ Ama kesinleşmedi: TTM'de **nasıl kullanıldığını** ölçtük, **ne anlama geldiğini** değil.
+
+📌 Ölçümün tamamı: `docs/analysis/0070-b-dalgasi-olcum-turu-ttm-kanitiyla.md`
 
 ---
 

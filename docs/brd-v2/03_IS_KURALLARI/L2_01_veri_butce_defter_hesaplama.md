@@ -117,19 +117,25 @@ dört dönemin toplamı.
 
 > **Ciro payı değil** — hacim dağıtılıyor, fiyat farkları payı bozar.
 
-> ⚠️ **Uygulama ölçüm şartlı** (`T-206`, 2026-08-12). Kural **karar olarak ayaktadır**;
-> uygulanabilirliği bir ölçüme bağlı.
+> ✅ **Uygulanabilirlik ÖLÇÜLDÜ ve kural AYAKTA** ([[T-206]], 2026-08-13).
 >
-> Ölçülen: gerçekleşen satış verisi SKU kırılımı ve hacim taşımıyor — **ve bu kayıtlı bir
-> tasarım kararı.** `T-206` o kararın sınıfını ölçecek:
+> Gerçekleşen satış verisi bugün SKU kırılımı ve hacim taşımıyor, ve bu **kayıtlı bir tasarım
+> kararıydı.** Sınıfı ölçüldü: üç şıktan **`pilot profili`** çıktı — kardeş ürün (TTM) aynı
+> veriyi `validateRow`'da **zorunlu tutuyor** ve kanonik şablonuyla topluyor
+> (`actuals_template.csv`: `…,fu_code,…,volume`; 22 CSV'nin 16'sı o biçimde).
 >
-> | Sonuç | Etkisi |
+> | şık | sonuç |
 > |---|---|
-> | Kaynak sınırı | Kural ayakta; kolon eklenir, kaynak gelince dolar |
-> | Pilot profili kararı | Karar tenant profiline iner (`İlke 5`); ürün kuralı bu |
-> | Gerçek domain kararı | `A2`'nin tabanı yeniden karara gider |
+> | Kaynak sınırı (ERP veremiyordu) | ⛔ elendi — kardeş üründe veri **var ve zorunlu** |
+> | **Pilot profili kararı** | ✅ **seçildi** → `İlke 5`, karar tenant profiline iner |
+> | Gerçek domain kararı | ⛔ elendi — ürün ilkesi olsaydı TTM şablonu onu ihlal ederdi |
 >
-> Adres bir dalga değil, bir **ölçümdür** — çünkü dalga kaleminin kendisi o ölçüme bağlı.
+> **Sonuç: `A2`'nin tabanı yeniden karara GİTMEZ.** Gereken şey kaynağın genişlemesi, ve o
+> genişleme kardeş üründe **zaten yazılmış.** Hacimsiz alım bir **müşteri profilidir**,
+> ürün kuralı değil.
+>
+> ⚠️ Şema etkisi bir sonraki dalganın kalemi: `sales_actuals`'a `fu_id` + `volume`
+> **nullable** olarak eklenebilmeli. Ölçüm: `docs/analysis/0070 §B1`.
 
 **K-2.1.8a1** — ⚠️ **Fatura-içi kayıtlar dağıtım tabanı olarak kullanılamaz.**
 
