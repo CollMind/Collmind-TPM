@@ -487,7 +487,7 @@ gerekir ve o belge bu repoda yok. Aşağıdaki `S`/`R` numaraları **bundan sonr
 |---|---|---|
 | `S1` | mekanikler: kadans · tahakkuk takvimi · taban · azami süre · kanıt sınıfı | `K-2.1.13` · `K-2.13.14f` · `K-2.13.14h3` |
 | `S2` | İçe aktarma köken bloğu: kim · ne zaman · dosya özeti · çevrim izi | `K-2.13.12b` · `K-2.1.12d` |
-| `S3` | ⛔ **DÜŞTÜ** — net = brüt − indirim kısıtı | `K-2.7.4a` |
+| `S3` | ⛔ **DÜŞTÜ** — net = brüt − indirim kısıtı. Yerine önerilen `K-2.7.4a` (`net ≤ brüt`) de **dalgaya girmez** — aşağı | `K-2.7.4a` |
 | `S4` | `butce_politikalari` tablosu — iki boyut, `UNIQUE(tenant,kanal,kategori)`, **öncelik kolonu yok** | `K-2.2.8a`–`d` |
 | `S5` | `onay_politikalari` tablosu + üç şablon + `mode` · `devir_izni` | `K-2.5.13a`–`f` |
 | `S6` | Rol ailesi: `roller` · `yetenekler` · `rol_yetenekleri` · `kullanici_rolleri` | `K-2.6.4` · `K-2.6.5a` |
@@ -514,13 +514,46 @@ gerekir ve o belge bu repoda yok. Aşağıdaki `S`/`R` numaraları **bundan sonr
 | # | Kalem | Gerekçe |
 |---|---|---|
 | `R1` | `ledger_entries.deleted_at` **kaldırılır** | `K-2.3.4` — *"hep boş olmalı"* diyen bir kural, kolonun **olmaması gerektiğinin** işaretidir |
-| `R2` | `users.role` enum kolonu **kaldırılır** — ⚠️ **önce sayım, sonra eşleme, sonra silme** | `K-2.6.4d` |
+| `R2a` | `users.role` **enum + veri** — beş yeniden adlandırma, üç silme (migration) | `K-2.6.4d` |
+| `R2b` | **ölü referans temizliği** — `APPROVER` (7 dosya) · `MANAGER` (13 dosya) · `FINANCE` (6 dosya) · **ayrı PR** | `K-2.6.4d` |
 | `R3` | `skus.unit_of_measure` serbest alanı **kaldırılır** (yerine `S12`) | `K-2.1.12b` |
 
 > ✅ Üçünün de bugün **var olduğu** ölçüldü (2026-08-13, `main` şeması):
 > `ledger_entries.deleted_at` nullable timestamp · `users_role_enum` **sekiz** değer
 > (`ADMIN, PLANNER, APPROVER, FINANCE, FINANCE_MANAGER, CATEGORY_MANAGER, MANAGER,
 > READONLY`) · `skus.unit_of_measure` varchar.
+
+### `R2` eşleme tablosu — karar (ürün sahibi, 2026-08-13)
+
+`K-2.6.4d` sırayı bağlıyor: **önce sayım → sonra eşleme → sonra silme.** Sayım yapıldı
+(CTPM'in deploy edilmiş ortamı yok, yani `main` **tek** ortam — 9 kullanıcı):
+
+| bugünkü etiket | kullanıcı | → | `K-2.6.4` rolü |
+|---|---|---|---|
+| `ADMIN` | 1 | → | `YÖNETİCİ` |
+| `PLANNER` | 2 | → | `PLANLAMACI` |
+| `CATEGORY_MANAGER` | 3 | → | `KATEGORİ MÜDÜRÜ` |
+| **`FINANCE_MANAGER`** | **2** | → | **`FİNANS`** |
+| `READONLY` | 1 | → | `İZLEYİCİ` |
+| `APPROVER` · `MANAGER` · **`FINANCE`** | 0 · 0 · 0 | ⛔ | **silinir** |
+
+> ⚠️ **Eşleme ilk okumada TERS kurulmuştu ve düzeltildi.** `FINANCE`'ın adı `FİNANS`'a
+> benziyor diye onun karşılığı sanıldı. Değil: `K-2.6.4`'ün `FİNANS`'ı *"eşik üstü
+> onay/bildirim, transfer, mutabakat, içe aktarma"* — bu **bugünkü `FINANCE_MANAGER`'ın
+> tam karşılığı**. Bugünkü `FINANCE` ise `K-2.6.4b`'nin **reddettiği jenerik onaycı**.
+>
+> Yani ad benzerliği eşlemeyi ters çevirdi — `CLAUDE.md`'nin *"düzeltmenin iki ekseni
+> vardır: hedefi ve YÖNÜ"* kuralının vakası. Hedef doğruydu (`FİNANS` satırı), yön tersti.
+
+📌 **`ADR 0002` sessizce geri alınmıyor.** *"FM yalnız `PENDING_FINANCE_REVIEW` onaylar"*
+kaygısı `0002-R` ile zaten kapandı, ve `K-2.5.12e` (`L2_03`) *"Finans, kendisine gelen
+istekleri onaylar"* diyor — **sonuç aynı, dayanak şablon.**
+**Katlama yok, yeniden adlandırma var.**
+
+📌 **Ve `R2`'nin şekli bu yüzden değişti:** *"100+ dosyalık yeniden eşleme"* yanlış bir
+çerçeveydi — **beşi yeniden adlandırma, üçü silme**, ve silinenlerin **kullanıcısı yok**,
+yani **veri göçü yok**. Kod ayak izi gerçek ama ayrı bir iş: enum'u migration değiştirir
+(`R2a`), ölü referanslar ardından gelir (`R2b`).
 
 ## Seed — **atomik**
 
@@ -543,11 +576,25 @@ gerekir ve o belge bu repoda yok. Aşağıdaki `S`/`R` numaraları **bundan sonr
 | `kabul-5` | defter tutarı ≥ 0 · bütçe politikası tekilliği — **kısıt ihlali reddedilsin** |
 | `kabul-6` | işaretsiz `DÜZELTME` = 0 (backfill sonrası) · alt-türlü `REZERVE` **reddedilsin** |
 | `kabul-7` | `R1`–`R3` sonrası **veri kayıpsızlığı sorguyla ispat**; `R2`'de **sayım kaydı** |
-| `kabul-8` | kapattığı `❌` işaretleri `✅`'ya çevrilir: `K-2.5.11` · `K-2.1.8a` |
+| `kabul-8a` | `K-2.1.8a`'nın `❌`'i `✅`'ya çevrilir — **bu dalgada** (`S14` ile) |
+| `kabul-8b` | `K-2.5.11`'in `❌`'i `✅`'ya çevrilir — ⚠️ **bu dalgada DEĞİL**, `S13` ile ([[T-207]]) |
 
 ⚠️ `kabul-2`/`kabul-3`/`kabul-5`/`kabul-6` **aynı şekli** paylaşıyor: bir ölçütün
 sağlandığını göstermek yetmez, **ihlali kasten üretip testin kırıldığı** gösterilir.
 Bu, `§2.7 #9`'un kabul tarafındaki hâli — sinyal sabitse, sinyal değildir.
+
+> ⚠️ **`kabul-8` neden ikiye ayrıldı:** `S13` bu migration'ın dışında (kolon eklemiyor),
+> ama `K-2.5.11`'in ihlal notu `S13`'e bağlı. Dalga kapanışında o `❌`'i çevirmek, yapılmamış
+> bir işi yapılmış göstermek olur — `L2 §Bu katmanın kuralları md.5`'in adres kuralı gereği
+> her işaret **kendi** adresiyle kapanır.
+
+## ⛔ Dalgaya GİRMEYEN, ve gerekçesi
+
+| kalem | neden |
+|---|---|
+| `S3` — `net = brüt − indirim` | sıralanacak şey veri düzeltmesi değil, bir **tanım** (3/3 satır ihlal) → `v2-UC-ALAN` · [[T-209]] |
+| `K-2.7.4a` — `net ≤ brüt` akıl sağlığı kontrolü | `C2`'ye bağlı ([[T-208]]): **iade negatif tutarla temsil edilecekse kural yanlış olabilir.** `S3`'ü düşürme gerekçesiyle aynı: *bir kısıt ya doğru veriyi reddeder, ya alanı anlamı dışına zorlar.* **Kural olarak `L2`'de kalır; kısıt olarak girmez** — `T-208` kapanınca ayrı kalem |
+| `S13` | kolon eklemiyor ([[T-207]]); işi servis tarafında, migration'da değil |
 
 ### Üç bağlayıcı kısıt (ürün sahibi, 2026-08-13)
 
