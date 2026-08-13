@@ -84,7 +84,7 @@ doğrudan ilişkili:
 
 | dosya | bu indeksle ilişkisi |
 |---|---|
-| **`00_PAKET_INDEKSI.md`** | *"Açık kalanlar"* bölümünde **altı maddeyi** türleriyle listeliyor (2 karar · 2 **hukuk** · 2 teknik ölçüm) ve *"`OPEN_DECISIONS.md` bunları indeksler"* diyor |
+| **`00_PAKET_INDEKSI.md`** | *"Açık kalanlar"* bölümünde **beş maddeyi** türleriyle listeliyor (2 karar · 1 **hukuk** · 2 teknik ölçüm) ve *"`OPEN_DECISIONS.md` bunları indeksler"* diyor. ⚠️ **Altıydı** — kişi bazlı raporlama 2026-08-12'de kapandı (`K-2.9.6`) |
 | **`04_KARAR_KAYDI.md`** | **21 kararın** tamamı — soru · karar · gerekçe · açtığı `K-*` kuralları. Aşağıdaki satırların çoğunun **cevabı burada** |
 
 ✅ **İşlendi (2026-08-12).** `04_KARAR_KAYDI.md`'nin 21 kararı bu indekse uygulandı:
@@ -92,7 +92,7 @@ doğrudan ilişkili:
 *"karar turu etkiledi"* diye işaretlendi, staging'de doğan iki karar eklendi ve reddedilen
 seçenekler için `E` bölümü açıldı. Sayılar `§Bu turun bilançosu`'nda **sayılarak** yazıldı.
 
-📌 Ve iki kayıt yeri **çelişmemeli**: paket indeksi altı maddeyi **özetler**, bu dosya
+📌 Ve iki kayıt yeri **çelişmemeli**: paket indeksi beş maddeyi **özetler**, bu dosya
 onları **işaret eder**. İçerik ikisinde de yaşamaz — `04_KARAR_KAYDI.md`'de yaşar.
 
 ---
@@ -157,8 +157,8 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 
 | ID | Soru | Nerede tanımlı | Neyi blokluyor | Durum |
 |---|---|---|---|---|
-| [[T-170]] | Vergi Usul · KVKK · E-Fatura bu üründe **hangi kayıtlara**, hangi biçimde uygulanır? | `.claude/backlog/tasks/T-170.md` · `0050` | `INV-C-001`…`INV-C-004` | **ölçüm bekliyor** — üç teknik ölçüm önce · 🔵 **v2 açık maddesi** (*saklama sürelerinin bağlayıcılığı* — **hukuk**): `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık`. ⚠️ Kapsam `0065 §4`'te **on kurala** genişledi |
-| `v2-RAPOR-KISI` | **Kişi bazlı performans raporlaması** hukuken yapılabilir mi (KVKK)? | `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık` · `docs/brd-v2/00_PAKET_INDEKSI.md §Açık kalanlar` · `0061 §5` (kaynakta `Report 5`, *"Use Case: performance reviews"*) | kişi bazlı rapor · [[T-170]] ailesi | **açık — HUKUK** · 🔵 v2 açık maddesi |
+| [[T-170]] | Vergi Usul · KVKK · E-Fatura bu üründe **hangi kayıtlara**, hangi biçimde uygulanır? | `.claude/backlog/tasks/T-170.md` · `0050` | `INV-C-001`…`INV-C-004` | **ölçüm bekliyor** — üç teknik ölçüm önce · 🔵 **v2 açık maddesi** (*saklama sürelerinin bağlayıcılığı* — **hukuk**): `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık`. ⚠️ Kapsam `0065 §4`'te **on kurala** genişledi · ⏸️ **2026-08-13: `K-2.9.0` askısı** — mütalaaya dek hiçbir kayıt silinmez. Sorunun şekli keskinleştirildi (`L2_03 §2.9.6 Hukuk paketi`): *"7 yıl doğru mu"* değil, **"hangi kayıt sınıfımız hangi rejime girer"** |
+| `v2-RAPOR-KISI` | **Kişi bazlı performans raporlaması** hukuken yapılabilir mi (KVKK)? | `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık` · `0061 §5` (kaynakta `Report 5`, *"Use Case: performance reviews"*) | kişi bazlı rapor · [[T-170]] ailesi | ✅ **KAPANDI 2026-08-12** — soru **cevaplanmadan** kapandı: `K-2.9.6` raporu **süreç metriği** olarak tanımladı, kişi kimliği kırılım boyutu değil. Kişi bazlı versiyon `K-2.9.6a` ile **hukuk şartlı ertelendi** — artık hiçbir işi bloklamıyor |
 
 > ⚠️ `T-170` bilinçli olarak *"ölçüm bekliyor"*: bağlayıcılık sorusu sorulmadan önce
 > KVKK anonimleştirmesi · E-Fatura dosya arşivi · `admin_audit_logs` immutability'si
@@ -254,6 +254,11 @@ bilerek reddedilen (E.1)              6
 AÇIK kalan satır                     35
 Faz 2'ye ertelenen (E.2)              6
 ```
+
+📌 **Ek (2026-08-13):** `v2-RAPOR-KISI` de kapandı (`K-2.9.6` — süreç metriği) → **26
+kapanan · 34 açık.** Kapanış sorunun **cevaplanmasıyla değil, ortadan kalkmasıyla** oldu:
+ürün kişi kimliğini kırılım boyutu olarak kullanmayınca hukuk sorusu bir iş bloklamıyor.
+Toplam satır sayısı değişmedi (60) — bu tabloya yeni satır girmedi.
 
 ⚠️ **21 karar ≠ 25 kapanan satır.** Bir karar birden çok satırı kapatabiliyor (`A5` üçünü:
 `D-01` · `0019 #3` · `T-176`'nın CAP maddesi; `A2` ikisini; `A10` ikisini; `B3` ikisini;

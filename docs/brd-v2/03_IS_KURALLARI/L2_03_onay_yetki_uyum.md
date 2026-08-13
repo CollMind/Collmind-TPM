@@ -556,6 +556,49 @@ hangi yetkileri kullandığı.
 > yazıyor; hangisinin gerçekten bağlayıcı olduğu ve hangi kayıtlara uygulandığı **hukuki
 > görüş bekliyor.** Kaynak bir girdidir, bir hukuk mütalaası değil.
 
+> ⚠️ **Kaynağın rakamı şüpheli** (2026-08-12). Kaynak **7 yıl** yazıyor ve gerekçesini
+> *"Tax/audit requirements"* · *"Regulatory requirement"* diye veriyor — ama bilinen yerel
+> süreler `VUK`'ta **5 yıl** (tarh zamanaşımına bağlı) ve `TTK`'da ticari defter/belgeler
+> için **10 yıl.**
+>
+> `7` Türk mevzuatının bilinen rakamlarından değil; yabancı şablonların klasik değeridir.
+> Yani kaynağın saklama bölümü büyük olasılıkla **yerelleştirilmemiş.**
+>
+> 📌 **Ölçüldü (2026-08-13) ve şüphe güçlendi:** kaynakta *"Vergi Usul"*, `VUK`, `TTK`,
+> *"Tax Procedure"* terimlerinin **hiçbiri geçmiyor** — ne `docs/brd/`'de, ne süperseded
+> PDF'lerde. Yani rakam yerel bir mevzuata **atıf bile vermiyor**; yalnız jenerik İngilizce
+> bir gerekçe taşıyor (`Section_09_NFR.md`, saklama tablosu).
+> **Pozitif kontrol:** aynı korpusta `7 yıl`/`7 year` taraması **6 eşleşme** verdi — tarama
+> çalışıyor, terim gerçekten yok.
+>
+> Danışmana giden sorunun şekli buna göre değişti: *"7 yıl doğru mu"* değil — **"hangi kayıt
+> sınıfımız hangi rejime girer?"**
+
+**K-2.9.0** — ⏸️ **GEÇİCİ ASKI** (2026-08-12 → hukuki mütalaa).
+
+Mütalaa gelene dek **hiçbir kayıt silinmez.** `K-2.9.2`'nin 90 gün kuralı **askıdadır** ve
+uygulanmaz.
+
+**Statü:** geçici muhafazakâr varsayım — bir varsayılan değil.
+
+**K-2.9.0a** — ⚠️ Bu askı **tek yönlü muhafazakârdır:** vergi ve ticaret hukuku lehine,
+kişisel veri mevzuatı aleyhine.
+
+İki düzenleme zıt yönlere çeker:
+
+| | Muhafazakârlık ne demek |
+|---|---|
+| Vergi / ticaret | **Uzun sakla** |
+| Kişisel veri (amaçla sınırlılık) | **Gereğinden uzun tutma** |
+
+> Gerekçe hukuki değil, **geri-alınabilirlik asimetrisi:** erken silme telafisizdir, fazla
+> tutma düzeltilebilir.
+
+**K-2.9.0b** — Askı **son kullanma tarihlidir.** Mütalaa geldiğinde revize edilir.
+
+> ⚠️ Askı işareti olmadan bu kural altı ay sonra *"fiili davranışımız"* diye kalıcılaşır —
+> `F12` deseninin saklama hâli.
+
 ## 2.9.1 Saklama süreleri
 
 **K-2.9.1** — Kayıt türüne göre asgari saklama süreleri:
@@ -592,11 +635,20 @@ hangi yetkileri kullandığı.
 > ❌ Anonimleştirme mekanizması ölçülmedi. Bugün kullanıcı silme mantıksal (soft-delete),
 > anonimleştirme yapılıp yapılmadığı bilinmiyor.
 
-**K-2.9.6** — Kişi bazlı performans raporlaması ayrı bir kişisel veri kategorisidir ve
-kapsamı: ⛔ **açık.**
+**K-2.9.6** — ✅ **Karar verildi** (2026-08-12). Planlamacı performansı raporu **süreç
+metriği** olarak tanımlanır; kişi kimliği bir kırılım boyutu **değildir.**
 
-> Kaynak bir *"planlamacı performansı"* raporu tanımlıyor ve kullanım amacını *"performans
-> değerlendirmesi"* olarak yazıyor. Bu, diğer raporlardan farklı bir hukuki kategori.
+Rapor şu soruları cevaplar: planlar ne kadar sürede onaylanıyor · hangi kategoride revizyon
+oranı yüksek · hangi aşamada bekleme uzuyor.
+
+> Gerekçe: kişi bazlı performans raporlaması kişisel veri mevzuatında özel dikkat isteyen bir
+> **işleme amacı** taşır (*"performans değerlendirmesi"*), ve bir hakediş ürününün çekirdek
+> değerine katkısı düşüktür.
+>
+> Ve sahadaki gerçek kullanım zaten **süreç seviyesindedir** — kişiye değil akışa bakar.
+
+**K-2.9.6a** — Kişi bazlı versiyon **hukuk şartlı ertelendi.** Mütalaa gelirse açılabilir;
+gelmezse ürün eksilmez.
 
 ## 2.9.4 Belge arşivi
 
@@ -611,6 +663,31 @@ faza aittir. Bugün süreler tanımlıdır, otomasyon yoktur.
 
 **K-2.9.9** — Otomasyon eklendiğinde `K-2.9.3` bir **guard** ile korunmalıdır. Bugünkü kazara
 sağlanma durumu o güne kadar kabul edilir, ama o gün geldiğinde yeterli değildir.
+
+## 2.9.6 Hukuk paketi — danışmana giden üç soru
+
+> Bunlar **kural değil**, mütalaa talebinin şeklidir. `K-2.9.0` askısı bu paket cevaplanınca
+> kalkar. Kanonik takip: `docs/decisions/OPEN_DECISIONS.md` — [[T-170]] ailesi.
+
+```
+(a)  K-2.3.1 tanımı ekiyle: "muhasebe defteri olmayan, denetim-izi niteliğindeki
+     kayıt VUK/TTK saklama rejimlerinden hangisine girer?"
+
+     + "içe aktarılmış belge kopyaları (dış talep dayanakları) e-belge saklama
+       yükümlülüğü doğurur mu, yoksa o yükümlülük ERP'de mi kalır?"
+
+(b)  "Finansal etkisi doğmamış taslak kayıt 'ticari belge' midir?
+      KVKK amaçla-sınırlılık gereği silinmesi zorunlu hale gelir mi?"
+
+(c)  "Kişi bazlı performans raporunun şartları nedir?"   ← düşük öncelik
+```
+
+**Ve dördüncü kalem:** `7 yıl` rakamının kendisi. Sorunun şekli *"doğrulayın"* değil —
+**"kaynağımız bu rakamı veriyor ve yerel bir mevzuata atıf vermiyor; hangi rejim geçerli?"**
+
+> ⚠️ `(c)` düşük önceliklidir çünkü `K-2.9.6` **cevabı beklemeden** kapandı: rapor süreç
+> metriği olarak tanımlandı. Mütalaa gelirse kişi bazlı versiyon açılabilir (`K-2.9.6a`);
+> gelmezse ürün eksilmez. **Yani bu soru artık hiçbir işi bloklamıyor.**
 
 ---
 
@@ -664,8 +741,8 @@ katmana alınmadı — bunlar bir kimlik doğrulama standardına aittir, iş kur
 | `K-2.6.4` | Rol kümesi | karar |
 | `K-2.6.5` | Çok rollülük · yetki istisnası | kapsam |
 | `K-2.6.8` | Kapsam ekseni (kategori ↔ bölge) | **domain** |
-| `K-2.9.2` | Taslak silme ↔ silinmezlik sınırı | hukuk |
-| `K-2.9.6` | Kişi bazlı raporlama | hukuk |
+| `K-2.9.2` | Taslak silme ↔ silinmezlik sınırı | hukuk — ⏸️ `K-2.9.0` askısı altında |
+| ~~`K-2.9.6`~~ | ~~Kişi bazlı raporlama~~ | ✅ **kapandı** 2026-08-12 |
 | `NFR-3` | Veri ayrımı modeli | **teknik + maliyet** |
 | `NFR-4` | Kapasite hedefi | kapsam |
 

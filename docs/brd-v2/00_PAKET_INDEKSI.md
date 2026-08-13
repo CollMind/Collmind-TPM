@@ -8,14 +8,14 @@
 > ⚠️ Bu blok **script ile sayılır**, elle yazılmaz. Paketin başka hiçbir yerinde durum
 > sayısı tutulmaz (dış denetim `F8`: sayı dört yerde dört farklıydı).
 
-**Ölçüm: 2026-08-13** (son güncelleme: `K-2.1.8a1` eklendi — fatura-içi kayıtlar dağıtım
-tabanı olamaz)
+**Ölçüm: 2026-08-13** (son güncelleme: `K-2.9.0` ailesi — saklama askısı — ve `K-2.9.6`
+kapandı)
 
 | | |
 |---|---|
-| `L2` kural tanımı | **355** |
-| Açık (⛔) kural | **3** — `K-2.5.12` onay hattı · `K-2.6.4` rol kümesi · `K-2.9.6` kişi raporlaması |
-| Bölüm dağılımı | veri/bütçe/defter/hesap **145** · veri kalitesi/entegrasyon/bildirim/denetim **48** · onay/yetki/uyum **74** · hakediş/AI/kurulum **88** |
+| `L2` kural tanımı | **359** |
+| Açık (⛔) kural | **2** — `K-2.5.12` onay hattı · `K-2.6.4` rol kümesi<br>⏸️ Ayrıca `K-2.9.0`: saklama bölümü **askıda** (hukuki mütalaa) — açık değil, **dondurulmuş** |
+| Bölüm dağılımı | veri/bütçe/defter/hesap **145** · veri kalitesi/entegrasyon/bildirim/denetim **48** · onay/yetki/uyum **78** · hakediş/AI/kurulum **88** |
 | Açık karar (kural dışı) | **3** — `ADR 0002` · veri ayrımı modeli · iade temsili |
 
 **Sayım ve doğrulama:**
@@ -127,7 +127,7 @@ Diğer belgeler ve kod yorumları bu numaraya **atıf verir**, kuralı tekrar et
 
 ## Açık kalanlar
 
-Altı madde. **Kanonik liste burada değil** — `04_KARAR_KAYDI.md §Hâlâ açık`'ta.
+Beş madde. **Kanonik liste burada değil** — `04_KARAR_KAYDI.md §Hâlâ açık`'ta.
 
 | nerede | işlevi |
 |---|---|
@@ -136,7 +136,7 @@ Altı madde. **Kanonik liste burada değil** — `04_KARAR_KAYDI.md §Hâlâ aç
 
 > ⚠️ Bu bölüm bilerek **kopya taşımıyor**. Üç yerde üç liste `F8` üretir: biri güncellenir,
 > ikisi bayatlar, ve okuyan hangisinin geçerli olduğunu bilemez. Sayı bile yazılmadı —
-> *"altı"* dışında bir ayrıntı istiyorsan kanonik listeye git.
+> *"beş"* dışında bir ayrıntı istiyorsan kanonik listeye git.
 
 ---
 

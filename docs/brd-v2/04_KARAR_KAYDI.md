@@ -486,8 +486,8 @@ kaçış yolu *"iki bağlanmamış işlem"* olur ve bütünlük sessizce kırıl
 |---|---|
 | Rol kümesi | Karar — kaynak üç farklı küme veriyor |
 | Finans yöneticisinin onay hattı | Karar — `ADR 0002`'nin dayanağı düştü |
-| Saklama sürelerinin bağlayıcılığı | **Hukuk** |
-| Kişi bazlı performans raporlaması | **Hukuk** |
+| Saklama sürelerinin bağlayıcılığı | **Hukuk** — ⏸️ `K-2.9.0`: mütalaaya dek **hiçbir kayıt silinmez** |
+| ~~Kişi bazlı performans raporlaması~~ | ✅ **KAPANDI 2026-08-12** → `K-2.9.6`: rapor **süreç metriğidir**, kişi kimliği kırılım boyutu değil. Kişi bazlı versiyon `K-2.9.6a` ile **hukuk şartlı ertelendi** |
 | Veri ayrımı modeli | Teknik ölçüm — geçiş maliyetleri |
 | İadenin veri temsili | Teknik ölçüm — tek sorgu |
 
