@@ -214,6 +214,7 @@ status: active        # planned | active | closed
 | [[T-210]] | 🔴 Gönderen `PLANNER` taslağa dönen planına **erişemiyor** (`404 OUT_OF_SCOPE`) | **P1** | backend-engineer | todo |
 | [[T-211]] | **`B` dalgası** — `L2`'nin şema tarafı: tek migration, tek `down`. ✅ iki karar verildi; `R2`→`R2a`/`R2b`, `K-2.7.4a` dalgada değil | **P1** | data-engineer | todo |
 | [[T-212]] | Backend ratchet'leri **kapı değil**, elle — frontend'de kapı. Baseline liste olsun, sonra bağlansın | P2 | qa-engineer | todo |
+| [[T-213]] | `agreement_transactions.fiscal_period` sekiz kolonun tek nullable'ı — bilinçli mi kaza mı, ölçülmedi | P2 | data-analyst | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
