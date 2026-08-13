@@ -168,6 +168,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 
 | ID | Soru | Nerede tanımlı | Neyi blokluyor | Durum |
 |---|---|---|---|---|
+| **`v2-UC-ALAN`** | **`sales_actuals`'ın üç tutar alanının ilişkisi nedir?** `gross_amount` brüt satış · `net_amount` net satış · **`discount_amount` = satış iskontosu mu, TOPLAM indirim mi?** İkisi eşit değilse `net = brüt − indirim` yanlış alanı gösteriyor | `docs/brd-v2/_ISSUE_B_DALGASI.md §5` · `K-2.13.14h6` (⛔ işaretlendi) · `sales-actual.entity.ts` JSDoc | **`S3` (dalgadan çıktı)** · `K-2.13.14h6` net taban · `K-2.13.14h7` | **açık — DOMAIN** ⛔ ölçüldü 2026-08-13: `CHECK` **eklenemiyor** (`is violated by some row`), sapma **3/3 satır** · en büyük `25.000` · toplam `63.000`. **%100 sapma bir veri kalitesi sorunu değil, model uyuşmazlığı işaretidir** — kısıt yanlış olabilir, veri değil |
 | `0019 #3` | CAP aşımı → uyarı + Finance override mı? | `docs/analysis/0019 §kuyruk` | `D-01` ile aynı karar | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §A5` — ⛔ **üç madde tek kararla kapandı** (`D-01` · `0019 #3` · `T-176`'nın CAP maddesi): tavan aşımı gerçekleşmeyi **durdurmaz**, hakediş tavana **kırpılır** |
 | `0019 #4` | Baseline kapsama kapısının **varlığı** — ve hangi kademe? | `0019 §kuyruk`, `0028 §2` ile **düzeltildi** (MVB-1/2/3) | [[T-024]] | açık — kapının varlığı domain, sayısı konfigürasyon |
 | `0019 #8` | `TRANSFER` / `ADJUST` işlem tipleri: tenant mı, ürün mü? | `docs/analysis/0019 §kuyruk` · [[T-145]] | — | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §B6` — `TRANSFER` **Faz 1**'e girer (blok kararının kaçış yolu); **devir Faz 1 dışı** |
@@ -254,6 +255,11 @@ bilerek reddedilen (E.1)              6
 AÇIK kalan satır                     35
 Faz 2'ye ertelenen (E.2)              6
 ```
+
+📌 **Ek 2 (2026-08-13, DB ölçüm turu):** `v2-UC-ALAN` **eklendi** (domain) → **26 kapanan ·
+35 açık · 61 satır.** Bir ölçüm bir kararı kapatmadı, **yenisini açtı**: `C3`'ün *"tolerans
+kısıtta olmasın"* kararı geçerliliğini yitirdi, çünkü kısıtın dayandığı **alan tanımı**
+belirsiz çıktı.
 
 📌 **Ek (2026-08-13):** `v2-RAPOR-KISI` de kapandı (`K-2.9.6` — süreç metriği) → **26
 kapanan · 34 açık.** Kapanış sorunun **cevaplanmasıyla değil, ortadan kalkmasıyla** oldu:

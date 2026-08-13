@@ -6,8 +6,12 @@
 - **Ölçüm tarihi:** 2026-08-12
 - **Ölçüm kaydı:** `docs/analysis/0069-b-dalgasi-on-kosul-olcumu-kod-tarafi.md` — **kanonik**;
   bu dosya oradan **sonuç** taşır, gövde taşımaz
-- **Ölçüm ortamı:** meta `a0fc0ec` · backend `5743c6e` · ⚠️ **DB yok**
-  (`psql:5434 → refused`), yani veri tarafı ölçülmedi
+- **Ölçüm ortamı:** meta `a0fc0ec` · backend `5743c6e` (kod) · **2026-08-13 ek turu:** backend
+  `276532c` + **tek kullanımlık PostgreSQL 16.13** (migration + seed)
+- ⚠️ **Veri kapsamı:** o DB **üretim değil** — yalnız seed. `sales_actuals` 3 satır ·
+  `agreements` 3 · `ledger_entries`/`on_invoice_entries`/`agreement_transactions`/`plans`
+  **0**. Yani ölçülen şey **şemanın neye izin verdiği** ve **kodun ne yazdığı**; üretim
+  değerleri hâlâ ölçülmedi
 
 ---
 
@@ -16,14 +20,16 @@
 | # | soru | durum | sonuç |
 |---|---|---|---|
 | **C1** | `INV-T-002` nereye bakıyor | ✅ ölçüldü | ⛔ **yalnız gönderen** — ve dayanacağı kolon yok |
-| **C3** | net = brüt − indirim kısıtı yazılabilir mi | ✅ ölçüldü | ⚠️ yazılabilir, **üç şartla** |
+| **C3** | net = brüt − indirim kısıtı yazılabilir mi | ✅ ölçüldü → **karar geçersizleşti** (§5) | ⛔ **HAYIR** — kısıt reddediliyor, ve soru alan tanımına döndü |
 | **F14** | planın organizasyon bağlantısı | ✅ ölçüldü → **bulgu satırına geçti** (§3) | dört denormalize kolon |
 | **F16** | satış verisinde SKU + hacim | ✅ ölçüldü → **bulgu satırına geçti** (§4) | ⛔ ikisi de yok, **karar** |
-| **Ö4** | dönem alanları tutarlı mı | ✅ ölçüldü | biçim tek, **ad iki**, biri nullable |
-| `C2` | iade `sales_actuals`'ta nasıl temsil ediliyor | ⏸️ **veri** | davranış işlerini blokluyor, migration'ı değil |
-| `F13` | tutarlar KDV dahil mi hariç mi | ⏸️ **veri** | aynı |
+| **Ö4** | dönem alanları tutarlı mı | ✅ ölçüldü + probe | biçim tek, **ad iki**, biri nullable — ve temizlik **tesadüf** (§6) |
+| **C2** | iade `sales_actuals`'ta nasıl temsil ediliyor | ✅ ölçüldü (2026-08-13) | ⛔ **temsil yok, kanal AÇIK** → [[T-208]] |
+| `F13` | tutarlar KDV dahil mi hariç mi | ⚠️ **kod ölçüldü, veri ölçülemedi** | kodda KDV kavramı **hiç yok**; ölçek sorusu üretim verisi ister |
 
-> **Migration'ı bloklayan hiçbir soru kalmadı.** Kalan ikisi davranış tarafında.
+> ⚠️ **2026-08-13: bu cümle artık yanlış.** `C3`'ün veri ölçümü `S3`'ü dalgadan çıkardı —
+> yani migration'ı bloklayan bir soru **doğdu** (`v2-UC-ALAN`, alan tanımı). Kalan iki
+> soru davranış tarafındaydı; biri (`C2`) kapandı ve bir task'a döndü.
 
 ---
 
@@ -143,7 +149,40 @@ diye işaretli — yani `K-2.4.22`'nin *"%80 neden 80"* itirazının kardeşi.
 
 **`NULL` toleransı korunuyor** — üç alan bağımsız gelebiliyor.
 
-→ **`S3`'e**: net kısıtı, `NULL`-toleranslı, **tolerans YOK**.
+### ⛔ Ve karar 2026-08-13'te GEÇERSİZLEŞTİ — `S3` dalgadan **ÇIKTI**
+
+Veri tarafı ölçülünce soru değişti. Kısıt bugün **eklenemiyor**:
+
+```
+ALTER TABLE main.sales_actuals ADD CONSTRAINT ck_sa_net CHECK (…);
+ERROR: check constraint "ck_sa_net" of relation "sales_actuals"
+       is violated by some row
+```
+
+Sapma **3/3 satır** (pilot verisinin tamamı), en büyük `25.000`, toplam `63.000`.
+
+> ⚠️ **`%100` sapma bir veri kalitesi sorunu değil, bir MODEL UYUŞMAZLIĞI işaretidir.**
+
+Ve uyuşmazlık adlandırıldı: `discount_amount` entity'de **satış iskontosu**, `gross − net`
+ise **toplam indirim**. İkisi eşit olmak zorunda değilse **kısıt yanlış, veri değil.**
+
+```
+gross_amount     brüt satış
+discount_amount  ?   ← satış iskontosu mu, toplam indirim mi
+net_amount       net satış
+```
+
+→ **`S3` sıralanmaz, ÇIKAR.** Sıralanacak şey bir veri düzeltmesi olsaydı sıraya girerdi;
+sıralanacak şey bir **tanım**. Üçünün ilişkisi tanımlanmadan ne kısıt yazılabilir, ne net
+taban (`K-2.13.14h6`) — ve o kural bu turda ⛔ işaretlendi.
+
+📌 Kanonik takip: `docs/decisions/OPEN_DECISIONS.md` — `v2-UC-ALAN`.
+
+### `C2` — ve aynı tabloda ikinci bir sessizlik
+
+İade temsili **yok**, ama negatif tutar kanalı **açık**: gramer `-?\d+`, pozitiflik
+kontrolü yok, `0 CHECK`, probe kabul etti. Kardeş yollarda (on-invoice · off-invoice)
+pozitiflik kuralı **var** — yani tutarsızlık kodda. → [[T-208]]
 
 ---
 
@@ -162,6 +201,37 @@ Sekiz tabloda dönem kolonu, hepsi `varchar(7)`:
 → **`S11`'e**: backfill **tek jenerik** olabilir, ama **kolon adı parametreli** olmalı
 (iki ad), ve `agreement_transactions`'ın **`NULL` davranışı ayrı karar** (doldur mu, atla mı).
 
+### ✅ Değer tarafı ölçüldü (2026-08-13) — ve asıl bulgu **probe**
+
+Katalog, entity ölçümünü doğruladı: sekiz kolon, hepsi `varchar(7)`, `fiscal_period` ×5 /
+`period_month` ×3, ve nullable olan **tam olarak bir tane** (`agreement_transactions`).
+
+Ama değerlerin temiz olması bir **garanti değil**:
+
+```
+UPDATE … fiscal_period = '2026-13'  →  KABUL
+UPDATE … fiscal_period = '2026/01'  →  KABUL
+```
+
+> **Mevcut satırların temiz olması kural değil, TESADÜF.**
+
+Sekiz kolonun **altısında** yazma tarafında hiçbir gramer yok, ve olan ikisinden biri
+(`create-ledger-entry.dto.ts:53`, `^\d{4}-\d{2}$`) `2026-13`'ü **zaten geçiriyor**.
+Sıfır `CHECK`.
+
+📌 **Bu, `INV-C-*` ailesinin tam üyesi: kazara sağlanan bir şart.** `INV-C-001` (hiçbir şey
+silinmiyor) ve `INV-C-004` (ERP yok) ile aynı şekil — bir kod değişikliğiyle değil, bir
+**veri işlemiyle** bozulur, ve o gün hiçbir test kırmızıya dönmez.
+⚠️ Sözleşmeye yeni bir `INV-C-*` maddesi **basmadım** — invariant üretmek ürün sahibinin
+kararı; burada yalnız **aday** olarak kayıtlı.
+
+→ **`S11`'e ek:** backfill **biçim doğrulamalı**, ve `CHECK` **bir dalga kalemi olmalı** —
+backfill'in yan ürünü değil.
+
+⚠️ **Kapsam sınırı:** aykırı değer taraması yalnız **dolu iki tabloda** koşabildi
+(`sales_actuals` 3 satır · `agreements` 3 satır, ikisi de temiz). Kalan altı tablo bu
+ortamda **boş** — üretim taraması hâlâ gerekli.
+
 ⚠️ **Değerlerin bugün gerçekten `YYYY-MM` olduğu ÖLÇÜLMEDİ** — tip `varchar`, yani `2026-1`
 ya da `2026/01` **saklanabilir**. `0060 §2` bu şekillerin *parser'da* reddedildiğini
 ölçmüştü; **DB'de ne yattığı** ayrı bir soru ve veri tarafında.
@@ -172,11 +242,11 @@ ya da `2026/01` **saklanabilir**. `0060 §2` bu şekillerin *parser'da* reddedil
 
 | kalem | değişiklik | kaynağı |
 |---|---|---|
+| **`S3`** | ⛔ **DALGADAN ÇIKTI** — sıralanmaz: sıralanacak şey veri düzeltmesi değil, bir **tanım** (`v2-UC-ALAN`) | `C3` veri ölçümü |
 | **`S13`** | **yeni** — `plans.last_modified_by` ([[T-207]]) + gönderen **boşaltılamazlığı** (`K-2.5.16`, [[T-205]]) | `C1` |
-| **`S3`** | net kısıtı: `NULL`-toleranslı, **tolerans yok**, tam eşitlik | `C3` kararı |
-| **`S11`** | backfill **kolon adı parametreli** (iki ad, biri nullable) | `Ö4` |
+| **`S11`** | backfill **kolon adı parametreli** (iki ad, biri nullable) **+ biçim doğrulamalı**, ve `CHECK` **ayrı bir dalga kalemi** | `Ö4` + probe |
 
-**Ve üç task açıldı:** [[T-205]] (`submittedById` boşaltan yol — `K-2.5.16` ihlali) ·
+**Ve dört task açıldı:** [[T-208]] (negatif kanal açık ve sessiz) · [[T-205]] (`submittedById` boşaltan yol — `K-2.5.16` ihlali) ·
 [[T-207]] (`S13`: `last_modified_by` kolonu) · [[T-206]] (`F16`'nın tasarım kararının
 gerekçesi ölçülsün).
 

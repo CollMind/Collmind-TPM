@@ -306,7 +306,39 @@ oran da yazar (nadir ama var).
 >
 > **Hesap doğru görünür, denetim izi yalan söyler.**
 
-**K-2.13.14h6** — `NET` tanımı: `brüt tutar − fatura-içi indirim`.
+**K-2.13.14h6** — `NET` tanımı: `brüt tutar − fatura-içi indirim`. ⛔ **Tanım hangi ALANI
+gösteriyor — açık** (ölçüldü 2026-08-13).
+
+> ⛔ **Bu bir formül sorusu değil, bir alan sorusu.** `sales_actuals` üç tutar taşıyor ve
+> ortadakinin ne olduğu yazılı değil:
+>
+> ```
+> gross_amount     brüt satış
+> discount_amount  ?   ← satış iskontosu mu, TOPLAM indirim mi
+> net_amount       net satış
+> ```
+>
+> Entity `discountAmount`'ı *"satış iskontosu"* diye adlandırıyor ve **bütçeye/ledger'a asla
+> yazılmadığını** söylüyor. Öyleyse `brüt − net` ondan **büyük** olabilir — aradaki fark
+> başka bir indirim türüdür, ve `NET = brüt − indirim` **yanlış alanı** gösteriyor demektir.
+>
+> **Ölçüm (pilot verisi, tümü):** `net ≠ brüt − indirim` → **3/3 satır**, en büyük fark
+> `25.000`, toplam `63.000` (brütün %5-6'sı, yuvarlama değil).
+>
+> ⚠️ **%100 sapma bir veri kalitesi sorunu değil, bir MODEL UYUŞMAZLIĞI işaretidir.** Bir
+> kısıt yazmadan önce üç alanın ilişkisi tanımlanmalı — yoksa kısıt veriyi değil, yanlış
+> modeli sabitler.
+
+> ⛔ **İade davranışı açık.** Öneri: iadeler düşülür (gerçek net ciro) — karşı taraf primi
+> iade sonrası bakiye üzerinden keser.
+>
+> ✅ **Veri temsili artık ÖLÇÜLDÜ** (`C2`, 2026-08-13): iade için **alan yok, tip yok,
+> işaret sözleşmesi yok** — ama negatif satır kanalı **açık ve sessiz** (gramer `-?\d+`,
+> pozitiflik kontrolü yok, `0 CHECK`, probe kabul etti). Kardeş yollarda (on-invoice ·
+> off-invoice) pozitiflik kuralı **var**; `sales-actuals` dışında.
+>
+> Yani formülü bloklayan şey artık *"ölçülmedi"* değil, **karar**: kanal kapatılacak mı,
+> yoksa negatif işaret bir sözleşme mi olacak → [[T-208]].
 
 > ⛔ **İade davranışı açık.** Öneri: iadeler düşülür (gerçek net ciro) — karşı taraf primi
 > iade sonrası bakiye üzerinden keser.
