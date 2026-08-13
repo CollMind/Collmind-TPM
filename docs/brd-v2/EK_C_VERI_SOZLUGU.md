@@ -99,14 +99,47 @@ ad · kod · aktif
 ⚠️ Mekanizma tam kurulu, **sıfır satır.** Yetki kapsamına bağlı değildir ve aktivasyonu bir
 müşteri talebine bağlıdır (`K-2.6.7a`).
 
-## `musteriler` (CPL) ✅
+## `musteriler` (CPL) — `main.cpls` ✅
+
+> ⚠️ **DÜZELTME (2026-08-13):** bu bölüm önceden **iki ayrı varlığı tek satırda**
+> anlatıyordu. `main.cpls` ile `main.customers` farklı tablolar, farklı kanal
+> mekanizmalarıyla — ve `S9` brief'i yanlışlıkla `customers` üstüne kurulmak üzereydi.
 
 | Alan | Tip | Not |
 |---|---|---|
-| kanal referansı | — | ⚠️ `NOT NULL`, tekil — bir müşteri **tam olarak bir** kanala bağlıdır (`K-2.1.4`) |
-| bölge referansı | — | bugün boş |
+| kanal referansı | `uuid` | ⚠️ `NOT NULL` → `channels(id)` **`ON DELETE RESTRICT`** — bir CPL **tam olarak bir** kanala bağlıdır (`K-2.1.4`) |
+| bölge referansı | `uuid` | nullable — bugün boş |
 | ad · kod | metin | |
-| aktif | boolean | |
+| durum | enum | |
+
+✅ **`K-2.1.4` ölçüldü (2026-08-13):** birden çok kanallı CPL **0** · plan kanalı ile CPL
+kanalı çelişkisi **0**. Garantiyi veren şey tek `NOT NULL` FK kolonudur, veri sayısı değil.
+⚠️ Ortamda **1 plan** var — plan tarafındaki kanıt zayıf.
+
+## `customers` 🔶 — CPL DEĞİL, ve kanalı bir ENUM
+
+`main.customers` bir **müşteri kütüğü** (CRM alanlarıyla), `cpl_id` üzerinden CPL'ye
+**nullable** bağlanır. Kanal alanı **bambaşka bir mekanizma**:
+
+| Alan | Tip | Not |
+|---|---|---|
+| `channel` | **`customers_channel_enum`** | ⛔ **`channels` tablosuna FK DEĞİL** — paralel bir sözlük |
+| `cpl_id` | `uuid` | nullable → `cpls(id)` `ON DELETE SET NULL` |
+
+⚠️ **`INV-C-*` ailesinin yeni adayı: kazara sağlanan bir şart.**
+
+```
+enum etiketleri ↔ channels.code     ayrışma YOK — sekizi de birebir
+customers.channel ↔ CPL'nin kanalı  0 çelişki / 27 bağlı müşteri
+bunu koruyan kısıt                  HİÇBİRİ
+```
+
+İki sözlük bugün aynı, ve **bir kod değişikliğiyle değil, bir veri işlemiyle** ayrışır — o
+gün hiçbir test kırmızıya dönmez. `INV-C-001` (hiçbir şey silinmiyor) ve `Ö4`'ün dönem
+biçimi (`2026-13` kabul ediliyor) ile **aynı şekil**.
+
+📌 Sözleşmeye `INV-C-*` maddesi **basılmadı** — invariant üretmek ürün sahibinin kararı;
+burada **aday** olarak kayıtlı.
 
 ---
 
