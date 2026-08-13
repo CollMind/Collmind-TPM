@@ -661,6 +661,36 @@ Ama düzeltmesi **çağrı yerlerini** değiştirir ve ölçülmelidir → `R2b`
 > ⚠️ **MIGRATION SIRASI: önce SİL, sonra YENİDEN ADLANDIR.** Eski `FINANCE` siliniyor **ve**
 > `FINANCE_MANAGER` `FINANCE` oluyor — ters sırada çakışır.
 
+### 📌 Rol değer kümesi — KANONİK KAYIT (tek doğruluk kaynağı)
+
+```
+ADMIN · PLANNER · CATEGORY_MANAGER · FINANCE · READONLY
+```
+
+**Bu satır kanoniktir.** `collmind.backend/src/database/entities/user.entity.ts` ve
+`collmind.frontend/src/types/user.types.ts` ona **atıf verir**; iki repo ayrı CI olduğu
+için kod düzeyinde bağımlılık kurulamaz, senkronu koruyan şey **bu kayıttır**.
+
+⚠️ **Bir test bu kayda karşı İKİ YÖNLÜ assert etmelidir:**
+
+```
+frontend değerleri  ⊇  kanonik küme     (eksik yok)
+frontend değerleri  ⊆  kanonik küme     (FAZLA da yok)
+```
+
+İkincisi kritik ve çoğu zaman atlanır: yalnız *"eksik yok"* sınanırsa, sessizce eklenen
+bir değer görünmez.
+
+⛔ **Testin içine elle yazılmış statik bir dizi YETMEZ** — o dizi **bayatlar**, ve
+bayatladığında test **yeşil kalır**. `guard.sh`'ın öğrettiği sınıf: elle tutulan bir liste
+kendisi bir doğruluk kaynağına dönüşür ve sessizce ayrışır. Üçüncü bir kopya doğarsa bu,
+`F1`'in **altıncı yüzü** olur.
+
+📌 **Kabul şartı ölçülmüştür:** backend enum'una `'YÖNETİCİ'` mutasyonu uygulandığında
+bugün **dört kapı da yeşil** kalıyor (backend `tsc`/`guards`, frontend `type-check`/
+`vitest` 524/524). **Yeni test o mutasyonda kırmızıya dönmelidir** — dönmüyorsa test
+yazılmamış sayılır.
+
 ### ⛔ Enum DEĞERLERİ ASCII kalır — `K-2.6.4`'ün Türkçe adları GÖRÜNTÜ katmanına ait
 
 Karar (ürün sahibi, 2026-08-13), üç gerekçeyle:

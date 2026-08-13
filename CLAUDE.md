@@ -719,6 +719,29 @@ al. Ve `.orIgnore()` / `ON CONFLICT DO NOTHING` / `upsert` kullanan her yolda bu
 **ayrıca** sor — o kalıplar tam olarak "yazmadım" ile "yazdım"ı aynı dönüş değerinde
 birleştirir.
 
+### Karşılanamayan bir ÖLÇÜT revize edilir — uydurma veriyle karşılanmaz (ZORUNLU)
+
+> **Bir kabul ölçütü karşılanamıyorsa iki sonuç doğar: iş kilitlenir ya da ölçüt uydurma
+> veriyle karşılanır. İkincisi sessizdir.**
+>
+> **Karşılanamayan bir ölçüt revize edilir — gerekçesiyle. Ölçütü korumak için veri
+> uydurmak, ölçütün koruduğu şeyi yok eder.**
+
+Ölçülmüş vaka (2026-08-14, `B` dalgası): `Done` şartı *"seed **5/5**"*di. Beşincisi (rol
+ailesi) **yazılamıyordu** — `capabilities`'in içeriği açık bir karara bağlı (`0056-K3`).
+Şart olduğu gibi bırakılsaydı iki yol vardı: dalga **hiç kapanmaz**, ya da kapanmak için
+**uydurma yetenek satırları** yazılırdı. Şart `4.5/5`'e revize edildi, **gerekçesi ve
+adresi yazılarak**.
+
+⚠️ Bu `§2.5`'in **tersinden gelen** hâli. `§2.5` *"boşluğu uydurma"* der ve failin
+tembelliğini varsayar; burada fail **dikkatlidir** ve tam da **ölçütü karşılamak için**
+uydurur. Yani baskı kuraldan değil, **kuralın ölçüsünden** gelir.
+
+**Pratik:** bir ölçüt karşılanamıyorsa sor — *"karşılanamıyor mu, yoksa henüz mü?"*
+Birincisi ölçütün yanlış olduğunu, ikincisi bir **adres** gerektiğini gösterir. İkisinde de
+cevap ölçütü **yazılı olarak** değiştirmektir; sessizce yaklaşmak ya da veriyle doldurmak
+değil.
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
