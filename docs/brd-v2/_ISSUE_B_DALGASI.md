@@ -165,12 +165,17 @@ ya da `2026/01` **saklanabilir**. `0060 §2` bu şekillerin *parser'da* reddedil
 
 | kalem | değişiklik | kaynağı |
 |---|---|---|
-| **`S13`** | **yeni** — `plans.last_modified_by` + gönderen değişmezliği | `C1` |
+| **`S13`** | **yeni** — `plans.last_modified_by` ([[T-207]]) + gönderen **boşaltılamazlığı** (`K-2.5.16`, [[T-205]]) | `C1` |
 | **`S3`** | net kısıtı: `NULL`-toleranslı, **tolerans yok**, tam eşitlik | `C3` kararı |
 | **`S11`** | backfill **kolon adı parametreli** (iki ad, biri nullable) | `Ö4` |
 
-**Ve iki task açıldı:** [[T-205]] (`submittedById` `null`'a çekilen yol — kusur) ·
-[[T-206]] (`F16`'nın tasarım kararının gerekçesi ölçülsün).
+**Ve üç task açıldı:** [[T-205]] (`submittedById` boşaltan yol — `K-2.5.16` ihlali) ·
+[[T-207]] (`S13`: `last_modified_by` kolonu) · [[T-206]] (`F16`'nın tasarım kararının
+gerekçesi ölçülsün).
+
+📌 **`C1` artık yalnız bir ölçüm değil, yazılı bir kural:** `K-2.5.16` ailesi
+(`L2_03 §2.5.4a`) köken alanlarını yaşam döngüsü alanlarından ayırıyor — *güncellenebilir,
+asla boşaltılamaz*. Kural sayısı **351 → 354**.
 
 ---
 

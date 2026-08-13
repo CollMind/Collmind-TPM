@@ -192,6 +192,38 @@ Yönetici planın yazarıysa kural aynen işler — kendine atayamaz, üçüncü
 > ⛔ Devir mekanizması Faz 2'ye (onay politikaları) aittir. Faz 1'de nadir vaka elle
 > çözülür: başka bir yetkili onaylar.
 
+## 2.5.4a Köken alanları
+
+**K-2.5.16** — ⚠️ **Köken alanları ile yaşam döngüsü alanları aynı kolonda yaşayamaz.**
+
+Gönderen ve değiştiren alanları **köken kayıtlarıdır:** güncellenebilir, ama **asla
+boşaltılamaz.** Yaşam döngüsü bilgisi `durum` alanında yaşar, kimlik alanında değil.
+
+> Gerekçe: *"henüz gönderilmedi"* bir **durum** bilgisidir ve zaten `TASLAK` olarak
+> şemada var. Kimlik alanını boşaltmak, durum makinesinin işini bir köken kolonuna
+> taşımaktır.
+>
+> `K-2.2.7`'nin renk/davranış ayrımıyla aynı aile: **her bilgi kendi ekseninde.**
+
+**K-2.5.16a** — Yeniden gönderimde gönderen alanı **yeni gönderenle güncellenir.** Önceki
+gönderen denetim izinde korunur.
+
+> `K-2.5.11`'in doğru okuması *"bu gönderimi kim yaptı"* değil, **"bu içeriği kim
+> gönderdi"**dir.
+
+**K-2.5.16b** — ⚠️ Boşaltılan bir kimlik alanı, `K-2.5.11`'in daralttığı bypass'ı **sıfır
+maliyetle** yeniden açar:
+
+```
+submittedById = NULL → NULL ≠ onaylayan → kontrol geçer
+```
+
+> ❌ **Ölçülmüş ihlal** (`C1`, 2026-08-12): bugün bir yol gönderen alanını boşaltıyor. Ve
+> bu, `S13` (`last_modified_by`) inse bile dar kontrolü delmeye devam eder — kural her iki
+> senaryoda da aynı: **boşaltma yasak.**
+
+---
+
 **K-2.5.12** — Normal onay hattı ve yükseltme hattı: ⛔ **açık.**
 
 > **Bugünkü uygulama:** normal onay kategori müdürünün; finans yöneticisi **yalnız**
