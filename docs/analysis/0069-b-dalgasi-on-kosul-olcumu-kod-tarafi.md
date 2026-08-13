@@ -143,6 +143,17 @@ CSV'sinde `fu_code`/`volume` kolonları bulunmuyor.
 1. **Ledger/bütçe sınırı:** `budgetEnvelopeId`/`ledgerEntryId`/`agreementId` kolonu **yok**;
    `discountAmount` **satış iskontosudur, asla bütçeye/ledger'a yazılmaz** — on-invoice
    zaten kendi akışında yazıyor, tekrar kullanılırsa **çift sayım** olur (T-003/T-017'nin kökü).
+
+   ⚠️ **Düzeltme (2026-08-13):** bu teşhis `entity`'nin kendi yorumundan alınmıştı ve o
+   yorum **doğrulanmadan** aktarılmıştı — çift sayım **iddiası** doğru, ama hangi alanın
+   çift sayıldığı bir **varsayımdı**: entity `discountAmount`'ı *"satış iskontosu"*
+   (`= (a)` yaklaşımı) diye adlandırıyordu, ölçüm bunu **sorguladı**. `C3` veri probe'u
+   `net = brüt − discountAmount`'ın seed verisinin **3/3 satırında** tutmadığını (`is
+   violated by some row`) gösterdi — yani `discountAmount` on-invoice ile aynı olayı
+   temsil etmiyor **olabilir** `(b)`. Eğer `(b)` doğruysa, "kusur" sanılan şey bir **yanlış
+   alarm** olurdu: çift sayım riski gerçek ama yanlış kolona bağlanmış olurdu.
+   → [[T-209]] bu ayrımı ölçecek; `K-2.13.14h6` şimdilik `(a)`'yı reddedip on-invoice'u
+   kaynak gösteriyor (ön karar, ölçüm şartlı).
 2. **Satır seviyesinde unique kısıt YOK** — aynı scope'ta birden çok satır **meşru**.
 
 📌 Bu, `ADR 0002`'nin (*"actuals = tutar agregası, hacim yok"*) kodda **doğrulanmış** hâli.

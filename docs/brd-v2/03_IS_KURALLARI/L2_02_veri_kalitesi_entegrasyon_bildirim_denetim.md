@@ -49,6 +49,17 @@ veriyi okur ve kullanır; **üzerine yazmaz.**
 | Gecikme | T+1 |
 | Tutar toleransı | < %2 |
 
+**K-2.7.4a** — ⚠️ **Satış tablosunda `net = brüt − indirim` kısıtı yazılmaz.**
+
+Eşitlik ancak indirim alanı **tam köprü** olsaydı geçerliydi; ölçüm bunu eledi. Bir kısıt ya
+doğru veriyi reddeder ya alanı anlamı dışına zorlar.
+
+Yerine bir **akıl sağlığı kontrolü** (`net ≤ brüt`) ve veri sözlüğünde alanın **kaynağıyla
+birlikte tanımı.**
+
+> ⛔ Akıl sağlığı kontrolü de ölçüm şartlı: iade negatif satırla temsil ediliyorsa (`C2`:
+> kanal açık, `0 CHECK`) o kural da düşer.
+
 **K-2.7.5** — Bu eşikler bir **kabul kapısıdır**, bir temenni değil. Karşılanmadığında ürün
 çalışmaya devam eder ama etkilenen göstergeler **açılmaz.**
 

@@ -306,45 +306,30 @@ oran da yazar (nadir ama var).
 >
 > **Hesap doğru görünür, denetim izi yalan söyler.**
 
-**K-2.13.14h6** — `NET` tanımı: `brüt tutar − fatura-içi indirim`. ⛔ **Tanım hangi ALANI
-gösteriyor — açık** (ölçüldü 2026-08-13).
+**K-2.13.14h6** — `NET` tanımı: **brüt satış − fatura-içi ticari indirim.**
 
-> ⛔ **Bu bir formül sorusu değil, bir alan sorusu.** `sales_actuals` üç tutar taşıyor ve
-> ortadakinin ne olduğu yazılı değil:
->
-> ```
-> gross_amount     brüt satış
-> discount_amount  ?   ← satış iskontosu mu, TOPLAM indirim mi
-> net_amount       net satış
-> ```
->
-> Entity `discountAmount`'ı *"satış iskontosu"* diye adlandırıyor ve **bütçeye/ledger'a asla
-> yazılmadığını** söylüyor. Öyleyse `brüt − net` ondan **büyük** olabilir — aradaki fark
-> başka bir indirim türüdür, ve `NET = brüt − indirim` **yanlış alanı** gösteriyor demektir.
->
-> **Ölçüm (pilot verisi, tümü):** `net ≠ brüt − indirim` → **3/3 satır**, en büyük fark
-> `25.000`, toplam `63.000` (brütün %5-6'sı, yuvarlama değil).
->
-> ⚠️ **%100 sapma bir veri kalitesi sorunu değil, bir MODEL UYUŞMAZLIĞI işaretidir.** Bir
-> kısıt yazmadan önce üç alanın ilişkisi tanımlanmalı — yoksa kısıt veriyi değil, yanlış
-> modeli sabitler.
+⚠️ **Fatura-içi ticari indirim, gözlenen harcama kayıtlarından toplanır** — satış
+tablosunun indirim alanından değil.
 
-> ⛔ **İade davranışı açık.** Öneri: iadeler düşülür (gerçek net ciro) — karşı taraf primi
-> iade sonrası bakiye üzerinden keser.
+> **Düzeltme (2026-08-13, ön karar → [[T-209]]).** Tanım önce `sales_actuals.discount_amount`
+> kolonunu gösteriyordu. Ölçüm o alanın **ticari harcama olmadığını** güçlü biçimde işaret
+> etti: `CHECK (net = gross − discount)` seed verisine karşı **reddedildi**
+> (`is violated by some row`) — sapma **3/3 satır**, en büyük fark `25.000`, toplam `63.000`
+> (brütün %5-6'sı). **%100 sapma bir veri kalitesi sorunu değil, model uyuşmazlığı**
+> işaretidir.
 >
-> ✅ **Veri temsili artık ÖLÇÜLDÜ** (`C2`, 2026-08-13): iade için **alan yok, tip yok,
-> işaret sözleşmesi yok** — ama negatif satır kanalı **açık ve sessiz** (gramer `-?\d+`,
-> pozitiflik kontrolü yok, `0 CHECK`, probe kabul etti). Kardeş yollarda (on-invoice ·
-> off-invoice) pozitiflik kuralı **var**; `sales-actuals` dışında.
->
-> Yani formülü bloklayan şey artık *"ölçülmedi"* değil, **karar**: kanal kapatılacak mı,
-> yoksa negatif işaret bir sözleşme mi olacak → [[T-208]].
+> **Çifte sayım gerekçesi ayakta:** brüt taban, fatura-içi indirimin uygulandığı ciroya
+> ikinci kez prim öder. Gerekçe doğruydu; **işaret ettiği alan yanlıştı.**
 
-> ⛔ **İade davranışı açık.** Öneri: iadeler düşülür (gerçek net ciro) — karşı taraf primi
-> iade sonrası bakiye üzerinden keser.
->
-> Ama iadenin veride nasıl temsil edildiği (negatif satır mı, ayrı alan mı) **ölçülmedi** ve
-> formül ondan önce yazılmaz.
+**K-2.13.14h6a** — ⛔ Beslendiği kaynak [[T-209]] ölçümüne bağlı. Tanımın kendisi
+alan-bağımsızdır ve ölçüm sonucundan **etkilenmez** — hangi alanın onu doldurduğu değişir.
+
+> İade davranışı ayrı bir eksendir ve ✅ **veri temsili ölçüldü** (`C2`, 2026-08-13): alan
+> yok, tip yok, işaret sözleşmesi yok — ama negatif satır kanalı **açık ve sessiz**
+> (gramer `-?\d+`, pozitiflik kontrolü yok, `0 CHECK`, probe kabul etti). Kardeş yollarda
+> (on-invoice · off-invoice) pozitiflik kuralı **var**; `sales-actuals` dışında. Formülü
+> bloklayan şey artık *"ölçülmedi"* değil, **karar**: kanal kapatılacak mı, yoksa negatif
+> işaret bir sözleşme mi olacak → [[T-208]].
 
 **K-2.13.14h7** — ⚠️ `net = brüt − indirim` ilişkisi **veri girişinde doğrulanır**
 (`K-2.7` ailesi).

@@ -242,7 +242,7 @@ ya da `2026/01` **saklanabilir**. `0060 §2` bu şekillerin *parser'da* reddedil
 
 | kalem | değişiklik | kaynağı |
 |---|---|---|
-| **`S3`** | ⛔ **DALGADAN ÇIKTI** — sıralanmaz: sıralanacak şey veri düzeltmesi değil, bir **tanım** (`v2-UC-ALAN`) | `C3` veri ölçümü |
+| **`S3`** | ⛔ **DALGADAN ÇIKTI** — sıralanmaz: sıralanacak şey veri düzeltmesi değil, bir **tanım** (`v2-UC-ALAN` → [[T-209]]). Yerine `K-2.7.4a`: akıl sağlığı kontrolü (`net ≤ brüt`), kendisi de ⛔ `C2` kararına bağlı | `C3` veri ölçümü |
 | **`S13`** | **yeni** — `plans.last_modified_by` ([[T-207]]) + gönderen **boşaltılamazlığı** (`K-2.5.16`, [[T-205]]) | `C1` |
 | **`S11`** | backfill **kolon adı parametreli** (iki ad, biri nullable) **+ biçim doğrulamalı**, ve `CHECK` **ayrı bir dalga kalemi** | `Ö4` + probe |
 

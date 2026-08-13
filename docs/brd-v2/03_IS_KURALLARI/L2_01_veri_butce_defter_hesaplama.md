@@ -399,6 +399,33 @@ ya da yoktur; **sıfır yazılamaz.**
 > Gerekçe: bir tavanda sıfır "hiçbir şeye izin verme" ile "sınırsız" arasında belirsizdir.
 > Sıfır tavanın ifade ettiği şey ("bu mekanik kullanılamaz") için ayrı bir işaret vardır.
 
+## 2.1.8 Gerçekleşen satış tablosunun sözleşmesi
+
+> ⚠️ **Ön karar** (2026-08-13) — [[T-209]] ölçümüne bağlı.
+
+**K-2.1.19** — Gerçekleşen satış tablosu **yalnız satış gerçeğini** taşır. Ticari harcama
+orada yaşamaz.
+
+| | Kimin | Nerede |
+|---|---|---|
+| Satış gerçeği | ERP'nin — **gözlemlenen** olgu | Gerçekleşen satış tablosu |
+| Ticari harcama, gözlenen | **Bizim** — üretilen çıktı | Fatura-içi harcama kayıtları |
+| Ticari harcama, türetilen/sözleşmesel | **Bizim** | Talep ve gerçekleşme ailesi |
+
+> Gerekçe: ikisi farklı yaşam döngüsü taşır. Satış gerçeği **ithal ve salt okunur**
+> (`K-2.7.1`); ticari harcama bir taktikten doğar, kanıt sınıfı taşır, hakedişe girer,
+> deftere düşer, mutabakata konu olur.
+>
+> Aynı satırda birleştirmek, **gözlemlenen olguyu hesaplanan sonuçla** karıştırmaktır —
+> `K-2.5.16`'nın (köken ↔ yaşam döngüsü) ve `K-2.2.7`'nin (renk ↔ davranış) veri modeli
+> hâli.
+
+**K-2.1.19a** — Bu tablonun SKU kırılımı ve hacim taşımaması, aynı tasarımın parçası
+olabilir — [[T-206]] ve [[T-209]] **aynı sorunun iki yüzü:** bu tablonun sözleşmesi nedir?
+
+> Tablo muhtemelen *"dönemsel satış özeti"* olarak doğru tasarlandı. Sorun tasarımda değil,
+> **üç kuralın ona yanlış rol yüklemesinde** olabilir.
+
 ---
 
 # 2.2 · Bütçe Kuralları
