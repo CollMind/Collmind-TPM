@@ -580,6 +580,42 @@ birkaç satır ötede.
 - ✅ *"`Section_05 §5.3` ve Glossary `GP ROI` maddesi `TOTAL_PLANNED_SPEND` diyor —
   ölçüldü <tarih>"*
 
+### Bir düzeltmenin iki ekseni vardır: HEDEFİ ve YÖNÜ (ZORUNLU)
+
+```
+Bir düzeltmenin iki ekseni vardır: hedefi ve yönü.
+Hedef hatası görünür  (yanlış dosya, yanlış numara).
+Yön hatası görünmez   — doğru yere dokunur, yalnız işareti terstir.
+Ve yön hatası bir ölçümden ÖNCE yazılırsa, ölçümü kendi yönüne çeker.
+```
+
+Yukarıdaki üç vaka **hedef** hatasıydı: yanlış eşik, yanlış faz, yanlış payda. Hepsi
+görünür, çünkü doğru değerle yan yana konunca ayrışırlar.
+
+**Yön hatası ayrışmaz.** Ölçülmüş vaka (2026-08-13, `0069`'un `discount_amount` notu): üç
+şıklı bir ayrım iki şıkka indirildi, etiketler **takas edildi**, ve *"kural `(a)`'yı
+reddediyor"* yazıldı — oysa kural `(a)`'yı **kabul ediyordu**. Cümle doğru alana
+dokunuyordu, doğru kuralı anıyordu, doğru task'a bağlıydı; yalnız **işareti** tersti, ve o
+yüzden okuyan hiçbir yerde tökezlemiyordu.
+
+⚠️ **Ve bedeli bir yanlış bilgi değil, bozulmuş bir ölçümdür.** O not `T-209`'un ön
+beklentisiydi. Ters yazılmış bir ön beklenti, ölçümü **kendi yönüne çeker**: ajan
+hipotezi sınamak yerine **doğrulamaya** çalışır, ve sonuç *"ölçüldü"* etiketiyle kaydolur.
+
+> Bu, `§2.7`'nin *"kanıt kurulumu ölçtüğün durumu değiştirmesin"* ailesinin **planlama
+> tarafındaki** hâli. Orada kurulum ölçümü bozuyordu; burada **beklentinin metni** bozuyor.
+
+**Pratik:**
+
+- Bir düzeltme yazdıktan sonra sor: *"hedefi mi düzelttim, yoksa yönünü de mi
+  çevirdim?"* — ve **yönü ayrıca oku.** Reddediliyor mu kabul mü, artıyor mu azalıyor mu,
+  eleniyor mu ayakta mı.
+- **Bir ölçümün ön beklentisini yazarken şıkları ve her şıkkın sonucunu bir TABLOYA koy.**
+  Düzyazıda bir işaret sessizce ters çevrilebilir; iki sütunlu bir tabloda ters çevirmek
+  **görünür** olur.
+- Ve o tabloyu **ölçümün girdisi** yap, bir dipnot değil: *"ölçümü yapan ajan bu tablodan
+  başlasın."* Uyarı okunmazsa yoktur.
+
 ### Ölçüm ortamının bayatlığı da bir maskeleme sınıfıdır (ZORUNLU)
 
 **`start:dev` süreci ayaktayken kaynak düzenlenirse rotalar bozulabilir ve hata kod kusuru gibi
