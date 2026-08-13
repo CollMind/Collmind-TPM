@@ -1,5 +1,12 @@
 # BRD v2.0 — L2 İş Kuralları (İkinci Küme)
 
+> ⛔ **BU DOSYAYI YALNIZ TEAM LEAD YAZAR.** `L2` kural metinleri tek kanaldan geçer:
+> kural metni Team Lead'e verilir, Team Lead işler. Yerel/paralel oturumlar `L2`'ye
+> **dokunmaz** — kod, migration, ölçüm; belge değil.
+> Gerekçe ölçüldü (2026-08-13, `F1`'in tekrarı): aynı kural iki oturumda ayrı ayrı
+> işlendi ve iki kopya doğdu — `K-2.6.4` bir kopyada beş kurala açıldı, diğerinde
+> `⛔ açık` kaldı. **Tek yazar kuralı vardı, tek kanal yoktu.**
+
 > **Bölüm 2.7 · 2.8 · 2.10 · 2.11.** Çekirdeğin (2.1–2.4) devamı. Kalan dört bölüm
 > (2.5 onay · 2.6 yetki · 2.9 uyum · 2.12 ölçek) açık kararlara bağlı.
 

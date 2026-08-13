@@ -914,6 +914,17 @@ Sayı bakım gerektiren bir olgudur; şekil ve "hiçbiri/hepsi" gerektirmez.
   gerektiriyorsa task'ı böl.
 - `code-reviewer` ve `data-analyst` **kod/veri değiştirmez.** Bulgu raporlar.
 - Bir ajan kendi yazdığı kodun testini yazmaz — o `qa-engineer`'ın işidir.
+- **`docs/brd-v2/03_IS_KURALLARI/L2_*` dosyalarını YALNIZ Team Lead yazar** — ve tek yazar
+  yetmez, **tek kanal** gerekir: kural metni Team Lead'e verilir, Team Lead işler. Yerel ya
+  da paralel oturumlar `L2`'ye **dokunmaz** (kod · migration · ölçüm evet, belge hayır).
+
+  > **Gerekçe ölçüldü (2026-08-13) — `F1`'in tekrarı, hem de adı konduktan sonra.** Bir
+  > kural metni sohbete yazıldı ve **iki farklı ajana ulaşabilir hâlde** kaldı; ikisi de
+  > işledi. Sonuç iki kopya: `K-2.6.4` bir kopyada beş kurala açıldı (`65→70`), diğerinde
+  > `⛔ açık` kaldı (`363`). Kural *"tek yazar"*dı ve **ihlal edilmedi** — her kopyayı ayrı
+  > bir "tek yazar" yazdı. Eksik olan **kanaldı.**
+  >
+  > **Bir sahiplik kuralı, girdinin kaç yere ulaştığını sınırlamıyorsa eksiktir.**
 
 **Her ajan için geçerli ölçüm kuralları (ZORUNLU — Team Lead'e özel değil):**
 
