@@ -1371,3 +1371,30 @@ giremeyeceği için hata **her deploy'da** tekrarlanırdı.
 
 ⚠️ Ve dalların **en az ikisi ampirik doğrulanmalı** (`run` → `revert` → `run` döngüsü);
 yazılmış bir dal, çalıştığı anlamına gelmez.
+
+### "Sekiz vaka" gibi bir sayı, LİSTESİYLE anılır ya da HİÇ anılmaz (ZORUNLU)
+
+`docs/analysis/0070 §B3` ölçtü: repoda *"sekiz kez ölçüldü"* dört yerde yazıyor ve
+**hiçbirinde liste yok**. Üstelik **en az dört farklı "sekiz"** dolaşıyor:
+
+| hangi sekiz | listesi var mı |
+|---|---|
+| `İlke 4` (aynı yeteneğin tekrarı) | ❌ |
+| *"mekanizma var, yol yok"* (`T-033`…`T-062`) | ✅ **listeli** |
+| karar kayıtlarındaki çakışma | ❌ |
+| doğrulama maskeleme ailesi | ❌ |
+
+Ve sayıyı **kullanmaya** kalkınca çöktü: *"sekiz ihlalin kaynağı şu bölme"* varsayımı
+sınandı, ve `CLAUDE.md §7`'nin **adıyla saydığı dördünde** üçü bölmedeydi, biri
+(`lumpsum` dağıtımı, `shared/spend-calculation/`) **değildi**.
+
+> **Enumerasyonu olmayan bir sayı, bir sonuca dayanak yapılamaz.**
+> *"Kaçı bundan doğdu"* sorusu, liste ölçülene kadar bir **tahmindir**.
+
+**Kural:** bu tür bir sayı yazılırken ya **listesi de yazılır** (ya da listeye atıf
+verilir), ya da sayı **hiç anılmaz** — yerine niteliksel ifade kullanılır
+(*"tekrar eden bir sınıf"*).
+
+⚠️ `guard.sh`'ın öğrettiği dersin belge tarafı: **elle tutulan bir sayı bayatlar.** Fark
+şu ki bir guard bayatladığında kırmızıya döner; bir belgedeki sayı **hiçbir zaman**
+dönmez.

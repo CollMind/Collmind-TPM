@@ -22,7 +22,7 @@
 | **C1** | `INV-T-002` nereye bakıyor | ✅ ölçüldü | ⛔ **yalnız gönderen** — ve dayanacağı kolon yok |
 | **C3** | net = brüt − indirim kısıtı yazılabilir mi | ✅ ölçüldü → **karar geçersizleşti** (§5) | ⛔ **HAYIR** — kısıt reddediliyor, ve soru alan tanımına döndü |
 | **F14** | planın organizasyon bağlantısı | ✅ ölçüldü → **bulgu satırına geçti** (§3) | dört denormalize kolon |
-| **F16** | satış verisinde SKU + hacim | ✅ **KAPANDI 2026-08-13** — TTM kanıtıyla (§4) | sınıf: **pilot profili** → `İlke 5`; `A2` **ayakta** |
+| **F16** | satış verisinde SKU + hacim | ✅ **KAPANDI 2026-08-13** — TTM kanıtıyla (§4) | sınıf: **pilot profili** → `İlke 5`; `A2` **ayakta** · ⚠️ **kanıt boşluğu**, aşağıda |
 | **Ö4** | dönem alanları tutarlı mı | ✅ ölçüldü + probe | biçim tek, **ad iki**, biri nullable — ve temizlik **tesadüf** (§6) |
 | **C2** | iade `sales_actuals`'ta nasıl temsil ediliyor | ✅ ölçüldü (2026-08-13) | ⛔ **temsil yok, kanal AÇIK** → [[T-208]] |
 | `F13` | tutarlar KDV dahil mi hariç mi | ⚠️ **kod ölçüldü, veri ölçülemedi** | kodda KDV kavramı **hiç yok**; ölçek sorusu üretim verisi ister |
@@ -30,6 +30,23 @@
 > ⚠️ **2026-08-13: bu cümle artık yanlış.** `C3`'ün veri ölçümü `S3`'ü dalgadan çıkardı —
 > yani migration'ı bloklayan bir soru **doğdu** ([[T-209]], alan tanımı). Kalan iki
 > soru davranış tarafındaydı; biri (`C2`) kapandı ve bir task'a döndü.
+
+## ⚠️ `F16`'nın kanıt boşluğu — kaydedilsin, dalgayı bloklamıyor
+
+`F16` kapandı ve *"kolon eklenir"* gerekçesi artık **ölçülü** (`0070 §B1`). Ama kanıtın
+kapsamı **dar**:
+
+> **16 CSV'nin KÖKENİ ölçülmedi.** Şablon **TTM'in istediğini** kanıtlıyor — **Wella'nın
+> verdiğini** değil.
+
+İkisi farklı iddia: bir içe-aktarma şablonu bir **talebi** gösterir, bir **teslimi** değil.
+Pilot profili sınıflandırması ikincisine dayanıyor.
+
+**Ucuz kapanış:** `docs/analysis/0055`'in UAT koşusu **gerçek Wella verisiyle** miydi?
+(`docs/uat/uat_actuals_2026_06.csv` · `UAT_EXPECTED_RESULTS_2026_06.xlsx` — kaynağı
+ölçülmedi.) Tek dosya okuması, ve cevabı `F16`'nın sınıfını **doğrular ya da zayıflatır**.
+
+---
 
 ## ✅ Dalga onayının ön koşulu **KALMADI** (2026-08-13)
 
@@ -300,8 +317,35 @@ ya da `2026/01` **saklanabilir**. `0060 §2` bu şekillerin *parser'da* reddedil
 | kalem | değişiklik | kaynağı |
 |---|---|---|
 | **`S3`** | ⛔ **DALGADAN ÇIKTI** — sıralanmaz: sıralanacak şey veri düzeltmesi değil, bir **tanım** (`v2-UC-ALAN` → [[T-209]]). Yerine `K-2.7.4a`: akıl sağlığı kontrolü (`net ≤ brüt`), kendisi de ⛔ `C2` kararına bağlı | `C3` veri ölçümü |
-| **`S13`** | **yeni** — `plans.last_modified_by` ([[T-207]]) + gönderen **boşaltılamazlığı** (`K-2.5.16`, [[T-205]]) | `C1` |
+| **`S13`** | **yeni** — `plans.last_modified_by` ([[T-207]]) + gönderen **boşaltılamazlığı** (`K-2.5.16`, [[T-205]]) · ⚠️ **kapsam büyüdü**, aşağıda | `C1` + `0070 §B4` |
 | **`S11`** | backfill **kolon adı parametreli** (iki ad, biri nullable) **+ biçim doğrulamalı**, ve `CHECK` **ayrı bir dalga kalemi** | `Ö4` + probe |
+
+### ⛔ `S13` bir YETKİ YÜZEYİ değişikliği — ayrı madde (`0070 §B4`)
+
+`submittedById` yalnız bir **kimlik alanı** değil; aynı fonksiyonda, boşaltmadan **önce**,
+iki yerde bir **erişim anahtarı**:
+
+```ts
+plan.service.ts:1811, :1849
+actor.userId !== plan.createdBy && actor.userId !== plan.submittedById  → 404
+```
+
+**Bugünkü sonuç ölçüldü:** *yaratmayan ama gönderen* bir `PLANNER`, plan taslağa döndükten
+sonra ona **erişemiyor** (`404 OUT_OF_SCOPE`).
+
+> **Boşaltmayı kaldırmak o erişimi GERİ VERİR.** Yani `S13` yalnız bir kolon dolduruyor
+> değil — **kimin neye erişebildiğini değiştiriyor.**
+
+`T-205`'in regresyon notu bu yüzden **iki maddeli**:
+1. `TASLAK`'ta gönderen görünürlüğü (**bilinen**)
+2. **Kapsam erişiminin genişlemesi** (**yeni**) — ve bu bir **yetki yüzeyi** değişikliğidir
+
+⚠️ İkincisi dalga onayında ayrıca değerlendirilmeli: bir şema kalemi olarak masum görünüyor,
+etkisi RBAC tarafında.
+
+📌 Ve bugünkü hâli **canlı bir kusur** — ayrı task: [[T-210]].
+
+---
 
 **Ve dört task açıldı:** [[T-208]] (negatif kanal açık ve sessiz) · [[T-205]] (`submittedById` boşaltan yol — `K-2.5.16` ihlali) ·
 [[T-207]] (`S13`: `last_modified_by` kolonu) · [[T-206]] (`F16`'nın tasarım kararının
