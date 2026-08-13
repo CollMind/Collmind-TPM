@@ -703,10 +703,49 @@ yani **veri göçü yok**. Kod ayak izi gerçek ama ayrı bir iş: enum'u migrat
 | # | Kalem | Bağlı |
 |---|---|---|
 | 1 | joker bütçe politikası satırı | `K-2.2.8d` — **zorunlu** |
-| 2 | üç onay şablonu | `K-2.5.13a` |
-| 3 | rol kataloğu (**beş** rol) | `K-2.6.4` |
+| 2 | üç onay şablonu — **`EŞİKLİ`'nin eşiği `NULL`** | `K-2.5.13a` · `K-2.5.13c` |
+| 3 | `roller` tablosu, **beş rol** ✅ · `capabilities`/`role_capabilities` **⏸️ `T-165` ile** | `K-2.6.4` · `K-2.6.3` |
 | 4 | aktif dönemler | `S11` backfill'inin **hedefi** |
 | 5 | mekanik kütüphanesi — kadans/taban/kanıt alanlarıyla | `S1` |
+
+### `EŞİKLİ` şablonu `NULL` eşikle yazılır (karar, 2026-08-14)
+
+İlk uygulama şablonu **hiç yazmadı**, gerekçesi `§2.5` (*"`X` bir değişken, kaynakta somut
+tutar yok, uydurma"*). **Refleks doğru, sonuç yanlış:** şablonu hiç yazmamak uydurmaktan
+kötüdür — üç şablon `K-2.5.13a`'nın **kararıydı**, ve `EŞİKLİ` orta ölçeğin en yaygın
+deseni. Yoksa tenant onu **seçemez**, ve *"kural yazamaz, şablon seçer"* modeli iki
+seçenekle kalır.
+
+```
+şablon satırı:  EŞİKLİ
+eşik değeri:    NULL
+davranış:       eşik NULL iken şablon SEÇİLEMEZ — tenant değeri girmeden aktifleşmez
+```
+
+`X` bir **tenant değeridir**, bir ürün varsayılanı değil (`K-2.5.13c`: *"tenant şablon
+seçer ve eşik değerlerini ayarlar"*). Yani `NULL` **doğru hâldir** — eksik değil,
+**girilmemiş**. `K-2.1.8b`'nin (tarihsiz SKU) aynı ailesi: sistemin uydurmadığı bir değer,
+**bayrağıyla** duruyor.
+
+⚠️ **Kabul şartı:** `NULL` eşikli bir şablonun **seçilmesi reddedilmeli**. Yoksa sessiz
+sıfır sınıfı doğar — `§2.5`.
+
+### Rol ailesinin verisizliği BİLİNÇLİ — adresli erteleme (2026-08-14)
+
+```
+3  roller tablosu, beş rol            ✅ bu dalgada
+   capabilities · role_capabilities   ⏸️ T-165 ile (0056-K3 AÇIK)
+   RBAC users.role enum'undan koşmaya devam eder
+```
+
+`SÜRESİ_DOLDU` deseniyle aynı: **yapı bugün, davranış Faz 1 tabanında.** `capabilities`
+doldurmak, `K-2.6.3`'ün (yetenek tabanlı yetki) **20 yeteneğini şimdi tanımlamak** demek —
+ve `0056-K3` hâlâ açık: *"`§7.2`'nin 20 yeteneği mi, daha kaba mı?"* **Veri yazılamaz,
+çünkü içeriği bir karara bağlı.**
+
+📌 **Ama seed kalemi yanıltıcı yazılmıştı:** *"rol kataloğu, beş rol"* teslim edildi ve
+mekanizma **yolsuz** kaldı. Yukarıdaki üç satır o boşluğu kapatır — **adresli erteleme,
+sessiz eksiklik değil.**
 
 > ⛔ **Ölçüldü 2026-08-13: beşin DÖRDÜ yazılmamış.** Yalnız kalem 4 (`fiscal_periods`,
 > 36 satır) var; `budget_policies` · `approval_policies` · `roles` · `capabilities`

@@ -700,6 +700,25 @@ Ve üçüncüsü en pahalıya mal olacaktı: bir `code-reviewer` bulgusunu (*"t�
 2. **Bir sayı bir bulguyu ÇÜRÜTÜYORSA, örnek zorunludur.** Doğrulayan bir sayı yanılırsa
    fazladan iş üretir; **çürüten** bir sayı yanılırsa **gerçek bir kusuru kapatır.**
 
+### Bir yazma işleminin DÖNÜŞ DEĞERİ, yazdığının kanıtı değildir (ZORUNLU)
+
+> **Bir yazma işleminin dönüş değeri, yazdığının kanıtı değildir — DELTAYI ölç.**
+
+Ölçülmüş vaka (2026-08-14, `B` dalgası seed'leri): üç seed dosyası
+`result.identifiers.length` ile *"N inserted"* basıyordu. `.orIgnore()` ile yazılan bir
+`INSERT`'te o alan **girdi** satırlarını sayar, gerçekte yazılanı değil. Ölçüm: ikinci
+koşumda `identifiers.length = 3`, `raw.length = 0`, **DB deltası 0** — log *"3 inserted"*
+diyordu ve **hiçbir satır girmemişti**.
+
+Bu, `§7.1`'in *"rapor bir teslimat kanıtı değildir"* ailesinin üyesi, ama farklı bir
+failden: burada **makine** yanlış rapor veriyor, bir ajan ya da insan değil. Ve o yüzden
+daha az sorgulanır — bir sayının kaynağı bir kütüphane çağrısıysa doğru sanılır.
+
+**Pratik:** bir yazmanın sonucunu `RETURNING`'den (`raw`) ya da **önce/sonra sayımından**
+al. Ve `.orIgnore()` / `ON CONFLICT DO NOTHING` / `upsert` kullanan her yolda bu soruyu
+**ayrıca** sor — o kalıplar tam olarak "yazmadım" ile "yazdım"ı aynı dönüş değerinde
+birleştirir.
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
