@@ -24,7 +24,7 @@
 bash guard.sh .
 ```
 
-`guard.sh` üç kontrol yapar ve sayıyı **indeksle karşılaştırır** — bu blok bayatlarsa
+`guard.sh` dört kontrol yapar ve sayıyı **indeksle karşılaştırır** — bu blok bayatlarsa
 kırmızı verir:
 
 | Kontrol | Neyi yakalar |
@@ -32,6 +32,13 @@ kırmızı verir:
 | Kural sayımı | `F8` — elle tutulan sayının bayatlaması |
 | Kimlik tekilliği | `F2` — aynı numaranın iki kurala verilmesi |
 | Sarkan atıf | Var olmayan bir kurala referans |
+| BACKLOG bayat link | `F2`'nin task tarafı — `[[T-nnn]]` **yanlış hedefe** gidiyor |
+
+> Dördüncüsü paketin dışına, `.claude/backlog/`'a bakar. Sorduğu soru *"açıklama
+> başlıkla uyuşuyor mu"* **değil** (ölçüldü: uyumsuzluğun çoğu meşru, açıklamalar
+> teşhis ilerledikçe güncelleniyor) — *"**başka** bir task dosyası bu açıklamaya
+> belirgin daha iyi uyuyor mu"*. Kırık bir link fark edilir; yanlış hedefe giden
+> link **doğru görünür**.
 
 > ⚠️ **İlk koşuşunda iki gerçek ihlal yakaladı:** sayı uyuşmazlığı ve **dokuz sarkan atıf**
 > — `2.12` `Ek A`'ya taşınırken atıflar eski numarada kalmıştı. Elle bulunamazdı.
@@ -120,7 +127,7 @@ Diğer belgeler ve kod yorumları bu numaraya **atıf verir**, kuralı tekrar et
 **Ürün yönü tartışan:** **`01_KONUMLANMA`**
 
 > ⚠️ Bu blok 2026-08-12'de düzeltildi: üç dosya adı **bayattı** (`01_YETENEK`, `03_KARAR_KAYDI`,
-> `00_KONUMLANMA`) ve o adlarda dosya **yok**. `guard.sh` yakalayamadı — üç kontrolü de kural
+> `00_KONUMLANMA`) ve o adlarda dosya **yok**. `guard.sh` yakalayamadı — kontrollerinin hepsi kural
 > kimliğine bakıyor, **dosya adı atıflarına bakmıyor**. Kontrol adayı — kanonik liste
 > `guard.sh` başlığında (`a`–`d`), numarayla değil harfle, çünkü *"dördüncü"* etiketi
 > iki farklı adaya verildi.
