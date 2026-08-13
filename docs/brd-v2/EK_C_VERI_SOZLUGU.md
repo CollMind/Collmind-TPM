@@ -507,10 +507,23 @@ kuralının ihlali, ve bir **kapsam kararını** dayanaksız bıraktı. Eşleme 
 > Bu, *"bir şeye iki numara"*nın somut bedeli: `F2`'de atıf çözümlemesi okuyana göre
 > değişiyordu, burada bir kalem **iki numaralandırma arasında kayboldu**.
 >
-> → **`S15` önerisi** (ürün sahibi kararı bekliyor): `plans.status` enum'una `SÜRESİ_DOLDU`,
-> davranışsız. `S10`'un enum genişletmesiyle aynı migration'da.
+> ✅ **`S15` olarak dalgaya alındı** (ürün sahibi, 2026-08-13): gerekçesi hâlâ geçerli —
+> *davranış Faz 2'de, enum bugün.* `S10`'un enum genişletmesiyle aynı migration'da.
+>
+> 📌 **Kayboluşun kendisi kayda geçiyor.** `F2`'de bir numara iki şeye verilmişti ve **atıf
+> çözümlemesi** okuyana göre değişiyordu; burada bir şeye iki numara verildi ve **bir kalem
+> iki numaralandırma arasında düştü.** İkinci biçim daha sessiz: kayıp bir kalem hiçbir
+> yerde çelişki üretmez, yalnız **yapılmaz**.
+>
+> Ve kaybı üreten şey numaralandırma değil, **ölçülmemiş bir yokluk iddiasıydı**:
+> *"`TEAM_LEAD_IS_LISTESI` bu repoda yok"* yazıldığı için eşleme hiç kurulmadı. Belge
+> duruyordu. → `CLAUDE.md` · *"'yok' yazmadan önce ölç"*
 
-`S10`–`S14` ve `S3`'ün `B` karşılığı **yok ve olmamalı** — onlar sonraki ölçümlerden doğdu
+📌 **`TEAM_LEAD_IS_LISTESI` artık TARİHSELDİR.** `B1`–`B9` numaraları o belgede kalır;
+bağlayıcı olan `S`/`R`'dir. Yukarıdaki tablo ikisi arasındaki köprüdür ve **tek yönlüdür**:
+yeni kalemler `S`/`R` alır, `B` almaz.
+
+`S10`–`S15` ve `S3`'ün `B` karşılığı **yok ve olmamalı** — onlar sonraki ölçümlerden doğdu
 (`C1`,`C3`,`Ö4`,`F16`). Aşağıdaki `S`/`R` numaraları **bundan sonra kanoniktir**.
 
 ## `S` · Şema
@@ -531,6 +544,7 @@ kuralının ihlali, ve bir **kapsam kararını** dayanaksız bıraktı. Eşleme 
 | `S12` | SKU: `satis_birimi` + `cevrim_carpani`; girilen değer kolonları **FU'ya** | `K-2.1.12c` · `K-2.1.11a` |
 | `S13` | ⚠️ **Yeniden şekillendi** — kolon **var** (`updated_by`); iş: `updateVersioned` çağıran yolların **enumerasyonu** + kontrolün genişletilmesi | `K-2.5.11` · `K-2.5.16` |
 | `S14` | 🆕 `sales_actuals`: **SKU kırılımı + hacim** | `K-2.1.8a` |
+| `S15` | 🆕 `planlar`: **`SÜRESİ_DOLDU`** durumu + geçiş tablosundaki yeri — davranış Faz 2'de, **enum bugün** | `K-2.5.10b` · `K-2.5.10e` |
 
 > ⚠️ **`S13` bir kolon eklemiyor.** Önermesi (*"dayanacağı kolon yok"*) 2026-08-13'te
 > çürüdü: `updated_by` `BaseEntity`'de yaşıyor (`base.entity.ts:31`) ve düzenleme yolu
