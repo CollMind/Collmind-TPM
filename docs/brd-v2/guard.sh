@@ -9,6 +9,20 @@
 # CLAUDE.md §2.7'nin belge hâli: bir kurala uymak ile o kuralın kendi çıktına
 # uygulandığını doğrulamak ayrı işlerdir.
 #
+# KONTROL ADAYLARI — henüz yazılmadı, ve bugün elle tutuluyor demektir.
+# (Sıra numarası yok: 00_PAKET_INDEKSI'nin "dördüncü kontrol adayı" cümlesi
+#  dosya adı atıflarını, 2026-08-13 turu bayat adresi "dördüncü" diye
+#  adlandırdı. Numara değil, liste kanonik.)
+#
+#   a) Dosya adı atıfları  — üç kontrol de K-numarasına bakıyor; bayat bir
+#      dosya adı (`01_YETENEK`) yakalanmadı
+#   b) Açık (⛔) sayısı     — sayılıyor ve BASILIYOR, ama indeksle
+#      KARŞILAŞTIRILMIYOR. Yalnız toplam karşılaştırılıyor.
+#   c) Bölüm dağılımı      — aynı: basılıyor, karşılaştırılmıyor. İndeksin
+#      dağılım satırı bir kez bayat yakalandı (89 ↔ 88)
+#   d) Bayat adres         — kapanmış bir dalgaya/task'a referans veren ❌
+#      (L2 §Bu katmanın kuralları md.5: her ❌ bir adres taşır)
+#
 # Kullanım:  ./guard.sh [paket_dizini]
 # Çıkış:     0 temiz · 1 ihlal
 

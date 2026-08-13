@@ -121,7 +121,9 @@ Diğer belgeler ve kod yorumları bu numaraya **atıf verir**, kuralı tekrar et
 
 > ⚠️ Bu blok 2026-08-12'de düzeltildi: üç dosya adı **bayattı** (`01_YETENEK`, `03_KARAR_KAYDI`,
 > `00_KONUMLANMA`) ve o adlarda dosya **yok**. `guard.sh` yakalayamadı — üç kontrolü de kural
-> kimliğine bakıyor, **dosya adı atıflarına bakmıyor**. Dördüncü kontrol adayı.
+> kimliğine bakıyor, **dosya adı atıflarına bakmıyor**. Kontrol adayı — kanonik liste
+> `guard.sh` başlığında (`a`–`d`), numarayla değil harfle, çünkü *"dördüncü"* etiketi
+> iki farklı adaya verildi.
 
 ---
 

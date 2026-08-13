@@ -168,6 +168,13 @@ Kapsam: **son gönderen ∪ içeriği son değiştiren.**
 > Kaynak yalnız *"kendi gönderdiğini onaylayamaz"* diyor ve kapsamı tanımlamıyor. Bu
 > genişletme ölçümden değil, denetim mantığından geliyor.
 
+> ❌ **Ölçülmüş ihlal** (`C1`, 2026-08-12) — **ön koşul:** `B` dalgası `S13`
+> (`last_modified_by` kolonu) + `T-205` (kimlik alanının boşaltılması).
+> Dalga kapandığında bu satır `✅`'ya döner.
+>
+> Bugünkü davranış: kapsamın yarısı **boş bir kolona bakıyor**, ve gönderen alanı bir yolda
+> boşaltılabildiği için dar kontrol de deliniyor.
+
 **K-2.5.11a** — Bu kuralın **istisnası yoktur.**
 
 > Gerekçe (ürün sahibi): görev ayrılığı, finansal kontrol denetiminin çekirdek maddesidir.
@@ -221,6 +228,9 @@ submittedById = NULL → NULL ≠ onaylayan → kontrol geçer
 > ❌ **Ölçülmüş ihlal** (`C1`, 2026-08-12): bugün bir yol gönderen alanını boşaltıyor. Ve
 > bu, `S13` (`last_modified_by`) inse bile dar kontrolü delmeye devam eder — kural her iki
 > senaryoda da aynı: **boşaltma yasak.**
+>
+> **Ön koşul:** [[T-205]] — **dalga** adresi. `S13`'ten bağımsızdır: `S13` inse bile bu
+> satır `T-205` kapanmadan `✅`'ya dönmez.
 
 ---
 

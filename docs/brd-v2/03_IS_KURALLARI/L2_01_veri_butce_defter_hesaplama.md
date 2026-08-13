@@ -18,6 +18,23 @@
    Sessizce atlanmaz.
 4. **Ölçülmüş sapmalar** kurala not olarak eklenir. Bir kuralın bugün ihlal edildiğini
    bilmek, kuralı yazmamaktan iyidir.
+5. **`❌` ve `⚠️` işaretleri bir adres taşır:** hangi iş bu satırı kapatacak.
+
+   ```
+   ön koşulu BİLİNEN karar    → dalga veya issue referansı
+   ön koşulu ÖLÇÜLECEK karar  → ölçüm referansı
+   ```
+
+   > Beşinci bir statü (*"karar verildi, ön koşulu yok"*) **reddedildi:** bir bağımlılık
+   > statüsü, doğası gereği **başka bir işin tamamlanmasıyla bayatlar** — ve onu güncellemek
+   > kimsenin görevi olmaz. Adres ise kendi kapanış mekanizmasını taşır.
+
+   ⚠️ **Standart bugün geriye dönük uygulanmadı.** Ölçüldü (2026-08-13): `L2`'de
+   **altı** *"Ölçülmüş ihlal"* notu var (`L2_01` 4 · `L2_03` 2); adresi olan **üç**
+   (`K-2.5.11` · `K-2.5.16b` · ve ölçüm adresiyle `K-2.1.8a`). **Adressiz kalan dördü
+   `L2_01`'de:** zarf ayrımı · planlanan brüt kârın para olarak kaydı · boş kârlılığın
+   `0`/`yeşil` gösterimi · formül doğrulamasının çağrılmaması (`EK_E`'nin `🔒` vakası).
+   Onlara adres yazmak, ait oldukları işi **ölçmeyi** gerektirir — uydurulmaz.
 
 **İşaretler:** ✅ uygulanıyor · ⚠️ kısmen · ❌ uygulanmıyor · ⛔ karar bekliyor
 
@@ -92,6 +109,20 @@ taktik girişi yoktur.
 dört dönemin toplamı.
 
 > **Ciro payı değil** — hacim dağıtılıyor, fiyat farkları payı bozar.
+
+> ⚠️ **Uygulama ölçüm şartlı** (`T-206`, 2026-08-12). Kural **karar olarak ayaktadır**;
+> uygulanabilirliği bir ölçüme bağlı.
+>
+> Ölçülen: gerçekleşen satış verisi SKU kırılımı ve hacim taşımıyor — **ve bu kayıtlı bir
+> tasarım kararı.** `T-206` o kararın sınıfını ölçecek:
+>
+> | Sonuç | Etkisi |
+> |---|---|
+> | Kaynak sınırı | Kural ayakta; kolon eklenir, kaynak gelince dolar |
+> | Pilot profili kararı | Karar tenant profiline iner (`İlke 5`); ürün kuralı bu |
+> | Gerçek domain kararı | `A2`'nin tabanı yeniden karara gider |
+>
+> Adres bir dalga değil, bir **ölçümdür** — çünkü dalga kaleminin kendisi o ölçüme bağlı.
 
 **K-2.1.8a1** — ⚠️ **Fatura-içi kayıtlar dağıtım tabanı olarak kullanılamaz.**
 

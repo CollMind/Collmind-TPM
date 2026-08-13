@@ -187,7 +187,31 @@ Kural sayısı **351 → 355**.
 
 ---
 
-## 8. Bu dosyanın sınırları
+## 8. Kabul ölçütüne ek — `kabul-8` (2026-08-13)
+
+> **Dalga kapandığında, kapattığı `❌` satırları `✅`'ya çevrilir.**
+
+`L2 §Bu katmanın kuralları` md. 5 her `❌`/`⚠️` işaretine bir **adres** koyuyor: ön koşulu
+bilinen karar → dalga referansı, ön koşulu ölçülecek karar → **ölçüm** referansı. Bu dalga
+bugün iki adreste anılıyor:
+
+| işaret | nerede | adres |
+|---|---|---|
+| ❌ | `K-2.5.11` ihlal notu | `S13` + [[T-205]] — **dalga** (ön koşul biliniyor) |
+| ⚠️ | `K-2.1.8a` uygulama notu | [[T-206]] — **ölçüm** (dalga kalemi ölçüme bağlı) |
+
+⚠️ İkisi aynı işlem değildir: birinci satır dalga kapanınca `✅` olur; **ikincisi olmaz** —
+`T-206`'nın sonucu üç yoldan birine çıkar ve biri `A2`'nin tabanını yeniden karara götürür.
+Dalga kapanışında ikinciyi de çevirmek, `T-206`'yı **önceden yargılamak** olur.
+
+📌 **Ölçüldü (2026-08-13): `kabul-1`…`kabul-8` listesi bu repoda YOK** — `kabul-[0-9]`
+taraması tüm `*.md` üzerinde **0** eşleşme verdi (pozitif kontrol: *"B dalgası"* üç dosyada
+geçiyor). Yani kanonik kabul listesi dalganın kendi kaydında, repo dışında; buradaki blok
+o maddenin **CTPM tarafındaki karşılığıdır**, listenin kendisi değil.
+
+---
+
+## 9. Bu dosyanın sınırları
 
 - **Gövde burada değil.** Her ölçümün nasıl yapıldığı, hangi satırda ne bulunduğu
   `docs/analysis/0069`'da. Bu dosya **sonuç ve kapsam** taşır — `F8` sınıfına üye olmamak için.
