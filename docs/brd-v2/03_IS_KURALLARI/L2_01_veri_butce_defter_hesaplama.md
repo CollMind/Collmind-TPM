@@ -1,5 +1,12 @@
 # BRD v2.0 — L2 İş Kuralları (Çekirdek)
 
+> ⛔ **BU DOSYAYI YALNIZ TEAM LEAD YAZAR.** `L2` kural metinleri tek kanaldan geçer:
+> kural metni Team Lead'e verilir, Team Lead işler. Yerel/paralel oturumlar `L2`'ye
+> **dokunmaz** — kod, migration, ölçüm; belge değil.
+> Gerekçe ölçüldü (2026-08-13, `F1`'in tekrarı): aynı kural iki oturumda ayrı ayrı
+> işlendi ve iki kopya doğdu — `K-2.6.4` bir kopyada beş kurala açıldı, diğerinde
+> `⛔ açık` kaldı. **Tek yazar kuralı vardı, tek kanal yoktu.**
+
 > **Bölüm 2.1–2.4.** L2'nin on iki bölümünden dördü — en çok ölçülmüş, en az tartışmalı
 > olanlar. Kalan sekiz bölüm açık kararlara bağlı (`BRD_V2_ISKELET.md §5`).
 
@@ -18,6 +25,23 @@
    Sessizce atlanmaz.
 4. **Ölçülmüş sapmalar** kurala not olarak eklenir. Bir kuralın bugün ihlal edildiğini
    bilmek, kuralı yazmamaktan iyidir.
+5. **`❌` ve `⚠️` işaretleri bir adres taşır:** hangi iş bu satırı kapatacak.
+
+   ```
+   ön koşulu BİLİNEN karar    → dalga veya issue referansı
+   ön koşulu ÖLÇÜLECEK karar  → ölçüm referansı
+   ```
+
+   > Beşinci bir statü (*"karar verildi, ön koşulu yok"*) **reddedildi:** bir bağımlılık
+   > statüsü, doğası gereği **başka bir işin tamamlanmasıyla bayatlar** — ve onu güncellemek
+   > kimsenin görevi olmaz. Adres ise kendi kapanış mekanizmasını taşır.
+
+   ⚠️ **Standart bugün geriye dönük uygulanmadı.** Ölçüldü (2026-08-13): `L2`'de
+   **altı** *"Ölçülmüş ihlal"* notu var (`L2_01` 4 · `L2_03` 2); adresi olan **üç**
+   (`K-2.5.11` · `K-2.5.16b` · ve ölçüm adresiyle `K-2.1.8a`). **Adressiz kalan dördü
+   `L2_01`'de:** zarf ayrımı · planlanan brüt kârın para olarak kaydı · boş kârlılığın
+   `0`/`yeşil` gösterimi · formül doğrulamasının çağrılmaması (`EK_E`'nin `🔒` vakası).
+   Onlara adres yazmak, ait oldukları işi **ölçmeyi** gerektirir — uydurulmaz.
 
 **İşaretler:** ✅ uygulanıyor · ⚠️ kısmen · ❌ uygulanmıyor · ⛔ karar bekliyor
 
@@ -93,6 +117,30 @@ dört dönemin toplamı.
 
 > **Ciro payı değil** — hacim dağıtılıyor, fiyat farkları payı bozar.
 
+> ⚠️ **Uygulama ölçüm şartlı** (`T-206`, 2026-08-12). Kural **karar olarak ayaktadır**;
+> uygulanabilirliği bir ölçüme bağlı.
+>
+> Ölçülen: gerçekleşen satış verisi SKU kırılımı ve hacim taşımıyor — **ve bu kayıtlı bir
+> tasarım kararı.** `T-206` o kararın sınıfını ölçecek:
+>
+> | Sonuç | Etkisi |
+> |---|---|
+> | Kaynak sınırı | Kural ayakta; kolon eklenir, kaynak gelince dolar |
+> | Pilot profili kararı | Karar tenant profiline iner (`İlke 5`); ürün kuralı bu |
+> | Gerçek domain kararı | `A2`'nin tabanı yeniden karara gider |
+>
+> Adres bir dalga değil, bir **ölçümdür** — çünkü dalga kaleminin kendisi o ölçüme bağlı.
+
+**K-2.1.8a1** — ⚠️ **Fatura-içi kayıtlar dağıtım tabanı olarak kullanılamaz.**
+
+O veri yalnız fatura-içi mekaniğe giren ürünleri kapsar. Kısmi kapsama, dağıtım payında
+**sistematik yanlılık** üretir — `K-2.4.22`'nin *"eksik dilim rastgele değildir"*
+argümanının aynısı.
+
+> Ölçüldü (`F16`): gerçekleşen satış verisi SKU kırılımı taşımıyor, ama fatura-içi
+> kayıtlar taşıyor. Bu, *"veri zaten var"* kestirmesine davet eder — ve o kestirme
+> yanlıştır.
+
 **K-2.1.8b** — Geçmişi olmayan bir SKU **sıfır pay alır** ve *"tarihsiz"* olarak işaretlenir.
 
 > ⚠️ Eşit pay vermek cazip ama yanlıştır: **yeni ürünün lansman hacmi tarihsel bir türetme
@@ -156,6 +204,15 @@ iki ayırıcı taşır:
 
 **K-2.1.11** — Girilen değer, semantiğine göre **ayrı kolonlarda** saklanır. Tek bir kolon
 birden çok ölçek taşıyamaz.
+
+**K-2.1.11a** — ⚠️ **Girilen değerin tek bir temsili vardır ve o FU seviyesindedir**
+(`K-2.1.7`). SKU seviyesinde yalnız **hesaplanan** harcama tutulur.
+
+> Düzeltme (2026-08-12, dış denetim `F11`): bugünkü şema *"girilen"* kolonlarını **SKU
+> seviyesinde** taşıyor — eski modelin kalıntısı. Aynı girdinin iki temsili `İlke 4`'ün veri
+> hâlidir ve zamanla ayrışır.
+>
+> Geçiş: kolonlar FU seviyesine taşınır, SKU'da yalnız hesaplanan değer kalır.
 
 ```
 oran        →  entered_rate_pct        (0–100, dört ondalık)
@@ -301,9 +358,19 @@ max_duration_days:   30 (varsayılan)       ← yalnız doğrulama kuralı
 | `SINGLE` | Dönem sonunda tek hesaplaşma |
 | `PERIODIC` | Tahakkuk eder, dönemsel hesaplaşır |
 
-**K-2.1.14** — Kadans **taktik tipinin özelliğidir.** Her mekanik görüşlü bir varsayılanla
-gelir (ciro primi → `PERIODIC/MONTHLY`; aktivite → `SINGLE`) ve tenant politikasında
+**K-2.1.14** — Kadans **mekanikte yaşar**, anlaşmada değil. Her mekanik görüşlü bir
+varsayılanla gelir (ciro primi → dönemsel; aktivite → tek) ve tenant politikasında
 değişebilir.
+
+**K-2.1.14a** — ⚠️ **Anlaşma seviyesi davranış türetilir:** bir anlaşmanın **herhangi bir
+mekaniği** dönemsel kadanslıysa, anlaşma **dönemsel hesaplaşır.**
+
+> Düzeltme (2026-08-12, dış denetim `F6`): kural kadansı hem anlaşma hem mekanik alanı gibi
+> okunabiliyordu, ve karışık kadanslı bir anlaşmanın davranışı **tanımsızdı** — üç taktikli
+> bir anlaşma bu senaryonun kendisi.
+>
+> Türetme kuralı muhafazakâr: dönemsel bir yükümlülük varsa anlaşma dönem sonuna kadar
+> beklemeden birikmeye başlar.
 
 **K-2.1.15** — ⚠️ **`STA`/`LTA` etiketi davranış kaynağı değildir.** Rapor ve filtre için
 türetilmiş bir görünüm olarak kalabilir, ama davranışın tek yolu `settlement_cadence`'tır.
@@ -339,6 +406,33 @@ ya da yoktur; **sıfır yazılamaz.**
 > Gerekçe: bir tavanda sıfır "hiçbir şeye izin verme" ile "sınırsız" arasında belirsizdir.
 > Sıfır tavanın ifade ettiği şey ("bu mekanik kullanılamaz") için ayrı bir işaret vardır.
 
+## 2.1.8 Gerçekleşen satış tablosunun sözleşmesi
+
+> ⚠️ **Ön karar** (2026-08-13) — [[T-209]] ölçümüne bağlı.
+
+**K-2.1.19** — Gerçekleşen satış tablosu **yalnız satış gerçeğini** taşır. Ticari harcama
+orada yaşamaz.
+
+| | Kimin | Nerede |
+|---|---|---|
+| Satış gerçeği | ERP'nin — **gözlemlenen** olgu | Gerçekleşen satış tablosu |
+| Ticari harcama, gözlenen | **Bizim** — üretilen çıktı | Fatura-içi harcama kayıtları |
+| Ticari harcama, türetilen/sözleşmesel | **Bizim** | Talep ve gerçekleşme ailesi |
+
+> Gerekçe: ikisi farklı yaşam döngüsü taşır. Satış gerçeği **ithal ve salt okunur**
+> (`K-2.7.1`); ticari harcama bir taktikten doğar, kanıt sınıfı taşır, hakedişe girer,
+> deftere düşer, mutabakata konu olur.
+>
+> Aynı satırda birleştirmek, **gözlemlenen olguyu hesaplanan sonuçla** karıştırmaktır —
+> `K-2.5.16`'nın (köken ↔ yaşam döngüsü) ve `K-2.2.7`'nin (renk ↔ davranış) veri modeli
+> hâli.
+
+**K-2.1.19a** — Bu tablonun SKU kırılımı ve hacim taşımaması, aynı tasarımın parçası
+olabilir — [[T-206]] ve [[T-209]] **aynı sorunun iki yüzü:** bu tablonun sözleşmesi nedir?
+
+> Tablo muhtemelen *"dönemsel satış özeti"* olarak doğru tasarlandı. Sorun tasarımda değil,
+> **üç kuralın ona yanlış rol yüklemesinde** olabilir.
+
 ---
 
 # 2.2 · Bütçe Kuralları
@@ -362,20 +456,31 @@ farklı bir boyut kümesiyle zarf arayamaz.
 
 ## 2.2.2 Durum kovaları
 
-**K-2.2.4** — Bir zarfın bütçesi dört kovaya dağılır:
+**K-2.2.4** — Bir zarfın bütçesi **beş** kovaya dağılır:
 
 | Kova | Ne zaman dolar |
 |---|---|
 | `Ayrılan` | Zarf tanımlandığında |
 | `Rezerve` | Bir **anlaşma** onaylandığında |
 | `Taahhüt` | Bir **plan** onaylandığında |
+| `Tahakkuk` | Dönemsel yükümlülük biriktikçe |
 | `Tüketilen` | Gerçekleşen fatura kaydedildiğinde |
 
 **K-2.2.5** — Kullanılabilir bütçe:
 
 ```
-Kullanılabilir = Ayrılan − Rezerve − Taahhüt − Tüketilen
+Kullanılabilir = Ayrılan − Rezerve − Taahhüt − Tahakkuk − Tüketilen
 ```
+
+> ⚠️ **`Tahakkuk` terimi 2026-08-12'de eklendi** (dış denetim `F5`). Tahakkuk
+> kullanılabilirliği **düşürür** — dönemsel bir yükümlülük birikmiştir ve o para artık
+> serbest değildir.
+>
+> Ve dönem kapanışında çözülür: eşleşen kısım `TÜKETİM`'e döner, fazlası `İADE` ile serbest
+> kalır (`K-2.13.25b`). Kapanışta **açık tahakkuk = 0** (`K-2.13.25c`).
+>
+> ⚠️ **Çift düşüm olmaz:** tahakkuk yazıldığında karşılık gelen rezervasyon **aynı işlemde
+> azalır** (`K-2.13.25a1`). Kovalar bir **dönüşüm zinciridir**, bağımsız birikimler değil.
 
 **K-2.2.6** — `Rezerve` ve `Taahhüt` **ayrı kovalardır** ve birleştirilemez.
 
@@ -742,22 +847,67 @@ kullanılamaz.
 
 ## 2.3.6 İşlem tipleri
 
-**K-2.3.13** — Defter altı işlem tipi tanır:
+> ⚠️ **Düzeltme (2026-08-12, dış denetim `F5`):** taksonomi tüketimi ve tahakkuku
+> taşıyamıyordu — `TÜKETİM` hiçbir tipe eşlenmemişti (ama `D.1` her oku bir defter kaydı
+> sayıyor), ve `TAHAKKUK` **yanlış eksende** duruyordu.
+
+**K-2.3.13** — Defter **sekiz** işlem tipi tanır:
+
+| Tip | Ne yazar |
+|---|---|
+| `TAHSİS` | Zarfa bütçe konur |
+| `REZERVE` | Anlaşma onaylanır |
+| `TAAHHÜT` | Plan onaylanır |
+| `TAHAKKUK` | Dönemsel yükümlülük birikir (`K-2.13.25a`) |
+| `TÜKETİM` | Gerçekleşen kesinleşir |
+| `İADE` | Rezerve/taahhüt/fazla tahakkuk serbest bırakılır |
+| `TRANSFER` | Zarflar arası aktarım — iki bacak, `Σ = 0` |
+| `DÜZELTME` | Ters kayıt ve açık kalemler |
+
+**K-2.3.13a** — `DÜZELTME` tipi bir **alt tür** taşır, ve alt tür dört değer alır:
+
+| Alt tür | Ne | Kaynak kural |
+|---|---|---|
+| `TERS_KAYIT` | Bir kaydın ters çevrilmesi | `K-2.3.5` |
+| `FARK` | Açıklanamayan kalıntı | `K-2.13.14i` |
+| `TAVAN_AŞIMI` | Tavana kırpılan tutar | `K-2.2.17a` |
+| `TOLERANS_FARKI` | Otomatik kabul edilen sapma | `K-2.13.14d` |
+
+**K-2.3.13b** — ⚠️ **Eşleme çift yönlü zorunludur:**
 
 ```
-TAHSİS · REZERVE · TAAHHÜT · İADE · TRANSFER · DÜZELTME
+DÜZELTME  ⇔  alt tür dolu
 ```
 
-**K-2.3.14** — Harcama tipi dört değer alır:
+Alt türsüz bir `DÜZELTME` de, alt türlü bir `REZERVE` de **reddedilir.** Veritabanı
+seviyesinde korunur.
 
-```
-FATURA-İÇİ · FATURA-DIŞI · DÜZELTME · TAHAKKUK
-```
+> Tek yönlü bir kısıt (*"`DÜZELTME` alt tür taşımalı"*) yeterli değildir: alt tür kolonu
+> başka tiplere sızarsa raporlama sessizce yanlış toplar.
 
-> ❌ `TAHAKKUK` tanımlı ama onu yazan hiçbir kod yolu yok — kaynakta da böyle. Yani hem
-> kaynakta hem üründe adı konmuş, mekanizması yazılmamış.
+**K-2.3.13c** — Alt tür **ayrı bir kolondur**, işlem tipi enum'una eklenmez.
+
+> Gerekçe: dördü de aynı aritmetiğe girer (`K-2.3.11`, `Σ borç − Σ alacak`). Enum'u bölmek
+> hesabı değiştirmez ama her tüketiciyi dört yeni değeri ele almaya zorlar.
 >
-> Bekliyor: `SORULAR A6`.
+> Alt tür yalnız **raporlama** için ayırt edici: denetçi *"kabul edilen farkların toplamı"*nı
+> tek sorguyla görür.
+
+**K-2.3.13d** — Bu kural yürürlüğe girdiğinde **mevcut ters kayıtlar** alt türle işaretlenir.
+
+> ⚠️ Yoksa kural **doğduğu gün** mevcut veriyle ihlal ediliyor olur — bir kuralın kendi
+> geçmişini ihlal etmesi, bu oturumda ölçülmüş bir sınıf.
+
+> Üç açık kalem türü **yok olmaz, yazılır** — sessiz yutma, sessiz sıfırın para hâli olurdu.
+
+**K-2.3.14** — Harcama tipi **üç** değer alır:
+
+```
+FATURA-İÇİ · FATURA-DIŞI · DÜZELTME
+```
+
+> ⚠️ `TAHAKKUK` bu listeden **çıkarıldı** — bir işlem tipidir, bir harcama tipi değil. İki
+> eksen karışıyordu: harcama tipi *"para nereye gitti"*, işlem tipi *"kovada ne oldu"* der.
 
 ## 2.3.7 Kayıt bütünlüğü
 
@@ -1031,7 +1181,11 @@ okunduğunu kaydediyor.
 
 ---
 
-# Açık kalanlar — bu çekirdekte
+# Açık kalanlar
+
+> ⚠️ **Bu bölüm 2026-08-12'de kaldırıldı.** Açık kural listesi tek bir yerde yaşar:
+> `00_PAKET_INDEKSI.md`. Bölüm sonlarında tutulan kopyalar karar turundan sonra **bayat**
+> kaldı (dış denetim `F8`) — ve bayat bir durum listesi, olmayan bir listeden kötüdür.
 
 | Kural | Neyi bekliyor |
 |---|---|

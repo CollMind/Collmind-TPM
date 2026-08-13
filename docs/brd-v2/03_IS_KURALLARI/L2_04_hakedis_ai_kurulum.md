@@ -1,5 +1,12 @@
 # BRD v2.0 — L2 İş Kuralları (Dördüncü Küme)
 
+> ⛔ **BU DOSYAYI YALNIZ TEAM LEAD YAZAR.** `L2` kural metinleri tek kanaldan geçer:
+> kural metni Team Lead'e verilir, Team Lead işler. Yerel/paralel oturumlar `L2`'ye
+> **dokunmaz** — kod, migration, ölçüm; belge değil.
+> Gerekçe ölçüldü (2026-08-13, `F1`'in tekrarı): aynı kural iki oturumda ayrı ayrı
+> işlendi ve iki kopya doğdu — `K-2.6.4` bir kopyada beş kurala açıldı, diğerinde
+> `⛔ açık` kaldı. **Tek yazar kuralı vardı, tek kanal yoktu.**
+
 > **Yapı denetiminin çıktısı.** `L2_YAPI_DENETIMI.md` ölçtü ki on iki bölümün on ikisi de
 > kaynağın gündeminden türemiş — ve konumlanmanın dört iddiasından ikisi hiç karşılık
 > bulmuyor.
@@ -85,7 +92,7 @@ küme tarar.
 | `DIŞ` | Dayanak belge referansı |
 | `İÇ` | Hesap izi referansı |
 
-**K-2.13.5c** — Yetki de kaynağa koşulludur: içe aktarma yetkisi (`K-2.6.5a`) `kaynak = DIŞ`
+**K-2.13.5c** — Yetki de kaynağa koşulludur: içe aktarma yetkisi (`K-2.6.14`) `kaynak = DIŞ`
 kaydı **yaratmaya** bağlıdır. Rol denetimi satır tipine bakar, tablo sayısına değil.
 
 **K-2.13.5d** — Durumlar **tek enum**, geçiş tablosu **kaynağa duyarlıdır:**
@@ -203,7 +210,7 @@ eşleştirmesini **onaylayamaz.**
 > ```
 >
 > ✅ Karar verildi (2026-08-12, Oturum 1.5). Bu invariant, içe aktarma yetkisinin
-> planlamacıya açılmasının **ön koşuludur** (`K-2.6.5a`).
+> planlamacıya açılmasının **ön koşuludur** (`K-2.6.14`).
 
 **K-2.13.12b** — Her içe aktarma kaydı **köken bilgisi** taşır: kim, ne zaman, hangi dosya
 (içerik özeti dahil).
@@ -306,13 +313,30 @@ oran da yazar (nadir ama var).
 >
 > **Hesap doğru görünür, denetim izi yalan söyler.**
 
-**K-2.13.14h6** — `NET` tanımı: `brüt tutar − fatura-içi indirim`.
+**K-2.13.14h6** — `NET` tanımı: **brüt satış − fatura-içi ticari indirim.**
 
-> ⛔ **İade davranışı açık.** Öneri: iadeler düşülür (gerçek net ciro) — karşı taraf primi
-> iade sonrası bakiye üzerinden keser.
+⚠️ **Fatura-içi ticari indirim, gözlenen harcama kayıtlarından toplanır** — satış
+tablosunun indirim alanından değil.
+
+> **Düzeltme (2026-08-13, ön karar → [[T-209]]).** Tanım önce `sales_actuals.discount_amount`
+> kolonunu gösteriyordu. Ölçüm o alanın **ticari harcama olmadığını** güçlü biçimde işaret
+> etti: `CHECK (net = gross − discount)` seed verisine karşı **reddedildi**
+> (`is violated by some row`) — sapma **3/3 satır**, en büyük fark `25.000`, toplam `63.000`
+> (brütün %5-6'sı). **%100 sapma bir veri kalitesi sorunu değil, model uyuşmazlığı**
+> işaretidir.
 >
-> Ama iadenin veride nasıl temsil edildiği (negatif satır mı, ayrı alan mı) **ölçülmedi** ve
-> formül ondan önce yazılmaz.
+> **Çifte sayım gerekçesi ayakta:** brüt taban, fatura-içi indirimin uygulandığı ciroya
+> ikinci kez prim öder. Gerekçe doğruydu; **işaret ettiği alan yanlıştı.**
+
+**K-2.13.14h6a** — ⛔ Beslendiği kaynak [[T-209]] ölçümüne bağlı. Tanımın kendisi
+alan-bağımsızdır ve ölçüm sonucundan **etkilenmez** — hangi alanın onu doldurduğu değişir.
+
+> İade davranışı ayrı bir eksendir ve ✅ **veri temsili ölçüldü** (`C2`, 2026-08-13): alan
+> yok, tip yok, işaret sözleşmesi yok — ama negatif satır kanalı **açık ve sessiz**
+> (gramer `-?\d+`, pozitiflik kontrolü yok, `0 CHECK`, probe kabul etti). Kardeş yollarda
+> (on-invoice · off-invoice) pozitiflik kuralı **var**; `sales-actuals` dışında. Formülü
+> bloklayan şey artık *"ölçülmedi"* değil, **karar**: kanal kapatılacak mı, yoksa negatif
+> işaret bir sözleşme mi olacak → [[T-208]].
 
 **K-2.13.14h7** — ⚠️ `net = brüt − indirim` ilişkisi **veri girişinde doğrulanır**
 (`K-2.7` ailesi).
@@ -432,6 +456,71 @@ TAHSİS → REZERVE → TAHAKKUK → TÜKETİM
 
 Tahakkuk, rezervasyonun gerçekleşmeye yaklaşan hâlidir — ama fatura veya talep
 kesinleşmeden tüketime dönüşmez.
+
+**K-2.13.25a1** — ⚠️ **Zincir bir dönüşümdür, bir birikim değil.**
+
+Bir tahakkuk yazıldığında karşılık gelen rezervasyon **aynı işlemde azalır:**
+
+```
+DOĞUŞTA    REZERVE ↓   TAHAKKUK ↑     Σ etkisi nötr
+KAPANIŞTA  TAHAKKUK ↓  TÜKETİM ↑      eşleşen kısım
+           TAHAKKUK ↓  (serbest)      fazlası
+```
+
+> **Düzeltme (2026-08-12, `F5` yan sonucu):** `K-2.2.5` kullanılabilirlik formülüne tahakkuk
+> terimi eklendiğinde bir **çift düşüm riski** doğdu. İki model mümkündü:
+>
+> | Model | Sonuç |
+> |---|---|
+> | **Dönüşüm** | Rezervasyon azalır, tahakkuk artar — aynı para bir kez düşer |
+> | Bağımsız | İkisi birlikte durur — ⚠️ **aynı para iki kez düşer** |
+>
+> Dönüşüm seçildi, ve gerekçesi simetridir: kapanıştaki çözülme kuralı (`K-2.13.25b`) zaten
+> bir dönüşümdür. Doğuşta da öyle olmalıdır.
+
+**K-2.13.25a1b** — ⚠️ **Tahakkuk zorunlu bir durak değil, koşullu bir aradır.**
+
+```
+PERIODIC kadans:   REZERVE → TAHAKKUK → TÜKETİM
+SINGLE   kadans:   REZERVE →─────────→ TÜKETİM
+```
+
+Tek hesaplaşmalı bir anlaşma **hiç tahakkuk etmez.**
+
+> Bu cümle yazılmazsa uygulama zinciri **harfiyen** okur ve tek hesaplaşmalı anlaşmalara
+> **sıfır tutarlı bir geçiş tahakkuku** icat eder — bu oturumda dokuz kez ölçülen *"karar
+> yazılmayınca kod bir varsayılan uydurur"* sınıfı.
+
+**K-2.13.25a1c** — ⚠️ **Tahakkuk rezervi aşabilir, ve akış durmaz.**
+
+Bir tahakkuk yazıldığında kalan rezervasyon tüketilir. **Aşan kısım rezervsiz tahakkuk
+olarak yazılır** ve `K-2.2.7c` ailesince işaretlenir.
+
+> Gerekçe: satış planı aşarsa — ciro primi tabanı beklenenden hızlı büyürse — aylık tahakkuk
+> bir noktada tüketecek rezerv bulamaz. Ve doğru davranış karar ailesinde zaten var:
+> **gerçekleşme durmaz, borç doğmuştur.**
+>
+> İki yanlış alternatif:
+>
+> | Alternatif | Neden yanlış |
+> |---|---|
+> | Tahakkuku sessizce kırpmak | **Sessiz kırpma, yanlış katmanda** — kırpma tavanda çalışır (`K-2.2.17`), rezervde değil |
+> | Rezervi negatife düşürmek | `Σ` nötrlüğü bozulur, kova anlamını kaybeder |
+
+**K-2.13.25a1d** — Rezervsiz tahakkuk zarf kullanılabilirliğini **ek olarak düşürür**
+(`K-2.2.5`). Bu doğru davranıştır — ama **bilinçlidir**, bir yan etki değil.
+
+> Ve `K-2.13.25a2` invariantı bundan etkilenmez: tavan kontrolü ayrı bir katmandır ve kırpma
+> orada çalışır.
+
+**K-2.13.25a2** — ⚠️ **Invariant:** bir anlaşma için
+
+```
+REZERVE + TAHAKKUK + TÜKETİM ≤ anlaşma tavanı
+```
+
+> Üç kova aynı ekonomik yükümlülüğün üç aşamasıdır; toplamları tavanı aşamaz. Ve tavan
+> aşımı davranışı `K-2.2.17`'de tanımlıdır — kırpma + açık kalem.
 
 **K-2.13.25b** — Dönem kapanışında tahakkuk **çözülür:** eşleşen kısım tüketime çevrilir,
 fazla tahakkuk serbest bırakılır.
@@ -594,7 +683,7 @@ referans belgesi.
 
 **Yeni yeri:** `BRD v2 · Ek A — İşlevsel Olmayan Gereksinimler.`
 
-İçeriği değişmiyor; `K-2.12.1`–`K-2.12.10` numaralarını koruyarak taşınır ve `NFR-*` olarak
+İçeriği değişmiyor; `NFR-1`–`NFR-13` numaralarını koruyarak taşınır ve `NFR-*` olarak
 yeniden numaralandırılır.
 
 **Not:** `2.9 Uyum` için aynı soru soruldu ve **cevabı farklı** — saklama süreleri *"veriye ne
@@ -618,7 +707,11 @@ kaynağın gündeminde olmayan hiçbir şey L2'de bir bölüm bulamamıştı.
 
 ---
 
-# Açık kalanlar — bu kümede
+# Açık kalanlar
+
+> ⚠️ **Bu bölüm 2026-08-12'de kaldırıldı.** Açık kural listesi tek bir yerde yaşar:
+> `00_PAKET_INDEKSI.md`. Bölüm sonlarında tutulan kopyalar karar turundan sonra **bayat**
+> kaldı (dış denetim `F8`) — ve bayat bir durum listesi, olmayan bir listeden kötüdür.
 
 | Kural | Neyi bekliyor | Tür |
 |---|---|---|

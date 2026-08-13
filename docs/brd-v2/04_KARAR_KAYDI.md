@@ -484,12 +484,27 @@ kaçış yolu *"iki bağlanmamış işlem"* olur ve bütünlük sessizce kırıl
 
 | Konu | Neyi bekliyor |
 |---|---|
-| Rol kümesi | Karar — kaynak üç farklı küme veriyor |
-| Finans yöneticisinin onay hattı | Karar — `ADR 0002`'nin dayanağı düştü |
-| Saklama sürelerinin bağlayıcılığı | **Hukuk** |
-| Kişi bazlı performans raporlaması | **Hukuk** |
+| ~~Rol kümesi~~ | ✅ **KAPANDI 2026-08-12** → `K-2.6.4` ailesi: beş rol, `Süper Yönetici` reddedildi |
+| ~~Finans yöneticisinin onay hattı~~ | ✅ **KAPANDI 2026-08-12** → `K-2.5.12` ailesi: tek hat (şablon), devir bir **eylem**. `ADR 0002` → **`0002-R`** |
+| Saklama sürelerinin bağlayıcılığı | **Hukuk** — ⏸️ `K-2.9.0`: mütalaaya dek **hiçbir kayıt silinmez** |
+| ~~Kişi bazlı performans raporlaması~~ | ✅ **KAPANDI 2026-08-12** → `K-2.9.6`: rapor **süreç metriğidir**, kişi kimliği kırılım boyutu değil. Kişi bazlı versiyon `K-2.9.6a` ile **hukuk şartlı ertelendi** |
 | Veri ayrımı modeli | Teknik ölçüm — geçiş maliyetleri |
 | İadenin veri temsili | Teknik ölçüm — tek sorgu |
+
+---
+
+# Gerekçesi zayıf kararlar
+
+> Dış denetim (`F5` ekseni) beş kararı *"sonuç muhtemelen doğru, dayanak zayıf"* diye
+> işaretledi. Sonuçlar değişmiyor; **etiketleri** düzeltiliyor.
+
+| Karar | Zayıflık | Düzeltme |
+|---|---|---|
+| `B4` zaman aşımı | *"Toplu plan ölümü"* senaryosu ölçümsüz | Metrik-önce kararı telafi ediyor. Ve `F3` temizlenince gerekçenin bir bacağı düştü: bekleyen plan bütçe yazmadığı için **finansal risk zaten yoktu** |
+| `K-2.2.7b` %90 | *"Finansın istediği haberdar olmak"* doğrulanmadı | **Doğrulanmamış kullanıcı varsayımı** olarak etiketlendi |
+| `A7` bölge | *"İhtiyaçsızlık ölçüldü"* fazla güçlü | **Tek vaka gözlemi** — kapanmış bir pilotun örneklemi. Karar ayakta; onay-ekseni gerekçesi tek başına yeter |
+| `C4` görev ayrılığı | *"Bypass kapandı"* fazla güçlü | **Daraltıldı.** Artık açık: A hazırlar, B'ye tek hücre değiştirtip gönderttirir, A onaylar. Telafi: `K-2.5.14` karar anı göstergeleri + denetim izi |
+| `B5` kapasite | *"Tipik kullanımın ~100 katı"* elma-armut | Aritmetik cümle **düşürüldü** — 40-50 plan satırı ile 5.000 katalog SKU'su aynı büyüklük değil |
 
 ---
 
@@ -509,17 +524,46 @@ karma çalışma biçimi · serbest biçimli kural motoru · orantısal atıf ·
 
 Karar turuna girerken bir kural vardı: **kaynak bir girdidir, kanıt değil.**
 
-Ve kullanıldı — **beş kararda kaynaktan bilinçli olarak sapıldı:**
+Ve kullanıldı. Ama **ilk sayım yanlıştı** — dış denetim (`F4`) iki yanlış sınıflama ve üç
+eksik madde ölçtü.
 
-```
-A7   kategori yetki ekseni olarak korundu
-A9   ADR 0006'nın gerekçesi yanlışlandı
-A1   üç katmanlı çözümleyici reddedildi
-B3   kişiye özel yetki istisnası yapılmadı
-A3.c orantısal atıf reddedildi
-```
+> Ve bu, `ADR 0006`'nın deseninin **kendi kayıtlarımızdaki** tekrarı: bir sınıflandırma
+> ölçülmeden yazıldı.
 
-Her sapma gerekçesiyle yazılı. Ve karşılığında **kaynağın haklı çıktığı** yerler de var —
-`A2`'de çekirdek bölüm, `A9`'da dağıtım tabanı, `C1`'de eşik değeri.
+## Kaynak ilişkisi — tek tablo
+
+Dört tür ayrılır, ve karıştırılmamalıdır:
+
+| Tür | Anlamı |
+|---|---|
+| **Sapma** | Kaynak açık bir şey diyor, biz başkasını seçtik |
+| **Kaynağa dönüş** | Uygulamamız sapmıştı, karar kaynağa döndü |
+| **Kaynak sessiz** | Kaynakta karşılığı yok — yeni karar, sapma değil |
+| **Ekleme** | Kaynağın hiç sormadığı bir soruya kural |
+
+| Kural / karar | Kaynak ne diyor | Bizim kararımız | Tür |
+|---|---|---|---|
+| `K-2.6.4` rol kümesi | `§2.1.2`'nin dörtlüsü (jenerik Approver) | Beş rol, bütçe-sahibi onaycı | **Sapma** — `§7.1`'in beşlisiyle fiilen hizalanma |
+| `A7` yetki ekseni | Kanal · bölge · satış ekibi | + kategori | **Sapma** |
+| `A1` çalışma biçimi | Üç katmanlı çözümleyici | Reddedildi | **Sapma** |
+| `B3` yetki istisnası | Kişiye özel istisna tablosu | Yapılmaz | **Sapma** |
+| `K-2.4.4` eksik veri | Eksik bağımlılığa `0` | `boş` | **Sapma** |
+| `K-2.2.7b` %90 kademesi | *"Finans onayı gerekir"* — davranış | Varsayılan **bildirim** | **Sapma** ⚠️ |
+| `K-2.6.14` içe aktarma | *"Planlamacı, Finans"* | Bugün yalnız finans | **Sapma** — geçici |
+| `A9` götürü dağıtım | Planlanan hacim | Planlanan hacim | **Kaynağa dönüş** |
+| `A3.c` atıf kuralı | — sessiz | Kanıt merdiveni | **Kaynak sessiz** |
+| `A6` tahakkuk | Adı var, mekanizması yok | Operasyonel evet | **Kaynak sessiz** |
+| `K-2.8.13/14` biçim | — sessiz | Belirsizlik reddedilir | **Ekleme** |
+| `K-2.6.13` DB rolü | — sessiz | Ayrıcalıksız rol şart | **Ekleme** |
+| `2.14` kurulum · `2.4.8` AI | — sessiz | Konumlanmadan türedi | **Ekleme** |
+
+⚠️ **`K-2.2.7b` en dikkat gerektireni:** kaynağın açık davranış merdiveninden sapıyor ve
+kural gövdesinde **sapma olarak işaretli değildi.** Ve gerekçesi (*"finansın istediği haberdar
+olmak"*) hiçbir finans kullanıcısıyla **doğrulanmadı** — ilk müşteri finansıyla sınanacak.
+
+## Ve kaynağın haklı çıktığı yerler
+
+`A2`'de çekirdek bölüm · `A9`'da dağıtım tabanı · `C1`'de eşik değeri · `A4`'te iki örneğin
+taban ayrımı.
 
 > Kaynağı ne körü körüne izlemek ne toptan reddetmek — **madde madde ölçmek.**

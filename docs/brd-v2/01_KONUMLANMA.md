@@ -2,6 +2,9 @@
 
 > **Taslak.** Ürün sahibinin düzeltmesi için yazıldı. Bir karar kaydı değil — bir
 > **öneri**, ve onaylanana kadar hiçbir şeyi bağlamaz.
+> **Onaylandığında:** ADR 0012 olarak karar defterine girer ve `SORULAR.md`'deki ilgili
+> sorulara *"konumlanma §X cevapladı"* referansı düşülür. Otorite tektir: repo karar
+> defteri. Bu doküman üçüncü bir kopuk lokasyon olmayacak.
 
 - **Tarih:** 2026-08-11
 - **Neden yazıldı:** 45 turluk kaynak okuması *"kaynak ne diyor, biz ne yapıyoruz"*
@@ -10,6 +13,10 @@
 - **Güncelleme (2026-08-11):** rakip/segment analizi geldi
   (`Settlement-First TPM SaaS: Comparative Vendor Analysis and Positioning`). Beş bölüm
   değişti; en önemlisi §1 (settlement-first çekirdek) ve §1.3 (üç modlu merdiven).
+- **Güncelleme (2026-08-12):** altı revizyon: (a) AI duruşu eklendi (§2.5, §5), (b) ilk
+  pazar/coğrafya eklendi (§1-Kime), (c) hakediş katmanı iddiası ölçümle netleştirildi
+  (§1), (d) istatistikler güncel POI ölçümüne çekildi, (e) sadelik ölçütü önerildi (§7),
+  (f) statü mekanizması tanımlandı (üstteki not).
 
 ---
 
@@ -44,32 +51,42 @@ duruş bugün hiçbir yerde yazılı değil.
 
 Bu bir eksik parça değil, **konumlanmanın kendisi.** Rakip analizi bunu doğruluyor: sektörün
 TPM tanımının merkezinde *"settle"* var, ve pazarın gerçek acısı deduction/tahakkuk yükü.
-Kullanıcıların %92'si süreci *"külfetli"* buluyor, %91'i tabloya geri dönüyor.
+Kullanıcıların üçte ikisi süreci *"külfetli"* buluyor (2025 ölçümü %67; 2018'de %92 idi) ve
+%91'i TPM ürününü tabloyla tamamlıyor (2018 ölçümü — daha güncel bir denk ölçüm yok).
 
 Analitik tarafta (senaryo, optimizasyon, lift modelleme) yarışmıyoruz — orada güçlü rakipler
 var ve pazar onu bugün satın almıyor. Muhasebe doğruluğunda yarışıyoruz.
 
-> Bunun bir sonucu var: **hakediş katmanı ürünün yarısı değil, ürünün kendisi.**
-
-**Ve bu katmanın bugünkü durumu ölçüldü** (2026-08-12). Sonuç *"yok"* değil, *"yarısı var"*:
-
-| | Durum |
-|---|---|
-| Hakediş talebi **üretimi** | ✅ var, canlı ve arayüzlü |
-| Anlaşma **kapanışı** | ✅ var ve olgun — ama kullanıcı yüzeyi yok |
-| Bir **talep nesnesi** | ❌ yok |
-| **Karşı taraf perspektifi** | ❌ yok — gelen talep durumu diye bir şey yok |
-| **Eşleştirme mantığı** | ❌ yok — eşleştirme kullanıcının girdiği bir alan |
-| **Dönem kapanışı** | ❌ yok |
-
-Eksik olanın şekli önemli: sisteme bugün giren şey *"perakendecinin kesinti belgesi"* değil,
-**bizim kaydettiğimiz fatura satırı.** Yani veri akıyor ama **yönü ters** — ve *"gelen ama
-henüz kabul edilmemiş"* diye bir durum yok.
-
-Kapanış tarafında ise farklı bir sorun var: mekanizma olgun (eşzamanlılık koruması, çift
-sayma koruması, iki uçtan uca test), ama **hiçbir ekrandan çağrılamıyor.**
+> **Hakediş katmanının bugünkü durumu ölçüldü (2026-08-12)** — "katman yok" değil,
+> katmanın yarısı yok:
+>
+> | # | Parça | Durum | Erişilebilirlik |
+> |---|---|---|---|
+> | 1 | Hakediş varlığı (claim entity) | **YOK** | — |
+> | 2 | Üretim (iç hakediş) | VAR — `agreement_transaction` adıyla | ✅ 4 rota + canlı UI |
+> | 3 | Alım (dış hakediş) | KISMEN — tek yönlü | ✅ dosya + manuel giriş |
+> | 4 | Eşleştirme (matching) | **YOK** — lookup var, matching yok | — |
+> | 5 | Mutabakat / kapanış | KISMEN — anlaşma ✅, dönem ❌ | ⚠️ API var, UI yok |
+>
+> Yani en büyük açıklık: **dışarıdan gelen hakediş talebinin bir varlık olarak alınıp
+> eşleştirildiği yarı.** Üretim tarafı çalışıyor; alım-eşleştirme-dönem kapanışı çalışmıyor.
+> Konumlanmanın çekirdek iddiası tam bu yarının üstünde duruyor.
+>
+> **Eksik olanın şekli:** bugün sisteme giren veri *"biz şu kadar harcadık"*; *"perakendeci
+> şu kadar kesinti yaptı"* değil. Karşı tarafın talebi diye bir kavram yok — ve dolayısıyla
+> *"gelen talep ile bizim kaydımız tutuyor mu"* sorusu **sorulamıyor.**
+>
+> ⚠️ Ve kapanış tarafında farklı bir sorun var: mekanizma **olgun** (eşzamanlılık koruması,
+> çift sayma koruması, iki uçtan uca test) ama **hiçbir ekrandan çağrılamıyor.** Yapılmış ve
+> erişilemeyen iş, yapılmamış işten pahalıdır.
 
 ### 2 · Veri olgunluğuyla ölçeklenen tek ürün
+
+> ⚠️ **Terim notu (karar turu, 2026-08-12):** aşağıdaki üç kademe bir **yetenek
+> kademesidir**, bir çalışma biçimi değil. *"Mod"* kelimesi `A1` kararıyla davranış
+> belirleyici olmaktan çıktı — bu iki kavram aynı kelimeyi paylaşıyordu, ayrıldı
+> (`K-2.1.12j`).
+
 
 Ürün üç modda çalışır ve modlar **veri geldikçe kendiliğinden açılır:**
 
@@ -105,6 +122,24 @@ geçmiş hacim verisi eksik veya güvenilmez şirketler. Bugünkü veri setinde 
 **Veri olgunluğu yüksek olanlar.** Küresel FMCG şirketleri — maliyet verisi var, geçmiş
 satış derin, ERP entegrasyonu beklenen bir yetenek. Onlar için ürün daha derin çalışmalı,
 daha fazla gösterge açmalı.
+
+### Nerede — ilk pazar Türkiye
+
+İlk pazar **Türkiye'deki FMCG üreticileri ve distribütörleri.** Bu bir kısıt değil, ikinci
+bir hendek:
+
+- Küresel rakiplerin hiçbiri Türkiye ticari pratiğine yerli değil: **ciro primi
+  mutabakatları, cari hesap/BA-BS mutabakat kültürü, e-belge ekosistemi (e-fatura,
+  e-mutabakat), KDV/tevkifat ayrıntıları.** Bunlar bir çeviri işi değil, hakediş
+  katmanının şekli.
+- TL para birimi, Türkçe arayüz ve yerel takvim/dönem pratiği ilk günden varsayılan —
+  sonradan eklenen bir "lokalizasyon paketi" değil.
+- Bu tercih Teknopark başvurusuyla (12 aylık plan, İP1–İP7) tutarlıdır.
+
+Küresel genişleme kapıyı kapatmaz: mimari çok para birimli ve çok dilli kurulabilir, ama
+**ürün kararlarında referans müşteri Türkiye'deki orta ölçekli üreticidir.** İhracat, ilk
+pazarda kanıtlanmış kurulum modelinin taşınmasıyla gelir. *(Kurumsal/global uca dair öngörü
+aşağıda ayrıca işaretli.)*
 
 ### Ve bu bir kısıt değil, tasarım ilkesi
 
@@ -179,17 +214,28 @@ Az sayıda, görüşlü, iyi seçilmiş varsayılan; ve gerçekten farklılaşan
 *Kaynak da bunu söylüyor: "politikalar bilinçli olarak küçük ve görüşlü bir kümeyle
 sınırlıdır; kademeli olarak gerçek kullanım desenlerine göre genişletilir."*
 
-### 2.5 · Tahmin ve optimizasyon motoru değil
+### 2.5 · Tahmin ve optimizasyon motoru değil — ama AI'sız ürün de değil
 
 Hacim tahmini, talep planlaması, senaryo optimizasyonu — bunlar ayrı bir disiplin. Biz
 kullanıcının girdiği tahmini alır, sonuçlarını hesaplar, ve **kararını görünür kılarız.**
 
 *"Yapay zeka ile optimize edilmiş promosyon planlaması"* bu ürünün vaadi değil.
 
-**Ve bu bir sıralama kararı, kalıcı bir ret değil.** Senaryo analizi üst kademede (§1 mod 3)
-yerini alır — ama ilk günden değil. Pazar verisi bunu destekliyor: katılımcıların yalnızca
-üçte biri yakın vadede otomatik senaryo analizi kurmayı planlıyor. Erken yapılan bir
-optimizasyon katmanı, besleyecek verisi olmadığı için çalışmaz.
+**Ama reddedilen şey net olmalı: analitik AI reddediliyor, kenar AI reddedilmiyor.**
+
+| | Reddedilen (analitik AI) | Benimsenen (kenar AI) |
+|---|---|---|
+| Ne | Lift tahmini, TPO, otomatik senaryo optimizasyonu | Hakediş dokümanı okuma (ingest), mutabakat açıklaması (explain), kurulum asistanı (configure) |
+| Neden | Beslenecek veri hedef segmentte yok; güven kaybı üretir | Tarihsel veri gerektirmez, ilk günden çalışır; üç iddiayı doğrudan besler |
+| Sınır | — | **LLM asla para hesaplamaz.** Hesaplayan deterministik motordur; AI önerir, insan onaylar, defter deterministik yazılır |
+
+Bu sınır mevcut çalışma disiplinimizin aynısıdır (AI hiçbir şeyi otomatik merge etmez):
+AI kenarlarda, deterministik çekirdek ortada.
+
+**Ve analitik ret bir sıralama kararı, kalıcı bir ret değil.** Senaryo analizi üst kademede
+(§1 mod 3) yerini alır — ama ilk günden değil. Pazar verisi bunu destekliyor:
+katılımcıların yalnızca üçte biri yakın vadede otomatik senaryo analizi kurmayı planlıyor.
+Erken yapılan bir optimizasyon katmanı, besleyecek verisi olmadığı için çalışmaz.
 
 ---
 
@@ -263,6 +309,10 @@ Yani veritabanı seviyesinde izolasyon *"ikinci müşteri gate'i"* değil, **ilk
 satışın ön koşulu.** Şema baştan doğru kurulduğu için eklenebilir bir katman — ama
 ertelenebilir değil.
 
+**Ve aynı ön koşul AI özelliklerini de bağlar:** §2.5'teki kenar AI'ın dokunacağı her veri
+yolu (hakediş dokümanı, tenant konfigürasyonu, mutabakat izi) izolasyon ve yetki katmanının
+**üstüne** inşa edilir, altına değil. Sıralama: önce izolasyon, sonra agent.
+
 **İkinci ertelenemeyen:** kuralların koda gömülü olması. İkinci müşteri geldiğinde asıl
 engel o, ve sonradan çıkarmak izolasyon eklemekten zor.
 
@@ -270,7 +320,7 @@ engel o, ve sonradan çıkarmak izolasyon eklemekten zor.
 
 ## 5 · Nasıl fark yaratıyoruz
 
-Üç iddia, ve üçü de sınanabilir olmalı:
+Dört iddia, ve dördü de sınanabilir olmalı:
 
 **Kurulum haftalarla ölçülür, aylarla değil.** Ölçütü: bir müşterinin ürünü kullanmaya
 başlaması için gereken konfigürasyon adımı sayısı.
@@ -291,6 +341,13 @@ tamamlıyor — bunu engellemek yerine yolunu açmak geçişi kolaylaştırıyor
 olgun veriyle çalışan müşteride ürün daha derin çalışır. Elindeki veriyle başlar, eksik
 olanı söyler, veri geldikçe daha çok gösterge ve daha güçlü karar desteği açılır.
 
+**AI kenarlarda, deterministik çekirdek ortada.** Rakipler AI'ı analitik/TPO kopilotuna
+harcıyor; biz hakediş-doküman katmanına koyuyoruz. Üç kenar: dış hakediş dokümanını yapıya
+çeviren alım asistanı (§1'deki en büyük açıklığı kapatır), *"bu rakam neden böyle"*
+sorusuna denetim izinden cevap veren açıklama katmanı (tabloya kaçışın panzehiri), ve
+müşterinin mevcut Excel/ERP verisinden konfigürasyon öneren kurulum asistanı ("haftalarla
+kurulum" iddiasının aracı). Sınır §2.5'te: LLM asla para hesaplamaz.
+
 **Kapalı döngü tek üründe.** Planlama bir üründe, hakediş başka bir üründe, mutabakat
 Excel'de — bugünkü tipik durum bu. Tek üründe olması operasyonel farkın kendisi.
 
@@ -302,15 +359,15 @@ Onaylanırsa açık soruların bir kısmı **kendiliğinden daralır:**
 
 | Soru | Konumlanmanın etkisi |
 |---|---|
-| Hacim girişi hangi seviyede? | **Rakip analizi cevapladı:** grup seviyesinde giriş + otomatik dağıtım + elle düzeltme. Sektör SKU zorunlu girişi *"adopsiyon düşmanı"* sayıyor — **ve bugünkü modelimiz tam olarak öyle** (bir FU plana eklendiğinde tüm SKU'ları zorunlu ekleniyor). Yani bu bir teyit değil, düzeltilecek bir sapma |
-| Hakediş atfı gerekli mi? | Bölüm 1 → **evet, ürünün tanımı.** Eksik değil, çekirdek |
+| Hacim girişi hangi seviyede? | **Rakip analizi cevapladı:** grup seviyesinde giriş + otomatik dağıtım + elle düzeltme. **Bugünkü modelimiz SKU-zorunlu tarafta** — bir FU plana eklendiğinde tüm aktif SKU'ları zorunlu ekliyor — ve rakip analizi bunu *"adopsiyon düşmanı"* olarak işaretliyor. Bu bir teyit değil, **düzeltilecek bir sorun** |
+| Hakediş atfı gerekli mi? | Bölüm 1 → **evet, ürünün tanımı.** Ölçüm gösterdi: üretim yarısı var, alım-eşleştirme yarısı yok — açıklık tam çekirdekte |
 | Mod ayrımı üç katmanlı olmalı mı? | İlke 1 + 4 → sade alternatif önde, karmaşık olan gerekçe borçlu |
 | Onay politikaları ne kadar esnek? | İlke 1 → **2-3 sabit şablon + politika tablosu.** Genel amaçlı iş akışı motoru orta ölçekte aşırı mühendislik |
 | Taktik kütüphanesi serbest mi? | İlke 1 → **8-10 parametrik sabit tip.** Serbest form, hakediş tutarlılığını bozuyor |
-| Simülasyon/senaryo katmanı? | Bölüm 2.5 → üst kademede, ilk günden değil |
+| Simülasyon/senaryo katmanı? | Bölüm 2.5 → üst kademede, ilk günden değil. Kenar AI ise ilk günden meşru |
 | Raporlama derinliği ne olmalı? | Bölüm 2.2 → tanımlı raporlar derin olabilir; serbest keşif hayır |
 | Çok birim (koli/adet) desteği? | İlke 1 → gerçek ihtiyaç ölçülmeden eklenmez |
-| Veritabanı izolasyonu ne zaman? | Bölüm 4 → **ilk kurumsal satıştan önce**, ikinci müşteriden değil |
+| Veritabanı izolasyonu ne zaman? | Bölüm 4 → **ilk kurumsal satıştan önce**, ikinci müşteriden değil. AI özellikleri de bu kapının arkasında |
 
 Ve bazıları **değişmez** — regülasyon, veri doğruluğu, izolasyon bir duruş meselesi değil.
 
@@ -322,16 +379,23 @@ Ve bazıları **değişmez** — regülasyon, veri doğruluğu, izolasyon bir du
    desteklendi: tipik kurulum dört-altı ay, karmaşık kurulumlarda daha uzun, ve yükün
    çoğu ana veri temizliğinde. Kaynak, iddiaların hangilerinin doğrulanmış hangilerinin
    gerekçeli-ama-doğrulanamaz olduğunu ayrı ayrı işaretliyor.
-2. ⚠️ **Müşteri karması hâlâ bilinmiyor** — ve bu, üç kararı birden askıda tutuyor:
+2. ✅ **Hakediş katmanı ölçüldü** (2026-08-12). Beş parçalı durum tablosu §1'de. "Katman
+   yok" iddiası "alım-eşleştirme-dönem kapanışı yok" olarak netleşti.
+3. ⚠️ **Müşteri karması hâlâ bilinmiyor** — ve bu, üç kararı birden askıda tutuyor:
    kârlılık modunun ilk günden zorunlu olup olmayacağı, artımsallık katmanının ne zaman
    çekirdeğe yaklaşacağı, ve genel amaçlı iş akışı motorunun gerekip gerekmediği. Üçü de
    *"hedef müşterilerin ne kadarında şu veri var"* sorusuna bağlı.
-3. **SKU seviyesinde maliyet verisi yaygınlığı için yayınlanmış bir dağılım bulunamadı.**
+4. **SKU seviyesinde maliyet verisi yaygınlığı için yayınlanmış bir dağılım bulunamadı.**
    Gerekçeli gözlem: satış hacmi SKU seviyesinde neredeyse her yerde var (faturalar SKU'lu),
    maliyet ise teoride var ama ticari ekibin erişimine açık ve temiz olması istisna.
-4. **"Haftalarla kurulum" bir hedef, bir ölçüm değil.** Bugünkü kurulum süresi bilinmiyor.
-5. **Sadelik ölçütü tanımlı değil.** *"Excel'den karmaşık olmasın"* iyi bir yön ama
-   ölçülebilir değil — bir ölçüt gerekiyor (konfigürasyon adımı sayısı? ilk plana kadar
-   geçen süre?).
+5. **"Haftalarla kurulum" bir hedef, bir ölçüm değil.** Bugünkü kurulum süresi bilinmiyor.
+   İlk gerçek kurulumda ölçülecek.
+6. **Sadelik ölçütü artık önerildi — ama hedef değerleri doğrulanmadı.** İki test
+   edilebilir hedef:
+   - **Boş tenant'tan ilk onaylanmış plana ≤ 1 iş günü** (veri yüklemesi dahil, eğitim
+     hariç).
+   - **Zorunlu konfigürasyon adımı sayısı ≤ N** — N, konfigürasyon modeli netleşince
+     sayılacak; her adım "varsayılanı var mı" sorusuyla sorgulanır.
+   Hedefler ilk kurulumda ölçülür; tutmazsa hedef revize edilir, ölçüt değil.
 
-Bu dördü, danışman turunun girdisi olabilir — ve ilk ikisi için harici bilgi gerekiyor.
+3 ve 4, danışman turunun girdisi olabilir — ikisi için de harici bilgi gerekiyor.

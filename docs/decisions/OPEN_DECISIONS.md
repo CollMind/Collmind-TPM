@@ -84,7 +84,7 @@ doğrudan ilişkili:
 
 | dosya | bu indeksle ilişkisi |
 |---|---|
-| **`00_PAKET_INDEKSI.md`** | *"Açık kalanlar"* bölümünde **altı maddeyi** türleriyle listeliyor (2 karar · 2 **hukuk** · 2 teknik ölçüm) ve *"`OPEN_DECISIONS.md` bunları indeksler"* diyor |
+| **`00_PAKET_INDEKSI.md`** | *"Açık kalanlar"* bölümünde **beş maddeyi** türleriyle listeliyor (2 karar · 1 **hukuk** · 2 teknik ölçüm) ve *"`OPEN_DECISIONS.md` bunları indeksler"* diyor. ⚠️ **Altıydı** — kişi bazlı raporlama 2026-08-12'de kapandı (`K-2.9.6`) |
 | **`04_KARAR_KAYDI.md`** | **21 kararın** tamamı — soru · karar · gerekçe · açtığı `K-*` kuralları. Aşağıdaki satırların çoğunun **cevabı burada** |
 
 ✅ **İşlendi (2026-08-12).** `04_KARAR_KAYDI.md`'nin 21 kararı bu indekse uygulandı:
@@ -92,7 +92,7 @@ doğrudan ilişkili:
 *"karar turu etkiledi"* diye işaretlendi, staging'de doğan iki karar eklendi ve reddedilen
 seçenekler için `E` bölümü açıldı. Sayılar `§Bu turun bilançosu`'nda **sayılarak** yazıldı.
 
-📌 Ve iki kayıt yeri **çelişmemeli**: paket indeksi altı maddeyi **özetler**, bu dosya
+📌 Ve iki kayıt yeri **çelişmemeli**: paket indeksi beş maddeyi **özetler**, bu dosya
 onları **işaret eder**. İçerik ikisinde de yaşamaz — `04_KARAR_KAYDI.md`'de yaşar.
 
 ---
@@ -125,7 +125,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `0056-K2` | Çok-rol gerekiyor mu (junction ↔ enum)? | `0056 §C` | [[T-165]] | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §B3` — çok rollülük **evet** (birleştirme tablosu, union çözümleme) |
 | `0056-K3` | Yetenek granularitesi: `§7.2`'nin 20 yeteneği mi, daha kaba mı? | `0056 §C` | [[T-167]] · [[T-156]] | açık |
 | `0056-K4` | `user_permission_overrides` gelecek mi? | `0056 §C` | [[T-165]] | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §B3` — kişiye özel yetki istisnası **HAYIR** — kaynaktan bilinçli sapma |
-| `0056-K5` | Kapsam eksenleri: `category` kalsın mı, `region` eklensin mi? | `0056 §C` · `0052 §1` | [[T-165]] | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §A7` — kapsam **kanal + müşteri + kategori** kalır; **bölge Faz 2** |
+| `0056-K5` | Kapsam eksenleri: `category` kalsın mı, **`region` ZORUNLU olsun mu**? | `0056 §C` · `0052 §1` | [[T-165]] | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §A7` — kapsam **kanal + müşteri + kategori**, bölge Faz 2. ⚠️ **Ama soru şekil değiştirdi** (`0069 §F14`): `plans.region_id` **kolonu zaten var, nullable** — yani *"eklensin mi"* değil, **"zorunlu olsun mu"**. Bu `A7`'yi etkilemiyor, Faz 2'nin şeklini belirliyor |
 | `0056-K6` | `SCOPE_ENFORCEMENT_ENABLED` ne zaman açılacak? | `0056 §C` | planner kapsam izolasyonu | açık — **bugün kapalı** |
 | `0056-K7` | `RolesGuard` fail-open kalacak mı? | `0056 §C` · [[T-181]] | 77 route | açık |
 | `0056-K8` | Yetki **veri** mi olacak (üretimden konfigüre edilebilir mi)? | `0056 §C` · [[T-108]] | [[T-156]] | açık |
@@ -138,7 +138,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `§3.1 ↔ §5` | Hacim **FU** seviyesinde mi tahmin edilir, **SKU** seviyesinde mi? Kaynak kendi içinde çelişiyor (`Section_03:112` *"FU → SKU volumes (optional detail)"* ↔ `Section_05:169` *"Volume planning occurs at SKU level"*) | `0057 §1` | grid mimarisi | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §A2` — giriş **FU**'da; SKU katmanı hesapta yaşar, satır olarak malzemeleşmez |
 | `0023` | `spend_type = ACCRUAL` — tahakkuk ne zaman yazılır, nasıl kapanır? | `docs/analysis/0023 §3` | ledger tahakkuk yolu | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §A6` — **operasyonel tahakkuk bizim**, muhasebe tahakkuku ERP'nin |
 | `§7.2 ↔ backend` | `import.invoice`: BRD *"Typical Roles: **Planner**, Finance"* diyor, backend `PLANNER`'ı **dışlıyor** — hangisi doğru? | `.claude/backlog/tasks/T-179.md` · `agreement-transaction.controller.ts:288` | fatura yükleme yetkisi | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §C5` — içe aktarma yetkisi **fazlanır**: bugün finans, eşleştirme gelince planlamacı |
-| `ADR 0002 ↔ §7.1` | Finance Manager yalnız `PENDING_FINANCE_REVIEW`'u mu onaylar, yoksa genel Level-2 mi? | `0056 §F.1` · `docs/decisions/0002` | onay akışı | **açık** ⛔ ADR'nin dayanağı **süperseded** (`.cursor/rules.md`) · 🔵 **v2'nin altı açık maddesinden biri** (*finans yöneticisinin onay hattı*): `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık` — *"ADR 0002'nin dayanağı düştü"* |
+| `ADR 0002 ↔ §7.1` | Finance Manager yalnız `PENDING_FINANCE_REVIEW`'u mu onaylar, yoksa genel Level-2 mi? | `0056 §F.1` · `docs/decisions/0002` | onay akışı | ✅ **KAPANDI 2026-08-12** → **`ADR 0002-R`** · `K-2.5.12` ailesi: onay hattını **yalnız atanmış şablon** belirler, ikinci bir yükseltme mekanizması **yok**. `escalate-to-finance` bir hat değil bir **eylem** (`FİNANSA DEVRET`). ⚠️ Eski sonuç (*FM yalnız kendisine geleni onaylar*) **hâlâ doğru** ama gerekçesi değişti: BRD okuması değil, **şablon tercihi** (`K-2.5.12e`) |
 | `0064-ROI` | GP ROI RAG ölçeği: `≥20%` mi `150%+` mı? | `0064 §1` · `Section_05:432` (formül) ↔ `Section_02:561` · `Section_01:163` | yeni BRD'nin örnekleri · Gate 3 (*"%70 yeşil"*) | **açık** — ölçüldü: **7 tanık `≥20`**, 2 tanık `150%` ve **ikisi de anlatı örneği**; öneri: örnekleri düzelt |
 | `0064-TENANT` | Çok-kiracılık Phase 1'de **var** mı, yol haritası mı? | `0064 §2` · **`0066 §3`** | RLS · `0056-K10` · [[T-179]] | **açık** ⛔ — `0063-SSO`'nun sözleşmesi burada **işlemiyor** (yön ters: faz bölümü *var*, yetenek bölümü *roadmap* diyor). `§9.2` faz etiketli + sayısal + mekanizma seviyesinde (RLS, pgBouncer); `§2.5` tek cümlelik not |
 | `0064-SCALE` | Performans testi **kapasite tavanını** mı (10.000 SKU / 100 kullanıcı) yoksa **Yıl-1 projeksiyonunu** mu (5.000 / 50) hedefler? | `0064 §3` · **`0066 §2` (çerçeve düzeltildi)** | performans testi hedefleri · [[T-154]] | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §B5` — hedef **Yıl-1 projeksiyonu** (5.000 SKU · 10 eşzamanlı onay); tavan iddiası çıkarıldı |
@@ -157,8 +157,8 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 
 | ID | Soru | Nerede tanımlı | Neyi blokluyor | Durum |
 |---|---|---|---|---|
-| [[T-170]] | Vergi Usul · KVKK · E-Fatura bu üründe **hangi kayıtlara**, hangi biçimde uygulanır? | `.claude/backlog/tasks/T-170.md` · `0050` | `INV-C-001`…`INV-C-004` | **ölçüm bekliyor** — üç teknik ölçüm önce · 🔵 **v2 açık maddesi** (*saklama sürelerinin bağlayıcılığı* — **hukuk**): `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık`. ⚠️ Kapsam `0065 §4`'te **on kurala** genişledi |
-| `v2-RAPOR-KISI` | **Kişi bazlı performans raporlaması** hukuken yapılabilir mi (KVKK)? | `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık` · `docs/brd-v2/00_PAKET_INDEKSI.md §Açık kalanlar` · `0061 §5` (kaynakta `Report 5`, *"Use Case: performance reviews"*) | kişi bazlı rapor · [[T-170]] ailesi | **açık — HUKUK** · 🔵 v2 açık maddesi |
+| [[T-170]] | Vergi Usul · KVKK · E-Fatura bu üründe **hangi kayıtlara**, hangi biçimde uygulanır? | `.claude/backlog/tasks/T-170.md` · `0050` | `INV-C-001`…`INV-C-004` | **ölçüm bekliyor** — üç teknik ölçüm önce · 🔵 **v2 açık maddesi** (*saklama sürelerinin bağlayıcılığı* — **hukuk**): `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık`. ⚠️ Kapsam `0065 §4`'te **on kurala** genişledi · ⏸️ **2026-08-13: `K-2.9.0` askısı** — mütalaaya dek hiçbir kayıt silinmez. Sorunun şekli keskinleştirildi (`L2_03 §2.9.6 Hukuk paketi`): *"7 yıl doğru mu"* değil, **"hangi kayıt sınıfımız hangi rejime girer"** |
+| `v2-RAPOR-KISI` | **Kişi bazlı performans raporlaması** hukuken yapılabilir mi (KVKK)? | `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık` · `0061 §5` (kaynakta `Report 5`, *"Use Case: performance reviews"*) | kişi bazlı rapor · [[T-170]] ailesi | ✅ **KAPANDI 2026-08-12** — soru **cevaplanmadan** kapandı: `K-2.9.6` raporu **süreç metriği** olarak tanımladı, kişi kimliği kırılım boyutu değil. Kişi bazlı versiyon `K-2.9.6a` ile **hukuk şartlı ertelendi** — artık hiçbir işi bloklamıyor |
 
 > ⚠️ `T-170` bilinçli olarak *"ölçüm bekliyor"*: bağlayıcılık sorusu sorulmadan önce
 > KVKK anonimleştirmesi · E-Fatura dosya arşivi · `admin_audit_logs` immutability'si
@@ -168,6 +168,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 
 | ID | Soru | Nerede tanımlı | Neyi blokluyor | Durum |
 |---|---|---|---|---|
+| [[T-209]] | **`sales_actuals.discount_amount`'ın kaynağı nedir?** Satış iskontosu mu, fatura-içi ticari indirim mi — üç soru: hangi kaynaktan doluyor, Wella'nın iş tanımı ne, `on_invoice_entries` ile aynı olayı mı temsil ediyor | `.claude/backlog/tasks/T-209.md` · `docs/brd-v2/_ISSUE_B_DALGASI.md §5` · `K-2.13.14h6a` / `K-2.1.19a` / `K-2.7.4a` (hepsi ⛔ bu ölçüme bağlı) | **`S3` (dalgadan çıktı)** · `K-2.13.14h6` net taban · `K-2.1.19` satış tablosu sözleşmesi · `K-2.7.4a` | **açık — DOMAIN** ⚠️ **ön karar verildi** (2026-08-13, `(b)`: kaynak `on_invoice_entries`) ama beslendiği ölçüm henüz koşmadı. Zemin: `CHECK (net=gross−discount)` seed verisine karşı **reddedildi** (`is violated by some row`), sapma **3/3 satır** · en büyük `25.000` · toplam `63.000`. **%100 sapma bir veri kalitesi sorunu değil, model uyuşmazlığı işaretidir** |
 | `0019 #3` | CAP aşımı → uyarı + Finance override mı? | `docs/analysis/0019 §kuyruk` | `D-01` ile aynı karar | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §A5` — ⛔ **üç madde tek kararla kapandı** (`D-01` · `0019 #3` · `T-176`'nın CAP maddesi): tavan aşımı gerçekleşmeyi **durdurmaz**, hakediş tavana **kırpılır** |
 | `0019 #4` | Baseline kapsama kapısının **varlığı** — ve hangi kademe? | `0019 §kuyruk`, `0028 §2` ile **düzeltildi** (MVB-1/2/3) | [[T-024]] | açık — kapının varlığı domain, sayısı konfigürasyon |
 | `0019 #8` | `TRANSFER` / `ADJUST` işlem tipleri: tenant mı, ürün mü? | `docs/analysis/0019 §kuyruk` · [[T-145]] | — | ✅ **KAPANDI 2026-08-12** · `04_KARAR_KAYDI.md §B6` — `TRANSFER` **Faz 1**'e girer (blok kararının kaçış yolu); **devir Faz 1 dışı** |
@@ -254,6 +255,16 @@ bilerek reddedilen (E.1)              6
 AÇIK kalan satır                     35
 Faz 2'ye ertelenen (E.2)              6
 ```
+
+📌 **Ek 2 (2026-08-13, DB ölçüm turu):** `v2-UC-ALAN` **eklendi** (domain) → **26 kapanan ·
+35 açık · 61 satır.** Bir ölçüm bir kararı kapatmadı, **yenisini açtı**: `C3`'ün *"tolerans
+kısıtta olmasın"* kararı geçerliliğini yitirdi, çünkü kısıtın dayandığı **alan tanımı**
+belirsiz çıktı.
+
+📌 **Ek (2026-08-13):** `v2-RAPOR-KISI` de kapandı (`K-2.9.6` — süreç metriği) → **26
+kapanan · 34 açık.** Kapanış sorunun **cevaplanmasıyla değil, ortadan kalkmasıyla** oldu:
+ürün kişi kimliğini kırılım boyutu olarak kullanmayınca hukuk sorusu bir iş bloklamıyor.
+Toplam satır sayısı değişmedi (60) — bu tabloya yeni satır girmedi.
 
 ⚠️ **21 karar ≠ 25 kapanan satır.** Bir karar birden çok satırı kapatabiliyor (`A5` üçünü:
 `D-01` · `0019 #3` · `T-176`'nın CAP maddesi; `A2` ikisini; `A10` ikisini; `B3` ikisini;

@@ -1,5 +1,12 @@
 # BRD v2.0 — L2 İş Kuralları (İkinci Küme)
 
+> ⛔ **BU DOSYAYI YALNIZ TEAM LEAD YAZAR.** `L2` kural metinleri tek kanaldan geçer:
+> kural metni Team Lead'e verilir, Team Lead işler. Yerel/paralel oturumlar `L2`'ye
+> **dokunmaz** — kod, migration, ölçüm; belge değil.
+> Gerekçe ölçüldü (2026-08-13, `F1`'in tekrarı): aynı kural iki oturumda ayrı ayrı
+> işlendi ve iki kopya doğdu — `K-2.6.4` bir kopyada beş kurala açıldı, diğerinde
+> `⛔ açık` kaldı. **Tek yazar kuralı vardı, tek kanal yoktu.**
+
 > **Bölüm 2.7 · 2.8 · 2.10 · 2.11.** Çekirdeğin (2.1–2.4) devamı. Kalan dört bölüm
 > (2.5 onay · 2.6 yetki · 2.9 uyum · 2.12 ölçek) açık kararlara bağlı.
 
@@ -48,6 +55,17 @@ veriyi okur ve kullanır; **üzerine yazmaz.**
 | Tamlık | ≥ %95 |
 | Gecikme | T+1 |
 | Tutar toleransı | < %2 |
+
+**K-2.7.4a** — ⚠️ **Satış tablosunda `net = brüt − indirim` kısıtı yazılmaz.**
+
+Eşitlik ancak indirim alanı **tam köprü** olsaydı geçerliydi; ölçüm bunu eledi. Bir kısıt ya
+doğru veriyi reddeder ya alanı anlamı dışına zorlar.
+
+Yerine bir **akıl sağlığı kontrolü** (`net ≤ brüt`) ve veri sözlüğünde alanın **kaynağıyla
+birlikte tanımı.**
+
+> ⛔ Akıl sağlığı kontrolü de ölçüm şartlı: iade negatif satırla temsil ediliyorsa (`C2`:
+> kanal açık, `0 CHECK`) o kural da düşer.
 
 **K-2.7.5** — Bu eşikler bir **kabul kapısıdır**, bir temenni değil. Karşılanmadığında ürün
 çalışmaya devam eder ama etkilenen göstergeler **açılmaz.**
@@ -110,7 +128,10 @@ müşteri listesi · müşteri detayı · ürün listesi · ürün detayı (fiya
 
 **K-2.8.2** — Entegrasyon **çekme** modelidir: ürün zamanlanmış olarak sorar, ERP itmez.
 
-**K-2.8.3** — Yanıt süresi bütçesi: ortalama < 500ms, P95 < 2s, zaman aşımı 10s.
+**K-2.8.3** — ERP yanıt süresi bütçeleri → **`Ek A`** (`NFR-14`).
+
+> Taşındı (2026-08-12, dış denetim): bu bir işlevsel olmayan gereksinimdir — `2.12`'nin
+> taşınma gerekçesi buna da uygulanır.
 
 **K-2.8.4** — ERP bağlı değilse ürün çalışır; ana veri elle yönetilir ve bu durum
 işaretlidir.
@@ -230,13 +251,11 @@ gider. Bilgilendirme amaçlı olanlar yalnız uygulama içi.
 
 ## 2.10.3 Yükseltme
 
-**K-2.10.4** — Bir onay bildirimi cevapsız kalırsa **yükseltilir**: önce hatırlatma, sonra
-bir üst seviyeye bildirim.
+**K-2.10.4** — Yükseltme merdiveni ve süreleri `K-2.5.10`'da tanımlıdır. Bu bölüm yalnız
+**kanal ve alıcıyı** belirler.
 
-**K-2.10.5** — Yükseltme merdiveni ve süreleri konfigürasyondur.
-
-> ⛔ Süreler bugün tanımlı değil. Kaynak iki farklı merdiven tarif ediyor ve zaman aşımı
-> maddesini kendi tablosunda *"bu bölüme ait değil"* diye işaretliyor.
+> Kopya kaldırıldı (2026-08-12, dış denetim): merdiven iki yerde tanımlıydı ve buradaki
+> **bayat** kalmıştı.
 
 ## 2.10.4 Bildirim ≠ durum değişikliği
 
@@ -341,12 +360,16 @@ olayın bildirileceğini tanımlar, metnini değil.
 
 ---
 
-# Açık kalanlar — bu kümede
+# Açık kalanlar
+
+> ⚠️ **Bu bölüm 2026-08-12'de kaldırıldı.** Açık kural listesi tek bir yerde yaşar:
+> `00_PAKET_INDEKSI.md`. Bölüm sonlarında tutulan kopyalar karar turundan sonra **bayat**
+> kaldı (dış denetim `F8`) — ve bayat bir durum listesi, olmayan bir listeden kötüdür.
 
 | Kural | Neyi bekliyor |
 |---|---|
 | `K-2.7.11` | Mod açılma eşiği — müşteri karması ölçümü |
-| `K-2.10.5` | Yükseltme merdiveni ve süreleri |
+| `K-2.5.10e` | Yükseltme merdiveni ve süreleri |
 
 Ve dört bölüm hâlâ yazılmadı: **2.5 onay · 2.6 yetki · 2.9 uyum · 2.12 ölçek** — dördü de
 açık karara bağlı.

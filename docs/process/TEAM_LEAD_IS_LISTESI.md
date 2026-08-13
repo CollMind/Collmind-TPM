@@ -35,7 +35,7 @@ Ve karar turu tabanı **planlanan hacim** olarak değiştirdi (`K-2.4.17`).
 
 → ADR yeniden yazılır; eski gerekçe **silinmez**, yanlışlandığı kayıtla durur.
 
-## A2 · `ADR 0002` yeniden onay bekliyor
+## A2 · `ADR 0002` yeniden onay bekliyor ✅ **KAPANDI 2026-08-13 → `0002-R`**
 
 Dayanağı sonradan **geçersiz ilan edilmiş** bir özet belgeydi. Ve kaynak farklı diyor:
 finans yöneticisine **genel ikinci kademe** onay yetkisi veriyor.
@@ -182,9 +182,32 @@ diye kaydetti.
 
 Kararların **korunması** — kural değil mekanizma.
 
-## E1 · Klasör bölmesine yeni kod eklenemez
+## E1 · Klasör bölmesine yeni kod eklenemez ✅ **YAZILDI 2026-08-13**
 
 `A1` kararının ikinci maddesi. Bir guard, `modes/` altına yeni dosya eklenmesini engeller.
+
+`collmind.backend/scripts/guards/mode-split.sh` + `mode-split-baseline.txt`,
+`run-all.sh` zincirine bağlı (`lib.sh` guard listesi). Uçtan uca ölçüldü: bölmeye dosya
+kondu → runner **exit 1**; silindi → **exit 0**.
+
+**Bugünkü sayı — ilerlemenin metriği** (her sprint sonunda `EK_E` sayımının yanına):
+
+```
+bölme: 101 dosya · 28.224 satır · 6 dış referans dosyası (16 import satırı)
+```
+
+⚠️ Baseline **liste** tutuyor, sayı değil — sayı-baseline *"biri düştü, biri girdi"*
+gerilemesini görmez.
+
+⚠️ **Bu iş bölmeyi ölçer ve DONDURUR — çözmez.** Birleştirme (ya da silme) `C5`'e bağlı,
+ve `C5` üç sonuçtan birine gidiyor: *fark küçük + canlı* → dokunulan-yerden birleştirme ·
+*fark büyük + canlı* → her adım ayrı issue · *fark her neyse + ÖLÜ* → **silme, ve silme
+daha ucuz.** Guard üçünde de aynı işi yapıyor.
+
+📌 **Kapsam dizin adıyla değil ölçümle tanımlandı:** `modes` adlı dizin tüm repoda **1**;
+bölme dışında `*actuals-first*`/`*planning-first*` kardeş dizin **0**. Yani `DUR` koşulu
+(*kapsam beklenenden geniş*) **tetiklenmedi** — ama referans yüzeyi ağacın dışına taşıyor
+(`app.module.ts` · seed · `master-data`/`kpi`), ve baseline onu ayrı satır türüyle tutuyor.
 
 ## E2 · Kapsama < %100 iken tam-kapsama paleti yasak
 

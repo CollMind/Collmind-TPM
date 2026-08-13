@@ -609,6 +609,10 @@ Denetim kaydı **değiştirilemez ve silinemez**, ve bu veritabanı seviyesinde 
 | İçe aktarılan dosya | 90 gün |
 | Dışa aktarılan çıktı | 7 gün |
 
+⏸️ **Bu tablo bugün ASKIDA** (`K-2.9.0`, 2026-08-12): hukuki mütalaa gelene dek **hiçbir
+kayıt silinmez** — `90 gün` ve `7 gün` satırları dahil. Ve `7 yıl` rakamının kaynağı yerel
+bir mevzuata atıf vermiyor; gerekçe ve ölçüm `L2_03 §2.9`'da.
+
 ⚠️ **Bugün bu kural kazara sağlanıyor** — hiçbir şey silinmiyor çünkü silme mekanizması yok.
 
 > **Kazara sağlanan bir kural korunmuyor demektir.** Bir temizlik işi eklendiği gün sessizce
