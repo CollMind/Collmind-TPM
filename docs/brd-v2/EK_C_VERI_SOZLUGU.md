@@ -594,7 +594,7 @@ yeni kalemler `S`/`R` alır, `B` almaz.
 |---|---|---|
 | `R1` | `ledger_entries.deleted_at` **kaldırılır** | `K-2.3.4` — *"hep boş olmalı"* diyen bir kural, kolonun **olmaması gerektiğinin** işaretidir |
 | `R2a` | `users.role` **enum + veri** — değerler **ASCII kalır**; bir ad değişikliği (`FINANCE_MANAGER`→`FINANCE`), üç silme. **Önce sil, sonra adlandır.** ⚠️ **frontend uyumu DAHİL** | `K-2.6.4d` · `K-2.6.10` |
-| `R2b` | **ölü referans temizliği** — `APPROVER` (7 dosya) · `MANAGER` (13 dosya) · `FINANCE` (6 dosya) · **ayrı PR** | `K-2.6.4d` |
+| `R2b` | **ölü referans temizliği** — `APPROVER` · `MANAGER` · `FINANCE` · **+ enum KEY'i `FINANCE_MANAGER` → `FINANCE`** · **ayrı PR** | `K-2.6.4d` |
 | `R3` | `skus.unit_of_measure` serbest alanı **kaldırılır** (yerine `S12`) | `K-2.1.12b` |
 
 > ✅ Üçünün de bugün **var olduğu** ölçüldü (2026-08-13, `main` şeması):
@@ -615,6 +615,14 @@ yeni kalemler `S`/`R` alır, `B` almaz.
 | **`FINANCE_MANAGER`** | **2** | → | **`FINANCE`** ⚠️ ad değişiyor | `FİNANS` |
 | `READONLY` | 1 | → | `READONLY` | `İZLEYİCİ` |
 | `APPROVER` · `MANAGER` · **(eski) `FINANCE`** | 0 · 0 · 0 | ⛔ | **silinir** | — |
+
+📌 **Enum KEY'i `R2b`'ye ertelendi (2026-08-13).** Bugün `UserRole.FINANCE_MANAGER`'ın
+**değeri** `'FINANCE'` — okuyanı yanıltır, ve bu tam olarak bu turda **iki kez** ısıran
+sınıftır: **ad benzerliği ile anlam ayrışması**. Ayrıca `K-2.6.4`'ün *"kullanımdan kalkmış
+etiket"* kavramı açısından, key olarak kalan `FINANCE_MANAGER` o listede **yaşamaya devam
+ediyor görünür**.
+Ama düzeltmesi **çağrı yerlerini** değiştirir ve ölçülmelidir → `R2b` ile aynı tur.
+**Değer doğru, key kozmetik — dalgayı büyütmeye değmez.**
 
 > ⚠️ **MIGRATION SIRASI: önce SİL, sonra YENİDEN ADLANDIR.** Eski `FINANCE` siliniyor **ve**
 > `FINANCE_MANAGER` `FINANCE` oluyor — ters sırada çakışır.
@@ -665,6 +673,19 @@ yani **veri göçü yok**. Kod ayak izi gerçek ama ayrı bir iş: enum'u migrat
 | 3 | rol kataloğu (**beş** rol) | `K-2.6.4` |
 | 4 | aktif dönemler | `S11` backfill'inin **hedefi** |
 | 5 | mekanik kütüphanesi — kadans/taban/kanıt alanlarıyla | `S1` |
+
+> ⛔ **Ölçüldü 2026-08-13: beşin DÖRDÜ yazılmamış.** Yalnız kalem 4 (`fiscal_periods`,
+> 36 satır) var; `budget_policies` · `approval_policies` · `roles` · `capabilities`
+> **0 satır**, ve mekanik alanları boş. Migration şemayı kuruyor, **hiçbirine `INSERT`
+> etmiyor**.
+>
+> ⚠️ **Ve bulunuş biçimi bir ders:** kalem 4'ün eksikliği **FK'si seed'i kırdığı için**
+> ortaya çıktı. Diğer dördünün FK'si yok — **hiçbir şeyi kırmadılar ve sessizce eksik
+> kaldılar.** Bir kanonik listeye yazmak, yazıldığının kanıtı değildir; **listenin her
+> kalemi ayrıca ölçülmelidir.**
+>
+> `K-2.2.8d`'nin joker satırı **zorunludur** — sıfır satır, bütçe politikası
+> çözümlemesinin fallback'siz olması demek. → [[T-211]]'in `Done`'unda şart.
 
 ## Kabul ölçütleri
 
