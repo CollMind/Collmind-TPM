@@ -733,12 +733,44 @@ yani **veri göçü yok**. Kod ayak izi gerçek ama ayrı bir iş: enum'u migrat
 | # | Kalem | Bağlı |
 |---|---|---|
 | 1 | joker bütçe politikası satırı | `K-2.2.8d` — **zorunlu** |
-| 2 | üç onay şablonu — **`EŞİKLİ`'nin eşiği `NULL`** | `K-2.5.13a` · `K-2.5.13c` |
+| 2 | **iki** onay şablonu (`STANDARD` · `TWO_TIER`) · ⏸️ **üçüncüsü ([[T-214]]'e bağlı)** | `K-2.5.13a` |
 | 3 | `roller` tablosu, **beş rol** ✅ · `capabilities`/`role_capabilities` **⏸️ `T-165` ile** | `K-2.6.4` · `K-2.6.3` |
 | 4 | aktif dönemler | `S11` backfill'inin **hedefi** |
 | 5 | mekanik kütüphanesi — kadans/taban/kanıt alanlarıyla | `S1` |
 
-### `EŞİKLİ` şablonu `NULL` eşikle yazılır (karar, 2026-08-14)
+### ~~`EŞİKLİ` şablonu `NULL` eşikle yazılır~~ 🔄 REVİZE (2026-08-14)
+
+> **🔄 Karar bugünkü şemayla çelişiyor — ve dayandığı ayrım modelde YOK.**
+>
+> Kararın varsayımı *"satır = katalog seçeneği"*ydi; şema *"satır = tenant'ın politikası"*
+> diyor: `approval_policies.tenant_id` **`NOT NULL`**, yani bir satırın varlığı zaten
+> **seçilmiş politika** demek. `CHK_approval_policies_threshold_template` tam bunun için
+> yazılmış ve `THRESHOLD` + `NULL`'u **INSERT anında** reddediyor (ölçüldü, pozitif
+> kontrollü: `THRESHOLD` + `50000` → `INSERT 0 1`; `THRESHOLD` + `NULL` → **`23514`**).
+>
+> ⚠️ Ve `K-2.1.8b` benzetmesi de aynı ayrımı varsayıyordu: *"girilmemiş bir değer
+> bayrağıyla durur"* ancak satır bir **katalog** ise anlamlıdır.
+>
+> **`CHECK`'i gevşetmek çözüm değil:** kabul şartının ikinci yarısı (*"seçilmeye
+> çalışılınca reddedilir"*) **gösterilemez** — `approval_policies`'i tüketen **0** modül
+> var, seçim yolu yok. Yani kısıt kaldırılır, yerine **hiçbir şey** konmaz (`§4.2`:
+> mekanizma var, yol yok).
+>
+> **Bugünkü davranış korunur:** `THRESHOLD` satırı **eşik girilene kadar yazılmaz.**
+> Kararın varsaydığı ayrım → [[T-214]] (katalog/seçim modeli), Faz 1 politika işiyle.
+
+📌 **`S3` deseninin ÜÇÜNCÜ vakası** — üçünde de sıralanacak şey bir veri düzeltmesi değil,
+bir **tanım**:
+
+| kalem | teşhis | sonuç |
+|---|---|---|
+| `S3` | kısıt yanlış, veri değil | dalgadan **çıktı** |
+| `K-2.7.4a` | `net ≤ brüt`, `C2`'ye bağlı | kural kaldı, **kısıt girmedi** |
+| **`EŞİKLİ`** | **ayrım modelde yok** | **karar kaldı, seed girmedi** |
+
+<details><summary>Eski karar metni (silinmedi — <code>0006-R</code> deseni)</summary>
+
+
 
 İlk uygulama şablonu **hiç yazmadı**, gerekçesi `§2.5` (*"`X` bir değişken, kaynakta somut
 tutar yok, uydurma"*). **Refleks doğru, sonuç yanlış:** şablonu hiç yazmamak uydurmaktan
@@ -759,6 +791,8 @@ seçer ve eşik değerlerini ayarlar"*). Yani `NULL` **doğru hâldir** — eksi
 
 ⚠️ **Kabul şartı:** `NULL` eşikli bir şablonun **seçilmesi reddedilmeli**. Yoksa sessiz
 sıfır sınıfı doğar — `§2.5`.
+
+</details>
 
 ### Rol ailesinin verisizliği BİLİNÇLİ — adresli erteleme (2026-08-14)
 
