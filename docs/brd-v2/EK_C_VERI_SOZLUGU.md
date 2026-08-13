@@ -478,8 +478,40 @@ Yani kanonik hâli **hiç oluşmadı** — ve dalga uygulanmak istendiğinde rep
 > Bu `F2`'nin akrabası: orada **bir numara iki şeye** verilmişti, burada **bir şeye iki
 > numara**. İkisinin de sonucu aynı: atıf çözümlemesi okuyana göre değişir.
 
-📌 `B1`–`B9` ↔ `S`/`R` eşlemesi **yeniden kurulmadı** — kurmak için `TEAM_LEAD_IS_LISTESI`
-gerekir ve o belge bu repoda yok. Aşağıdaki `S`/`R` numaraları **bundan sonra kanoniktir**.
+### ⛔ DÜZELTME (2026-08-13, aynı gün): *"o belge bu repoda yok"* YANLIŞTI
+
+Bu bölüm ilk yazıldığında *"`B1`–`B9` ↔ `S`/`R` eşlemesi kurulamaz, çünkü
+`TEAM_LEAD_IS_LISTESI` bu repoda yok"* diyordu. **Belge duruyor:**
+`docs/process/TEAM_LEAD_IS_LISTESI.md`, `§B · Şema alanları — deploy öncesi ucuz`.
+
+İddia ölçülmeden yazılmıştı — `CLAUDE.md`'nin *"koda/belgeye 'yok' yazmadan önce ölç"*
+kuralının ihlali, ve bir **kapsam kararını** dayanaksız bıraktı. Eşleme kuruldu:
+
+| `B` | `S`/`R` | kural |
+|---|---|---|
+| `B1` kadans · tahakkuk takvimi | `S1` | `K-2.1.13` |
+| `B2` içe aktarma kökeni | `S2` | `K-2.13.12b` |
+| `B3` onay politikası + Faz 2 alanları | `S5` | `K-2.5.13e` |
+| **`B4` `SÜRESİ_DOLDU` durumu + geçiş tablosundaki yeri** | ⛔ **KARŞILIĞI YOK** | `K-2.5.10e` |
+| `B5` fatura-içi anlaşma referansı | `S9` | `K-2.13.14l` |
+| `B6` SKU birim + çevrim, **ve** birim alanının çıkarılması | `S12` + `R3` | `K-2.1.12c` |
+| `B7` bütçe politikası tablosu | `S4` | `K-2.2.8b` |
+| `B8` roller varlık olur | `S6` | `K-2.6.5a` |
+| `B9` talep varlığı + eşleştirme | `S7` + `S8` | `K-2.13.5` |
+
+> ⛔ **`B4` numaralandırmada DÜŞMÜŞ.** Karar verilmiş bir şema kalemi (`SÜRESİ_DOLDU` enum
+> değeri; *"davranış Faz 2'de, enum bugün"*), ve bu belgenin kendi `planlar` bölümü onu
+> **"bugün eklenir"** diye yazıyor — ama `S` listesinde karşılığı yok. Dalga bugünkü
+> numaralandırmayla inseydi **atlanırdı**.
+>
+> Bu, *"bir şeye iki numara"*nın somut bedeli: `F2`'de atıf çözümlemesi okuyana göre
+> değişiyordu, burada bir kalem **iki numaralandırma arasında kayboldu**.
+>
+> → **`S15` önerisi** (ürün sahibi kararı bekliyor): `plans.status` enum'una `SÜRESİ_DOLDU`,
+> davranışsız. `S10`'un enum genişletmesiyle aynı migration'da.
+
+`S10`–`S14` ve `S3`'ün `B` karşılığı **yok ve olmamalı** — onlar sonraki ölçümlerden doğdu
+(`C1`,`C3`,`Ö4`,`F16`). Aşağıdaki `S`/`R` numaraları **bundan sonra kanoniktir**.
 
 ## `S` · Şema
 

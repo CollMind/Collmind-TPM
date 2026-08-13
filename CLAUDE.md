@@ -570,6 +570,43 @@ Pratik: commit'ten **önce** değiştirdiğin şeyi `grep` ile geri oku. Bu, `§
 ⚠️ **Ve bu özellikle ADR/sözleşme dosyalarında önemli:** kodda tutarsızlık bir sonraki test
 koşumunda kırmızıya döner; bir **karar belgesinde** hiçbir zaman dönmez.
 
+### Doğrulama bir KAPIDIR — durdurmuyorsa doğrulama değildir (ZORUNLU)
+
+> **Doğrulama, çıkışı akışı durduran bir kapıdır; durdurmuyorsa doğrulama değildir.**
+
+Bir kontrolün **basılması** ile **bağlayıcı olması** ayrı şeylerdir. Basılan bir sayı
+okunmayı bekler; bir kapı beklemez. Ve okunmayan bir kontrol, olmayan kontrolden **kötüdür**
+— çünkü yapıldığı sanılır.
+
+Bu, `§2.7` ailesinin dışında **ayrı bir sınıf**: orada ölçüm yanlıştı ya da yanlış şeyi
+ölçüyordu; burada **ölçüm doğru ve kimse ona bakmıyor.**
+
+Aynı gün **iki** vakası ölçüldü:
+
+| vaka | kontrol ne yaptı | neden kapı değildi |
+|---|---|---|
+| Team Lead'in commit'i | bayat atıf sayısını **bastı** (`1`, beklenen `0`) | çıktıydı, koşul değil — `git commit` yine koştu |
+| `run-all.sh` (backend) | alt guard'ın `RC`'sini **yakaladı** | yalnız `2`'ye karşı sınandı; `RC=1` yutuldu → **runner exit 0** |
+
+İkincisi daha pahalıydı: gerçek repoda çöken bir guard *"0 bulgu"* diye raporlanıyor ve
+`npm run guards` **yeşil** veriyordu. Ampirik kanıt (mutasyon: guard yalnız gerçek repoda
+çöksün, fixture'da değil) — `self-test EXIT=0` · `guard EXIT=1` · **`runner EXIT=0`**.
+
+⚠️ **Ve savunmayı başka bir kontrole devretmek yetmez.** O runner'ın kendi yorumu bu sınıfa
+karşı yazılmıştı ve *"self-test yakalar"* diyordu. Yakalayamadı: self-test guard'ları
+**fixture env değişkeniyle** çağırıyor, runner **çıplak** — ikisi farklı girdi kümesini
+ölçüyor. Bir kontrolün başka bir kontrolü kapsadığı **ölçülmeden** varsayılamaz.
+
+**Pratik:**
+
+- ❌ `echo "$n bayat atıf"; git commit …`
+- ✅ `[ "$n" -eq 0 ] && git commit … || echo "⛔ commit YAPILMADI"`
+- ❌ `RC=$?` … `if [ "$RC" -eq 2 ]` (tek bir değere karşı)
+- ✅ `if [ "$RC" -ne 0 ]` — **meşru çıkış kodlarını önce ÖLÇ**, sonra kalanını fatal yap
+
+Ve bir kapı yazdıktan sonra `§2.7 #9`'u uygula: **iki farklı girdide iki farklı çıktı**
+verdiğini göster. Temiz halde yeşil olması, kirlide kırmızı olduğunun kanıtı değildir.
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
