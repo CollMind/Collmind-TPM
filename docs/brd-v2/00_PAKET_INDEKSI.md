@@ -8,15 +8,15 @@
 > ⚠️ Bu blok **script ile sayılır**, elle yazılmaz. Paketin başka hiçbir yerinde durum
 > sayısı tutulmaz (dış denetim `F8`: sayı dört yerde dört farklıydı).
 
-**Ölçüm: 2026-08-13** (son güncelleme: `K-2.1.19` ailesi + `K-2.7.4a` — gerçekleşen satış
-tablosunun sözleşmesi ön kararı, `T-209` ölçümüne bağlı)
+**Ölçüm: 2026-08-13** (son güncelleme: `K-2.6.4` rol kataloğu + `K-2.5.12` tek onay hattı —
+**son iki açık kural kapandı**)
 
 | | |
 |---|---|
-| `L2` kural tanımı | **363** |
-| Açık (⛔) kural | **2** — `K-2.5.12` onay hattı · `K-2.6.4` rol kümesi<br>⏸️ Ayrıca `K-2.9.0`: saklama bölümü **askıda** (hukuki mütalaa) — açık değil, **dondurulmuş**<br>⚠️ Ayrıca `K-2.13.14h6a` ve `K-2.1.19a`: **ön karar**, [[T-209]] ölçümüne bağlı — açık sayılmıyor çünkü ürün sahibi kararı verildi, yalnız beslendiği kaynak ölçüm bekliyor |
-| Bölüm dağılımı | veri/bütçe/defter/hesap **147** · veri kalitesi/entegrasyon/bildirim/denetim **49** · onay/yetki/uyum **78** · hakediş/AI/kurulum **89** |
-| Açık karar (kural dışı) | **3** — `ADR 0002` · veri ayrımı modeli · iade temsili |
+| `L2` kural tanımı | **374** |
+| Açık (⛔) kural | **0** ✅ — `L2`'de dayanaksız yürürlükte madde kalmadı<br>⏸️ `K-2.9.0`: saklama bölümü **askıda** (hukuki mütalaa) — açık değil, **dondurulmuş**<br>⚠️ `K-2.13.14h6a` · `K-2.1.19a`: **ön karar**, [[T-209]] ölçümüne bağlı — açık değil; karar verildi, yalnız beslendiği kaynak ölçüm bekliyor |
+| Bölüm dağılımı | veri/bütçe/defter/hesap **147** · veri kalitesi/entegrasyon/bildirim/denetim **49** · onay/yetki/uyum **89** · hakediş/AI/kurulum **89** |
+| Açık karar (kural dışı) | **2** — veri ayrımı modeli · iade temsili<br>(`ADR 0002` 2026-08-13'te kapandı → **`0002-R`**, `K-2.5.12`) |
 
 **Sayım ve doğrulama:**
 

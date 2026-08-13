@@ -35,7 +35,7 @@ Ve karar turu tabanı **planlanan hacim** olarak değiştirdi (`K-2.4.17`).
 
 → ADR yeniden yazılır; eski gerekçe **silinmez**, yanlışlandığı kayıtla durur.
 
-## A2 · `ADR 0002` yeniden onay bekliyor
+## A2 · `ADR 0002` yeniden onay bekliyor ✅ **KAPANDI 2026-08-13 → `0002-R`**
 
 Dayanağı sonradan **geçersiz ilan edilmiş** bir özet belgeydi. Ve kaynak farklı diyor:
 finans yöneticisine **genel ikinci kademe** onay yetkisi veriyor.

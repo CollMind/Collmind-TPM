@@ -90,6 +90,11 @@ extract_index_count() {
   sed -n 's/^| `L2` kural tanımı | \*\*\([0-9][0-9]*\)\*\*.*/\1/p'
 }
 
+# indeksteki "Açık (⛔) kural" sayısını çıkarır
+extract_index_open() {
+  sed -n 's/^| Açık (⛔) kural | \*\*\([0-9][0-9]*\)\*\*.*/\1/p'
+}
+
 # ═══════════════════════════════════════════════════════ POZİTİF KONTROL
 # Beklenen değerler ölçümden ÖNCE yazılıdır — çıkan sonuca bakıp "makul" demek,
 # kontrolü kontrol olmaktan çıkarır.
@@ -120,6 +125,12 @@ K-2.4.22'
   want='363'
   got=$(printf '%s\n' '| `L2` kural tanımı | **363** |' | extract_index_count)
   [ "$got" = "$want" ] || { echo "!! pozitif kontrol DÜŞTÜ: extract_index_count" >&2
+                            echo "   beklenen: [$want]  bulunan: [$got]" >&2; fail=1; }
+
+  # (4) indeks açık sayısı
+  want='0'
+  got=$(printf '%s\n' '| Açık (⛔) kural | **0** ✅ — kalmadı |' | extract_index_open)
+  [ "$got" = "$want" ] || { echo "!! pozitif kontrol DÜŞTÜ: extract_index_open" >&2
                             echo "   beklenen: [$want]  bulunan: [$got]" >&2; fail=1; }
 
   return $fail
@@ -179,6 +190,22 @@ else
     FAIL=1
   else
     echo "   ✅ indeks sayımıyla uyumlu"
+  fi
+
+  # Kontrol adayı (b) — AÇIK SAYISI. 2026-08-13'te ucuzladı: açık kural 0'a indi,
+  # yani bu satır artık bir EŞİĞİ koruyor, bir durumu değil. Bir kural sessizce
+  # ⛔ açık'a dönerse indeks bayatlar ve eşik kaybedilir.
+  IDX_OPEN=$(extract_index_open < "$IDX")
+  if [ -z "$IDX_OPEN" ]; then
+    echo "   ⛔ İHLAL: indekste 'Açık (⛔) kural' satırı okunamadı"
+    FAIL=1
+  elif [ "$IDX_OPEN" != "$OPEN" ]; then
+    echo "   ⛔ İHLAL: indeks $IDX_OPEN açık diyor, gerçek $OPEN"
+    FAIL=1
+  elif [ "$OPEN" -eq 0 ]; then
+    echo "   ✅ açık kural yok — L2'de dayanaksız yürürlükte madde kalmadı"
+  else
+    echo "   ✅ açık sayısı indeksle uyumlu"
   fi
 fi
 echo

@@ -241,16 +241,56 @@ submittedById = NULL → NULL ≠ onaylayan → kontrol geçer
 
 ---
 
-**K-2.5.12** — Normal onay hattı ve yükseltme hattı: ⛔ **açık.**
+> ✅ **Karar verildi** (2026-08-12). Tek hat: şablon. Devir bir **eylem**, bir hat değil.
 
-> **Bugünkü uygulama:** normal onay kategori müdürünün; finans yöneticisi **yalnız**
-> kendisine yükseltilmiş planları onaylıyor.
+**K-2.5.12** — Onay hattını **yalnız atanmış şablon** belirler. İkinci bir yükseltme
+mekanizması **yoktur.**
+
+> `approval_policy_id` zaten her isteğe bağlıdır; hattın tek kaynağı odur.
 >
-> **Kaynak farklı diyor:** finans yöneticisine eşik ve kârlılık tetikli **genel ikinci kademe
-> onay** yetkisi veriyor.
+> Gerekçe (`İlke 4`): ayrı bir yükseltme mekanizması kendi durum geçişini, kendi bildirimini
+> ve kendi iade kuralını edinir. Altı ay sonra *"eşikten gelen finans onayı"* ile *"elle
+> gelen finans onayı"* farklı davranır — **ve kimse fark etmez.**
+
+**K-2.5.12a** — Onaycının üç eylemi vardır:
+
+```
+ONAYLA · REDDET · FİNANSA DEVRET
+```
+
+**K-2.5.12b** — `FİNANSA DEVRET` şablonun **tanımlı bir geçişidir**, ayrı bir hat değil:
+şablonda zaten var olan finans kademesini **bu istek için etkinleştirir.**
+
+Devirle gelen istek, eşikle gelen istekle **aynı akışı** izler — tek durum makinesi, tek
+iade kuralı, tek bildirim ailesi.
+
+**K-2.5.12c** — Geliş sebebi **kayıtlıdır** (`EŞİK` | `DEVİR`).
+
+> Denetim izi için, ve ileride bir ölçüm için: *"elle devirler ne sıklıkta?"*
+
+**K-2.5.12d** — Devir **gerekçe ister.**
+
+> `K-2.5.15`'in ret kuralıyla simetrik: **devir, onaycının kendi sorumluluğunu yukarı
+> taşımasıdır** — izi anlamlı olmalı.
+
+**K-2.5.12e** — Finans, kendisine gelen istekleri onaylar. **Genel ikinci kademe onay yetkisi
+bir şablon tercihidir** (`Eşikli` / `Çift kademe`), bir ürün varsayılanı değil.
+
+> Ve ihtiyacın kendisi meşru: eşik altında kalan ama kokusu kötü bir planı finansa göstermek
+> — *"bu müşteriyle geçen dönem ihtilaf vardı."*
 >
-> ⚠️ Ve bugünkü kararın dayanağı, sonradan **geçersiz ilan edilmiş** bir özet belgeydi.
-> Karar yeniden onay bekliyor.
+> İnkâr etmek, kullanıcıyı sistem dışı kanala iter: **onay izinin e-posta zincirine kaçması**,
+> ürünün varlık gerekçesinde sayılan hastalık.
+
+**K-2.5.12f** — Devir iki hedefe gidebilir ve **tek mekanizmada yaşarlar:**
+
+```
+DEVRET → kademe    şablonun üst kademesini etkinleştir    Faz 1
+DEVRET → kişi      başka bir onaycıya yönlendir           Faz 2
+```
+
+> `K-2.5.13e`'nin `devir izni` alanı ikisini birden taşır. Faz 1'de yalnız kademe devri gelir
+> — şablonda kademe zaten tanımlı, maliyeti düşük.
 
 > ✅ **Karar verildi** (2026-08-12, Oturum 2.1). Politika tablosu + üç görüşlü şablon.
 > Koşullu kural motoru **yok.**
@@ -336,12 +376,65 @@ uyarısını aşabilir"*, *"politika tanımlayabilir"*). Roller, yetenek kümele
 > ❌ Bugün kullanıcı **tek bir rol** taşıyor ve yetenekler tanımlı değil. Rol bir varlık
 > değil, bir enum değeri.
 
-**K-2.6.4** — Rol kümesi: ⛔ **açık.**
+> ✅ **Karar verildi** (2026-08-12). Beş rol; `Süper Yönetici` girmez.
 
-> Kaynak üç farklı küme veriyor ve üçü birbirine atıf vermiyor: dört rol · beş rol · artı
-> bir süper yönetici. Bizde altı etiket var, beşi kullanımda.
+**K-2.6.4** — Rol kataloğu:
+
+| Rol | Sorumluluk |
+|---|---|
+| `YÖNETİCİ` | Tanımlar, kural yönetimi |
+| `PLANLAMACI` | Plan, taktik, hacim girişi, gönderim — günlük kullanıcı |
+| `KATEGORİ MÜDÜRÜ` | **Kategori bütçe sahibi:** onay + zarf yönetimi |
+| `FİNANS` | Eşik üstü onay/bildirim, transfer, mutabakat, içe aktarma |
+| `İZLEYİCİ` | Salt görüntüleme |
+
+**K-2.6.4a** — ⚠️ **Rol yalnız bir yetenek paketi değildir** — görev ayrılığının ve onay
+şablonlarının **adres defteridir.**
+
+> Gerekçe: `K-2.5.13a`'nın şablonları rollere referans veriyor (*"kategori müdürü onaylar,
+> finans yükselir"*), ve `K-2.2.7b`'nin bildirimi bir role gidiyor.
 >
-> Bekliyor: `SORULAR B2.5` · `B3.4`.
+> Onaycılığı serbest bir yeteneğe çevirmek, şablonu *"onay yeteneği taşıyan herhangi biri"*
+> demeye zorlar — ve **paranın sahibi ile onay mekaniği ayrışır.**
+>
+> **En az rol, en sade sistem demek değildir.** En sade sistem, şablonun bir bakışta
+> anlaşıldığı sistemdir (`İlke 1`).
+
+**K-2.6.4b** — Onaycı **jenerik değildir, bütçenin sahibidir.** Kaynağın `Approver` rolü
+alınmaz.
+
+> Jenerik bir onaycı rolü, *"kimin onayı"* sorusunu rol atamasına gömer ve `K-2.5.11`'in
+> kapsam sorularını bulanıklaştırır.
+
+**K-2.6.4c** — `İZLEYİCİ` bir **izleme yetenekleri setidir**, bir *"salt-okur bayrağı"*
+değil.
+
+> *"Salt-okur"* bir sorumluluk adı değil, yazma yeteneklerinin verilmemiş hâlidir. Ve
+> `K-2.6.5b`'nin birleşim modelinde **her rolün okuma tabanı zaten var** — onu rol yapmak,
+> *"hiçbir şey yapamama"*yı bir pakete çevirmekti.
+
+**K-2.6.4d** — Kullanımdan kalkmış etiketler enum'dan **düşer** — ama önce **sayılır.**
+
+> Çok rollülük (`K-2.6.5`) birleşik rolleri katalogdan siler: bir kullanıcı `FİNANS` +
+> `KATEGORİ MÜDÜRÜ` taşıyabiliyorsa, ayrı bir birleşik etikete gerek yok.
+>
+> ⚠️ **Sıra bağlayıcı:** o etiketleri taşıyan kullanıcı var mı **önce sayılır**, varsa yeni
+> role eşlenir, **sonra** etiket ölür. Sayım yapılmadan silme, göç kayıpsızlığını deler.
+
+**K-2.6.4e** — ⛔ **`Süper Yönetici` reddedildi.**
+
+Kaynağı sign-off almamış bir taslak, ve `K-2.6.5f` (*"rol seti kapalı başlar, genişleme
+kanıtla"*) meseleyi kapatıyor.
+
+> ⚠️ **Ama arkasındaki ihtiyaç kaydedilir:** talebin gerçek konusu genellikle **tenant-üstü
+> operasyon** — kendi destek ve kurulum erişimimiz.
+>
+> Bu, tenant-içi rol kataloğunun konusu **değildir.** Çok kiracılı bir üründe ayrı bir
+> kavramdır (operatör erişimi) ve `K-2.6.12`'nin bir kenar sorusudur: *"personel müşteri
+> verisine hangi kapıdan, hangi izle girer?"*
+>
+> Soru Faz 1'de cevaplanmalı — ama enum'a bir etiket eklemek onun cevabı değil,
+> **ertelenmesidir.**
 
 > ✅ **Karar verildi** (2026-08-12, Oturum 2.3). Çok rollülük **evet**, kişiye özel istisna
 > **hayır.**
@@ -725,7 +818,7 @@ olacağını"* söylüyor, yani bir iş kuralıdır. L2'de kalır.
 
 | Bölüm | Bağlayıcı belge | Verilmiş karar | Ölçüm |
 |---|---|---|---|
-| 2.5 | `§3.4` · `§7.3` · `§7.7` | `ADR 0002` ⚠️ | `0024` · `0039` · `0041` |
+| 2.5 | `§3.4` · `§7.3` · `§7.7` | `ADR 0002-R` (revize) | `0024` · `0039` · `0041` |
 | 2.6 | `§7.1` · `§7.2` · `§7.5` · `§2.6` | — | `0039` · `0040` · `0052` · `0056` |
 | 2.9 | `§9.5` · `§9.8` · `§6.6` · `§7.7` | — | `0050` · `0062` |
 | 2.12 | `§9.1` · `§9.2` · `§2.5` · `H1` | `ADR 0003` | `0043` · `0065` |

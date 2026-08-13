@@ -40,10 +40,10 @@
 Ve [[T-209]] onunla **aynı oturumda** koşar (`K-2.1.19a`: aynı sorunun iki yüzü, aynı
 yöntem — `git blame` + commit bağlamı + besleyen içe aktarma yolunun kaynak kolonu).
 
-⚠️ **Kalan iki açık `L2` kuralı bu pakete GİRMEZ:** `K-2.6.4` (rol kümesi — kaynak üç
-farklı küme veriyor) ve `K-2.5.12` (`ADR 0002` onay hattı — dayanağı düştü). İkisi de
-**karar sınıfı**, ölçüm değil; bir ölçümle kapanmazlar, ürün sahibi kararı beklerler.
-Ölçüm paketine alınmaları, cevaplanamayacak bir soruyu kuyruğa sokmak olurdu.
+✅ **Ve `L2`'de açık kural kalmadı** (2026-08-13): `K-2.6.4` (rol kataloğu) ve `K-2.5.12`
+(tek onay hattı) ürün sahibi kararıyla kapandı — ikisi de **karar sınıfıydı**, bir ölçümle
+kapanamazlardı, ve ölçüm paketine alınmaları cevaplanamayacak bir soruyu kuyruğa sokardı.
+`açık: 0` bir eşiktir: `L2`'de **dayanaksız yürürlükte madde yok** — kalan her şey adresli.
 
 ---
 

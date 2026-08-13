@@ -1,6 +1,37 @@
-# 0002 — Finance Manager'a escalation hattında plan onay yetkisi
+# 0002-R — Finance Manager'a escalation hattında plan onay yetkisi
 
-- **Durum:** Kabul edildi (Accepted)
+> ## ⛔ REVİZE EDİLDİ — `0002-R` (2026-08-13)
+>
+> **Dayanak düştü.** Bu ADR'nin bağlamı *"BRD'nin sabit RBAC tanımı"* diyordu; o özet belge
+> sonradan **geçersiz ilan edildi** (`ADR 0010` — `.cursor/*.pdf` süperseded). Ve kaynağın
+> kendisi farklı diyor: finans yöneticisine **genel ikinci kademe** onay yetkisi veriyor.
+>
+> **Yeni karar** (2026-08-12, `K-2.5.12` ailesi): onay hattını **yalnız atanmış şablon**
+> belirler. İkinci bir yükseltme mekanizması **yoktur.** `escalate-to-finance` bir hat değil,
+> bir **eylem**: `FİNANSA DEVRET` — şablonda zaten tanımlı finans kademesini bu istek için
+> etkinleştirir.
+>
+> **İçerik üç karara dağıldı ve bir eyleme indi:**
+>
+> | Eski maddenin taşıdığı | Yeni yeri |
+> |---|---|
+> | Eşik tetikli finans bildirimi | `K-2.2.7b` |
+> | Onay hattının tanımı | `K-2.5.13a` (şablon tablosu) |
+> | Finans rolünün sorumluluğu | `K-2.6.4` (rol kataloğu) |
+> | Elle yükseltme | **`K-2.5.12b`** — devir bir eylem, hat değil |
+>
+> ⚠️ **Aşağıdaki metin SİLİNMEDİ ve normatif DEĞİLDİR.** `ADR 0006-R` deseni: bir kararın
+> neden verildiği ve neyle yanlışlandığı ikisi birden kayıtta kalır — iki kaydın altı ay
+> sonra çelişmesi böyle önlenir.
+>
+> 📌 Ve bir şey **değişmedi:** `K-2.5.12e` finansın genel ikinci kademe yetkisini bir **şablon
+> tercihi** yapıyor (`Eşikli` / `Çift kademe`), bir ürün varsayılanı değil. Yani eski kararın
+> *"FM yalnız kendisine gelen isteği onaylar"* sonucu **bugün hâlâ doğru** — ama gerekçesi
+> artık bir BRD okuması değil, bir şablon kararı.
+
+---
+
+- **Durum:** ⛔ **REVİZE EDİLDİ → `0002-R`** (eski durum: Kabul edildi)
 - **Geçerlilik tarihi:** 2026-07-28
 - **Karar veren:** Sertaç Tuzcu (ürün sahibi)
 - **İlgili:** T-028 RBAC hizalaması · `docs/analysis/0004-rbac-brd-alignment.md` (R-3)

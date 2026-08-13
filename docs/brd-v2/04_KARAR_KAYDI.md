@@ -484,8 +484,8 @@ kaçış yolu *"iki bağlanmamış işlem"* olur ve bütünlük sessizce kırıl
 
 | Konu | Neyi bekliyor |
 |---|---|
-| Rol kümesi | Karar — kaynak üç farklı küme veriyor |
-| Finans yöneticisinin onay hattı | Karar — `ADR 0002`'nin dayanağı düştü |
+| ~~Rol kümesi~~ | ✅ **KAPANDI 2026-08-12** → `K-2.6.4` ailesi: beş rol, `Süper Yönetici` reddedildi |
+| ~~Finans yöneticisinin onay hattı~~ | ✅ **KAPANDI 2026-08-12** → `K-2.5.12` ailesi: tek hat (şablon), devir bir **eylem**. `ADR 0002` → **`0002-R`** |
 | Saklama sürelerinin bağlayıcılığı | **Hukuk** — ⏸️ `K-2.9.0`: mütalaaya dek **hiçbir kayıt silinmez** |
 | ~~Kişi bazlı performans raporlaması~~ | ✅ **KAPANDI 2026-08-12** → `K-2.9.6`: rapor **süreç metriğidir**, kişi kimliği kırılım boyutu değil. Kişi bazlı versiyon `K-2.9.6a` ile **hukuk şartlı ertelendi** |
 | Veri ayrımı modeli | Teknik ölçüm — geçiş maliyetleri |
@@ -543,6 +543,7 @@ Dört tür ayrılır, ve karıştırılmamalıdır:
 
 | Kural / karar | Kaynak ne diyor | Bizim kararımız | Tür |
 |---|---|---|---|
+| `K-2.6.4` rol kümesi | `§2.1.2`'nin dörtlüsü (jenerik Approver) | Beş rol, bütçe-sahibi onaycı | **Sapma** — `§7.1`'in beşlisiyle fiilen hizalanma |
 | `A7` yetki ekseni | Kanal · bölge · satış ekibi | + kategori | **Sapma** |
 | `A1` çalışma biçimi | Üç katmanlı çözümleyici | Reddedildi | **Sapma** |
 | `B3` yetki istisnası | Kişiye özel istisna tablosu | Yapılmaz | **Sapma** |
