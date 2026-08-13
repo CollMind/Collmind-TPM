@@ -145,15 +145,34 @@ CSV'sinde `fu_code`/`volume` kolonları bulunmuyor.
    zaten kendi akışında yazıyor, tekrar kullanılırsa **çift sayım** olur (T-003/T-017'nin kökü).
 
    ⚠️ **Düzeltme (2026-08-13):** bu teşhis `entity`'nin kendi yorumundan alınmıştı ve o
-   yorum **doğrulanmadan** aktarılmıştı — çift sayım **iddiası** doğru, ama hangi alanın
-   çift sayıldığı bir **varsayımdı**: entity `discountAmount`'ı *"satış iskontosu"*
-   (`= (a)` yaklaşımı) diye adlandırıyordu, ölçüm bunu **sorguladı**. `C3` veri probe'u
-   `net = brüt − discountAmount`'ın seed verisinin **3/3 satırında** tutmadığını (`is
-   violated by some row`) gösterdi — yani `discountAmount` on-invoice ile aynı olayı
-   temsil etmiyor **olabilir** `(b)`. Eğer `(b)` doğruysa, "kusur" sanılan şey bir **yanlış
-   alarm** olurdu: çift sayım riski gerçek ama yanlış kolona bağlanmış olurdu.
-   → [[T-209]] bu ayrımı ölçecek; `K-2.13.14h6` şimdilik `(a)`'yı reddedip on-invoice'u
-   kaynak gösteriyor (ön karar, ölçüm şartlı).
+   yorum **doğrulanmadan** aktarılmıştı. Çift sayım **riski** gerçek, ama *"kökü buydu"*
+   bir **varsayımdır** — `discountAmount`'ın hangi olayı taşıdığına bağlı, ve üç şık var:
+
+   ```
+   (a)  satış iskontosu           ← ön okuma, İKİ gerekçeyle
+   (b)  ticari harcama indirimi
+   (c)  toplam indirim (brüt−net köprüsü)   ← ÖLÇÜMLE ELENDİ
+   ```
+
+   **`(c)` elendi:** `net = brüt − discountAmount` seed verisinin **3/3 satırında**
+   tutmuyor (`CHECK … is violated by some row`). Alan brüt ile net arasındaki **köprü
+   değil** — yani "toplam indirim" okuması düşer.
+
+   **`(a)`'nın iki gerekçesi:** (1) `on_invoice_entries` **ayrı bir tablo olarak var** ve
+   ticari indirim orada satır satır yaşıyor — `discountAmount`'ın aynı olayı tekrar
+   taşıması `İlke 4` ihlali olurdu; (2) entity'nin kendi adlandırması.
+
+   | ölçüm çıkarsa | *"çift sayımın kökü"* teşhisi |
+   |---|---|
+   | **`(a)` satış iskontosu** | **YANLIŞ ALARM** — satış iskontosu ticari bütçenin konusu değil |
+   | **`(b)` ticari indirim** | **GERÇEK KUSUR** |
+
+   → [[T-209]] bu ayrımı ölçecek. `K-2.13.14h6` ön kararı **`(a)` yönündedir**: alan satış
+   iskontosu kabul edilip `NET`'in kaynağı `on_invoice_entries`'e alındı.
+
+   ⚠️ **Ve ön beklentinin doğru yazılması `T-209`'un kendi geçerliliği için şart** — yanlış
+   yazılırsa ölçüm onu **doğrulamaya** çalışır. Bu paragrafın ilk hâli şıkları ters
+   etiketlemişti (`(b)` → yanlış alarm) ve tam o hatayı üretecekti.
 2. **Satır seviyesinde unique kısıt YOK** — aynı scope'ta birden çok satır **meşru**.
 
 📌 Bu, `ADR 0002`'nin (*"actuals = tutar agregası, hacim yok"*) kodda **doğrulanmış** hâli.

@@ -28,8 +28,22 @@
 | `F13` | tutarlar KDV dahil mi hariç mi | ⚠️ **kod ölçüldü, veri ölçülemedi** | kodda KDV kavramı **hiç yok**; ölçek sorusu üretim verisi ister |
 
 > ⚠️ **2026-08-13: bu cümle artık yanlış.** `C3`'ün veri ölçümü `S3`'ü dalgadan çıkardı —
-> yani migration'ı bloklayan bir soru **doğdu** (`v2-UC-ALAN`, alan tanımı). Kalan iki
+> yani migration'ı bloklayan bir soru **doğdu** ([[T-209]], alan tanımı). Kalan iki
 > soru davranış tarafındaydı; biri (`C2`) kapandı ve bir task'a döndü.
+
+## ⚡ Dalga onayının ön koşulu — artık **tek madde**
+
+```
+[[T-206]]   gerçekleşen satış tablosunun sözleşmesi
+```
+
+Ve [[T-209]] onunla **aynı oturumda** koşar (`K-2.1.19a`: aynı sorunun iki yüzü, aynı
+yöntem — `git blame` + commit bağlamı + besleyen içe aktarma yolunun kaynak kolonu).
+
+⚠️ **Kalan iki açık `L2` kuralı bu pakete GİRMEZ:** `K-2.6.4` (rol kümesi — kaynak üç
+farklı küme veriyor) ve `K-2.5.12` (`ADR 0002` onay hattı — dayanağı düştü). İkisi de
+**karar sınıfı**, ölçüm değil; bir ölçümle kapanmazlar, ürün sahibi kararı beklerler.
+Ölçüm paketine alınmaları, cevaplanamayacak bir soruyu kuyruğa sokmak olurdu.
 
 ---
 
@@ -121,10 +135,19 @@ zaten hacim payı üretemezdi.
 📌 Bu, `K-2.13.14h3`'ün (**net taban**) gerekçesiyle **doğrudan kesişiyor**: hakediş tabanı
 "net satış" ise, o netin içindeki iskonto **bütçe tarafında zaten sayılmış** olabilir.
 
-> ⚠️ **İkisi de `L2`'ye not olarak girmeli — ama önce ölçülmeli:** o tasarım kararının
-> gerekçesi *"CSV'de kolon yoktu"* mu, yoksa **domain kararı** mı? Birincisi bir veri
-> kaynağı sınırı (kaynak değişince kural değişir), ikincisi bir ürün kararı (değişmez).
-> → [[T-206]]
+> ⚠️ **İkisi de `L2`'ye not olarak girdi — ama sınıf hâlâ ölçülmeli**, ve şık **iki değil
+> üç**: veri kaynağı sınırı (ERP veremiyordu) · **pilot profili kararı** (o müşterinin
+> CSV'sinde yoktu → `İlke 5`, tenant profiline iner) · gerçek domain kararı (model
+> değişmez). → [[T-206]]
+>
+> 📌 **Kısmi ölçüm 2026-08-13'te yapıldı ve `pilot profili`ne işaret ediyor:** gerekçe
+> `dd7eaaf`'te (dosyayı yaratan commit) **tek bir müşterinin CSV başlığına** dayanıyor
+> (`0002 §Kritik bulgu`), ERP'nin veremediğine dair cümle **yok**, ve aynı belge TTM'in
+> `validateRow`'unun o kolonları **zorunlu tuttuğunu** söylüyor — yani kardeş üründe veri
+> vardı. ⚠️ TTM iddiası **yeniden ölçülmedi** (repo oturumda yok).
+>
+> **`(b)` alan sorusunun sınıfı ayrı ve `0069 §5`'te:** üç şık, `(c)` ölçümle elendi,
+> ön karar `(a)`. → [[T-209]]
 
 ---
 
