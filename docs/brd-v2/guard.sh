@@ -186,6 +186,24 @@ echo
 # ------------------------------------------------------- 2 · kimlik tekilliği
 echo "2 · Kimlik tekilliği"
 
+# ── 2a · HAYALET TANIM: RULES_DIR DIŞINDA kural tanımı taşıyan dosya
+# Kör noktanın kendisi buydu: tekillik kontrolü yalnız RULES_DIR'a bakıyordu,
+# yani eski bir paketin kalıntısı (aynı kuralları düz dosyalarda taşıyan
+# dosyalar) çift tanım üretse bile "çakışma yok" çıkıyordu.
+# Ölçüldü 2026-08-13: staging'in dört düz dosyası 333 tanım taşıyor.
+GHOSTS=$(find "$PKG" -name '*.md' -not -path "*03_IS_KURALLARI*" -exec grep -l '^\*\*K-' {} \; 2>/dev/null | sort)
+
+if [ -n "$GHOSTS" ]; then
+  echo "   ⛔ İHLAL: kural tanımı RULES_DIR DIŞINDA — hayalet dosya"
+  printf '%s\n' "$GHOSTS" | while read -r g; do
+    [ -z "$g" ] && continue
+    echo "      $g  ($(grep -c '^\*\*K-' "$g") tanım)"
+  done
+  echo "      Eski bir paketin kalıntısı olabilir. Çift tanım tekillik"
+  echo "      kontrolüne GÖRÜNMEZ — kapsam RULES_DIR ile sınırlı."
+  FAIL=1
+fi
+
 DUPES=$(grep -h '^\*\*K-' "$RULES_DIR"/*.md | extract_rule_ids | sort | uniq -d)
 
 if [ -n "$DUPES" ]; then

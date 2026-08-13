@@ -480,6 +480,28 @@ desenin gerçekten eşleştiğini kanıtlayan ayrı bir ölçümdür.
 ⚠️ Kuralı tüm taramalara genişletme: her aramaya ek iş binerse **uygulanmaz** hâle gelir.
 Ve **uygulanmayan bir kural, olmayan kuraldan kötüdür** — çünkü uyulduğu sanılır.
 
+**Ve bir kör noktanın maliyeti zamanla artar.**
+
+Bir guard'ın kör noktası, koruduğu kusuru **saklar.** Guard yeşil verdiği sürece kimse
+elle bakmaz — ve kör nokta ne kadar uzun yaşarsa, arkasında o kadar çok kusur birikir.
+
+> Ölçüldü (2026-08-13): `guard.sh`'ın iki kontrolü bir ortamda sessizce çalışmıyordu. İki
+> tur sonra düzeltildiğinde ilk koşuşta **dört hayalet dosya** çıktı — eski bir paketin
+> kalıntıları, arşiv açılırken silinmemiş ve o iki tur boyunca **guard tarafından
+> saklanmış.**
+>
+> Pratik sonuç: bir guard düzeltildiğinde, kör kaldığı süre boyunca **birikmiş kusur
+> aranmalıdır** — ilk yeşil, o birikimin temizlendiğinin kanıtı değildir.
+
+⚠️ **Ve arama guard'ın KAPSAMIYLA sınırlı kalmamalı** — kör nokta çoğu zaman kapsamın
+kendisindedir. Aynı turda ölçüldü: `guard.sh`'ın tekillik kontrolü yalnız `03_IS_KURALLARI`
+altına bakıyordu, yani o dört hayalet dosya **düzeltilmiş guard'a da görünmezdi** (`333`
+tanım taşıyorlar ve hepsi kapsamın dışında). Kusuru bulan şey guard değil, guard'ın
+kapsamına yöneltilen **ayrı bir soru** oldu.
+
+> Bir guard düzeltildiğinde iki soru sorulur: *"kör kaldığı sürede ne birikti"* **ve**
+> *"bu guard onu şimdi görebilir mi?"* İkincisinin cevabı çoğu zaman **hayır**'dır.
+
 ### Kapsam maskelemesi — desen çalışır, EVREN eksiktir (ZORUNLU)
 
 `§2.7`'nin doğrulama-maskeleme ailesi *"ölçüm yanlış"* vakalarını topluyor. Bu **farklı bir
