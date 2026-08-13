@@ -95,6 +95,9 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-205]] | `submittedById` bir yolda **boşaltılıyor** — `K-2.5.16` ihlali, bypass'ı sıfır maliyetle açıyor | P1 | backend-engineer | todo |
+| [[T-207]] | **`S13`** — `plans.last_modified_by`: `K-2.5.11` kapsamının ikinci veri ayağı | P1 | data-engineer | todo |
+| [[T-206]] | `sales_actuals`'ta SKU/hacim yokluğu: **veri kaynağı sınırı mı, domain kararı mı** | P2 | architect | todo |
 | [[T-202]] | Lumpsum dağıtım tabanı: `ADR 0006` base seçti, BRD `§5.2` **planned** yazıyor — ADR'nin öncülü yanlışlandı | P1 | architect | todo |
 | [[T-200]] | `Super Admin` altıncı rol olarak beliriyor — karar **[[T-165]] ile birlikte** verilmeli | P2 | architect | todo |
 | [[T-201]] | `EA-001` admin yasak matrisi — üç madde karşılığı **aranmadan** duruyor (önce ölç) | P2 | architect | todo |

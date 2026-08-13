@@ -87,6 +87,11 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 > ve `EK_E`'nin iki `🔒` vakası bu oturumda **koddan ölçülmüştü**: anlaşma kapanışı
 > (`0068 §6`) ve formül doğrulaması (`0054 §1`). **`🔒` bir kabul değil, bir alarmdır.**
 >
+> ⚠️ **`brd-v2` ile `brd` çeliştiğinde `brd-v2` kazanır** — ve sapma
+> `docs/brd-v2/04_KARAR_KAYDI.md §Kaynak ilişkisi — tek tablo`'da **kayıtlıdır.**
+> **Ölçülmemiş bir sapma iddiası yazılmaz:** *"v2 kaynaktan sapıyor"* demeden önce o
+> tabloda satırı olduğunu doğrula; yoksa sapma değil, **senin okuman** eksik olabilir.
+>
 > 📌 **Bir kural ararken `docs/brd/`'de bulup v2'de bulamadıysan, bu "kural yok" demek
 > değildir — "v2'ye taşınmamış" demektir.** `00_PAKET_INDEKSI.md`'nin *"Kapsam dışı —
 > bilerek"* bölümüne bak: bazı şeyler **reddedilerek** düştü, ve reddediliş gerekçesiyle
@@ -475,6 +480,28 @@ desenin gerçekten eşleştiğini kanıtlayan ayrı bir ölçümdür.
 ⚠️ Kuralı tüm taramalara genişletme: her aramaya ek iş binerse **uygulanmaz** hâle gelir.
 Ve **uygulanmayan bir kural, olmayan kuraldan kötüdür** — çünkü uyulduğu sanılır.
 
+**Ve bir kör noktanın maliyeti zamanla artar.**
+
+Bir guard'ın kör noktası, koruduğu kusuru **saklar.** Guard yeşil verdiği sürece kimse
+elle bakmaz — ve kör nokta ne kadar uzun yaşarsa, arkasında o kadar çok kusur birikir.
+
+> Ölçüldü (2026-08-13): `guard.sh`'ın iki kontrolü bir ortamda sessizce çalışmıyordu. İki
+> tur sonra düzeltildiğinde ilk koşuşta **dört hayalet dosya** çıktı — eski bir paketin
+> kalıntıları, arşiv açılırken silinmemiş ve o iki tur boyunca **guard tarafından
+> saklanmış.**
+>
+> Pratik sonuç: bir guard düzeltildiğinde, kör kaldığı süre boyunca **birikmiş kusur
+> aranmalıdır** — ilk yeşil, o birikimin temizlendiğinin kanıtı değildir.
+
+⚠️ **Ve arama guard'ın KAPSAMIYLA sınırlı kalmamalı** — kör nokta çoğu zaman kapsamın
+kendisindedir. Aynı turda ölçüldü: `guard.sh`'ın tekillik kontrolü yalnız `03_IS_KURALLARI`
+altına bakıyordu, yani o dört hayalet dosya **düzeltilmiş guard'a da görünmezdi** (`333`
+tanım taşıyorlar ve hepsi kapsamın dışında). Kusuru bulan şey guard değil, guard'ın
+kapsamına yöneltilen **ayrı bir soru** oldu.
+
+> Bir guard düzeltildiğinde iki soru sorulur: *"kör kaldığı sürede ne birikti"* **ve**
+> *"bu guard onu şimdi görebilir mi?"* İkincisinin cevabı çoğu zaman **hayır**'dır.
+
 ### Kapsam maskelemesi — desen çalışır, EVREN eksiktir (ZORUNLU)
 
 `§2.7`'nin doğrulama-maskeleme ailesi *"ölçüm yanlış"* vakalarını topluyor. Bu **farklı bir
@@ -574,6 +601,42 @@ birkaç satır ötede.
 - ❌ *"BRD kanonik formüle güncelledi"* (kaynak okunmadan)
 - ✅ *"`Section_05 §5.3` ve Glossary `GP ROI` maddesi `TOTAL_PLANNED_SPEND` diyor —
   ölçüldü <tarih>"*
+
+### Bir düzeltmenin iki ekseni vardır: HEDEFİ ve YÖNÜ (ZORUNLU)
+
+```
+Bir düzeltmenin iki ekseni vardır: hedefi ve yönü.
+Hedef hatası görünür  (yanlış dosya, yanlış numara).
+Yön hatası görünmez   — doğru yere dokunur, yalnız işareti terstir.
+Ve yön hatası bir ölçümden ÖNCE yazılırsa, ölçümü kendi yönüne çeker.
+```
+
+Yukarıdaki üç vaka **hedef** hatasıydı: yanlış eşik, yanlış faz, yanlış payda. Hepsi
+görünür, çünkü doğru değerle yan yana konunca ayrışırlar.
+
+**Yön hatası ayrışmaz.** Ölçülmüş vaka (2026-08-13, `0069`'un `discount_amount` notu): üç
+şıklı bir ayrım iki şıkka indirildi, etiketler **takas edildi**, ve *"kural `(a)`'yı
+reddediyor"* yazıldı — oysa kural `(a)`'yı **kabul ediyordu**. Cümle doğru alana
+dokunuyordu, doğru kuralı anıyordu, doğru task'a bağlıydı; yalnız **işareti** tersti, ve o
+yüzden okuyan hiçbir yerde tökezlemiyordu.
+
+⚠️ **Ve bedeli bir yanlış bilgi değil, bozulmuş bir ölçümdür.** O not `T-209`'un ön
+beklentisiydi. Ters yazılmış bir ön beklenti, ölçümü **kendi yönüne çeker**: ajan
+hipotezi sınamak yerine **doğrulamaya** çalışır, ve sonuç *"ölçüldü"* etiketiyle kaydolur.
+
+> Bu, `§2.7`'nin *"kanıt kurulumu ölçtüğün durumu değiştirmesin"* ailesinin **planlama
+> tarafındaki** hâli. Orada kurulum ölçümü bozuyordu; burada **beklentinin metni** bozuyor.
+
+**Pratik:**
+
+- Bir düzeltme yazdıktan sonra sor: *"hedefi mi düzelttim, yoksa yönünü de mi
+  çevirdim?"* — ve **yönü ayrıca oku.** Reddediliyor mu kabul mü, artıyor mu azalıyor mu,
+  eleniyor mu ayakta mı.
+- **Bir ölçümün ön beklentisini yazarken şıkları ve her şıkkın sonucunu bir TABLOYA koy.**
+  Düzyazıda bir işaret sessizce ters çevrilebilir; iki sütunlu bir tabloda ters çevirmek
+  **görünür** olur.
+- Ve o tabloyu **ölçümün girdisi** yap, bir dipnot değil: *"ölçümü yapan ajan bu tablodan
+  başlasın."* Uyarı okunmazsa yoktur.
 
 ### Ölçüm ortamının bayatlığı da bir maskeleme sınıfıdır (ZORUNLU)
 
@@ -873,6 +936,17 @@ Sayı bakım gerektiren bir olgudur; şekil ve "hiçbiri/hepsi" gerektirmez.
   gerektiriyorsa task'ı böl.
 - `code-reviewer` ve `data-analyst` **kod/veri değiştirmez.** Bulgu raporlar.
 - Bir ajan kendi yazdığı kodun testini yazmaz — o `qa-engineer`'ın işidir.
+- **`docs/brd-v2/03_IS_KURALLARI/L2_*` dosyalarını YALNIZ Team Lead yazar** — ve tek yazar
+  yetmez, **tek kanal** gerekir: kural metni Team Lead'e verilir, Team Lead işler. Yerel ya
+  da paralel oturumlar `L2`'ye **dokunmaz** (kod · migration · ölçüm evet, belge hayır).
+
+  > **Gerekçe ölçüldü (2026-08-13) — `F1`'in tekrarı, hem de adı konduktan sonra.** Bir
+  > kural metni sohbete yazıldı ve **iki farklı ajana ulaşabilir hâlde** kaldı; ikisi de
+  > işledi. Sonuç iki kopya: `K-2.6.4` bir kopyada beş kurala açıldı (`65→70`), diğerinde
+  > `⛔ açık` kaldı (`363`). Kural *"tek yazar"*dı ve **ihlal edilmedi** — her kopyayı ayrı
+  > bir "tek yazar" yazdı. Eksik olan **kanaldı.**
+  >
+  > **Bir sahiplik kuralı, girdinin kaç yere ulaştığını sınırlamıyorsa eksiktir.**
 
 **Her ajan için geçerli ölçüm kuralları (ZORUNLU — Team Lead'e özel değil):**
 
