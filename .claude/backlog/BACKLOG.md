@@ -221,7 +221,7 @@ status: active        # planned | active | closed
 | [[T-216b]] | `GRİ` — PLAN seviyesi: taşıyıcı kolon yok, [[T-218]]'e bağlı | **P1** | frontend-engineer | blocked |
 | [[T-218]] | `plans.coverage_ratio` — değer hesaplanıyor, `plan.service` atıyor (iki ajan bağımsız buldu) | **P1** | data-engineer | todo |
 | [[T-217]] | `GRİ`'nin üçüncü öğesi: eksik listesi — veri bugün taşınmıyor | P2 | architect | todo |
-| [[T-219]] | e2e bootstrap çöküyor (`ApprovalRequest#approvalPolicy`) — *pre-existing* iddiası ÖLÇÜLMEDİ, `S5`'ten olabilir | **P1** | qa-engineer | todo |
+| [[T-219]] | ✅ İddia ÇÜRÜTÜLDÜ: `S5`'ten geliyordu, ve e2e suite'inin **tamamı** (17/17) kırıktı — düzeltildi | **P1** | qa-engineer | done |
 | [[T-220]] | **TAM ENUMERASYON**: hesaplanamayan değer nerede bir iş yargısına çöküyor — liste, sayı değil | **P1** | code-reviewer | todo |
 | [[T-221]] | 🔴 `overall_roi`/`gp_roi` string dönüyor → `.toFixed()` TypeError (canlı çökme, [[T-197]] örneği) | **P1** | backend-engineer | todo |
 | [[T-222]] | İki grid implementasyonu, biri karanlıkta — `PlanningGrid.tsx` ölü kod (`İlke 4`) | P2 | frontend-engineer | todo |
