@@ -742,6 +742,37 @@ Birincisi ölçütün yanlış olduğunu, ikincisi bir **adres** gerektiğini g�
 cevap ölçütü **yazılı olarak** değiştirmektir; sessizce yaklaşmak ya da veriyle doldurmak
 değil.
 
+### Bir KABUL LİSTESİ, değişikliğin BOZABİLECEĞİNİ de saymalıdır (ZORUNLU)
+
+> **Bir kabul listesi, değişikliğin BOZABİLECEĞİ her yeteneği saymalıdır — yalnız
+> EKLEDİĞİ her yeteneği değil.**
+
+Ölçülmüş vaka (2026-08-14, `B` dalgası): dalga `kabul-1`…`kabul-8a` ile kapandı. Şema
+değişti, iş kuralları ihlal-üretilerek sınandı, migration iki ortamda geri alınıp yeniden
+uygulandı, çapraz-repo enum sözleşmesi pinlendi. **Ama "uygulama hâlâ ayağa kalkıyor mu"
+hiçbir kriterde yoktu** — ve iki e2e dosyası bootstrap'ta çöküyordu
+(`Entity metadata for ApprovalRequest#approvalPolicy was not found`).
+
+⚠️ **Ve eksikliği kimse aramadı — başka bir task'ın YAN BULGUSU ortaya çıkardı.** Yani
+liste kendi boşluğunu göstermedi; boşluk tesadüfen görüldü.
+
+📌 Bu, aynı dalganın **ikinci** aynı-şekilli eksikliğidir: `DUR` koşulları arasında da
+*"çapraz-repo sözleşme kırılması"* yoktu (rol enum'unun değerleri değişti, dört kapı yeşil
+kaldı, her rol kapılı rota kapandı). **İki eksiklik, tek şekil: liste EKLEMEYİ sayıyor,
+BOZMAYI saymıyor.**
+
+**Pratik — kabul listesi yazarken iki sütun:**
+
+| ne EKLENDİ | ne BOZULABİLİR |
+|---|---|
+| yeni tablo/kolon/kural | uygulama ayağa kalkıyor mu (bootstrap · e2e) |
+| yeni enum değeri | o değeri **karşılaştıran** her uç (tel protokolü, öbür repo) |
+| kaldırılan kolon | onu **okuyan** her yol (DTO · view · export · rapor) |
+| yeni kısıt | o kısıtın **reddedeceği** meşru veri var mı |
+
+Ve sor: *"bu değişiklik dünden beri çalışan neyi durdurabilir?"* — cevabı bir **kabul
+satırı** olmalı, bir umut değil.
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
