@@ -790,6 +790,26 @@ BOZMAYI saymıyor.**
 Ve sor: *"bu değişiklik dünden beri çalışan neyi durdurabilir?"* — cevabı bir **kabul
 satırı** olmalı, bir umut değil.
 
+### Yan etkisi olan bir aracı İZOLE hedefte sına (ZORUNLU)
+
+> **Yan etkisi olan bir aracı sınamak, o yan etkiyi ÜRETMEYİ gerektirir — sınav izole bir
+> hedefte yapılır, gerçek olanda değil.**
+
+Ölçülmüş vaka (2026-08-14): `push-order.sh`'ın kirli-ağaç kaçışı (`ABORT_ON_DIRTY=0`)
+**gerçek `origin`'e karşı** koşturuldu. Meta'da push edilmemiş bir commit vardı ve script
+onu **push etti** — yani doğrulama, ölçtüğü durumu değiştirdi ve **dışa dönük** bir işlem
+üretti.
+
+⚠️ Ve doğru yol zaten oradaydı: aracı **yazan** ajan onu izole bir bare-repo harness'ında
+sınamıştı (altı senaryo, gerçek uzağa dokunmadan). Doğrulayan taraf kestirmeden gitti.
+
+**Pratik:** bir aracın yan etkisi ağ, dosya sistemi ya da bir uzak durum ise, sınavın hedefi
+**tek kullanımlık** olmalı — bare repo, geçici dizin, tek kullanımlık DB. Ve zaten böyle bir
+harness varsa, doğrulama **onu kullanır**; ikinci bir yol açmaz.
+
+📌 Bu `§2.7`'nin en net vakası: **kanıt kurulumu ölçtüğün durumu değiştirdi.** Ama bir
+farkla — buradaki değişiklik geri alınamaz (bir push geri alınmaz, ancak üstüne yazılır).
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
@@ -1251,7 +1271,26 @@ Alt-ajana iş verirken **kaynağı referansla ver, özetini değil.**
 
 ## 5. Git / Bitbucket Workflow
 
-- **Çoklu repo:** backend/frontend ayrı Bitbucket repolarıdır (submodule). Kök repo `collmind.team` kod tutmaz; her submodule'ün **commit pointer'ını** tutar. Bir submodule'de iş bitince: o repoya push → kök repo'da pointer'ı güncelle/commit/push.
+- **Çoklu repo:** backend/frontend ayrı repolardır (submodule). Kök repo `collmind.team`
+  kod tutmaz; her submodule'ün **commit pointer'ını** tutar.
+  **Push sırası ZORUNLU olarak `scripts/push-order.sh` ile yapılır — elle `git push`
+  zinciri YASAK.** Gerekçe: Team Lead push sırasını elle **iki kez** ters yaptı (meta →
+  submodule), meta pointer origin'de henüz görünmeyen submodule commit'lerine işaret
+  etti (T-212 Kalem 3). "Bir daha dikkat ederim" iki kez söylendi, iki kez tutmadı —
+  kural artık bir script, bir niyet değil.
+
+  **Akış (script'in gerektirdiği sıra — elle anlatılan eski sıranın YERİNE geçti):**
+  1. Submodule'de iş biter, **submodule'de commit edilir** (henüz push YOK).
+  2. Kök repoda submodule pointer'ı bump edilir ve **kök repoda commit edilir**
+     (henüz push YOK) — pointer artık submodule'ün YENİ, henüz push edilmemiş
+     commit'ine işaret ediyor.
+  3. `bash scripts/push-order.sh` çalıştırılır. Script: her submodule'ü sırayla push
+     eder, `merge-base --is-ancestor` ile origin'de **gerçekten göründüğünü** doğrular,
+     kök repo'nun pointer'ının doğrulanan commit'le eştiğini sanity-check eder, **ancak
+     sonra** kök repoyu push eder. Bir adım başarısız/doğrulanamazsa script durur ve
+     pointer'ı doğrulanmamış bir commit'in üstüne ASLA push etmez.
+  4. Bir submodule'de commit edilmemiş (henüz commit'lenmemiş) değişiklik varsa script
+     **varsayılan olarak durur** (`PUSH_ORDER_ABORT_ON_DIRTY=1`) — bkz. script başlığı.
 - Commit mesajı sonu: `Co-Authored-By: Claude <noreply@anthropic.com>`
   *(Model adı yazma — model değişince her commit yanlış imzalanır.)*
 - Commit/push yalnızca kullanıcı isterse.

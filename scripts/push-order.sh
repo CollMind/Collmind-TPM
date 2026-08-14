@@ -20,35 +20,49 @@
 #   4. ANCAK SONRA meta'yı push et — ve onu da aynı merge-base doğrulamasından
 #      geçir.
 #
-# Bir adım başarısız/doğrulanamaz olursa script DURUR ve sonraki adıma
-# GEÇMEZ — özellikle meta pointer, doğrulanmamış bir submodule commit'i
-# üstüne ASLA push edilmez.
+# Bir adım başarısız/doğrulanamaz olursa script o adımdan İTİBAREN durur ve
+# sonraki adıma GEÇMEZ. (S2, T-212 code-review, ölçüldü — bu paragraf daha
+# önce "hiçbir şey push edilmez" diyordu ve bu YANLIŞTI: backend adımı
+# başarıyla push+doğrulanmışken frontend'de DURULURSA, backend'in push'u
+# GERİ ALINMAZ — script idempotent'tir, bir sonraki koşum onu atlayıp kaldığı
+# yerden devam eder.) Doğru cümle: engellenen adımdan itibaren hiçbir şey
+# push edilmez; ondan ÖNCEKİ adımlar zaten gitmiş olabilir — bu GÜVENLİ
+# yöndür, çünkü meta pointer sırada en sonda ve doğrulanmamış bir submodule
+# commit'inin üstüne ASLA push edilmez.
 #
 # ⛔ AÇIK KARAR — Team Lead'e soruldu, bu script'te KONSERVATİF VARSAYILANLA
 # uygulandı (CLAUDE.md §2.4 "Belirsizlikte DUR"):
-#   Bir submodule'de COMMIT EDİLMEMİŞ değişiklik bulunursa script DURUR
-#   (exit 2) ve HİÇBİR ŞEY push ETMEZ — uyarıp devam etmez. Gerekçe: push
-#   sırası zaten meta pointer'ın submodule'ün push edilen HALİYLE eşleşmesini
-#   garanti etmeye çalışıyor; commit edilmemiş bir değişiklik o garantiyi
-#   baştan anlamsız kılar (hangi hâl push edildi, hangi hâl kaldı belirsiz).
-#   Bu varsayım DOĞRULANMADI — Team Lead onayı bekliyor. Onaylanmazsa
-#   (ör. "yalnız UYAR, devam et" isteniyorsa) `ABORT_ON_DIRTY` bayrağı bunun
-#   için hazır: `PUSH_ORDER_ABORT_ON_DIRTY=0` ile gevşetilebilir, varsayılan
-#   1 (dur).
+#   Bir submodule'de COMMIT EDİLMEMİŞ değişiklik bulunursa script o
+#   adımda DURUR (exit 2) — uyarıp devam etmez, varsayılan davranış bu.
+#   Gerekçe: push sırası zaten meta pointer'ın submodule'ün push edilen
+#   HALİYLE eşleşmesini garanti etmeye çalışıyor; commit edilmemiş bir
+#   değişiklik o garantiyi baştan anlamsız kılar (hangi hâl push edildi,
+#   hangi hâl kaldı belirsiz). Bu varsayım DOĞRULANMADI — Team Lead onayı
+#   bekliyor. Onaylanmazsa (ör. "yalnız UYAR, devam et" isteniyorsa)
+#   `ABORT_ON_DIRTY` bayrağı bunun için hazır: `PUSH_ORDER_ABORT_ON_DIRTY=0`
+#   ile gevşetilebilir, varsayılan 1 (dur).
 #
 # KULLANIM
 #   bash scripts/push-order.sh
+#   bash scripts/push-order-self-test.sh   ← push-order.sh'ın kendi doğruluk
+#                                             kanıtı (6 senaryo, tamamen
+#                                             lokal bare-repo harness, S3)
 #
-# ÇEVRE DEĞİŞKENLERİ (test edilebilirlik için — self-test bunları kullanır)
-#   PUSH_ORDER_ROOT              varsayılan: bu script'in üst üst dizini
-#   PUSH_ORDER_SUBMODULES        varsayılan: "collmind.backend collmind.frontend"
-#                                 (SIRA BAĞLAYICI — backend önce, frontend sonra)
-#   PUSH_ORDER_REMOTE            varsayılan: origin
-#   PUSH_ORDER_ABORT_ON_DIRTY    varsayılan: 1 (yukarıdaki açık karara bkz.)
-#   PUSH_ORDER_SKIP_META         varsayılan: 0 — 1 ise yalnız submodule'leri
-#                                 push eder, meta'ya dokunmaz (self-test bunu
-#                                 kullanır: meta pointer sanity-check'i ayrı
-#                                 test eder)
+# ÇEVRE DEĞİŞKENLERİ (test edilebilirlik için — push-order-self-test.sh bunları kullanır)
+#   PUSH_ORDER_ROOT               varsayılan: bu script'in üst üst dizini
+#   PUSH_ORDER_SUBMODULES         varsayılan: "collmind.backend collmind.frontend"
+#                                  (SIRA BAĞLAYICI — backend önce, frontend sonra)
+#   PUSH_ORDER_REMOTE             varsayılan: origin
+#   PUSH_ORDER_ABORT_ON_DIRTY     varsayılan: 1 (yukarıdaki açık karara bkz.)
+#                                  yalnız "0"/"1" kabul edilir — başka DEĞER
+#                                  KURULUM HATASI (exit 2), bkz. B2 aşağıda
+#   PUSH_ORDER_SKIP_META          varsayılan: 0 — "1" ise yalnız
+#                                  submodule'leri push eder, meta'ya
+#                                  dokunmaz (push-order-self-test.sh'ın meta
+#                                  pointer sanity-check'i ayrı test etmesi
+#                                  için kullanılabilir; bugünkü self-test
+#                                  bunu KULLANMIYOR ama bayrak bunun için var)
+#                                  yalnız "0"/"1" kabul edilir, aynı kural
 #
 # ÇIKIŞ KODLARI
 #   0  hepsi push edildi ve origin'de doğrulandı (meta dahil, atlanmadıysa)
@@ -62,6 +76,27 @@ SUBMODULES="${PUSH_ORDER_SUBMODULES:-collmind.backend collmind.frontend}"
 REMOTE="${PUSH_ORDER_REMOTE:-origin}"
 ABORT_ON_DIRTY="${PUSH_ORDER_ABORT_ON_DIRTY:-1}"
 SKIP_META="${PUSH_ORDER_SKIP_META:-0}"
+
+# B2 (T-212 code-review, ölçüldü): `[ "$X" -eq 1 ]` bir tamsayı bekler.
+# `PUSH_ORDER_ABORT_ON_DIRTY=true` yazan biri "makul bir yazım" kullanıyor —
+# `-eq` bunu sessizce reddeder (bash `[: true: integer expression expected`
+# STDERR'e düşer), `set -uo pipefail`'DE `-e` YOK, yani test komutu başarısız
+# (1) döner ve if/else zincirinde "false" sayılır — kirli ağaçta push AKAR.
+# Tek iz stderr'deki bash gürültüsü. Aynı sınıf SKIP_META için de var
+# (`PUSH_ORDER_SKIP_META=yes` meta'yı SESSİZCE push eder).
+# Düzeltme: yalnız "0" ve "1" kabul edilir; başka HER DEĞER kurulum hatasıdır
+# (gevşetme değil) — §2.5 "sessiz sıfır yasağı"nın ikili-bayrak karşılığı.
+require_bool_flag() { # <env-adı> <değer>
+  case "$2" in
+    0|1) ;;
+    *)
+      echo "!! $1='$2' geçersiz — yalnız 0 ya da 1 kabul edilir (KURULUM HATASI, exit 2)" >&2
+      exit 2
+      ;;
+  esac
+}
+require_bool_flag PUSH_ORDER_ABORT_ON_DIRTY "$ABORT_ON_DIRTY"
+require_bool_flag PUSH_ORDER_SKIP_META "$SKIP_META"
 
 # push_and_verify <etiket> <yol>
 # Döner: 0 = push edildi (ya da zaten güncel) VE origin'de doğrulandı
@@ -78,8 +113,19 @@ push_and_verify() {
   # -uall: untracked dosyalar da sayılır. "push edildi" iddiası, çalışma
   # ağacının commit edilmiş hâliyle eşleştiği varsayımına dayanır; dirty bir
   # ağaçta bu varsayım baştan çürük.
+  #
+  # S1 (T-212 code-review, ölçüldü): --ignore-submodules=dirty ŞART. Onsuz,
+  # meta'nın kendi dirty kontrolü nested submodule'lerin (collmind.frontend
+  # vb.) commit edilmemiş değişikliklerini de "M collmind.frontend" olarak
+  # meta'nın status'üne SIZDIRIYOR — bu da PUSH_ORDER_SUBMODULES ile kapsamı
+  # backend'e daraltmayı işe yaramaz kılıyor (frontend zaten kapsam dışı
+  # bırakılmışken meta yine de onun kirliliğinden dolayı DURuyordu). Submodule
+  # kirliliği zaten döngüde HER SUBMODULE için AYRI ölçülüyor; meta'da ikinci
+  # kez (ve dolaylı, dosya-düzeyi ayrımı olmadan) ölçülmesi yalnız kilitliyor.
+  local ignore_sm=""
+  [ "$label" = "meta" ] && ignore_sm="--ignore-submodules=dirty"
   local dirty
-  dirty="$(git -C "$path" status --porcelain -uall)"
+  dirty="$(git -C "$path" status --porcelain -uall $ignore_sm)"
   if [ -n "$dirty" ]; then
     echo "!! [$label] commit edilmemiş değişiklik var:" >&2
     printf '%s\n' "$dirty" | sed 's/^/     /' >&2
