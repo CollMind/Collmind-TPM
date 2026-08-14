@@ -546,9 +546,37 @@ counterpart in either codebase's existing documentation.
   `fullCoverage`, so a partial-coverage KPI carries `ragStatus = null` deliberately (T-177).
   The **reader** falsifies it: `finance-reporting.service.ts:583` and `:633` both do
   `ragStatus: plan.ragStatus || 'GREEN'`, on live `@Get` routes.
-  Scope measured 2026-08-14 across six shapes (`|| 'GREEN'` · `?? 'GREEN'` · `|| RagStatus.*` ·
-  plain default · `= 'GREEN'` · frontend): **exactly these two sites**. The three `= 'GREEN'`
-  matches are the two `fullCoverage`-guarded producer branches and a DTO enum member.
+  ⛔ **The first scope claim was WRONG and is corrected here.** It read: *"measured across six
+  shapes — exactly these two sites."* Those six shapes were all spellings of **a `'GREEN'`
+  default**; the defect class is wider — *"absence of colour collapses into a colour."* The
+  universe was defined by a **literal**, not by the class. Found by `frontend-engineer`
+  2026-08-14, one turn later:
+
+  ```
+  GrandTotals.tsx:25   if (!ragStatus || ragStatus === 'AMBER') → '• RİSKLİ'
+                       (and the trailing return does the same)
+  ```
+
+  Same class, **opposite direction**: `null` becomes a business judgement (*at risk*) rather
+  than a reassurance. A reader cannot tell "risky" from "not computed".
+
+  **Measured sites, by surface:**
+
+  | surface | site | shape |
+  |---|---|---|
+  | finance report | `finance-reporting.service.ts:583` · `:633` | `\|\| 'GREEN'` |
+  | plan totals | `GrandTotals.tsx:25` + trailing `return` | `!x \|\| AMBER` → RİSKLİ |
+  | plan list | `PlanList.tsx:49` | `return null` — no colour **and no explanation** |
+  | grid | `PlanningGrid.tsx:57` · `grid-cells.tsx:551` | grey, but **no coverage ratio** |
+  | export | `utils/export.ts:178` | raw value to Excel, **no coverage column** |
+
+  The producer remains correct: both `kpi-engine` roll-ups are `fullCoverage`-guarded (T-177),
+  so `null` is deliberate.
+
+  ⚠️ **And the carrier is missing at plan level:** `plans` has neither `calculated_kpis` nor
+  `coverage_ratio` (0 columns, measured); only `plan_fus` and `plan_skus` carry them. So the
+  two most visible surfaces (`PlanList`, `GrandTotals`) **cannot** show a coverage ratio today
+  without new backend work — remediation there is blocked, not merely unwritten.
 - **Impact:** with today's data this is the **majority** case, not an edge — `COGS 4/170`, so
   nearly every green shown on the panel actually means *"could not be computed."* This is the
   most dangerous class: it falsifies the confidence claim itself.
