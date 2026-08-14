@@ -123,7 +123,7 @@ status: active        # planned | active | closed
 | [[T-101]] | Eşikler bütün olarak alınıyor + `source`/`reason` + aralık CHECK | P1 | backend-engineer | review |
 | [[T-108]] | RAG eşikleri üretimde konfigüre EDİLEMİYOR — admin ucu + provisioning | P2 | architect | todo |
 | [[T-112]] | Escape **yazma** tetikliyor ve geçersiz girdi hücreyi kilitliyor | P1 | frontend-engineer | review |
-| [[T-113]] | grid e2e fixture'ı: 500 bayat süreçmiş; asıl kusur paylaşılan FU + teardown yokluğu | P1 | debugger | review |
+| [[T-113]] | 🔺 `lint` kapısının **İKİ** bozulma yolu: kapsam boşalıyor (`T-100`) **ve** `lint:check` 108 error'la hep kırmızı — `§2.7 #9` | **P1** | qa-engineer | todo |
 | [[T-114]] | lint ratchet + self-test kuruldu (taban 488/112); `npm run lint` kapsamı değişmedi | P2 | frontend-engineer | review |
 | [[T-115]] | `ledger.service.test.tsx` flaky — tam suite'te 4 koşumda 1 düşüyor | P3 | qa-engineer | todo |
 | [[T-116]] | `type-check` artık `tests/`'i kapsıyor — 210 hata düzeltildi, bir kör test bulundu | P2 | frontend-engineer | review |
@@ -228,6 +228,7 @@ status: active        # planned | active | closed
 | [[T-223]] | 🔒 `utils/export.ts` sıfır çağıran — mekanizma var, yol yok | P2 | frontend-engineer | blocked-unreachable |
 | [[T-224]] | ✅ Entity listesi TEK KAYNAK — `index.ts` kaldırıldı, pin yazıldı; ⏸️ pin [[T-225]]'te askıda | **P1** | backend-engineer | review |
 | [[T-225]] | `BudgetReservation` — ÜÇ listenin de kaçırdığı `@Entity`; tablo var, 0 satır, 0 import. Ölü mü, unutulmuş mu? | **P1** | architect | todo |
+| [[T-228]] | **TÜKETİM tarafı**: `string` bir değer sayı gibi tüketiliyor (`.toFixed()` · sözlüksel · `+`) — `T-220` bu sınıfı SORMUYOR (ölçüldü) | **P1** | code-reviewer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
