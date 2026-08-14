@@ -216,6 +216,9 @@ status: active        # planned | active | closed
 | [[T-212]] | Backend ratchet'leri **kapı değil**, elle — frontend'de kapı. Baseline liste olsun, sonra bağlansın | P2 | qa-engineer | todo |
 | [[T-213]] | `agreement_transactions.fiscal_period` sekiz kolonun tek nullable'ı — bilinçli mi kaza mı, ölçülmedi | P2 | data-analyst | todo |
 | [[T-214]] | `approval_policies`: katalog seçeneği ile tenant politikası aynı satırda — `EŞİKLİ` şablonu bu yüzden yazılamıyor | P2 | architect | todo |
+| [[T-215]] | gri→yeşil sızıntısı: `|| 'GREEN'` iki canlı rotada — `INV-N-004`, ve bugünkü veriyle ÇOĞUNLUK durumu | **P1** | backend-engineer | todo |
+| [[T-216]] | `GRİ` sunum durumu: `null` → gri rozet + kapsama oranı; bugün ne renk ne açıklama var | **P1** | frontend-engineer | todo |
+| [[T-217]] | `GRİ`'nin üçüncü öğesi: eksik listesi — veri bugün taşınmıyor | P2 | architect | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |

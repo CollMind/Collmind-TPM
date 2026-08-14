@@ -13,7 +13,7 @@
 
 | | |
 |---|---|
-| `L2` kural tanımı | **374** |
+| `L2` kural tanımı | **375** |
 | Açık (⛔) kural | **0** ✅ — `L2`'de dayanaksız yürürlükte madde kalmadı<br>⏸️ `K-2.9.0`: saklama bölümü **askıda** (hukuki mütalaa) — açık değil, **dondurulmuş**<br>⚠️ `K-2.13.14h6a` · `K-2.1.19a`: **ön karar**, [[T-209]] ölçümüne bağlı — açık değil; karar verildi, yalnız beslendiği kaynak ölçüm bekliyor |
 | Bölüm dağılımı | veri/bütçe/defter/hesap **147** · veri kalitesi/entegrasyon/bildirim/denetim **49** · onay/yetki/uyum **89** · hakediş/AI/kurulum **89** |
 | Açık karar (kural dışı) | **2** — veri ayrımı modeli · iade temsili<br>(`ADR 0002` 2026-08-13'te kapandı → **`0002-R`**, `K-2.5.12`) |

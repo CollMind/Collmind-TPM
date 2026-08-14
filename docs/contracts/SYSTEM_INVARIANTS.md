@@ -538,6 +538,27 @@ counterpart in either codebase's existing documentation.
 - **Remediation:** blocked on **D-05**
 - **Source:** determinism risks 1, 2, 3; spec gap 15
 
+### INV-N-004 — A RAG colour is never shown from the full-coverage palette while coverage is partial.
+- **Status:** 🔴 VIOLATED
+- **Guard:** NONE → target `TEST` (inject a partial-coverage row on a live route, assert no
+  full-coverage colour is returned)
+- **Evidence:** the **producer** is correct — `kpi-engine.service.ts` guards both roll-ups with
+  `fullCoverage`, so a partial-coverage KPI carries `ragStatus = null` deliberately (T-177).
+  The **reader** falsifies it: `finance-reporting.service.ts:583` and `:633` both do
+  `ragStatus: plan.ragStatus || 'GREEN'`, on live `@Get` routes.
+  Scope measured 2026-08-14 across six shapes (`|| 'GREEN'` · `?? 'GREEN'` · `|| RagStatus.*` ·
+  plain default · `= 'GREEN'` · frontend): **exactly these two sites**. The three `= 'GREEN'`
+  matches are the two `fullCoverage`-guarded producer branches and a DTO enum member.
+- **Impact:** with today's data this is the **majority** case, not an edge — `COGS 4/170`, so
+  nearly every green shown on the panel actually means *"could not be computed."* This is the
+  most dangerous class: it falsifies the confidence claim itself.
+- **Carrier:** `null`, not a `GRAY` value (`K-2.4.22a1`). Meaning is read from the coverage
+  ratio, which today **stops at the JSONB** — 0 occurrences in DTOs, 0 in the frontend.
+- **Remediation:** `D1` (drop the `|| 'GREEN'`) + `D2` (carry `coverageRatio` to the client and
+  render the grey badge). `PlanList.tsx:49` currently does `if (!ragStatus) return null` — no
+  colour *and* no explanation.
+- **Source:** `K-2.4.22c` (invariant clause) · `K-2.4.22a`/`a1` · decision `3.9`
+
 ### INV-N-003 — Fiscal period derivation is timezone-independent.
 - **Status:** 🔴 VIOLATED
 - **Guard:** NONE → target `TEST` (assert under ≥2 `TZ` values) + `LINT`

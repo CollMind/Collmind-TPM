@@ -1120,6 +1120,20 @@ Alt seviye oranların ortalaması **alınmaz.**
 | Yeşil / Sarı / Kırmızı | Tam kapsama | Değer + renk |
 | **Gri** — *"hesaplanamadı"* | Kısmi veya sıfır kapsama | **Değer + kapsama rozeti + eksik listesi** |
 
+**K-2.4.22a1** — ⚠️ `GRİ` bir **sunum durumudur**, bir değer değil. Taşıyıcı `null`'dır.
+
+> Bir `GRAY` değeri eklemek **üçüncü bir temsil** doğurur: `null` (hiç hesaplanmadı) ve
+> `GRAY` (kısmi kapsama) yan yana yaşar, ve ayrımları hiçbir yerde yazılı olmaz.
+>
+> Motorun çıktısı **tektir**; anlamı **kapsama oranından** okunur.
+
+> 📌 Ölçüldü (2026-08-14): `ragStatus` bugün `string | null`, ve `'GRAY'`/`'GREY'` kodda
+> **0 geçiş**. `null`'ı üreten yol kasıtlıdır — `kpi-engine.service.ts`'in iki roll-up'ı
+> `fullCoverage` ile korunuyor (`K-2.4.22c`'ye uygun). Yani taşıyıcı zaten doğru; eksik
+> olan **sunum** ve **kapsama oranının istemciye ulaşması**.
+>
+> Bu, `K-2.2.7`'nin renk/davranış ayrımının aynısı: **görüntü katmanı taşıyıcıya sızmaz.**
+
 **K-2.4.22b** — `GRİ` durumda değer **gösterilir** (kesişimden), yanında kapsama oranı
 (`4/170` gibi) durur, ve eksik olan öğeler görülebilir.
 
