@@ -213,7 +213,7 @@ status: active        # planned | active | closed
 | [[T-204]] | 🔴 Soft-delete yolu **yok**, ve `v_budget_summary`'de yön ADR'nin korktuğunun **tersi** | **P1** | architect | todo |
 | [[T-210]] | 🔴 Gönderen `PLANNER` taslağa dönen planına **erişemiyor** (`404 OUT_OF_SCOPE`) | **P1** | backend-engineer | todo |
 | [[T-211]] | **`B` dalgası** — ✅ KAPANDI: `S1`–`S15` · `R1`/`R2a`/`R3` · seed 4.5/5 · enum pini mutasyon kanıtlı. `EŞİKLİ` → [[T-214]] | **P1** | data-engineer | done |
-| [[T-212]] | Backend ratchet'leri **kapı değil**, elle — frontend'de kapı. Baseline liste olsun, sonra bağlansın | P2 | qa-engineer | todo |
+| [[T-212]] | Backend ratchet'leri **kapı değil**, elle — frontend'de kapı. + `push-order.sh` (sıra iki kez ters gitti) | P2 | qa-engineer | todo |
 | [[T-213]] | `agreement_transactions.fiscal_period` sekiz kolonun tek nullable'ı — bilinçli mi kaza mı, ölçülmedi | P2 | data-analyst | todo |
 | [[T-214]] | `approval_policies`: katalog seçeneği ile tenant politikası aynı satırda — `EŞİKLİ` şablonu bu yüzden yazılamıyor | P2 | architect | todo |
 | [[T-215]] | gri→yeşil sızıntısı: `|| 'GREEN'` iki canlı rotada — `INV-N-004`, ve bugünkü veriyle ÇOĞUNLUK durumu | **P1** | backend-engineer | todo |
