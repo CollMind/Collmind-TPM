@@ -206,7 +206,7 @@ status: active        # planned | active | closed
 | [[T-194]] | ⛔ `Available` **iki aileyi topluyor** — `consumed` yarısı bugün **sessizce sıfır** | **P1** | architect | todo |
 | [[T-195]] | **Tenant offboarding yolu yok** — `*/tenants` FK'ları ADR 0012 migration'ının dışında | P2 | architect | todo |
 | [[T-196]] | 🔴 `type: 'date'` entity'de `Date` diye tipli, **string** dönüyor — iki canlı 500 | **P1** | debugger | todo |
-| [[T-197]] | **71 `decimal` kolonu** `number` diye tipli, transformer yok — migration'ı bloklamıyor | **P1** | architect | todo |
+| [[T-197]] | 🔺 decimal kolon tabanı **BAYATLADI**: 89→101 (üç günde, `B` dalgası) · 57 transformer'sız kaldı — taban yeniden alınmalı, tercihen guard'a bağlı | **P1** | architect | todo |
 | [[T-198]] | `migration:generate` taban çizgisi bozuk — ilgisiz **188 FK** DROP+RECREATE istiyor | P2 | data-engineer | todo |
 | [[T-199]] | 🔴 `seed:cleanup` **atfı imha eden yol** — `RESTRICT` kırmıyor, **yakalıyor**; iki tablo eksik | **P1** | architect | todo |
 | [[T-203]] | `ADR 0012`'nin 4. adımı **inmedi** — şema guard'ı yok, `INV-L-001` hâlâ `HOLDS` | **P1** | backend-engineer | todo |
@@ -223,7 +223,7 @@ status: active        # planned | active | closed
 | [[T-217]] | `GRİ`'nin üçüncü öğesi: eksik listesi — veri bugün taşınmıyor | P2 | architect | todo |
 | [[T-219]] | ✅ İddia ÇÜRÜTÜLDÜ: `S5`'ten geliyordu, ve e2e suite'inin **tamamı** (17/17) kırıktı — düzeltildi | **P1** | qa-engineer | done |
 | [[T-220]] | **TAM ENUMERASYON**: hesaplanamayan değer nerede bir iş yargısına çöküyor — liste, sayı değil | **P1** | code-reviewer | todo |
-| [[T-221]] | 🔴 `overall_roi`/`gp_roi` string dönüyor → `.toFixed()` TypeError (canlı çökme, [[T-197]] örneği) | **P1** | backend-engineer | todo |
+| [[T-221]] | ✅ `plan.entity.ts` 24 kolon — string→number, çökme koşarak reprodüklendi ve kapandı. ⚠️ `T-197` sayımı bayatladı (89→101) | **P1** | backend-engineer | done |
 | [[T-222]] | İki grid implementasyonu, biri karanlıkta — `PlanningGrid.tsx` ölü kod (`İlke 4`) | P2 | frontend-engineer | todo |
 | [[T-223]] | 🔒 `utils/export.ts` sıfır çağıran — mekanizma var, yol yok | P2 | frontend-engineer | blocked-unreachable |
 
