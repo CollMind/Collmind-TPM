@@ -77,9 +77,31 @@ koşuluna terfi etti.
 
 ---
 
-## KT-3 · Hukuk paketi — üç soru, ve `7 yıl` şüphesi
+## KT-3 · Hukuk paketi — **dört** soru
 
-**Karar:** üç soru **tek paket** olarak hukuka şimdi gider; **hiçbiri işi bekletmez.**
+**Karar:** dört soru **tek paket** olarak hukuka gider; **hiçbiri işi bekletmez.**
+
+> ### ⚠️ Bu başlık `üç` diyordu — bayattı, ve `0071` derlemesi yakaladı (2026-08-15)
+>
+> Belgenin kendi içinde iki farklı sayı vardı:
+>
+> ```
+> :80  / :82   "üç soru"     ← ilk yazım
+> :301         "dört soru"   ← özet tablosu
+> ```
+>
+> **Doğrusu `dört`** (ürün sahibi, 2026-08-15). Dördüncüsü aşağıdaki `7 yıl`
+> doğrulamasıdır ve *"üç"* ilk yazımdan kalmıştır — `7 yıl` bulgusu **sonradan
+> eklendi**, ve bir **soru** olarak değil bir **şüphe** olarak yazıldığı için
+> sayıma girmedi.
+>
+> ⚠️ **Ama pakete girmesi ZORUNLU: `(a)`'nın çerçevesini o belirliyor.** Hangi
+> kayıt sınıfının hangi rejime girdiği bilinmeden `(a)`'nın askısı ne zaman
+> kalkacağı da bilinemez.
+>
+> 📌 **Ders:** bir şüphe olarak yazılan şey, bir soru olarak sayılmaz — ve
+> gönderilecek pakete girmez. Eksik gönderilen bir sorunun cevabı **aylar sonra**
+> aranır. `CLAUDE.md`: *"bir sayı listesiyle anılır ya da hiç anılmaz."*
 
 ### ⚠️ Ve bir bulgu: kaynağın `7 yıl`ı muhtemelen yanlış
 

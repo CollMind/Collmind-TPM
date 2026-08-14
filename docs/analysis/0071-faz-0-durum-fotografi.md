@@ -159,12 +159,22 @@ altı dosya"* işidir (`P1`, `architect`). Lint'le teması yok.
 :301   "| — | Hukuk paketi, DÖRT soru | Dış |"
 ```
 
-> ⚠️ **Aynı belge bir yerde `üç`, bir yerde `dört` diyor.** Bu belge yeni ölçüm yapmadığı
-> için hangisinin doğru olduğunu **söyleyemez** — ama paketi göndermeden önce bu
-> **çözülmelidir**, yoksa eksik bir soru sorulur ve cevabı aylar sonra aranır.
+> ### ✅ ÇÖZÜLDÜ — ürün sahibi, 2026-08-15 (bu belge derlendikten sonra)
 >
-> 📌 Ve bu, `CLAUDE.md`'nin *"bir sayı listesiyle anılır ya da hiç anılmaz"* kuralının
-> canlı bir vakası.
+> **Doğrusu `dört`.** `:80`'deki *"üç"* **bayat** — ilk yazımdan kalma. Dördüncüsü
+> `7 yıl` rakamının doğrulanmasıdır ve **bir soru olarak değil, bir şüphe olarak**
+> yazıldığı için sayıma girmemiş.
+>
+> ⚠️ **Ama pakete girmesi zorunlu: `(a)`'nın çerçevesini o belirliyor.** Hangi kayıt
+> sınıfının hangi rejime girdiği bilinmeden `(a)`'nın askısının ne zaman kalkacağı
+> da bilinemez.
+>
+> Kayıt düzeltildi: `KARAR_TURU_BES_KONU.md` `KT-3` başlığı + karar cümlesi, bayatlık
+> gerekçesiyle birlikte.
+>
+> 📌 **Ders:** bir **şüphe** olarak yazılan şey, bir **soru** olarak sayılmaz — ve
+> gönderilecek pakete girmez. `CLAUDE.md`: *"bir sayı listesiyle anılır ya da hiç
+> anılmaz."*
 
 **Bağlı kayıtlar:** `T-170` (Vergi Usul · KVKK · e-Fatura hangi kayıtlara) ·
 `v2-RAPOR-KISI` (kişi bazlı raporlama KVKK) · `K-2.9.0` **geçici askıda**
@@ -173,6 +183,14 @@ mütalaası değil"*).
 
 > ⚠️ **`K-2.9.0`'ın askısı, `L2`'de `⛔ açık kural = 0` denilirken duruyor.** Yani
 > *"dayanaksız yürürlükte madde kalmadı"* ifadesi **askıdaki maddeyi saymıyor.**
+>
+> **Ve bu bir SAYIM SINIRI, bir kusur değil** (ürün sahibi, 2026-08-15): guard
+> `⛔ açık` deseni arıyor, `K-2.9.0` ise `⏸️ GEÇİCİ ASKI` taşıyor — **farklı işaret,
+> farklı desen.** Eşiğin kendisi hâlâ doğru: askı **dayanaklı** (geri-alınabilirlik
+> asimetrisi, `KT-3`).
+>
+> ⚠️ Sorun çıktının okunuşunda: bir okuyucu `0`'ı *"hiçbir şey beklemiyor"* diye
+> okuyabilir. → **`T-212`: guard `⏸️` sayısını da bassın.**
 
 **Neden `Faz 1`'e girmeden yola çıkmalı:** karar `hiçbiri işi bekletmez` diyor — yani
 paket **bloklamıyor**, ama cevabı `Faz 1` boyunca gelirse saklama/anonimleştirme
