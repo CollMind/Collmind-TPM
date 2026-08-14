@@ -59,15 +59,15 @@
 #      dağılım satırı bir kez bayat yakalandı (89 ↔ 88)
 #   d) Bayat adres         — kapanmış bir dalgaya/task'a referans veren ❌
 #      (L2 §Bu katmanın kuralları md.5: her ❌ bir adres taşır)
+#   e) L2'ye tek kanal      — L2_* dosyasına Team Lead dışı bir commit
+#      (CLAUDE.md §3). ⚠️ Guard bunu ancak commit GELDİKTEN sonra yakalar,
+#      önlemez — kanalı koruyan şey dosya başlıklarındaki uyarı.
 #   f) `D-*` etiket tekilliği — 2026-08-14: `D1`/`D2` İKİ ŞEYE verilmişti
 #      (`T-189` = `analysis/0058`'in Playwright denetimi · gri→yeşil sızıntısı +
 #      kapsama oranı). `F2`'nin üçüncü vakası ama BAŞKA BİR UZAYDA: `K-*` ve `T-*`
 #      guard'lı, `D-*` değil. ⚠️ Ve daha basit bir çözüm var: `D-*` serisi geçici
 #      bir etiket olarak doğdu ve iki kez çakıştı — KULLANIMDAN KALDIRILMASI
 #      guard yazmaktan ucuz. Karar verilmedi.
-#   e) L2'ye tek kanal      — L2_* dosyasına Team Lead dışı bir commit
-#      (CLAUDE.md §3). ⚠️ Guard bunu ancak commit GELDİKTEN sonra yakalar,
-#      önlemez — kanalı koruyan şey dosya başlıklarındaki uyarı.
 #
 # Kullanım:  ./guard.sh [paket_dizini]
 # Çıkış:     0 temiz · 1 ihlal · 2 kurulum hatası (pozitif kontrol düştü)
