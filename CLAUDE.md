@@ -840,6 +840,35 @@ Ve özellikle bir **enum/durum genişletmesi** yapıyorsan: o değeri **karşıl
 say (`§7.1`), ve `else`/`default` dallarının onu ne yaptığına bak. Yeni değer bir `else`'e
 düşüyorsa, düzeltme oraya bir kusur taşımıştır.
 
+### Boş gelen bir çıktı, BEKLENEN içerikle doldurulamaz (ZORUNLU)
+
+> **Bir raporun beklenen ŞEKLİNİ bilmek, onun İÇERİĞİNİ bilmek değildir.**
+>
+> **Boş gelen bir çıktı, beklenen içerikle doldurulamaz — en makul tahmin bile
+> ölçülmemiş bir iddiadır, ve bir sonraki turda ölçülmüş sayılır.**
+
+Ölçülmüş vaka (2026-08-14, `T-221`): bir ajan takıldı ve **hiçbir rapor üretmedi**. Rapor
+boş geldi, ve okuyan tarafta beklenen içerikle **dolduruldu** — *"22 kolon · hepsi
+`Alan A` · `MoneyDecimalTransformer` şablonu · `BudgetReservation` 3 kolon"*. Ölçüm:
+
+| atfedilen | gerçek |
+|---|---|
+| 22 kolon düzeltildi | diff **44** transformer satırı ekliyor, 56 → 1 |
+| `BudgetReservation` 3 kolon | **1** (`reserved_amount`, entity ve katalog aynı fikirde) |
+| `MoneyDecimalTransformer` | repoda **böyle bir sınıf yok** |
+| `T-225`'e not düşüldü | not **ulaşmadı**, entity'ye dokunulmamış |
+
+⚠️ **Ve mekanizması öğretici:** boşluk **tembellikten** doldurulmadı — **brief'i yazan
+taraf cevabın şeklini biliyordu.** Bilmek ile ölçmek arasındaki fark tam burada.
+
+📌 Bu `§2.5`'in en saf hâli: **boşluğu makul bir içerikle doldurmak.** Ve `§2.4`'ün ters
+yönü: orada *"varsayma, sor"* deniyor; burada varsayım **bir onaya** dönüşüyordu — kabul
+edilseydi `22 kolon` bir sonraki turda *"ölçüldü"* diye taşınacaktı.
+
+**Pratik:** bir çıktı boş, kesik ya da eksik geldiğinde tek meşru cevap **"göremiyorum,
+paylaş"**tır. Beklenen şekli yazmak bir hatırlatma olabilir — ama **sonuç olarak
+kaydedilemez.**
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
