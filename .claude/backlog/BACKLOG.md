@@ -230,6 +230,7 @@ status: active        # planned | active | closed
 | [[T-225]] | `BudgetReservation` — ÜÇ listenin de kaçırdığı `@Entity`; tablo var, 0 satır, 0 import. Ölü mü, unutulmuş mu? | **P1** | architect | todo |
 | [[T-228]] | **TÜKETİM tarafı**: `string` bir değer sayı gibi tüketiliyor (`.toFixed()` · sözlüksel · `+`) — `T-220` bu sınıfı SORMUYOR (ölçüldü) | **P1** | code-reviewer | todo |
 | [[T-229]] | **`Karar 6` YARIM uygulanacak**: 49 `DecimalTransformer` kolonunun **37'si PARA** — yuvarlama `MoneyTransformer`'a konursa atlanırlar (ölçüldü) | **P1** | architect | todo |
+| [[T-230]] | **`§2.5` ALAN A'da**: eksik sayı sessizce `0` oluyor — `\|\| 0` 59 · `?? 0` 14 (Alan A). SAYAR, düzeltmez | **P1** | code-reviewer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
