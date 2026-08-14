@@ -1380,6 +1380,31 @@ kendisinden önce **yolunu** araştır. Ve bir girdi yolunu genişleten her değ
 bir parser, bir tip gevşemesi) uykudaki kuralları **uyandırır** — o değişikliğin kapsamına
 "hangi kurallar ilk kez ateşleyecek?" sorusu dahildir.
 
+> **KAPSAM, kusurun SINIFIYLA tanımlanır — bulunduğu ilk vakanın YAZIMIYLA değil.**
+
+Ölçülmüş vaka (2026-08-14, gri→yeşil sızıntısı): kusur `ragStatus: plan.ragStatus || 'GREEN'`
+olarak bulundu. Kapsam **altı şekilde** tarandı — `|| 'GREEN'` · `?? 'GREEN'` ·
+`|| RagStatus.*` · düz varsayılan · `= 'GREEN'` · frontend — ve *"tam olarak iki nokta,
+`T-093` deseni tekrarlamadı"* diye raporlandı.
+
+**Altı şeklin hepsi bir `GREEN` VARSAYILANININ yazımıydı.** Kusur sınıfı ise daha geniş:
+**"rengin yokluğu bir renge çöküyor."** Bir tur sonra `frontend-engineer` buldu:
+
+```
+GrandTotals.tsx:25   if (!ragStatus || ragStatus === 'AMBER') → '• RİSKLİ'
+```
+
+Aynı sınıf, **ters yön** — `null` bir güvence yerine bir **iş yargısına** çöküyor. O
+literalin dışında, o sınıfın içinde.
+
+> Altı şekli aramak, aramanın **derinliğini** artırdı ve **evrenini** hiç sorgulamadı.
+> Bir literalin altı yazımı hâlâ bir literaldir.
+
+**Pratik:** kapsam taramasına başlamadan önce kusuru **sınıf olarak bir cümlede yaz**, ve
+şekilleri o cümleden türet — bulduğun koddan değil. *"`|| 'GREEN'` nerede"* dar bir soru;
+*"renk yokluğu nerede bir renge dönüşüyor"* doğru soru, ve `AMBER`'i de, `return null`'ı da,
+Excel'e yazılan ham değeri de kapsar.
+
 > **Bir kusur sınıfı bulduğun dosyada, aynı sınıfın diğer örneklerini ara.
 > Kusurlar dosya bazlı kümelenir.**
 

@@ -181,7 +181,7 @@ status: active        # planned | active | closed
 | [[T-169]] | **Ürün Phase 1 kapsamının ÖNÜNDE** — iki sinyal, hiçbir yerde yazılı değil | **P1** | architect | todo |
 | [[T-170]] | **Regülasyon boyutu yok:** 7 yıl saklama · KVKK anonimleştirme · E-Fatura arşivi | **P1** | architect | todo |
 | [[T-171]] | `GrandTotals` ROI hedefi **sabit (20.0)** — kardeş okuyucu konfigürasyondan alıyor | P2 | frontend-engineer | todo |
-| [[T-172]] | **Hesaplanamayan ROI bir yargıya çöküyor:** `null` → `BELOW_TARGET` / `0` → kırmızı | P2 | architect | todo |
+| [[T-172]] | Hesaplanamayan değer bir **iş yargısına** çöküyor — İKİ yön: `null`→`BELOW_TARGET` ve `null`→`AMBER` (`GrandTotals`) | **P1** | architect | todo |
 | [[T-173]] | Onay kaydı `who`'yu tutuyor, **`on what basis`'i tutmuyor** — `metadata`'nın 0 yazarı | P2 | architect | todo |
 | [[T-174]] | **UOM dönüşümü yok:** birim taşınıyor, dönüştürülmüyor — uykuda 12× sessiz hata | P2 | architect | todo |
 | [[T-175]] | Kaynak-doğruluk **sahipliği işaretli değil** — ilk ERP entegrasyonunun ön koşulu | P3 | architect | todo |
@@ -217,7 +217,9 @@ status: active        # planned | active | closed
 | [[T-213]] | `agreement_transactions.fiscal_period` sekiz kolonun tek nullable'ı — bilinçli mi kaza mı, ölçülmedi | P2 | data-analyst | todo |
 | [[T-214]] | `approval_policies`: katalog seçeneği ile tenant politikası aynı satırda — `EŞİKLİ` şablonu bu yüzden yazılamıyor | P2 | architect | todo |
 | [[T-215]] | gri→yeşil sızıntısı: `|| 'GREEN'` iki canlı rotada — `INV-N-004`, ve bugünkü veriyle ÇOĞUNLUK durumu | **P1** | backend-engineer | todo |
-| [[T-216]] | `GRİ` sunum durumu: `null` → gri rozet + kapsama oranı; bugün ne renk ne açıklama var | **P1** | frontend-engineer | todo |
+| [[T-216a]] | `GRİ` — GRID satırları: veri JSONB'de var, frontend tipi görmüyor | **P1** | frontend-engineer | todo |
+| [[T-216b]] | `GRİ` — PLAN seviyesi: taşıyıcı kolon yok, [[T-218]]'e bağlı | **P1** | frontend-engineer | blocked |
+| [[T-218]] | `plans.coverage_ratio` — değer hesaplanıyor, `plan.service` atıyor (iki ajan bağımsız buldu) | **P1** | data-engineer | todo |
 | [[T-217]] | `GRİ`'nin üçüncü öğesi: eksik listesi — veri bugün taşınmıyor | P2 | architect | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
