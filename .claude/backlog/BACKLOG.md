@@ -181,7 +181,7 @@ status: active        # planned | active | closed
 | [[T-169]] | **Ürün Phase 1 kapsamının ÖNÜNDE** — iki sinyal, hiçbir yerde yazılı değil | **P1** | architect | todo |
 | [[T-170]] | **Regülasyon boyutu yok:** 7 yıl saklama · KVKK anonimleştirme · E-Fatura arşivi | **P1** | architect | todo |
 | [[T-171]] | `GrandTotals` ROI hedefi **sabit (20.0)** — kardeş okuyucu konfigürasyondan alıyor | P2 | frontend-engineer | todo |
-| [[T-172]] | Hesaplanamayan değer bir **iş yargısına** çöküyor — İKİ yön: `null`→`BELOW_TARGET` ve `null`→`AMBER` (`GrandTotals`) | **P1** | architect | todo |
+| [[T-172]] | ✅ KAPANDI — iki yön düzeltildi (`BELOW_TARGET` · `AMBER`); kapsam üç kez büyüdüğü için tam sayım → [[T-220]] | **P1** | architect | done |
 | [[T-173]] | Onay kaydı `who`'yu tutuyor, **`on what basis`'i tutmuyor** — `metadata`'nın 0 yazarı | P2 | architect | todo |
 | [[T-174]] | **UOM dönüşümü yok:** birim taşınıyor, dönüştürülmüyor — uykuda 12× sessiz hata | P2 | architect | todo |
 | [[T-175]] | Kaynak-doğruluk **sahipliği işaretli değil** — ilk ERP entegrasyonunun ön koşulu | P3 | architect | todo |
@@ -222,6 +222,10 @@ status: active        # planned | active | closed
 | [[T-218]] | `plans.coverage_ratio` — değer hesaplanıyor, `plan.service` atıyor (iki ajan bağımsız buldu) | **P1** | data-engineer | todo |
 | [[T-217]] | `GRİ`'nin üçüncü öğesi: eksik listesi — veri bugün taşınmıyor | P2 | architect | todo |
 | [[T-219]] | e2e bootstrap çöküyor (`ApprovalRequest#approvalPolicy`) — *pre-existing* iddiası ÖLÇÜLMEDİ, `S5`'ten olabilir | **P1** | qa-engineer | todo |
+| [[T-220]] | **TAM ENUMERASYON**: hesaplanamayan değer nerede bir iş yargısına çöküyor — liste, sayı değil | **P1** | code-reviewer | todo |
+| [[T-221]] | 🔴 `overall_roi`/`gp_roi` string dönüyor → `.toFixed()` TypeError (canlı çökme, [[T-197]] örneği) | **P1** | backend-engineer | todo |
+| [[T-222]] | İki grid implementasyonu, biri karanlıkta — `PlanningGrid.tsx` ölü kod (`İlke 4`) | P2 | frontend-engineer | todo |
+| [[T-223]] | 🔒 `utils/export.ts` sıfır çağıran — mekanizma var, yol yok | P2 | frontend-engineer | blocked-unreachable |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
