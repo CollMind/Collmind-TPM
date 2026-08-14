@@ -334,6 +334,23 @@ eder.
 > test sayısı, ya da başarısızlığın bir assertion olduğu. Derleme/çalıştırma hatası bir kanıt
 > değil, **başarısız bir deneydir**; mutasyonu davranışsal olacak şekilde yeniden yaz.
 
+> **Bir mutasyon uygulandıktan sonra, DEĞİŞTİRİLEN SATIR BASILIR.**
+> **Yeşil bir sonuç, mutasyonun uygulandığı kanıtlanmadan kanıt değildir.**
+
+Bu bir tavsiye değil, bir **adım**: mutasyonu uygula → `sed -n '<n>p' <dosya>` ile satırı
+**bas** → sonra ölç. Üç vaka gerektirdi (2026-08-13/14), ve üçünde de mutasyon **hiç
+düşmedi**:
+
+| # | mutasyon aracı | neden düşmedi | yeşil ne diyordu |
+|---|---|---|---|
+| 1 | `replace(…, 1)` | ilk eşleşme bir **yorumdaydı** | *"self-test kör"* |
+| 2 | `str.replace` | hedef metin dosyada **iki kez** geçiyordu | *"hiçbir kapı görmüyor"* |
+| 3 | `perl -pe 's/\Q…\E/…/'` | `\Q..\E` metakarakteri kaçırır ama **`$2`'yi yine de interpolate eder** (awk alan değişkeni perl'de capture grubu sanıldı) | *"self-test kör"* |
+
+Üçü de yakalandı — ama **üç kez tekrarlaması, refleksin yetmediğini gösterir.** Ve
+üçünün de yanlış teşhisi **aynı yöne** bakıyordu: çalışan bir kontrolü *"kör"* ilan etmek,
+yani gereksiz bir düzeltme turu başlatmak.
+
 > **Uygulandığını doğrulamak, MEKANİZMAYA uygulandığını doğrulamak değildir.**
 >
 > Mutasyonun hedefi bir yorum, ölü kod ya da kullanılmayan bir dal olabilir. Mutasyonun
