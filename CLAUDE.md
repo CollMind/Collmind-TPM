@@ -1528,6 +1528,32 @@ Excel'e yazılan ham değeri de kapsar.
 > **Bir kalıbı ararken her iki ucunu ara: neye yazıldığını VE neyin okunduğunu.**
 > Tek uçtan arama kalıbın yarısını görünmez bırakır.
 
+**Ve bir import taraması, göreli yolun HER yazımını kapsamalıdır (ZORUNLU).**
+
+```
+'./x'  ·  '../x'  ·  '../../x'  ·  alias'lar
+```
+
+Hepsi **aynı hedefi** gösterir, ve tek yazım aranırsa tüketici sayısı **sistematik olarak
+DÜŞÜK** çıkar. Bu, kapsam kuralının (*sınıfla ara, literalle değil*) **yol tarafındaki**
+hâli.
+
+> **Doğru desen: DİZİN ADIYLA ara, göreli önekle değil.**
+
+Ölçülmüş vaka (2026-08-14, iki farklı turda): `entities/index.ts`'in tüketicisi arandı.
+
+| tur | desen | bulunan | gerçek |
+|---|---|---|---|
+| 1 | `from './entities'` | **1** | — |
+| 2 | `entities'` (dizin adı) | **3** | `database.module` `'./entities'` · `typeorm.config` `'../database/entities'` · `master-data.module` `'../../database/entities'` |
+
+Birinci ölçüm bir **kaldırma kararının** girdisiydi: *"tek tüketici, kaldırması dar"* —
+oysa tüketicilerden biri **kanonik olacak dosyanın kendisiydi**.
+
+📌 `decimal` (entity dili) ↔ `numeric` (katalog dili) tuzağının kardeşi: **aynı kavram, iki
+yazım.** Orada iki farklı yüzeyin sözlüğü ayrışıyordu; burada **aynı yüzeyin** kendi
+içindeki göreli konum.
+
 **Ve iki uç da yetmeyebilir — kapsamı DOSYA TİPİYLE değil, YAZAN HER YOLLA tanımla
 (ZORUNLU).**
 
