@@ -810,6 +810,36 @@ harness varsa, doğrulama **onu kullanır**; ikinci bir yol açmaz.
 📌 Bu `§2.7`'nin en net vakası: **kanıt kurulumu ölçtüğün durumu değiştirdi.** Ama bir
 farkla — buradaki değişiklik geri alınamaz (bir push geri alınmaz, ancak üstüne yazılır).
 
+### Bir DÜZELTME, düzelttiği SINIFIN yeni bir vakasını üretebilir (ZORUNLU)
+
+> **Bir düzeltme, düzelttiği sınıfın yeni bir vakasını üretebilir — ve düzeltme turunun
+> kabul kriteri onu kapsamalıdır.**
+
+Ölçülmüş vaka (2026-08-14, `INV-N-004`): `null` ROI'nin `BELOW_TARGET`'a çökmesi
+düzeltildi — backend'e dördüncü bir durum eklendi (`NOT_COMPUTABLE`). Ama tüketici
+`PlanAnalysis.tsx` yalnız `BELOW_TARGET`/`ON_TARGET` kontrol ediyor ve `else` dalı
+**yeşil "Hedef Üstü"** basıyor:
+
+```
+düzeltmeden ÖNCE   null → kırmızı "Hedef Altı"     (yanlış)
+düzeltmeden SONRA  null → yeşil  "Hedef Üstü"      (DAHA yanlış)
+```
+
+Yani düzeltme, düzelttiği sınıfın (*"hesaplanamayan bir değer bir iş yargısına
+çöküyor"*) **yeni bir vakasını üretti** — ve **ters yönde, daha kötü**: yanlış bir kırmızı
+yanlış bir yeşile döndü.
+
+📌 Mekanizma: **taşıyıcıya yeni bir değer eklemek, onu OKUMAYAN her tüketicide sessiz bir
+sapma doğurur.** `else` dalları yeni enum değerini kendi varsayılanına yutar.
+
+**Pratik — düzeltme turunun kabul kriterine bir satır:**
+
+> *"Bu düzeltme, düzelttiği sınıfın yeni bir vakasını üretiyor mu?"*
+
+Ve özellikle bir **enum/durum genişletmesi** yapıyorsan: o değeri **karşılaştıran** her ucu
+say (`§7.1`), ve `else`/`default` dallarının onu ne yaptığına bak. Yeni değer bir `else`'e
+düşüyorsa, düzeltme oraya bir kusur taşımıştır.
+
 ### Bir DÜZELTME de bir iddiadır (ZORUNLU)
 
 **Düzeltmenin doğru hedefe gittiği, düzeltmenin gerekliliği kadar ölçülmelidir.**
