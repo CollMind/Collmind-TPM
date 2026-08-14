@@ -226,7 +226,8 @@ status: active        # planned | active | closed
 | [[T-221]] | ✅ `plan.entity.ts` 24 kolon — string→number, çökme koşarak reprodüklendi ve kapandı. ⚠️ `T-197` sayımı bayatladı (89→101) | **P1** | backend-engineer | done |
 | [[T-222]] | İki grid implementasyonu, biri karanlıkta — `PlanningGrid.tsx` ölü kod (`İlke 4`) | P2 | frontend-engineer | todo |
 | [[T-223]] | 🔒 `utils/export.ts` sıfır çağıran — mekanizma var, yol yok | P2 | frontend-engineer | blocked-unreachable |
-| [[T-224]] | **Entity listesi TEK KAYNAK** — üç liste, üçü elle; bugün fark 0 ama MEKANİZMA değil (`INV-C-*`) | **P1** | backend-engineer | todo |
+| [[T-224]] | ✅ Entity listesi TEK KAYNAK — `index.ts` kaldırıldı, pin yazıldı; ⏸️ pin [[T-225]]'te askıda | **P1** | backend-engineer | review |
+| [[T-225]] | `BudgetReservation` — ÜÇ listenin de kaçırdığı `@Entity`; tablo var, 0 satır, 0 import. Ölü mü, unutulmuş mu? | **P1** | architect | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
