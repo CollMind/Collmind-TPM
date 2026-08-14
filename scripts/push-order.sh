@@ -44,9 +44,14 @@
 #
 # KULLANIM
 #   bash scripts/push-order.sh
-#   bash scripts/push-order-self-test.sh   ← push-order.sh'ın kendi doğruluk
-#                                             kanıtı (6 senaryo, tamamen
-#                                             lokal bare-repo harness, S3)
+#
+#   push-order-self-test.sh ARTIK AYRICA ELLE ÇALIŞTIRILMASI GEREKMEZ (S-2,
+#   T-212, 2026-08-14) — push-order.sh her koşumda GERÇEK işe başlamadan önce
+#   onu kendisi çağırır (aşağıdaki "self-test kapısı" bloğuna bkz.). Elle
+#   koşmak hâlâ mümkündür (ör. self-test'i tek başına geliştirirken):
+#     bash scripts/push-order-self-test.sh   ← push-order.sh'ın kendi doğruluk
+#                                               kanıtı (7 senaryo, tamamen
+#                                               lokal bare-repo harness, S3+S2)
 #
 # ÇEVRE DEĞİŞKENLERİ (test edilebilirlik için — push-order-self-test.sh bunları kullanır)
 #   PUSH_ORDER_ROOT               varsayılan: bu script'in üst üst dizini
@@ -63,13 +68,65 @@
 #                                  için kullanılabilir; bugünkü self-test
 #                                  bunu KULLANMIYOR ama bayrak bunun için var)
 #                                  yalnız "0"/"1" kabul edilir, aynı kural
+#   PUSH_ORDER_SELFTEST_DONE       varsayılan: 0 — "1" self-test'in KENDİ
+#                                  ÖZYİNELEMESİNİ önlemek için push-order-
+#                                  self-test.sh'ın iç çağrılarına ÖZELDİR.
+#                                  ELLE "1" SET ETME: gerçek bir push'un
+#                                  güvenilirlik kanıtını atlamış olursun.
 #
 # ÇIKIŞ KODLARI
 #   0  hepsi push edildi ve origin'de doğrulandı (meta dahil, atlanmadıysa)
 #   1  bir push ya da doğrulama BAŞARISIZ oldu — sıra durdu
-#   2  KURULUM/GİRDİ hatası: commit edilmemiş değişiklik (DUR) · detached HEAD ·
-#      meta pointer submodule'ün doğrulanan commit'iyle uyuşmuyor
+#   2  KURULUM/GİRDİ hatası: push-order-self-test.sh BAŞARISIZ (S-2 — gerçek
+#      push hiç BAŞLAMADI) · commit edilmemiş değişiklik (DUR) · detached
+#      HEAD · meta pointer submodule'ün doğrulanan commit'iyle uyuşmuyor
 set -uo pipefail
+
+# --- self-test kapısı (S-2, T-212 2026-08-14) -------------------------------
+# NEDEN VAR: push-order-self-test.sh yazıldıktan sonra onu ÇAĞIRAN hiçbir yol
+# yoktu — dört atıf vardı (bu başlık dahil), dördü de yorum. "Test edilebilirlik
+# için" env değişkenleri tanımlayan bir başlık, onları kullanan bir self-test
+# koşulmadıkça bir iddiadan ibarettir (CLAUDE.md: "doğrulama bir kapıdır;
+# durdurmuyorsa doğrulama değildir"). Bu blok o kapıyı kurar: GERÇEK bir push
+# başlamadan önce push-order-self-test.sh'ın 6 (+bu değişiklikle 7) senaryosu
+# YEŞİL olmalı; değilse script'in kendisine güvenilmiyor demektir ve gerçek
+# origin'e karşı hiçbir adım atılmaz.
+#
+# NEDEN BURASI (push-order.sh'ın kendi başı) VE BAŞKA YER DEĞİL: /release ya
+# da CLAUDE.md §5'in bir insan adımı olması aynı hatayı tekrarlardı — "niyet
+# mekanizmanın yerini tutmaz" (bu script'in kendisi zaten bu derse karşı
+# yazıldı). §5 push-order.sh'ı YALNIZCA push sırası için ZORUNLU kılıyor,
+# /release'e özel değil — yani gate /release'e bağlanırsa sıradan bir
+# push-order.sh koşumu (release dışı) yine korumasız kalırdı.
+#
+# MALİYET (ölçüldü — aşağıya bkz): altı/yedi senaryo TAMAMEN LOKAL bare-repo
+# harness'i kurup yıkıyor, ağa hiç dokunmuyor. Gerçek bir push zaten ağ G/Ç'si
+# içerdiğinden (fetch+push, en az iki round-trip), bu ek yerel maliyet
+# göreli olarak küçük.
+#
+# ÖZYİNELEME KORUMASI: push-order-self-test.sh'ın senaryoları bu script'i
+# (gerçek push-order.sh'ı) İZOLE bir bare-repo harness'ine karşı ÇAĞIRIR. O iç
+# çağrı KENDİ self-test'ini de tetiklerse (bu blok koşulsuz çalışsaydı) her
+# senaryo kendi içinde 7 senaryo daha başlatır — sonsuz özyineleme.
+# PUSH_ORDER_SELFTEST_DONE bunu keser: yalnız push-order-self-test.sh'ın
+# `run_case` fonksiyonu bunu KENDİ başlattığı iç çağrılar için "1" set eder
+# (bkz. push-order-self-test.sh). Elle "1" set etmek gerçek bir push'un
+# doğrulamasını ATLAR — bu yüzden dışarıdan hiçbir zaman set edilmemeli ve
+# varsayılan HER ZAMAN self-test'i ÇALIŞTIR'dır.
+if [ "${PUSH_ORDER_SELFTEST_DONE:-0}" != "1" ]; then
+  _selftest_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  _selftest_script="$_selftest_dir/push-order-self-test.sh"
+  if [ -f "$_selftest_script" ]; then
+    if ! PUSH_ORDER_SELFTEST_DONE=1 bash "$_selftest_script" >&2; then
+      echo "!! push-order-self-test.sh BAŞARISIZ — push-order.sh'a güvenilmiyor," >&2
+      echo "!! GERÇEK push YAPILMADI (exit 2). Detay yukarıda." >&2
+      exit 2
+    fi
+  else
+    echo "!! push-order-self-test.sh bulunamadı ($_selftest_script) — güvenilirlik kanıtlanamıyor, DUR (exit 2)" >&2
+    exit 2
+  fi
+fi
 
 ROOT="${PUSH_ORDER_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SUBMODULES="${PUSH_ORDER_SUBMODULES:-collmind.backend collmind.frontend}"

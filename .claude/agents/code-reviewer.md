@@ -75,7 +75,12 @@ iki CSV parser, üç scope implementasyonu). Aranmadan yazılan kod eksiktir.
 - **Guard'lar:** backend'e dokunulduysa `npm run guards` yeşil mi (exit 0)? Kırmızıysa
   → 🔴 **Blocker**. Bu, yukarıdaki determinizm / migration hijyeni / ledger yönü
   maddelerinin otomatik ölçümüdür; gözle aramanın yerine geçmez, tabanını kurar.
-  `exit 2` = allowlist parse hatası (gerekçesiz susturma satırı) → 🔴 **Blocker**.
+  `exit 2` = **kurulum hatası / ölçüm yapılmadı** → 🔴 **Blocker** — ama tek üretici
+  allowlist DEĞİL (T-212, ölçüldü: bugün dört üretici var — `run-all.sh`'ta allowlist
+  parse hatası · bir alt guard koşamadı · money-float SKIPPED (domain listesi yok/boş) ·
+  money-float `--ratchet` koşamadı, bkz. `run-all.sh` başlığı). `exit 2` gördüğünde önce
+  **hangisi olduğunu logdan/stderr'den ayırt et**, sonra gerekçesiz susturma satırı ara —
+  ikisini karıştırma, biri "susturma çalışmıyor" biri "ölçüm hiç yapılamadı" demektir.
   Yeni bir allowlist satırı eklenmişse gerekçesini ayrıca değerlendir: yanlış pozitif
   deseni guard'ın kendisinde çözülebiliyorsa allowlist yanlış çözümdür.
 

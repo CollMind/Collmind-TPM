@@ -6,6 +6,15 @@
 # tanımlıyordu ama onları kullanan bir self-test YOKTU — cümle şimdiki zamanda
 # yazılmış bir iddiaydı, ölçülmemiş. Bu script o iddiayı gerçek kılar.
 #
+# ÇAĞRI YOLU (S-2, T-212, 2026-08-14): bu script YAZILDIKTAN SONRA da onu
+# çağıran hiçbir yol yoktu — dört atıf vardı, dördü yorumdu (push-order.sh'ın
+# kendi başlığı dahil). "Doğrulama, çıkışı akışı durduran bir kapıdır;
+# durdurmuyorsa doğrulama değildir" (CLAUDE.md). Artık push-order.sh HER
+# koşumda, GERÇEK işe başlamadan önce BU script'i kendisi çağırır (bkz.
+# push-order.sh'ın "self-test kapısı" bloğu) — `PUSH_ORDER_SELFTEST_DONE=1`
+# ile, sonsuz özyinelemeyi önlemek için (aşağıdaki run_case bunu HER iç
+# çağrıya taşır — taşımazsa her VAKA kendi içinde 7 VAKA daha başlatırdı).
+#
 # TAMAMEN LOKAL: gerçek GitHub'a hiç dokunmaz. Her senaryo kendi bare-repo
 # üçlüsünü (backend/frontend/meta) kurar, push-order.sh'ı env override'larıyla
 # ona yöneltir, sonucu (exit kodu + origin'in GERÇEKTEN değişip değişmediğini)
@@ -57,7 +66,10 @@ build_harness() {
 run_case() { # <etiket> <beklenen-exit> <work-dizini> [env=val ...]
   local label="$1" want="$2" work="$3"; shift 3
   local out rc
-  out="$(env "$@" PUSH_ORDER_ROOT="$work" bash "$SCRIPT" 2>&1)"
+  # PUSH_ORDER_SELFTEST_DONE=1: bu iç çağrı push-order.sh'ın KENDİ self-test
+  # kapısını atlar — atlamazsa bu tek `run_case` çağrısı kendi içinde 7 VAKA
+  # daha başlatır (ve onlar da kendi içlerinde…) — sonsuz özyineleme.
+  out="$(env "$@" PUSH_ORDER_ROOT="$work" PUSH_ORDER_SELFTEST_DONE=1 bash "$SCRIPT" 2>&1)"
   rc=$?
   if [ "$rc" != "$want" ]; then
     echo "!! self-test BAŞARISIZ: $label → beklenen exit $want, bulunan $rc" >&2
@@ -130,9 +142,53 @@ if [ "$BEFORE6" != "$AFTER6" ]; then
   FAIL=1
 fi
 
+# --------------- VAKA 7 (S-2): self-test BOZULURSA push-order.sh DURMALI
+#
+# push-order.sh kendi dizinindeki push-order-self-test.sh'ı çağırır (bkz.
+# push-order.sh'ın "self-test kapısı" bloğu). O çağrı BAŞARISIZ olursa
+# push-order.sh GERÇEK işe hiç başlamamalı — bu, S-2'nin düzelttiği kapının
+# ta kendisi, yukarıdaki VAKA 1-6'nın PUSH_ORDER_SELFTEST_DONE=1 ile ATLADIĞI
+# mekanizma. Onu sınamak için push-order.sh + KASTEN BOZULMUŞ bir
+# push-order-self-test.sh KOPYASINI izole bir dizine koyup gerçek script'i
+# oradan çağırıyoruz (push-order.sh kendi dizinindeki self-test'i çağırdığı
+# için kopyalamak yeterli — PUSH_ORDER_SELFTEST_DONE burada YOK, çünkü tam
+# olarak sınadığımız şey bu bayrağın OLMADIĞI, gerçek çağrı yolu).
+#
+# ⚠️ İZOLASYON KUSURU (bu VAKA'yı yazarken ÖLÇÜLDÜ, T-212): bu script'in
+# KENDİSİ push-order.sh'ın self-test kapısı ÜZERİNDEN çağrıldığında (yani
+# push-order.sh önce PUSH_ORDER_SELFTEST_DONE=1 ile push-order-self-test.sh'ı
+# koşuyorsa), o "1" değeri `env` ile geçilmedikçe TÜM torun süreçlere sızar
+# (bash'te `VAR=val cmd` bir alt-ağaç ortam değişkenidir). `env PUSH_ORDER_ROOT=...`
+# yalnız o değişkeni ekler/değiştirir, PUSH_ORDER_SELFTEST_DONE'ı MİRAS
+# ALINMIŞ hâliyle bırakır — VAKA 7 o zaman COPY7/push-order.sh'ın kendi
+# kapısını ATLADIĞINI görür (miras kalan "1" yüzünden) ve sahte-yeşil verir:
+# ölçüldü, `bash scripts/push-order.sh` (dıştan, gate aktifken) çağırdığında
+# VAKA 7 rc=0 (beklenen 2) ile BAŞARISIZ oluyordu — test kendi bağımsızlığını
+# garanti etmiyordu. `env -u` bunu keser: miras ne olursa olsun değişkeni
+# KALDIRIR, yalnız bu çağrı için.
+H7="$TMP/h7"; build_harness "$H7"
+COPY7="$TMP/scripts-copy7"
+mkdir -p "$COPY7"
+cp "$SCRIPT" "$COPY7/push-order.sh"
+printf '#!/usr/bin/env bash\necho "kasten bozuldu (self-test VAKA 7)" >&2\nexit 1\n' > "$COPY7/push-order-self-test.sh"
+chmod +x "$COPY7/push-order.sh" "$COPY7/push-order-self-test.sh"
+BEFORE7="$(git --git-dir="$H7/ob.git" rev-parse staging)"
+out7="$(env -u PUSH_ORDER_SELFTEST_DONE PUSH_ORDER_ROOT="$H7/work" bash "$COPY7/push-order.sh" 2>&1)"
+rc7=$?
+if [ "$rc7" != 2 ]; then
+  echo "!! self-test BAŞARISIZ: VAKA 7 (self-test bozuk) → beklenen exit 2, bulunan $rc7" >&2
+  printf '%s\n' "$out7" | sed 's/^/     /' >&2
+  FAIL=1
+fi
+AFTER7="$(git --git-dir="$H7/ob.git" rev-parse staging)"
+if [ "$BEFORE7" != "$AFTER7" ]; then
+  echo "!! self-test BAŞARISIZ: VAKA 7 → self-test bozukken origin DEĞİŞMEMELİYDİ, değişti" >&2
+  FAIL=1
+fi
+
 if [ "$FAIL" -ne 0 ]; then
   echo "!! push-order self-test BAŞARISIZ — push-order.sh'a güvenilmiyor" >&2
   exit 1
 fi
-echo "-- push-order self-test: 6 senaryo tutuyor"
+echo "-- push-order self-test: 7 senaryo tutuyor"
 exit 0
