@@ -107,6 +107,25 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 
 **Task'a başlamadan önce ilgili ADR'leri tara.** Bugün dokuz ADR var; hiçbiri opsiyonel değil.
 
+### ⛔ BRD v2.0 DONMUŞTUR (2026-08-15) — kayıtsız düzenleme yasak (ZORUNLU)
+
+```
+BRD v2.0 donmuştur (2026-08-15). docs/brd-v2/ altındaki hiçbir dosya,
+karar defterinde o değişikliği açan bir kayıt olmadan düzenlenmez.
+Dondurulmuş belgeye kayıtsız düzenleme, ölçülmüş bir ihlal sınıfıdır
+(iki-L0 vakası) — fark edildiği yerde durulur ve kayda gidilir.
+```
+
+Karar: `docs/brd-v2/04_KARAR_KAYDI.md` `Z1`. Yazma modu kapandı, **bakım modu** açık.
+
+Değişiklik `F12`/`0006-R` deseniyle işlenir: **eski kayıt silinmez**, *"geri alındı /
+revize edildi (tarih, gerekçe)"* iziyle üstüne yazılır.
+
+⚠️ **Ve kural sayısı hiçbir belgeye yazılmaz** — kanonik kaynak `docs/brd-v2/guard.sh`
+çıktısıdır. Sabit bir sayı `F8`'i (*"sayı dört yerde dört farklıydı"*) yeniden üretir.
+Dondurma anının kanıtı bir **çıktı dosyasıdır**, bir sayı değil:
+`docs/verification/BRD_V2_DONDURMA_GUARD_CIKTISI_2026-08-15.txt`.
+
 ### 2.1.1 BRD PDF'leri artık OKUNABİLİR — ve hangisine baktığını yaz (ZORUNLU)
 
 `poppler` kuruldu (2026-08-10). BRD'nin asıl metnine erişim artık bir komuttur:

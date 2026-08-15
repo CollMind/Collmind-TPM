@@ -567,3 +567,90 @@ olmak"*) hiçbir finans kullanıcısıyla **doğrulanmadı** — ilk müşteri f
 taban ayrımı.
 
 > Kaynağı ne körü körüne izlemek ne toptan reddetmek — **madde madde ölçmek.**
+
+---
+
+# BÖLÜM Z · Dondurma ve faz kapanışı
+
+> ⚠️ Bu bölüm **append**'tir. Yukarıdaki hiçbir kayda dokunulmamıştır.
+
+## Z1 · BRD v2.0 DONDURULDU
+
+```
+KARAR — BRD v2.0 DONDURULDU (2026-08-15, ürün sahibi)
+
+Kapsam: docs/brd-v2/ altındaki L0 · L1 · L2 · EK_A–EK_E paketi.
+Kural sayısının kanonik kaynağı guard çıktısıdır (elle sayı yazılmaz).
+
+Anlamı: yazma modu kapandı, bakım modu açıldı. Bu tarihten sonra pakette
+hiçbir değişiklik doğrudan yapılmaz — her değişiklik önce karar defterine
+kayıtla girer ve F12/0006-R deseniyle işlenir: eski kayıt silinmez,
+"geri alındı / revize edildi (tarih, gerekçe)" iziyle üstüne yazılır.
+
+Dondurma, açık madde yokluğu demek DEĞİLDİR. Açık kalanlar adreslidir ve
+dondurmayı engellemez:
+  · Hukuk-şartlı: K-2.9.0 (geçici askı) · K-2.9.6a · K-2.8.11/K-2.9.5/K-2.9.7
+  · Ölçüm-şartlı: T-209 (discount_amount) · iade temsili · veri ayrımı modeli
+  · Domain kuyruğu: F15 (dış talepte kategori) — ilk gerçek kesinti
+    belgesiyle ya da danışman B-seti cevabıyla açılır
+
+Sürüm işareti: git tag (brd-v2.0, annotated) — Team Lead atar ve origin'e
+push'lar; tag push'u git log/ls-remote ile doğrulanır (rapor kanıt değildir).
+```
+
+### Dondurma anının kanıtı — ⚠️ SAYI DEĞİL, ÇIKTI
+
+Dondurma anındaki guard koşusu **olduğu gibi** iliştirilmiştir:
+
+> **`docs/verification/BRD_V2_DONDURMA_GUARD_CIKTISI_2026-08-15.txt`** — `EXIT 0`
+
+⚠️ **Kural sayısı bu kayda YAZILMAMIŞTIR ve yazılmayacaktır.** Sabit bir sayı, dondurma
+kaydının kendisinde `F8` üretirdi (*"sayı dört yerde dört farklıydı"*). Sayı sorulduğunda
+guard koşulur; kanonik kaynak odur.
+
+Üç ön koşul dondurma anında ölçüldü ve **üçü de tuttu**:
+
+```
+guard        EXIT 0    (temiz)
+⛔ açık      0         (beklenen 0)
+⏸️ askı      1         (beklenen 1 — K-2.9.0, hukuki mütalaa)
+```
+
+## Z2 · FAZ 0 KAPANDI
+
+```
+KAYIT — FAZ 0 KAPANDI (2026-08-15)
+
+Üç çıkış ölçütü:
+  1. Şema yeni modelle uyumlu — B dalgası: tek up/down, çıkarmalar dahil,
+     seed atomik (kanıt: 0071 §1.1)
+  2. Invariant/regresyon yeşil — 65/65 unit · 17/17 e2e · üç para baseline'ı
+     kıpırdamadı (kanıt: 0071 §1.5)
+  3. BRD v2.0 donduruldu — bu dağıtımın KAYIT 1'i
+
+İNDİ ≠ KAPANDI — devredilenler bu kapanışın parçasıdır. Kanonik kaynak
+0071 §1–§4 VE bu kayıt anındaki durum (0071'den sonra üç kalem kapandı):
+  · T-212 KAPANDI — caaa6a5, dört kapı kırmızı-kanıtlı
+  · T-113 KAPANDI — b0c8576, iki yönlü kanıt (yeni hata kırmızı ·
+    baseline yeşil)
+  · T-225 → pin KAPANDI — c671c22, beş dosya, üç dal ampirik
+  · Hukuk paketi gönderimi AÇIK — DUR: muhatap kayıtta yok.
+    Adım 0'ın tek kalan kalemi; muhatap tanımlanınca gönderilir
+  · T-214 (Adım 3 ön kararı) · T-209/T-228/T-230 (kuyruk) ·
+    K-2.9.0 askısı (hukuk dönüşüne dek)
+
+Faz 1 durum anı (kapanış anında):
+  Adım 0          3/4 kapandı — kalan: hukuk gönderimi (muhatap)
+  Adım 1          K-2.6.13 BLOKLAYICISIZ — K-2.6.13a–f ve RLS sonda
+                  kabul testi ONAYLANDI (ürün sahibi, 2026-08-15).
+                  Başlayabilir.
+  Adım 2          ölçüm paketi (5 ölçüm) — Adım 1 ile paralel
+  Ürün sahibi     tek girdi: 0056-K3 (seed kararı) — Adım 3'ü bloklar,
+                  Adım 1'i DEĞİL
+  Dış kuyruk      hukuk paketi (muhatap bekliyor) · danışman turu
+```
+
+> 📌 **`Rev 2` izi:** bu bloğun ilk sürümündeki ileriye bakan tablo **bayattı**
+> (`Adım 0`'ın üç kalemi kapanmış, `K-2.6.13a` onaylanmıştı). Dağıtımdan önce
+> düzeltildi; **bayat sürüm dağıtılmadı.** Kaynak: `FAZ0_KAPANIS_VE_V2_DONDURMA.md`
+> başlığındaki `Rev 2` notu.

@@ -1,0 +1,30 @@
+BRD v2 · belge guard'ı
+======================
+
+1 · Kural sayımı
+   tanım : 375
+   açık  : 0  (⛔ dayanaksız — bloklar)
+   askı  : 1  (⏸️ dayanaklı — bloklamaz; bkz. docs/decisions/KARAR_TURU_BES_KONU.md KT-3)
+
+   bölüm başına:
+     L2_01_veri_butce_defter_hesaplama.md                 148
+     L2_02_veri_kalitesi_entegrasyon_bildirim_denetim.md  49
+     L2_03_onay_yetki_uyum.md                             89
+     L2_04_hakedis_ai_kurulum.md                          89
+
+   ✅ indeks sayımıyla uyumlu
+   ✅ açık kural yok — L2'de dayanaksız yürürlükte madde kalmadı
+
+2 · Kimlik tekilliği
+   ✅ çakışma yok
+
+3 · Sarkan atıf
+   ✅ sarkan atıf yok
+
+4 · BACKLOG bayat link
+   link  : 186
+   başlık: 243
+   ✅ bayat link yok
+
+======================
+✅ Temiz — 375 kural, 0 açık, 1 askıda (⏸️)

@@ -1,7 +1,25 @@
 # BRD v2.0 — Paket İndeksi
 
+- **Sürüm:** **v2.0 · DONMUŞ (2026-08-15)**
+- **Durum:** **donmuş** — yazma modu kapandı, bakım modu açık. Değişiklik yalnız
+  karar defterine kayıtla girer (`04_KARAR_KAYDI.md` `Z1`).
+
+> ⚠️ **Durum yalnız BURADA yaşar** (`F8` kararı). Paketin başka hiçbir yerinde
+> sürüm/durum tekrarlanmaz — ve **kural sayısı buraya da yazılmaz**; kanonik kaynak
+> guard çıktısıdır.
+>
+> Dondurma anının kanıtı: `docs/verification/BRD_V2_DONDURMA_GUARD_CIKTISI_2026-08-15.txt`
+
+<details>
+<summary>Önceki durum (geri alındı — `0006-R` deseni)</summary>
+
+```
 - **Sürüm:** taslak, 2026-08-12
 - **Durum:** taslak — `L0` onay bekliyor, `L1`/`L2`/`L3` yazıldı
+```
+
+Geri alındı 2026-08-15: paket donduruldu (`04_KARAR_KAYDI.md` `Z1`).
+</details>
 
 ## Durum sayımı — tek kanonik yer
 
