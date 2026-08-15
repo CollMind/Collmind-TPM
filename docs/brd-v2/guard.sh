@@ -94,6 +94,16 @@ extract_rule_ids() {
   sed -n 's/^\*\*\(K-[0-9][0-9.a-z]*\)\*\*.*/\1/p'
 }
 
+# stdin'deki kural TANIMI satırlarından yalnız `⏸️ **GEÇİCİ ASKI**` işaretli
+# olanların kimliklerini çıkarır. `⛔ açık` FARKLI bir işarettir ve TOTAL/OPEN
+# sayımına zaten giriyor (satır 1 · Kural sayımı) — bu ayrı bir küme, ikisi
+# karıştırılmaz. (T-212 Kalem 3: eşik değişmedi, yalnız ⏸️'nin kendi sayısı
+# ⛔'dan AYRI basılıyor — bir okuyucu "açık: 0"ı "hiçbir şey beklemiyor" diye
+# okuyabilir, ⏸️ tam olarak "bekliyor ama dayanaklı" demek.)
+extract_paused_ids() {
+  sed -n 's/^\*\*\(K-[0-9][0-9.a-z]*\)\*\*.*⏸️ \*\*GEÇİCİ ASKI\*\*.*/\1/p'
+}
+
 # stdin'deki metinden kural ATIFLARINI çıkarır: `` `K-2.1.3a` `` → `K-2.1.3a`
 #   "eski `K-x`" biçimindeki TARİHSEL notlar atıf sayılmaz — bir kuralın
 #   taşındığını kaydeden bir izdir, ona yapılan bir referans değil.
@@ -237,6 +247,16 @@ K-2.13.14h6'
   [ "$got" = "$want" ] || { echo "!! pozitif kontrol DÜŞTÜ: extract_rule_ids" >&2
                             echo "   beklenen: [$want]  bulunan: [$got]" >&2; fail=1; }
 
+  # (1b) askı çıkarıcı: bir ⏸️ askıda + bir normal + bir ⛔ açık — üçü de
+  # TANIM satırı ama yalnız ⏸️ işaretli olan çıkmalı (T-212 Kalem 3)
+  want='K-2.9.0'
+  got=$(printf '%s\n' \
+        '**K-2.9.0** — ⏸️ **GEÇİCİ ASKI** (2026-08-12 → hukuki mütalaa).' \
+        '**K-2.9.1** — bir kural, normal yürürlükte' \
+        '**K-2.9.2** — ⛔ **açık** (gerekçesiz, farklı işaret)' | extract_paused_ids)
+  [ "$got" = "$want" ] || { echo "!! pozitif kontrol DÜŞTÜ: extract_paused_ids" >&2
+                            echo "   beklenen: [$want]  bulunan: [$got]" >&2; fail=1; }
+
   # (2) atıf çıkarıcı: iki atıf + "eski" istisnası düşmeli
   want='K-2.1.3a
 K-2.4.22'
@@ -332,9 +352,14 @@ echo "1 · Kural sayımı"
 
 TOTAL=$(grep -h '^\*\*K-' "$RULES_DIR"/*.md | wc -l | tr -d ' ')
 OPEN=$(grep -h '⛔ \*\*açık' "$RULES_DIR"/*.md | wc -l | tr -d ' ')
+# ⏸️ GEÇİCİ ASKI, ⛔ açık'tan FARKLI bir işarettir — TOTAL/OPEN sayımına
+# girmez, ayrıca sayılır (T-212 Kalem 3). Eşik DEĞİŞMEDİ: bu satır bloklamaz,
+# yalnız "açık: 0" çıktısının "hiçbir şey beklemiyor" diye okunmasını önler.
+PAUSED=$(grep -h '^\*\*K-' "$RULES_DIR"/*.md | extract_paused_ids | wc -l | tr -d ' ')
 
 echo "   tanım : $TOTAL"
-echo "   açık  : $OPEN"
+echo "   açık  : $OPEN  (⛔ dayanaksız — bloklar)"
+echo "   askı  : $PAUSED  (⏸️ dayanaklı — bloklamaz; bkz. docs/decisions/KARAR_TURU_BES_KONU.md KT-3)"
 echo
 echo "   bölüm başına:"
 for f in "$RULES_DIR"/*.md; do
@@ -530,7 +555,7 @@ echo
 # ---------------------------------------------------------------------- özet
 echo "======================"
 if [ "$FAIL" -eq 0 ]; then
-  echo "✅ Temiz — $TOTAL kural, $OPEN açık"
+  echo "✅ Temiz — $TOTAL kural, $OPEN açık, $PAUSED askıda (⏸️)"
 else
   echo "⛔ İhlal var — yukarıya bak"
 fi
