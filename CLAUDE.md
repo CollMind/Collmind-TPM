@@ -110,11 +110,35 @@ yürür (karar: `docs/decisions/0001-ctpm-ana-urun-ttm-dondurma.md`, 2026-06-24)
 ### ⛔ BRD v2.0 DONMUŞTUR (2026-08-15) — kayıtsız düzenleme yasak (ZORUNLU)
 
 ```
-BRD v2.0 donmuştur (2026-08-15). docs/brd-v2/ altındaki hiçbir dosya,
-karar defterinde o değişikliği açan bir kayıt olmadan düzenlenmez.
+BRD v2.0 donmuştur (2026-08-15). Aşağıdaki DOSYALAR, karar defterinde o
+değişikliği açan bir kayıt olmadan düzenlenmez:
+
+  docs/brd-v2/01_KONUMLANMA.md            (L0)
+  docs/brd-v2/02_YETENEK_HARITASI.md      (L1)
+  docs/brd-v2/03_IS_KURALLARI/L2_*.md     (L2)
+  docs/brd-v2/EK_A_NFR.md · EK_B_TASARIM_KARARLARI.md
+  docs/brd-v2/EK_C_VERI_SOZLUGU.md · EK_D_AKIS_DIYAGRAMLARI.md
+  docs/brd-v2/EK_E_YETENEK_ARAYUZ_ESLEMESI.md
+  docs/brd-v2/00_PAKET_INDEKSI.md         (durumun tek kanonik yeri)
+  docs/brd-v2/04_KARAR_KAYDI.md           (append-only; eski kayıt silinmez)
+
 Dondurulmuş belgeye kayıtsız düzenleme, ölçülmüş bir ihlal sınıfıdır
 (iki-L0 vakası) — fark edildiği yerde durulur ve kayda gidilir.
 ```
+
+⚠️ **DONDURULMAYANLAR — ve bu bilinçli:** `docs/brd-v2/` altındaki **süreç** dosyaları
+(`_ISSUE_*.md` · `_YAPI_*.md` · `_DIS_DENETIM_ADAYLARI.md` · `_ISKELET_ve_YAPI_KARARI.md`)
+ve **`guard.sh`**. Donan şey **ürün tanımı ve kuralları**; süreç dosyaları o kategoride
+değil.
+
+> 📌 **Bu kural ilk yazımında `"docs/brd-v2/ altındaki hiçbir dosya"` diyordu ve
+> `KAYIT 1`'in kapsamından GENİŞTİ** (`KAYIT 1`: *"L0 · L1 · L2 · EK_A–EK_E paketi"*).
+> Okunduğu gibi uygulansaydı `guard.sh`'ı düzeltmek karar defterine kayıt gerektirirdi —
+> ve o düzeltmeler tek bir oturumda **beş kez** oldu.
+>
+> **Bir kural okunduğu gibi uygulandığında ya ihlal ediliyorsa ya işi durduruyorsa,
+> kuralın kendisi zayıflar.** `mode-split`'in *"doğru işi engelledi"* vakasının belge
+> tarafındaki hâli. Daraltıldı 2026-08-15, ürün sahibi kararı.
 
 Karar: `docs/brd-v2/04_KARAR_KAYDI.md` `Z1`. Yazma modu kapandı, **bakım modu** açık.
 
