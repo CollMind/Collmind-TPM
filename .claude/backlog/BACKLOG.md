@@ -123,7 +123,7 @@ status: active        # planned | active | closed
 | [[T-101]] | Eşikler bütün olarak alınıyor + `source`/`reason` + aralık CHECK | P1 | backend-engineer | review |
 | [[T-108]] | RAG eşikleri üretimde konfigüre EDİLEMİYOR — admin ucu + provisioning | P2 | architect | todo |
 | [[T-112]] | Escape **yazma** tetikliyor ve geçersiz girdi hücreyi kilitliyor | P1 | frontend-engineer | review |
-| [[T-113]] | 🔺 `lint` kapısının **İKİ** bozulma yolu: kapsam boşalıyor (`T-100`) **ve** `lint:check` 108 error'la hep kırmızı — `§2.7 #9` | **P1** | qa-engineer | todo |
+| [[T-113]] | ✅ `lint-ratchet` KAPI — baseline `(dosya,kural)` çifti (dosya-toplamı körlüğü self-test case 9 ile sınandı); iki yönlü kırmızı kanıtı. ⚠️ `T-100` hâlâ açık | **P1** | qa-engineer | review |
 | [[T-114]] | lint ratchet + self-test kuruldu (taban 488/112); `npm run lint` kapsamı değişmedi | P2 | frontend-engineer | review |
 | [[T-115]] | `ledger.service.test.tsx` flaky — tam suite'te 4 koşumda 1 düşüyor | P3 | qa-engineer | todo |
 | [[T-116]] | `type-check` artık `tests/`'i kapsıyor — 210 hata düzeltildi, bir kör test bulundu | P2 | frontend-engineer | review |
@@ -213,7 +213,7 @@ status: active        # planned | active | closed
 | [[T-204]] | 🔴 Soft-delete yolu **yok**, ve `v_budget_summary`'de yön ADR'nin korktuğunun **tersi** | **P1** | architect | todo |
 | [[T-210]] | 🔴 Gönderen `PLANNER` taslağa dönen planına **erişemiyor** (`404 OUT_OF_SCOPE`) | **P1** | backend-engineer | todo |
 | [[T-211]] | **`B` dalgası** — ✅ KAPANDI: `S1`–`S15` · `R1`/`R2a`/`R3` · seed 4.5/5 · enum pini mutasyon kanıtlı. `EŞİKLİ` → [[T-214]] | **P1** | data-engineer | done |
-| [[T-212]] | 🔺 ratchet **dosya sayısı** olsun (satır değil) — üçüncü vaka bir İŞİ engelledi + `push-order.sh` | **P1** | qa-engineer | todo |
+| [[T-212]] | ✅ dört kalem de kırmızı-kanıtlı: `mode-split` kimlik · `money-float` kapı · `guard.sh` `⏸️` · `find-importers.sh` (yeni araç) | **P1** | qa-engineer | review |
 | [[T-213]] | `agreement_transactions.fiscal_period` sekiz kolonun tek nullable'ı — bilinçli mi kaza mı, ölçülmedi | P2 | data-analyst | todo |
 | [[T-214]] | `approval_policies`: katalog seçeneği ile tenant politikası aynı satırda — `EŞİKLİ` şablonu bu yüzden yazılamıyor | P2 | architect | todo |
 | [[T-215]] | gri→yeşil sızıntısı: `|| 'GREEN'` iki canlı rotada — `INV-N-004`, ve bugünkü veriyle ÇOĞUNLUK durumu | **P1** | backend-engineer | todo |
@@ -226,8 +226,8 @@ status: active        # planned | active | closed
 | [[T-221]] | ✅ `plan.entity.ts` 24 kolon — string→number, çökme koşarak reprodüklendi ve kapandı. ⚠️ `T-197` sayımı bayatladı (89→101) | **P1** | backend-engineer | done |
 | [[T-222]] | İki grid implementasyonu, biri karanlıkta — `PlanningGrid.tsx` ölü kod (`İlke 4`) | P2 | frontend-engineer | todo |
 | [[T-223]] | 🔒 `utils/export.ts` sıfır çağıran — mekanizma var, yol yok | P2 | frontend-engineer | blocked-unreachable |
-| [[T-224]] | ✅ Entity listesi TEK KAYNAK — `index.ts` kaldırıldı, pin yazıldı; ⏸️ pin [[T-225]]'te askıda | **P1** | backend-engineer | review |
-| [[T-225]] | `BudgetReservation` — ÜÇ listenin de kaçırdığı `@Entity`; tablo var, 0 satır, 0 import. Ölü mü, unutulmuş mu? | **P1** | architect | todo |
+| [[T-224]] | ✅ Entity listesi TEK KAYNAK — `index.ts` kaldırıldı; **pin ARTIK AKTİF** ([[T-225]] kapandı, `it.skip` → `it`) | **P1** | backend-engineer | review |
+| [[T-225]] | ✅ **ÖLÜ İSKELE — silindi**: migration `1805` (üç durum ayrımı, üçü ampirik) + entity + `cleanup-data` + JSDoc + pin unskip. `BudgetReservationService` KALDI (canlı) | **P1** | architect | review |
 | [[T-228]] | **TÜKETİM tarafı**: `string` bir değer sayı gibi tüketiliyor (`.toFixed()` · sözlüksel · `+`) — `T-220` bu sınıfı SORMUYOR (ölçüldü) | **P1** | code-reviewer | todo |
 | [[T-229]] | **`Karar 6` YARIM uygulanacak**: 49 `DecimalTransformer` kolonunun **37'si PARA** — yuvarlama `MoneyTransformer`'a konursa atlanırlar (ölçüldü) | **P1** | architect | todo |
 | [[T-230]] | **`§2.5` ALAN A'da**: eksik sayı sessizce `0` oluyor — `\|\| 0` 59 · `?? 0` 14 (Alan A). SAYAR, düzeltmez | **P1** | code-reviewer | todo |
