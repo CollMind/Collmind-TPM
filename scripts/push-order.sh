@@ -117,7 +117,20 @@ if [ "${PUSH_ORDER_SELFTEST_DONE:-0}" != "1" ]; then
   _selftest_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   _selftest_script="$_selftest_dir/push-order-self-test.sh"
   if [ -f "$_selftest_script" ]; then
-    if ! PUSH_ORDER_SELFTEST_DONE=1 bash "$_selftest_script" >&2; then
+    # ⚠️ ÇAĞIRANIN ORTAMI SELF-TEST'E SIZMAMALI (2026-08-16, ölçüldü).
+    #    Vaka: `PUSH_ORDER_ABORT_ON_DIRTY=0` ile çağrıldığında değişken
+    #    self-test'e devrolduğu için "kirli ağaçta DURMALI" vakası düştü ve
+    #    kapı GERÇEK push'u reddetti (exit 2). Yani BELGELENMİŞ KAÇIŞ YOLU
+    #    kullanılamaz durumdaydı — yön güvenliydi (yanlış kırmızı), ama
+    #    kaçış yolu işlevsizdi.
+    #    Self-test kendi senaryolarını KENDİ set ettiği değişkenlerle kurar;
+    #    dışarıdan gelen her PUSH_ORDER_* onun kurulumunu bozar.
+    if ! env -u PUSH_ORDER_ABORT_ON_DIRTY \
+             -u PUSH_ORDER_SKIP_META \
+             -u PUSH_ORDER_SUBMODULES \
+             -u PUSH_ORDER_REMOTE \
+             -u PUSH_ORDER_ROOT \
+             PUSH_ORDER_SELFTEST_DONE=1 bash "$_selftest_script" >&2; then
       echo "!! push-order-self-test.sh BAŞARISIZ — push-order.sh'a güvenilmiyor," >&2
       echo "!! GERÇEK push YAPILMADI (exit 2). Detay yukarıda." >&2
       exit 2
