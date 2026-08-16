@@ -49,12 +49,33 @@ türetmek). **Üretilmedi.** İkisi de gerçek kullanıcı davranışını deği
 **yapısal** durum: şart **üretim verisi** gerektiriyor, ve `CLAUDE.md §1` bugün deploy
 edilmiş bir ortam olmadığını kaydediyor.
 
-**Şart yeniden yazılmalı** — iki seçenek, ürün sahibi kararı:
+### ✅ KARAR — `(a)`, ürün sahibi (2026-08-16)
 
-| yol | ne demek |
-|---|---|
-| (a) şartı **ilk gerçek kullanıma** bağla | *"ilk müşteri tenant'ında N onay tamamlandığında ölç"* — `N` önceden yazılır |
-| (b) şartı **kaldır** ve `B4`'ü başka bir gerekçeyle karara bağla | zaman aşımı bir **politika** kararı olabilir, dağılım ondan bağımsız |
+```
+ŞART:  ilk müşteri tenant'ında N = 20 tamamlanmış onay biriktiğinde ölç
+N:     BUGÜN yazıldı — o gün değil
+```
+
+**`(b)` reddedildi, gerekçesiyle:** şartı kaldırmak bir bilgiyi **kalıcı olarak atar.**
+Dağılım gerçekten kararı besliyor — `B4`'ün kendi gerekçesi *"planlar meşru olarak
+gecikir"*di ve **o iddia hâlâ ölçülmemiş.** Zaman aşımı bir politika kararı olabilir, ama
+*"hangi politika"* sorusunun cevabı dağılımdan geliyor: **`7/14` mi doğru, `14/30` mu?**
+
+> ### ⚠️ `N` neden BUGÜN yazıldı
+>
+> **O gün geldiğinde eldeki veriye bakıp bir sayı seçmek, ölçümü sonuca uydurmaktır.**
+>
+> Bu, `CLAUDE.md`'nin *"beklenen sayı ÖNCEDEN yazılır"* kuralının bir dağılıma
+> uygulanmış hâli — orada gerekçe *"kontrolü koşup çıkan sayıya bakmak, sonucu gördükten
+> sonra 'evet bu makul' demeye açıktır"*. Aynı açık burada da var, ve daha büyük: bir
+> eşik seçimi doğrudan bir **politikaya** dönüşüyor.
+
+**`N = 20` bir TAHMİNDİR** (`§2.4` gereği böyle işaretlendi): küçük ama bir **medyan**
+verir, ve ilk tenant'ta birkaç ayda ulaşılır. Daha iyi gerekçeli bir sayı gelirse
+**değiştirilir** — ama o gün değil, **şimdi**.
+
+⚠️ **Üçüncü bir yol YOK:** şart olduğu gibi bırakılırsa `B4` **kalıcı olarak** askıda kalır
+ve kimse fark etmez — çünkü *"ölçüm bekliyor"* meşru görünür.
 
 ⚠️ **Üçüncü bir yol yok:** şart olduğu gibi bırakılırsa `B4` **kalıcı olarak** askıda kalır
 ve kimse bunu fark etmez — çünkü *"ölçüm bekliyor"* meşru görünür.

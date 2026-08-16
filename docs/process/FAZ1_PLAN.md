@@ -88,8 +88,10 @@ tahsis eder (DUR-4).
 > gerçek kullanıcı davranışını değil. `CLAUDE.md`: *"ölçütü korumak için veri uydurmak,
 > ölçütün koruduğu şeyi yok eder."*
 >
-> → **`B4`'ün *"ölçüm sonrası"* şartı yeniden yazılmalı** (ürün sahibi kararı, iki yol
-> belgede).
+> → **`B4`'ün şartı YENİDEN YAZILDI** — ürün sahibi kararı `(a)`, 2026-08-16:
+> *"ilk müşteri tenant'ında **`N = 20`** tamamlanmış onay biriktiğinde ölç."*
+> `N` **bugün** yazıldı, o gün değil — *o gün eldeki veriye bakıp sayı seçmek, ölçümü
+> sonuca uydurmaktır.* `N` bir **tahmindir** ve daha iyi gerekçeyle değişebilir.
 
 1. **RLS N:** `tenant_id` tablo envanteri — `0/N` ifadesi ancak bundan sonra yazılabilir
    `[ÖLÇÜLDÜ: 0071 §5 — N kayıtta yok]`
