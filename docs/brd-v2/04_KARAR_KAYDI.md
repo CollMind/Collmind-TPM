@@ -733,3 +733,38 @@ Karar bugünkü ölçüme dayanıyor (Team Lead, 2026-08-16):
 
 > **`F12`/`0006-R`:** `EK_C`'nin ilgili satırı **silinmiyor** — üstüne bu kararın izi
 > yazılıyor. *"Neden `⏸️` idi"* kayıtta kalır.
+
+---
+
+## Z5 · `Z4`'ün bir ölçümü YANLIŞTI — *"Capability entity dosyası 0"*
+
+```
+DÜZELTME — Z4'ün ölçüm satırı (2026-08-16, Team Lead)
+
+Z4 ve ona dayanan üç kayıt şunu yazdı:
+    "Capability entity dosyası 0"
+
+YANLIŞ. Ölçüm `ls entities/ | grep -ci capabilit` idi — o komut DOSYA ADI
+sayar, SINIF değil. Doğru soru "bir @Entity sınıfı var mı"ydı, ve cevabı:
+
+    role.entity.ts:36   @Entity({ name: 'capabilities' })       class Capability
+    role.entity.ts:49   @Entity({ name: 'role_capabilities' })  class RoleCapability
+    ALL_ENTITIES'te     4 atıf
+
+İkisi de `role.entity.ts` İÇİNDE tanımlıydı — ayrı dosyada değil.
+
+⚠️ Sonucu SESSİZ olurdu: yalnız DROP TABLE yazılsaydı, bir sonraki
+`migration:generate` iki tabloyu GEREKÇESİZ geri getirirdi (T-101'in vakası:
+"şema kararını geri alırken entity metadata'sını da geri al").
+
+Yakalayan: data-engineer, migration'ı yazarken. Team Lead'in ölçümü değil.
+
+📌 SINIF: yanlış yüzeyin dilinde arama. `decimal`↔`numeric` ve barrel-import
+tuzağının aynısı — desen çalıştı, EVREN yanlıştı.
+
+Kararın kendisi DEĞİŞMEDİ: tablolar ölü yapıydı (0 satır, üretim tüketicisi
+0) ve düşürüldü. Değişen tek şey İŞİN KAPSAMI: entity sınıfları da kaldırıldı.
+```
+
+> **`F12`/`0006-R`:** `Z4`'ün metni **silinmedi** — bu kayıt onun üstüne yazıyor.
+> *"Ne ölçülmüştü ve neden yanlıştı"* ikisi de kalsın.
