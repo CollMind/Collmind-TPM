@@ -605,6 +605,50 @@ eşleşti.
 `decimal` guard'ı **entity** dilinde yazılır. Yanlış dildeki bir guard sessizce hiçbir şey
 ölçmez.
 
+### Bir VARLIĞIN yokluğunu sorarken, TANIMININ yaşadığı yüzeyde ara (ZORUNLU)
+
+> **Dosya adı bir tanım değildir.** Bir şeyin var olup olmadığını sorarken, onu **tanımlayan
+> şeyi** ara — dosya adını değil.
+
+Ölçülmüş vaka (2026-08-16, `T-233`): *"`Capability` entity dosyası var mı"* sorusu şöyle
+ölçüldü ve **`0`** çıktı:
+
+```bash
+ls src/database/entities/ | grep -ci 'capabilit'     # → 0   DOSYA ADI sayar
+```
+
+Gerçek:
+
+```
+role.entity.ts:36   @Entity({ name: 'capabilities' })       export class Capability
+role.entity.ts:49   @Entity({ name: 'role_capabilities' })  export class RoleCapability
+ALL_ENTITIES'te     4 atıf
+```
+
+İkisi de **başka bir dosyanın içinde** tanımlıydı. Doğru soru *"`@Entity` sınıfı var mı"*dı,
+ve doğru arama `grep -rn '@Entity' src/database/entities/`.
+
+⚠️ **Sonucu sessiz olurdu:** o ölçüme dayanarak yalnız `DROP TABLE` yazılsaydı, bir sonraki
+`migration:generate` iki tabloyu **gerekçesiz geri getirirdi** (`T-101`'in vakası). Yakalayan
+`data-engineer` oldu — ölçümü yapan değil.
+
+📌 **Sınıf:** *"yanlış yüzeyin dilinde arama"* — `decimal`↔`numeric` ve göreli-yol/barrel
+tuzağının kardeşi. **Desen çalıştı, EVREN yanlıştı.**
+
+**Pratik — soruyu tanımlayıcıya çevir:**
+
+| soru | ❌ yanlış yüzey | ✅ doğru yüzey |
+|---|---|---|
+| bu entity var mı | dosya adı | `@Entity` dekoratörü |
+| bu servis var mı | dosya adı | `@Injectable()` + sınıf adı |
+| bu rota var mı | controller dosya adı | `@Get`/`@Post` + yol dizesi |
+| bu kolon var mı | entity dosyası | **katalog** (`information_schema`) |
+
+⚠️ **Araç henüz yazılmadı ve bu bilinçli:** `find-importers.sh` **iki** ölçülmüş vakadan
+sonra doğdu. Bunun bugün **bir** vakası var. *"İki vaka bir desendir"* — ikincisi gelirse
+araç yazılır, gelmezse kural yeter. Henüz desen olmayan bir şeye araç yazmak `İlke 1`'in
+ihlalidir.
+
 ### Yazma ile commit arasına bir DOĞRULAMA koy (ZORUNLU)
 
 Bir dosyayı yazan adım ile onu commit'leyen adım arasında **hiçbir kontrol yoksa**, sessizce
