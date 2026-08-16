@@ -45,11 +45,51 @@ gereken sınıf.
 
 ## 3 · ADIM 1 — `K-2.6.13` DB rolleri
 
+> ### ✅ **KAPANDI** — 2026-08-16
+>
+> ```
+> K-2.6.13a  iki rol                    ✅   app_runtime · app_migrate
+> K-2.6.13b  sahiplik                   ✅   tablo sahibi app_migrate (app_owner KAPALI)
+> K-2.6.13c  kurulum betiği             ✅   setup.sh (01) / grants.sh (02) — göç DEĞİL
+> K-2.6.13d  sessiz geri dönüş yasağı   ✅   AC#8 iki bacaklı, mutasyon kanıtlı
+> K-2.6.13e  kırmızı-sonra-yeşil        ✅   KALICI suite'te (bir kez gösterim DEĞİL)
+> K-2.6.13f  izin envanteri             ✅   92 izin · 36 tablo · her GRANT kaynak yorumlu
+> ```
+>
+> **Kapanan bulgular:** `B1` (64 enum sahipliği) · `B2` (taze DB'de kurulum) · `B3`
+> (defter/denetim `DELETE`'i) · `B4` (runtime süreci migrate kimliği) · `M1` (betik
+> yakınsaklığı) · `M-3` (guard yüzeyi) · `M-2` · `m-2`…`m-5` · **`B-1`** (grant betiği
+> atomikliği — `M1`'in ürettiği yeni vaka).
+>
+> **Çıktısı `ADIM 5`'in girdisi:** `docs/verification/DB_ROL_IZIN_ENVANTERI.md`.
+>
+> ⚠️ **Kalan tek kalem ayrı bir task:** [[T-232]] — `bitbucket-pipelines.yml` ölü ama
+> **yanıltıcı**; konuşlandırma bir gün ayağa kalkarsa tek-rol modelini miras verir ve
+> `K-2.6.13`'ü geri alır.
+
 Issue hazır (`_ISSUE_DB_ROLU.md`), hiç başlamadı `[ÖLÇÜLDÜ: 0071 §5]`. Çıktısı (izin
 envanteri, `docs/verification/`) Adım 5'in girdisidir. Migration numarası Team Lead
 tahsis eder (DUR-4).
 
 ## 4 · ADIM 2 — Ölçüm paketi (beş kalem, tek tur; inşa değil)
+
+> ### Durum — 2026-08-16: **beşi de kapandı**, biri *"yapılamaz"* olarak
+>
+> | # | kalem | sonuç | kayıt |
+> |---|---|---|---|
+> | 1 | RLS `N` | ✅ **`0/48`** — payda ilk kez ölçüldü (`0/43` uydurmaydı) | `RLS_TABLO_ENVANTERI.md` |
+> | 2 | denetim envanteri | ✅ kanonik sözlük **YOK**, dört ayrı aile; 39 uç → 4 sınıf | `ADIM2_OLCUM_2_4_5.md` |
+> | 3 | **onay bekleme dağılımı** | ⛔ **BUGÜNKÜ VERİYLE YAPILAMAZ** — sıfır örneklem | `ADIM2_OLCUM_3_ONAY_BEKLEME.md` |
+> | 4 | `T-205` bağlamı | ✅ tek yol, **iki alan**; frontend tüketicisi 0 | `ADIM2_OLCUM_2_4_5.md` |
+> | 5 | `K-2.6.9` eksenleri | ✅ **`[VARSAYIM]` çözüldü**: cevap "ayar mı inşa mı" değil — **İKİSİ** | `ADIM2_OLCUM_2_4_5.md` |
+>
+> ⚠️ **Kalem 3 *"yapıldı"* diye kapatılmadı.** Bir sayı üretmek mümkündü (e2e koşumundan
+> geçici satırlar, ya da seed'den sentetik dağılım) — ikisi de **test kurgusunu** ölçerdi,
+> gerçek kullanıcı davranışını değil. `CLAUDE.md`: *"ölçütü korumak için veri uydurmak,
+> ölçütün koruduğu şeyi yok eder."*
+>
+> → **`B4`'ün *"ölçüm sonrası"* şartı yeniden yazılmalı** (ürün sahibi kararı, iki yol
+> belgede).
 
 1. **RLS N:** `tenant_id` tablo envanteri — `0/N` ifadesi ancak bundan sonra yazılabilir
    `[ÖLÇÜLDÜ: 0071 §5 — N kayıtta yok]`
