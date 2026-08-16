@@ -696,3 +696,40 @@ fazlalığı üretecek. Yöntemi kullanan kişi sınırı ÖNCEDEN bilmeli.
 > **`F12`/`0006-R` deseni:** `K-2.6.13f`'nin gövdesi **silinmedi ve değişmedi** — altına
 > bir not eklendi. Kural ne söylüyorsa onu söylemeye devam ediyor; eklenen şey **yöntemin
 > sınırı**.
+
+---
+
+## Z4 · `0056-K3` KARARA BAĞLANDI — `EK_C`'nin `capabilities` satırını açan kayıt
+
+```
+KARAR — 0056-K3: yetenek granularitesi (2026-08-16, ürün sahibi)
+
+Seçim: (b) — yetenek SABİT tanımlanır, TABLO YOK.
+  capabilities.ts'te `const CAPABILITIES` + `ROLE_CAPABILITIES` haritası.
+  Yetenek bir AD kazanır ve @RequireCapability yazılabilir; ama VERİ DEĞİL,
+  yani tenant başına özelleştirilemez.
+
+Reddedilenler:
+  (a) 20 yetenek + tam CBAC tabloları — BRD modeli, ama seed kararını
+      GEREKTİRİR ve tenant-başına özelleştirme bugün istenmiyor.
+  (c) yalnız @Roles kapsamını tamamlamak — K-2.6.3'ü ("yetenekler tanımlı
+      değil") karşılamaz, erteler.
+
+Karar bugünkü ölçüme dayanıyor (Team Lead, 2026-08-16):
+  toplam route 236 · @Roles taşıyan 159 · filtresiz 77
+  → 0056'nın sayıları BAYAT DEĞİL, birebir tutuyor.
+
+⚠️ SONUCU: `capabilities` ve `role_capabilities` TABLOLARI ÖLÜ YAPIYA düşer.
+   B dalgası onları "T-165 ile dolacak" diye indirmişti; (b) ile dolmayacaklar.
+   Ölçüldü: capabilities 10 kolon/0 satır · role_capabilities 9 kolon/0 satır ·
+   Capability entity dosyası 0.
+   Düşürülmeleri AYRI bir karar — [[T-233]].
+
+İKİNCİ KARAR — users.permissions (ölü jsonb) DÜŞÜRÜLECEK.
+  Ölçüldü: entity 1 · DB 1 · kodda OKUYAN 0.
+  0056'nın uyarısı: "ölü bırakılırsa yetkinin ÜÇÜNCÜ olası yeri olarak kalır."
+  Migration 1806000000000 tahsis edildi.
+```
+
+> **`F12`/`0006-R`:** `EK_C`'nin ilgili satırı **silinmiyor** — üstüne bu kararın izi
+> yazılıyor. *"Neden `⏸️` idi"* kayıtta kalır.

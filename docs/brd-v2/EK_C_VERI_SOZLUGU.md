@@ -798,7 +798,7 @@ sıfır sınıfı doğar — `§2.5`.
 
 ```
 3  roller tablosu, beş rol            ✅ bu dalgada
-   capabilities · role_capabilities   ⏸️ T-165 ile (0056-K3 AÇIK)
+   capabilities · role_capabilities   ⛔ ARTIK DOLMAYACAK (0056-K3 → (b), kayıt Z4)
    RBAC users.role enum'undan koşmaya devam eder
 ```
 
@@ -806,6 +806,16 @@ sıfır sınıfı doğar — `§2.5`.
 doldurmak, `K-2.6.3`'ün (yetenek tabanlı yetki) **20 yeteneğini şimdi tanımlamak** demek —
 ve `0056-K3` hâlâ açık: *"`§7.2`'nin 20 yeteneği mi, daha kaba mı?"* **Veri yazılamaz,
 çünkü içeriği bir karara bağlı.**
+
+> ### ✅ ÇÖZÜLDÜ — `0056-K3` → **`(b)`** (2026-08-16, ürün sahibi · kayıt `Z4`)
+>
+> Yetenekler **kodda** tanımlanacak (`const CAPABILITIES`), **tabloda değil**. Yani
+> `capabilities` / `role_capabilities` **hiç dolmayacak** — ve bu satırın `⏸️`'si bir
+> bekleme değil, bir **son** oldu.
+>
+> ⚠️ İki tablo `B` dalgasında **indi** (ölçüldü: `10` ve `9` kolon, **`0` satır**,
+> `Capability` entity dosyası **`0`**). Düşürülmeleri **ayrı bir karar** — [[T-233]].
+> Bu, `T-225`'in (`BudgetReservation`) sınıfı: **yapı var, yol yok.**
 
 📌 **Ama seed kalemi yanıltıcı yazılmıştı:** *"rol kataloğu, beş rol"* teslim edildi ve
 mekanizma **yolsuz** kaldı. Yukarıdaki üç satır o boşluğu kapatır — **adresli erteleme,
