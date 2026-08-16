@@ -658,6 +658,28 @@ hangi yetkileri kullandığı.
 >
 > Envanter saklanır ve `K-2.6.12`'nin politikalarını yazarken **doğrudan girdidir.**
 
+> ### ⚠️ Yöntemin ölçüm evreni — `ADIM 1`'de ölçüldü (2026-08-15, kayıt `Z3`)
+>
+> Bu kural *"**uygulamanın** fiilen kullandığı"* diyor; yöntem ise *"tam test **suite**
+> koşulur"* diyor. **Suite uygulama değildir** — ve fark bir izin FAZLALIĞI olarak çıkar.
+>
+> Ölçülmüş vaka: `S3` döngüsü `app_runtime`'a `ledger_entries` · `admin_audit_logs` ·
+> `agreement_transactions` üzerinde **`DELETE`** verdirdi. Üretimde o tabloları silen yol
+> **0**; isteyen **test temizliğiydi**.
+>
+> ⛔ Ve fazlalık zararsız değildi: `K-2.11.7` korumanın **veritabanı seviyesinde** olmasını
+> istiyor. O `DELETE`, `K-2.3.4` / `K-2.11.6` / `INV-L-003`'ün **DB seviyesinde ihlal
+> edilebilir** olması demekti.
+>
+> **Bir sonraki `S3` turu (RLS rolü ya da başka bir ayrıcalıksız rol) aynı fazlalığı
+> üretecektir.** Yöntemi uygulayan kişi şunu önceden bilmeli:
+>
+> ```
+> düşen izin  →  hangi yol istedi?
+>   ÜRETİM    →  gerçek ihtiyaç, GRANT et
+>   TEST      →  temizlik ayrıcalıklı bir bağlantıya taşınır, GRANT EDİLMEZ
+> ```
+
 ---
 
 # 2.9 · Saklama ve Uyum

@@ -47,12 +47,27 @@ görünmeyen ihtiyaçlar için) çıkarıldı.
    eksikti, terim değil. `grep -o 'permission denied for [a-z]+ [a-zA-Z_]+'`
    (nesne TÜRÜNÜ de yakalayan bir tarama) ile tur 14'te bulundu.
 
-## Tablo bazlı envanter (ölçülmüş — `information_schema` sorgusu, 2026-08-16)
+## Tablo bazlı envanter (ölçülmüş — `information_schema` sorgusu, 2026-08-16;
+## KARAR 1 sonrası GÜNCELLENDİ, 2026-08-16 devam turu)
+
+> ⚠️ **K-2.6.13 KARAR 1 (ürün sahibi, 2026-08-16):** `ledger_entries` /
+> `admin_audit_logs` / `agreement_transactions` satırlarındaki DELETE ✅
+> işaretleri BİLİNÇLİ OLARAK KALDIRILDI — bu üç tablo bir defter/denetim
+> kaydıdır (K-2.3.4 "hiçbir defter kaydı silinemez", K-2.11.6 "denetim kaydı
+> silinemez", K-2.11.7 "DB seviyesinde korunur", INV-L-003 "ledger_entries'te
+> `deleted_at` yok"). Aşağıdaki tablo bu kararla GÜNCEL; kaldırılan hak ve
+> gerekçe için `scripts/db-roles/02-runtime-grants.sql`'deki "KARAR 1" bloğuna
+> bakınız (yürütülebilir tek doğruluk kaynağı, bu tablo onun bir yansımasıdır).
+> Ölçüm: `npm run test:e2e` GRANT kaldırıldıktan sonra kırıldı (permission
+> denied for table X), kırılan HER nokta test temizliğiydi (üretim yolu 0) —
+> düzeltme `test/helpers/admin-datasource.ts` (yeni, `app_migrate`
+> bağlantısı) ile test tarafında yapıldı, GRANT geri verilmedi. İki ardışık
+> `npm run test:e2e` koşumu: 20/20 suite, 283/283 test, EXIT 0.
 
 | Tablo/View | SELECT | INSERT | UPDATE | DELETE | Kaynak (tur) |
 |---|---|---|---|---|---|
-| `admin_audit_logs` | ✅ | ✅ | **yalnız `alert_sent`** | ✅ | 1,4,5,16 |
-| `agreement_transactions` | ✅ | ✅ | **yalnız `is_reversed`,`updated_at`** | ✅ | 5,6,16,18 |
+| `admin_audit_logs` | ✅ | ✅ | **yalnız `alert_sent`** | ⛔ **KARAR 1 (2026-08-16)** — bkz. not | 1,4,5,16 |
+| `agreement_transactions` | ✅ | ✅ | **yalnız `is_reversed`,`updated_at`** | ⛔ **KARAR 1 (2026-08-16)** — bkz. not | 5,6,16,18 |
 | `agreements` | ✅ | ✅ | ✅ | ✅ | 1,4,5 |
 | `approval_requests` | ✅ | ✅ | ✅ | ✅ | 1,6,5,15 |
 | `budget_alert_configurations` | ✅ | — | — | — | 3 |
@@ -67,7 +82,7 @@ görünmeyen ihtiyaçlar için) çıkarıldı.
 | `forecasting_units` | ✅ | — | — | — | 3 |
 | `generic_units` | ✅ | — | — | — | 4 |
 | `kpis` | ✅ | ✅ | ✅ | ✅ | 4,5,6 |
-| `ledger_entries` | ✅ | ✅ | **yalnız `is_reversed`,`updated_at`** | ✅ | 4,5,9,17 |
+| `ledger_entries` | ✅ | ✅ | **yalnız `is_reversed`,`updated_at`** | ⛔ **KARAR 1 (2026-08-16)** — bkz. not | 4,5,9,17 |
 | `lta_agreements` | ✅ | — | — | — | 10 |
 | `lta_rates` | ✅ | — | — | — | 11 |
 | `mechanics` | ✅ | ✅ | ✅ | ✅ | 3,4,19 |
@@ -129,6 +144,47 @@ npx tsc --noEmit   → EXIT 0
 npm run guards     → EXIT 0 (money-float --ratchet temiz, lint-ratchet --ratchet temiz)
 ```
 
+## KARAR 1 sonrası re-verification (2026-08-16, devam turu)
+
+```
+npm run test:e2e (koşum 1)  → 20/20 suite, 283/283 test, EXIT 0
+npm run test:e2e (koşum 2)  → 20/20 suite, 283/283 test, EXIT 0
+[T-047 invariant] PASS — her iki koşumda da
+npx jest test/db-role-negative-yetki.e2e-spec.ts -t "K-2.6.13"
+                             → 10/10 test, EXIT 0 (üç yeni DELETE-reddedilir
+                               vakası + bir pozitif kontrol)
+```
+
+Suite sayısı (17→20) ve test sayısı (270→283) bu turdan ÖNCE de büyümüştü
+(başka task'ların eklediği spec dosyaları) — KARAR 1'in kendisi 0 yeni test
+dosyası eklemedi, `test/db-role-negative-yetki.e2e-spec.ts`'e 4 `it()` ekledi
+(3 tablo × DELETE reddi + 1 pozitif kontrol).
+
+`information_schema.role_table_grants` doğrulaması (KARAR 1 sonrası):
+
+```sql
+SELECT table_name, string_agg(privilege_type, ',' ORDER BY privilege_type)
+FROM information_schema.role_table_grants
+WHERE grantee='app_runtime' AND table_schema='main'
+  AND table_name IN ('ledger_entries','admin_audit_logs','agreement_transactions','tenants','users')
+GROUP BY table_name ORDER BY table_name;
+--        table_name       |            privs
+-- ------------------------+-----------------------------
+--  admin_audit_logs       | INSERT,SELECT
+--  agreement_transactions | INSERT,SELECT
+--  ledger_entries         | INSERT,SELECT
+--  tenants                | DELETE,INSERT,SELECT        ← kapsam dışı, DOKUNULMADI
+--  users                  | DELETE,INSERT,SELECT,UPDATE ← kapsam dışı, DOKUNULMADI
+```
+
+Davranışsal doğrulama (canlı `psql -U app_runtime`, `ON_ERROR_STOP=1`):
+
+```
+DELETE FROM main.ledger_entries WHERE false;          → ERROR permission denied, EXIT 3
+DELETE FROM main.admin_audit_logs WHERE false;        → ERROR permission denied, EXIT 1
+DELETE FROM main.agreement_transactions WHERE false;  → ERROR permission denied, EXIT 1
+```
+
 ## Bilinen sınır (AC#3/negatif testler — bu turun KAPSAMI DIŞI)
 
 Bu envanter yalnız **pozitif** yolu (suite'in ihtiyacı) ölçer. `K-2.6.13`
@@ -136,3 +192,57 @@ Bu envanter yalnız **pozitif** yolu (suite'in ihtiyacı) ölçer. `K-2.6.13`
 ve `AC#2` (RLS sonda testi) **qa-engineer**'a devredildi (brief'in "YAPMA"
 listesi) — bu envanterin "asgari küme" iddiası yalnız suite'i yeşilleten
 kümedir, negatif kanıt bu dosyada yoktur.
+
+## KARAR 2 (ürün sahibi, 2026-08-16) — şema yaratma, `app_migrate`'e DB-düzeyi CREATE VERİLMEDİ
+
+Kaynak: `scripts/db-roles/01-roles-and-ownership.sql`'in "2b) K-2.6.13 KARAR 2"
+bloğu (yürütülebilir tek doğruluk kaynağı). Bu bölüm o kararın **izole,
+tek kullanımlık container'da (`k2613-decision2-test`, gerçek dev DB'ye
+DOKUNULMADI)** ölçülmüş sonucudur.
+
+**Yapılan:** `db-roles-setup.sh` (`01-roles-and-ownership.sql`) artık
+`CREATE SCHEMA IF NOT EXISTS :"schema"` içeriyor — SUPERUSER bağlantısıyla
+(betik zaten böyle çalışıyor) ve göçlerden ÖNCE. `app_migrate`'e
+`GRANT CREATE ON DATABASE` **verilmedi**.
+
+**Doğrulandı (EXIT 0):**
+```
+taze container (init-schema.sql YOK, main şeması YOK)
+  → db-roles-setup.sh (superuser)              → EXIT 0, CREATE SCHEMA (main yaratıldı)
+  → has_database_privilege('app_migrate', db, 'CREATE')  → f  (hak verilmedi)
+```
+
+**⚠️ AMA — Karar 2'nin brief'teki gerekçesi ("göçteki CREATE SCHEMA IF NOT
+EXISTS → KALABİLİR, idempotent, şema varsa no-op") EMPİRİK OLARAK YANLIŞ
+ÇIKTI.** Aynı izole container'da devam ölçümü:
+
+```
+(şema YUKARIDA zaten yaratılmışken)
+psql -U app_migrate -c "CREATE SCHEMA IF NOT EXISTS main;"
+  → ERROR: permission denied for database collmind_tpm_iso   (42501)
+
+npm run migration:run (DB_MIGRATE_USERNAME=app_migrate, taze `migrations` tablosu)
+  → EXIT 1, CreateTenants1704067200000.up()'ın İLK SATIRINDA (42501, aclchk.c:2812)
+```
+
+PostgreSQL `CREATE SCHEMA IF NOT EXISTS`, DATABASE-düzeyi CREATE iznini
+şemanın önceden var olup olmadığına BAKMADAN denetliyor — `IF NOT EXISTS`
+yalnız "already exists" hatasını bastırıyor, izin denetimini değil. Yani
+şemayı önceden yaratmak (Karar 2'nin yaptığı) bu satırı KURTARMIYOR.
+
+**Neden gerçek dev DB'de görünmüyor:** `CreateTenants1704067200000` o DB'nin
+`main.migrations` tablosunda zaten kayıtlı (`id=133`, superuser ile,
+`app_migrate` var olmadan önce uygulanmış) — TypeORM bunu bir daha
+çalıştırmıyor. **Tamamen taze bir kurulumda (`migrations` tablosu boş —
+ör. yeni bir ortam/Cloud SQL) `migration:run` İLK ADIMDA hâlâ düşer.**
+
+**Sonuç — Karar 2 KISMEN kapalı:**
+- ✅ Şema artık `app_migrate`'e DB-düzeyi hak vermeden yaratılabiliyor
+  (betiğin kendi iddiası, doğrulandı).
+- ⛔ Tam taze bir DB'de `npm run migration:run` (app_migrate ile) hâlâ
+  başarısız — bu turun KAPSAMI DIŞINDA kalan iki yoldan biri gerekiyor:
+  (a) `app_migrate`'e `GRANT CREATE ON DATABASE` (ürün sahibi REDDETTİ), ya
+  da (b) `src/database/migrations/1704067200000-CreateTenants.ts`'nin
+  `CREATE SCHEMA IF NOT EXISTS` satırını kaldırmak/korumak (bu task'ın
+  "`src/`'ye DOKUNMA" sınırı içinde — ayrı bir tur, B4 deseniyle aynı).
+  **Team Lead'e bildirildi.**

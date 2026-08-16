@@ -654,3 +654,45 @@ Faz 1 durum anı (kapanış anında):
 > (`Adım 0`'ın üç kalemi kapanmış, `K-2.6.13a` onaylanmıştı). Dağıtımdan önce
 > düzeltildi; **bayat sürüm dağıtılmadı.** Kaynak: `FAZ0_KAPANIS_VE_V2_DONDURMA.md`
 > başlığındaki `Rev 2` notu.
+
+---
+
+## Z3 · `K-2.6.13f`'ye ölçüm-evreni notu — dondurma sonrası İLK düzenleme
+
+```
+KAYIT — K-2.6.13f'ye NOT eklenir (2026-08-15, ürün sahibi)
+
+Dondurma sonrası L2'ye yapılan İLK düzenleme. Kayıt önce gelir (Z1'in
+şartı); bu kayıt o düzenlemeyi AÇAR.
+
+Ne değişiyor: K-2.6.13f'nin gövdesi DEĞİL — altına bir ölçüm-evreni notu
+eklenir. Kural aynı kalır.
+
+Neden: ADIM 1'de S3 döngüsü koşturuldu ve bir izin FAZLALIĞI üretti —
+app_runtime'a ledger_entries · admin_audit_logs · agreement_transactions
+üzerinde DELETE. Ölçüldü: üretimde o tabloları silen yol 0; fazlalığın
+kaynağı TEST temizliğiydi.
+
+Sebep bir uygulama hatası değil, YÖNTEMİN EVRENİ:
+
+  K-2.6.13f  "UYGULAMANIN fiilen hangi yetkileri kullandığı"
+  S3 yöntemi "tam test SUITE koşulur → düşen izinler"
+
+  Suite uygulama değildir.
+
+Ve fazlalık zararsız değildi: K-2.11.7 "denetim kaydı uygulama katmanında
+DEĞİL veritabanı seviyesinde korunur" diyor. DELETE hakkı, K-2.3.4 /
+K-2.11.6 / INV-L-003'ün DB seviyesinde ihlal EDİLEBİLİR olması demekti.
+
+Çözüm uygulandı (commit be00663): test temizliği artık app_migrate ile
+bağlanıyor (test/helpers/admin-datasource.ts), üç DELETE kaldırıldı,
+davranışsal olarak reddedildiği doğrulandı.
+
+⚠️ Not KALICI olmalı çünkü sorun TEKRARLAYACAK: bir sonraki S3 turu (RLS
+rolü, ya da başka bir ayrıcalıksız rol) aynı yöntemi kullanacak ve aynı
+fazlalığı üretecek. Yöntemi kullanan kişi sınırı ÖNCEDEN bilmeli.
+```
+
+> **`F12`/`0006-R` deseni:** `K-2.6.13f`'nin gövdesi **silinmedi ve değişmedi** — altına
+> bir not eklendi. Kural ne söylüyorsa onu söylemeye devam ediyor; eklenen şey **yöntemin
+> sınırı**.
