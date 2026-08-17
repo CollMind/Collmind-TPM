@@ -139,6 +139,40 @@ Kural: her sonuç **liste** olarak raporlanır; sayı tek başına dayanak deği
 > ⚠️ **Ama ikisi de aynı dalgada olmalı:** iki repoda farklı tanımlayıcı bırakmak,
 > `Z7`'nin düzelttiği *"ad benzerliği ile anlam ayrışması"*nı **yeniden üretir**.
 >
+> ### ⛔→✅ `9/24` BLOKE hücre — karar `(a)` UNION, ŞARTLI (2026-08-17, ürün sahibi)
+>
+> `1d10cd2` dokuz hücreyi bloke bıraktı: o hücrelere düşen route'lar bugün **farklı** rol
+> kümeleri taşıyor, ve tek ad altında toplamak erişimi **genişletir ya da daraltır**.
+>
+> **Reddedilenler, gerekçeleriyle:**
+>
+> | şık | neden |
+> |---|---|
+> | `(b)` alt-sınıf | taksonomiyi `24`'ten **yukarı** büyütür — `0056-K3(b)`'nin karşı çıktığı şey (`İlke 1`) |
+> | `(c)` kapsam dışı | dokuzu `@Roles`'ta bırakmak **iki mekanizmayı** yaşatır (`İlke 4`) |
+> | `(d)` önce `K-2.6.6` | **sırayı ters çevirir** — default-deny'ı haritasız açmak = *"çevrildiği an eşlenmemiş her uç kırılır"* |
+>
+> **Ve union körü körüne hesaplanmaz — üç dal:**
+>
+> ```
+> 1  hücre içi tüm kümeler AYNI   →  union = değişiklik yok, MEKANİK
+> 2  hücrede FİLTRESİZ route var  →  ⛔ o route union'a GİRMEZ
+> 3  kümeler FARKLI               →  GENİŞLEME listesi, tek tek
+> ```
+>
+> ⛔ **İkinci dal kritik:** *"filtresiz bir route'u union'a katmak, o hücredeki **korunan**
+> route'ları da açar. O route `77`'nin içindeyse, union onu bir yetenek kümesine değil
+> **boşluğa** eşler."* → **Union yalnız `@Roles` taşıyan route'lardan hesaplanır**;
+> filtresizler `K-2.6.6`'nın konusu ve `report-only` fazında **ayrı** ele alınır.
+>
+> **Genişleyen her hücre kayda geçer:** hangi route · hangi rol eklendi · **neden kabul
+> edildi**.
+>
+> 📌 **`(a)` geri alınamaz DEĞİL — `report-only` onun doğrulama katmanı.** Union yanlış
+> genişletmişse orada **beklenmedik rol** olarak görünür. ⚠️ Ama bu, kaydı atlamanın
+> gerekçesi değil: kayıt olmadan `report-only` çıktısı *"beklenmedik mi, kabul edilmiş mi"*
+> diye **ayırt edilemez**.
+>
 > ### Faz B — TÜKETİCİ (ayrı tur)
 >
 > `@RequireCapability` + `159` `@Roles` göçü + `roles.guard.ts:16-18`'in default-deny'a
