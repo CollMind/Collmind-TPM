@@ -252,6 +252,56 @@ etiketinin nasıl yanılabileceğinin örneği.
 
 ---
 
+## 4c · ⚡ SONRAKİ TUR ÖLÇÜLDÜ — `5/5` rol taşıyan route'lar ve **`A`/`C` sınıf ayrımı**
+
+> **Ölçen:** Team Lead · **Tarih:** 2026-08-17 · **Bağlam:** `ADIM 3 Faz A` union turu
+> **Neden burada:** bu ayrım `§3`'ün `modül × işlem` ekseninde **görünmüyor** ve
+> yalnız `capabilities.ts` başlığında yaşıyordu — kanonik ölçüm belgesine taşındı.
+
+### Sayı düzeltmesi: `14` değil **`18`**
+
+İlk parser iç içe sabiti tek geçişte çözemedi:
+
+```ts
+const WRITE_ROLES = [UserRole.ADMIN, UserRole.FINANCE];
+const READ_ROLES  = [...WRITE_ROLES, PLANNER, CATEGORY_MANAGER, READONLY];
+```
+
+`@Roles(...READ_ROLES)` gövdesi bir kez genişletilince `WRITE_ROLES` **hâlâ
+çözülmemiş** kalıyor → `sales-actuals`'ın dört rotası `{PLANNER, CATEGORY_MANAGER,
+READONLY}` sanıldı ve `5/5` listesinden **düştü**. **Fixpoint** ile düzeltildi;
+çözülemeyen sabit **`0`**.
+
+⚠️ **Ve düşen dördü tam olarak hipotezi çürüten kanıttı** — ilk sayımla raporlansaydı
+hipotez *doğrulanmış* görünürdü. `§0`'ın *"ilk iki ölçümüm geçersizdi"* dersinin
+üçüncü vakası, ve aynı sınıf: **desen çalıştı, evren eksikti.**
+
+### `18`'in sınıf kırılımı — `@Roles` yüzeyinden AYNI, davranışta ÜÇ AYRI
+
+| sınıf | mekanizma | route |
+|---|---|---|
+| **`A`** — aktör kapsamı **servis katmanında** | `@CurrentUser` → `resolveScopeForFilter(actor)` (`plan.service.ts:385`) | `approval` `my-requests`·`:id` · `plan` `findAll`/`findOne`/`:id/analysis`/`:id/approval-history` · `agreement` `findAll`/`findOne`/`tactics/available` · `dashboard` `summary`/`pending-tasks`/`cpl-status` — **11** |
+| **`B`** — **ölü ikiz** | `@deprecated`, `GET /dashboard/summary`'nin ikizi (`user.controller.ts:116`) | `user` `dashboard-summary` — **1** |
+| **`C`** — kapsam **YOK**, özet **DEĞİL** | yalnız `tenantId`; `@CurrentUser` yok | `sales-actuals` `batches`·`batches/:batchId`·`batches/:batchId/rows`·`summary` · `finance-reporting` `plan-performance` — **6** |
+
+📌 **`sales-actuals` `READ_ROLES` bir ÖZET DEĞİL** — dördünün yalnız biri (`/summary`)
+özet; `batches/:batchId/rows` **satır düzeyinde gerçekleşen satış verisi** döndürüyor.
+Dosyadaki tek `@CurrentUser` kullanımı `:65`, **upload** rotasında.
+
+### ⛔ Bunun taksonomiye sonucu
+
+`A` ve `C` **`@Roles` yüzeyinden ayırt edilemez** — ikisi de `5/5`. Ayrım yalnız
+**servise** bakınca çıkıyor.
+
+> Bu, `§3`'ün *"işlem sınıfı metot adından türetildi"* sınırının kardeşi ve
+> `POST = yazma` varsayımının aynı şekli: **dekoratör bir yüzey, DAVRANIŞ başka.**
+
+Yani `modül × işlem` ekseni bir üçüncü boyutu (**kapsam**) taşımıyor, ve üç `READ`
+hücresinin çöküşü tam olarak oradan geliyor. Reklasifikasyon **yapılmadı** —
+`§2.4`: ölçüm şartı sağlanmadan yetenek adı yazılmaz.
+
+---
+
 ## 5 · Ölçümün sınırları
 
 - **Yalnız `*.controller.ts`.** Bir route başka bir yerde tanımlıysa (dinamik kayıt,
