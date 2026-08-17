@@ -846,6 +846,43 @@ Birincisi ölçütün yanlış olduğunu, ikincisi bir **adres** gerektiğini g�
 cevap ölçütü **yazılı olarak** değiştirmektir; sessizce yaklaşmak ya da veriyle doldurmak
 değil.
 
+### Bir şartın SAĞLAYICISI yoksa, şart bir erteleme değil bir KİLİTTİR (ZORUNLU)
+
+> **Bir şartın sağlayıcısı yoksa, şart bir erteleme değil bir kilittir — ve kilit
+> görünmez.**
+
+Yukarıdaki kural *"karşılanamayan bir ölçüt"*ü konu alıyor ve failin **ölçütü zorlamasını**
+bekliyor. Bu **daha sessiz** bir vaka: ölçüt zorlanmıyor, **kimse ona bakmıyor**. Çünkü
+*"ölçüm bekliyor"* meşru görünür — ve *"bu şart karşılanabilir mi?"* sorusu hiç sorulmaz.
+
+**Üç ölçülmüş vaka, ve üçü aynı şekil:**
+
+| kalem | şart | sağlayıcı |
+|---|---|---|
+| `B4` (onay bekleme dağılımı) | *"ölçüm sonrası"* | örneklem **0** — yetersiz değil, **yok** |
+| `report-only` (`0073` Soru 3) | *"envanter fiili trafikte doğrulanır"* | deploy edilmiş ortam **yok** → fiili trafik yok |
+| `T-028c` bayrağı (`T-235`) | *"prod/UAT'de backfill doğrulanana kadar"* | prod/UAT **yok** |
+
+Üçü de **doğru yazılmış**, üçü de **var olmayan bir ortama adresli.** Sonuncusu
+`2026-07-28`'den beri kilitli ve kimse fark etmedi — üstelik `K-2.6.9` sapmayı
+*"ölçülmüş sapma"* diye **kaydetmişti**; kayıtta olmayan şey **kapanamama sebebiydi.**
+
+⚠️ **Ve bir kayıt, kilidi gizleyebilir:** *"ölçülmüş sapma"* etiketi sorunun
+**bilindiğini** söyler, **kapanabileceğini** değil. Bilinen bir sapma, adresi olmayan
+bir sapmadan daha az sorgulanır.
+
+**Pratik — bir şart yazarken üçüncü bir satır ekle:**
+
+```
+ŞART        prod/UAT'de backfill doğrulanana kadar
+SAĞLAYICI   prod/UAT ortamı            ← BU SATIR
+DURUM       ⛔ bugün YOK → bu bir kilit, bir erteleme değil
+```
+
+Sağlayıcı bugün yoksa şart **kilit** diye işaretlenir ve bir **task'a** bağlanır
+(`§7.1`: *"bilinen eksiklik TODO ile değil, TASK ile kaydedilir"*). Sağlayıcının ne
+zaman doğacağı bilinmiyorsa, şart **var olan bir ölçüye** revize edilir.
+
 ### Bir KABUL LİSTESİ, değişikliğin BOZABİLECEĞİNİ de saymalıdır (ZORUNLU)
 
 > **Bir kabul listesi, değişikliğin BOZABİLECEĞİ her yeteneği saymalıdır — yalnız
