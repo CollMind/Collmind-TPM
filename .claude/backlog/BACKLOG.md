@@ -235,6 +235,7 @@ status: active        # planned | active | closed
 | [[T-232]] | `bitbucket-pipelines.yml` **ÖLÜ** (CI yok: 0 workflow, gh run list boş) ama **yanıltıcı** — tek-rol modelini miras verir, `K-2.6.13`'ü geri alır | P2 | architect | todo |
 | [[T-233]] | ✅ `capabilities`/`role_capabilities` DÜŞÜRÜLDÜ (`1807`) + `users.permissions` (`1806`) — entity sınıfları da kaldırıldı (kayıt `Z5`: ölçümüm yanlıştı) | P2 | architect | review |
 | [[T-234]] | 🔴 `migration:generate` **1390 satır** drift — `T-219`'un sınıfı (geri bildirim döngüsü YOK). İçinde **gerçek bir ayrışma gizli** (`lta_agreements.metadata`) | **P1** | architect | todo |
+| [[T-235]] | 🔴 Kapsam filtresi **5 rolün 4'ünde kapalı** — ve bayrağın kapanış şartı (*"prod/UAT'de doğrulanana kadar"*) **var olmayan bir ortama adresli**; `K-2.6.9` sapmasının adresi | **P1** | architect | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
