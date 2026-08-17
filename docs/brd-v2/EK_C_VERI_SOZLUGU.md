@@ -758,6 +758,32 @@ yani **veri göçü yok**. Kod ayak izi gerçek ama ayrı bir iş: enum'u migrat
 >
 > **Bugünkü davranış korunur:** `THRESHOLD` satırı **eşik girilene kadar yazılmaz.**
 > Kararın varsaydığı ayrım → [[T-214]] (katalog/seçim modeli), Faz 1 politika işiyle.
+>
+> ### ✅ KAPANDI — [[T-214]], 2026-08-17 (kayıt `Z6`)
+>
+> ⚠️ **Yukarıdaki teşhis DOĞRUYDU ve öyle kalıyor.** Bayatlayan tek cümle şu:
+> *"`approval_policies`'i tüketen **0** modül var, **seçim yolu yok**."*
+>
+> **`b92a725` o yolu açtı:** `PATCH /approval-policies/:id` · `@Roles(ADMIN)` · tek
+> çağrıda **şablon + eşik** (`K-2.5.13c`: *"seçer **ve** ayarlar"* — iki ayrı çağrı
+> `CHECK`'i ihlal eden bir **ara durum** doğururdu).
+>
+> Yani kabul şartının **"gösterilemez"** dediği ikinci yarısı — *"seçilmeye çalışılınca
+> reddedilir"* — **artık gösteriliyor**, ve `test/approval-policy-write.e2e-spec.ts` ile
+> **pinli**:
+>
+> ```
+> THRESHOLD + eşiksiz  →  400, açık mesaj (500 DEĞİL)
+> STANDARD  + eşik     →  400   (sessizce yok sayılMAZ — §2.5)
+> THRESHOLD → STANDARD →  eşik AÇIKÇA null'lanır, katalog sorgusuyla doğrulandı
+> ```
+>
+> 📌 **Bu bir düzeltme değil, bir KAPANIŞ:** blok bir eksikliği **doğru** teşhis etmişti,
+> ve eksiklik kapandı. Model **değişmedi** (`78de03e`) — katalog = enum, seçim = satır,
+> parametre = aynı satır.
+>
+> ⚠️ **`EŞİKLİ` hâlâ SEED'LENMEZ**, ve bu doğru: `X` bir **tenant değeridir**, ürün
+> varsayılanı değil. Tenant onu **uçtan** girer.
 
 📌 **`S3` deseninin ÜÇÜNCÜ vakası** — üçünde de sıralanacak şey bir veri düzeltmesi değil,
 bir **tanım**:

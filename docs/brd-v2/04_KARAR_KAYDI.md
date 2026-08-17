@@ -768,3 +768,46 @@ Kararın kendisi DEĞİŞMEDİ: tablolar ölü yapıydı (0 satır, üretim tük
 
 > **`F12`/`0006-R`:** `Z4`'ün metni **silinmedi** — bu kayıt onun üstüne yazıyor.
 > *"Ne ölçülmüştü ve neden yanlıştı"* ikisi de kalsın.
+
+---
+
+## Z6 · `EŞİKLİ` kalemi KAPANDI — `EK_C`'nin *"seçim yolu yok"* cümlesi artık geçersiz
+
+```
+KAYIT — T-214 kapandı, EK_C'nin EŞİKLİ bloğu güncellenir (2026-08-17)
+
+Dondurma sonrası DÖRDÜNCÜ EK düzenlemesi. Kayıt önce; düzenlemeyi bu açar.
+
+⚠️ EK_C'nin bloğu BAYAT DEĞİL — teşhisi DOĞRUYDU ve öyle kalıyor:
+  · "satır = tenant'ın politikası" (tenant_id NOT NULL)
+  · CHECK, THRESHOLD + NULL'u INSERT anında reddediyor
+  · THRESHOLD satırı eşik girilene kadar YAZILMAZ
+
+Bayatlayan TEK cümle şu:
+
+  "approval_policies'i tüketen 0 modül var, SEÇİM YOLU YOK. Yani kısıt
+   kaldırılır, yerine HİÇBİR ŞEY konmaz (§4.2: mekanizma var, yol yok)."
+
+b92a725 o yolu AÇTI: PATCH /approval-policies/:id, @Roles(ADMIN), tek
+çağrıda şablon + eşik (K-2.5.13c: "seçer VE ayarlar").
+
+Yani kabul şartının "GÖSTERİLEMEZ" dediği ikinci yarısı — "seçilmeye
+çalışılınca reddedilir" — artık GÖSTERİLİYOR:
+
+  THRESHOLD + eşiksiz  → 400, açık mesaj (500 DEĞİL)   e2e ile pinli
+  STANDARD  + eşik     → 400                            e2e ile pinli
+
+📌 Bu bir DÜZELTME değil, bir KAPANIŞ: blok bir eksikliği doğru teşhis
+etmişti ve eksiklik kapandı.
+
+── VE T-214'ün asıl kararı ─────────────────────────────────────────────
+
+Model DEĞİŞMEDİ (78de03e): katalog = enum (kod) · seçim = satır (veri) ·
+parametre = aynı satır. Şema bunu ZATEN zorluyordu; eksik olan yoldu.
+
+⚠️ THRESHOLD hâlâ SEED'LENMEZ ve bu doğru: X bir tenant değeridir, ürün
+varsayılanı değil. Tenant onu ucu kullanarak girer.
+```
+
+> **`F12`/`0006-R`:** blok **silinmiyor** ve teşhisi **değişmiyor** — yalnız *"seçim yolu
+> yok"* cümlesinin üstüne kapanış izi yazılıyor.
