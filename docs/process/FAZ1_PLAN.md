@@ -192,7 +192,12 @@ Kural: her sonuç **liste** olarak raporlanır; sayı tek başına dayanak deği
 > ```
 >
 > **İkinci dal tuttu — ve bağımsız ölçümle doğrulandı:** hiçbir yazma-sınıfı route
-> `READONLY` taşımıyor. `READONLY` geçen **31** route'un **hepsi `Get`** — spread sabitleri
+> `READONLY` taşımıyor. `READONLY` geçen route'ların **hiçbiri `Get` dışında değil** —
+> ⚠️ **sayı düzeltildi (2026-08-17): `31` değil `35`.** İlk ölçüm iç içe spread sabitini
+> çözemeyen parser'la yapılmıştı (`sales-actuals`'ın `4` rotası düşmüştü); düzeltilmiş
+> parser `35` veriyor. **İnvaryant değişmedi** — `Get` olmayan **sıfır**. Sayı bayatladı,
+> niteliksel ayırt edici bayatlamadı (`CLAUDE.md`: *"dokümanda sayı yazma"*). Spread
+> sabitleri
 > çözülerek de (`sales-actuals` `WRITE_ROLES = {ADMIN,FINANCE}` ↔ `READ_ROLES` = 5 rol).
 > Yani çözülen iki `WRITE` hücresinin union'ından `READONLY`'nin dışarıda kalması bir
 > tercih değil, **ölçülmüş bir sonuç**.
@@ -210,6 +215,24 @@ Kural: her sonuç **liste** olarak raporlanır; sayı tek başına dayanak deği
 >
 > 📌 Route × eklenen rol × gerekçe dökümü **`capabilities.ts` başlığında** — kayıt şartı
 > (üstteki *"genişleyen her hücre kayda geçer"*) orada karşılandı.
+>
+> ### ⛔ BAĞLAYICI SIRA — union, `T-235`'ten SONRA (2026-08-17, ürün sahibi onayladı)
+>
+> Üç `READ` hücresinin union'ı **`T-235` kapanmadan değerlendirilmez.**
+>
+> **Gerekçe ölçüldü** (`ADIM3_OLCUM_2` + `ADIM3_OLCUM_1`): union kararının ön koşulu
+> *"`A` sınıfının genişliği meşru — gerçek daraltma serviste"* idi. Ölçüm o gerekçeyi
+> **bugün için çürüttü**: kapsam filtresi `5` rolün `1`'inde aktif
+> (`UNRESTRICTED_ROLES = {ADMIN, FINANCE, READONLY}` koşulsuz · `PLANNER` bayrak
+> kapalıyken `UNRESTRICTED` · daraltma yalnız `CATEGORY_MANAGER`'da).
+>
+> ```
+> bugün      @Roles = TEK kapı          (kapsam katmanı 4/5 rolde kapalı)
+> union      o tek kapıyı gevşetir
+> sonuç      iki kapı da aynı anda açık
+> ```
+>
+> **Ters sıra ölçülmüş bir riski gerçekleştirir**, bir tercih değil.
 >
 > ### Faz B — TÜKETİCİ (ayrı tur)
 >
