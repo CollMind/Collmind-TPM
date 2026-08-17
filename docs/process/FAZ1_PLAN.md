@@ -108,6 +108,42 @@ Kural: her sonuç **liste** olarak raporlanır; sayı tek başına dayanak deği
 
 ## 5 · ADIM 3 — `K-2.6.3` + `K-2.6.6` tek dalga (yetenek modeli + default-deny)
 
+> ### Faz A — SABİT YAZIMI (2026-08-17, ürün sahibi kapsamı)
+>
+> ```
+> CAPABILITIES sabiti            işlem sınıfı bazlı — 24 dolu hücre tabanı (0072 §3)
+> ROLE_CAPABILITIES haritası     TEK yerde
+> FINANCE_MANAGER key → FINANCE  kayıt Z7
+> 3 bilinçli-açık uç → isPublic  auth/login · auth/refresh · GET / (health)
+> ```
+>
+> ⛔ **`@RequireCapability` dekoratörü BU TURDA YAZILMAZ.** `159` `@Roles` göçü **ayrı
+> faz**. Sabit + harita önce, **tüketici sonra**.
+>
+> > **Gerekçe (ürün sahibi):** yoksa `@Roles` ve `@RequireCapability` **aynı anda yaşar**
+> > — ve o, `İlke 4`'ün (aynı yetenek iki kez) ihlali. İki yetki mekanizması bir arada,
+> > hangisinin bağlayıcı olduğu belirsiz.
+>
+> ### ⚠️ `FINANCE_MANAGER` kapsamı ÖLÇÜLDÜ — `64` YANLIŞTI
+>
+> Team Lead route seviyesinde saymıştı. Gerçek kapsam **çapraz-repo**:
+>
+> ```
+> backend   UserRole.FINANCE_MANAGER   76   ·   'FINANCE_MANAGER' toplam  161  (src+test)
+> frontend  'FINANCE_MANAGER'          45   ·   kendi enum'u da FINANCE_MANAGER = 'FINANCE'
+> ```
+>
+> ✅ **Sözleşme KIRILMIYOR:** `roleEnumContract.test.ts` `Object.values(UserRole)`
+> kullanıyor — **değerleri** pinliyor, key'leri değil. Tel değeri `'FINANCE'` **değişmiyor**.
+>
+> ⚠️ **Ama ikisi de aynı dalgada olmalı:** iki repoda farklı tanımlayıcı bırakmak,
+> `Z7`'nin düzelttiği *"ad benzerliği ile anlam ayrışması"*nı **yeniden üretir**.
+>
+> ### Faz B — TÜKETİCİ (ayrı tur)
+>
+> `@RequireCapability` + `159` `@Roles` göçü + `roles.guard.ts:16-18`'in default-deny'a
+> çevrilmesi. ⚠️ O üç satır **72 ucu aynı anda** etkiler → **`report-only` fazı zorunlu**.
+
 - İki kalem ayrılmaz: default-deny, yetenek eşlemesi olmadan çevrilemez; K-2.6.6'nın
   kalıcı düzeltmesi default-deny'dır `[GEREKÇELİ]`.
 - **İki aşamalı geçiş:** önce report-only deny (eşlenmemiş uç loglanır, engellenmez) —
