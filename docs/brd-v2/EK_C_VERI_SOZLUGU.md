@@ -658,6 +658,20 @@ ediyor görünür**.
 Ama düzeltmesi **çağrı yerlerini** değiştirir ve ölçülmelidir → `R2b` ile aynı tur.
 **Değer doğru, key kozmetik — dalgayı büyütmeye değmez.**
 
+> ### ⚡ GEÇERSİZLEŞTİ — `ADIM 3` kapsamına alındı (2026-08-17, kayıt `Z7`)
+>
+> *"Dalgayı büyütmeye değmez"* gerekçesi **iki sebeple düştü**:
+>
+> 1. **Dalga zaten o dosyalara dokunuyor** — `ADIM 3` `@Roles` dekoratörlerini ve rol
+>    haritasını yazacak; maliyet **sıfıra** indi.
+> 2. **Kozmetik olmaktan çıktı** — `ROLE_CAPABILITIES` **rollerle anahtarlanacak**, ve
+>    `UserRole.FINANCE_MANAGER`'ın **değeri** `'FINANCE'`. Haritanın **anahtarı ile veri
+>    değeri ayrışır** — yukarıdaki *"ad benzerliği ile anlam ayrışması"* uyarısının ta
+>    kendisi.
+>
+> Ölçüm (`0072`): ölü **değerler** temiz (`0`/`0`/`0` — `R2b`'nin o yarısı **indi**), ama
+> key `64` uçta kullanımda.
+
 > ⚠️ **MIGRATION SIRASI: önce SİL, sonra YENİDEN ADLANDIR.** Eski `FINANCE` siliniyor **ve**
 > `FINANCE_MANAGER` `FINANCE` oluyor — ters sırada çakışır.
 

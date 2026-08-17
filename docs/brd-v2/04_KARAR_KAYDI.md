@@ -811,3 +811,39 @@ varsayılanı değil. Tenant onu ucu kullanarak girer.
 
 > **`F12`/`0006-R`:** blok **silinmiyor** ve teşhisi **değişmiyor** — yalnız *"seçim yolu
 > yok"* cümlesinin üstüne kapanış izi yazılıyor.
+
+---
+
+## Z7 · `R2b`'nin enum KEY kısmı `ADIM 3`'e girer — erteleme gerekçesi GEÇERSİZLEŞTİ
+
+```
+KARAR — R2b/key ADIM 3 kapsamına alınır (2026-08-17, ürün sahibi)
+
+EK_C 2026-08-13'te şöyle ertelemişti:
+  "Enum KEY'i R2b'ye ertelendi. ... Değer doğru, key kozmetik —
+   DALGAYI BÜYÜTMEYE DEĞMEZ."
+
+⚡ O gerekçe ARTIK GEÇERSİZ, ve iki sebeple:
+
+1 · DALGA ZATEN O DOSYALARA DOKUNUYOR. ADIM 3 (K-2.6.3 + K-2.6.6) @Roles
+    dekoratörlerini ve rol haritasını yazacak — yani "dalgayı büyütme"
+    maliyeti sıfıra indi.
+
+2 · KOZMETİK OLMAKTAN ÇIKTI. ROLE_CAPABILITIES rollerle ANAHTARLANACAK, ve
+    UserRole.FINANCE_MANAGER'ın DEĞERİ 'FINANCE' — yani haritanın anahtarı
+    ile veri değeri AYRIŞIR. EK_C'nin kendi uyarısı bunu adlandırıyor:
+    "ad benzerliği ile anlam ayrışması — bu turda İKİ KEZ ısırdı."
+
+Ölçülmüş zemin (0072, 2026-08-17):
+  ölü DEĞERLER  APPROVER 0 · MANAGER 0 · eski FINANCE 0   ✅ R2b'nin bu
+                yarısı İNDİ
+  enum KEY      FINANCE_MANAGER = 'FINANCE'               ⏸️ inmedi
+  kullanım      64 uçta UserRole.FINANCE_MANAGER
+
+⚠️ MİGRASYON SIRASI UYARISI HÂLÂ GEÇERLİ (EK_C): "önce SİL, sonra YENİDEN
+ADLANDIR" — ama eski FINANCE zaten silindi, yani bu tur yalnız yeniden
+adlandırma. Yine de 64 çağrı yeri değişir → ADIM 3'ün DUR listesine girer.
+```
+
+> **`F12`/`0006-R`:** `EK_C`'nin erteleme notu **silinmiyor** — üstüne bu kaydın izi
+> yazılıyor. *"Neden ertelenmişti"* kayıtta kalır.
