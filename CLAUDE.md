@@ -1808,6 +1808,38 @@ Temizlik **çalışmıştı**. Kalanlar öksüz değil, ürünün tasarladığı
 eksik ölçümdü (bir kusur görülmedi). Yön farkı önemli: eksik ölçüm bir kusuru kaçırır, fazla
 ölçüm **olmayan bir kusur için iş üretir** ve gerçek kusurların önüne geçer.
 
+### Beklenen YÖNE yanılan bir hata, ters yöne yanılandan TEHLİKELİDİR (ZORUNLU)
+
+> **Beklenen yöne yanılan bir ölçüm hatası, ters yöne yanılandan tehlikelidir — çünkü
+> sonuç makul görünür ve sorgulanmaz.**
+>
+> **Pratik sonucu: bir hipotezi DOĞRULAYAN ölçüm, ÇÜRÜTEN ölçümden daha fazla
+> doğrulama ister.**
+
+Yukarıdaki madde *"neden 0?"* / *"neden var?"* ile **sonucun** iki açıklaması olduğunu
+söylüyor. Bu, **hatanın yönü** hakkında: aynı büyüklükteki iki hata eşit tehlikeli
+değildir.
+
+Ölçülmüş vaka — tek turda **üç** ölçüm hatası, ve yakalanma sebepleri farklı:
+
+| hata | yönü | nasıl yakalandı |
+|---|---|---|
+| iç içe spread sabiti çözülemedi → `sales-actuals`'ın **4 rotası düştü** | **beklenen yöne** — sonuç hipotezi *doğrular* göründü | ⚠️ **neredeyse geçiyordu**; ayrı bir soru sorulunca çıktı |
+| yorumdaki `@Roles(` kazandı → `plans/:id/reject` *"filtresiz"* | tuhaf — kardeşi kapalıyken bu açıktı | **kendi içinde tutarsızdı**, bakıldı |
+| `audit-log` e2e'de *"3 geçiş"* | tuhaf — `0` bekleniyordu | **pozitif kontrol alarm verdi**, bakıldı (üçü de **yorum**du) |
+
+**İkisi tuhaf olduğu için yakalandı. Biri makul göründüğü için neredeyse geçiyordu** —
+ve o biri, düşen dört rota, tam da **hipotezi çürüten kanıttı**. Raporlansaydı hipotez
+*"ölçüldü ve doğrulandı"* diye kaydedilecekti.
+
+**Pratik — asimetrik doğrulama:**
+
+- Ölçüm hipotezini **çürütüyorsa**: sonuç zaten dikkat çeker, olağan doğrulama yeter.
+- Ölçüm hipotezini **doğruluyorsa**: bir **ikinci ölçüm** yap — farklı desen, farklı
+  yüzey ya da farklı araç. *"Beklediğimi buldum"* bir bitiş değil, bir **tetikleyicidir**.
+- Ve tuhaflığı bir gürültü sayma: **tutarsız görünen bir sonuç, en ucuz kusur
+  dedektörüdür.** Bu turda iki kusuru o yakaladı, hiçbir guard yakalamadı.
+
 ### "Güvenlik" gerekçeleri en az sorgulananlardır (ZORUNLU)
 
 İki kez ölçülüp çürütüldü:
