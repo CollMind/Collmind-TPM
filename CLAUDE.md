@@ -1840,6 +1840,40 @@ ve o biri, düşen dört rota, tam da **hipotezi çürüten kanıttı**. Raporla
 - Ve tuhaflığı bir gürültü sayma: **tutarsız görünen bir sonuç, en ucuz kusur
   dedektörüdür.** Bu turda iki kusuru o yakaladı, hiçbir guard yakalamadı.
 
+### `LEFT JOIN` + `IS NULL` bir YOKLUK testi DEĞİLDİR (ZORUNLU)
+
+> **`LEFT JOIN` ile `IS NULL`, iki farklı durumu aynı sonuca çevirir:**
+> **"eşleşme yok" ve "değerin kendisi `NULL`". Ayrım açıkça yazılmalı.**
+
+`sol.fk IS NULL` yazdığında sorduğun şey *"öksüz mü"* değildir. `LEFT JOIN` eşleşme
+bulamadığında sağ tarafın **her kolonu** `NULL` olur — ve sol taraftaki `fk` zaten `NULL`
+ise de sonuç aynıdır. İki anlam, tek çıktı.
+
+**Ölçülmüş çift vaka (2026-08-17, `user_scopes` — aynı gün, aynı tuzak, iki kez):**
+
+| # | yazılan | sanılan | gerçek |
+|---|---|---|---|
+| 1 | `FILTER (WHERE us.cpl_id IS NULL AND us.category_id IS NULL)` | *"joker satırı var"* | **satırı olmayan** kullanıcı da sayılıyordu → gerçek joker `0` |
+| 2 | `FILTER (WHERE c.id IS NULL)` | *"öksüz satır"* | `category_id`'si **`NULL`** olan satırlar da sayılıyordu → `PLANNER`'lar `17`/`11` öksüz göründü, gerçek `0` |
+
+**Doğru şekil — iki koşul, ikisi de açık:**
+
+```sql
+-- ÖKSÜZ = sol taraftaki değer DOLU, ama karşılığı YOK
+WHERE sol.fk_id IS NOT NULL       -- ← BU SATIR unutuluyor
+  AND sag.id     IS NULL
+
+-- SATIRI YOK = join'in kendisi eşleşmedi
+WHERE sag_satir.id IS NULL        -- birincil anahtarına bak, kolonuna değil
+```
+
+⚠️ **Ve ikisi de `beklenen yöne` yanıldı** — biri *"joker var"*, diğeri *"öksüz çok"*
+beklentisini besliyordu. Yani bir önceki maddeyle aynı aile: **makul göründükleri için
+sorgulanmıyorlardı.**
+
+Pratik: `LEFT JOIN`'de bir yokluk sayarken, **sol taraftaki değerin dolu olduğunu ayrıca
+şart koş** — ve sonucu sıfır çıkarsa `§`'nin pozitif kontrol kuralı geçerli.
+
 ### "Güvenlik" gerekçeleri en az sorgulananlardır (ZORUNLU)
 
 İki kez ölçülüp çürütüldü:
