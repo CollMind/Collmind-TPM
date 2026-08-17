@@ -197,6 +197,61 @@ gerekçelendirilmeli.
 | 4 | işlem sınıfı sezgiseli **madde madde** doğrulansın | adlandırmanın tabanı |
 | 5 | `READ_ROLES`/`WRITE_ROLES` sabitleri açılsın | 5 uç bu iki sabitin arkasında |
 
+## 4b · ⚡ SONRAKİ TUR ÖLÇÜLDÜ — *"77 uç korumasız"* İDDİASI NİTELENDİ
+
+Ürün sahibinin sorusu: *"`77`'nin kaçı başka bir guard taşıyor?"* — ve iddia
+`K-2.6.6`'nın **ihlal gerekçesi** olduğu için ölçülmesi zorunluydu.
+
+```
+72   kimlik doğrulanmış, ROL KISITI YOK        ← K-2.6.6'nın GERÇEK ihlali
+      (70 · JwtAuthGuard + RolesGuard   ·   2 · JwtAuthGuard)
+ 2   ALAN guard'ı taşıyor                      ← korumasız DEĞİL
+      ReversalGuard · SettlementGuard
+ 3   hiçbir guard yok                          ← ve DOĞRU
+      POST auth/login · POST auth/refresh · GET / (health check)
+```
+
+### ⚡ Ve default-deny'ın TAM YERİ bulundu
+
+```ts
+// roles.guard.ts:11-18
+const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [...]);
+if (!requiredRoles) {
+  return true;          // ← @Roles YOKSA HERKESİ GEÇİRİYOR
+}
+```
+
+> **`K-2.6.6`'nın istediği tersine çevirme TEK BİR YERDE:** `roles.guard.ts:16-18`.
+> Ama o üç satırı çevirmek **72 ucu aynı anda** kapatır — `report-only` fazının
+> gerekçesi tam olarak budur.
+
+### İddianın düzeltilmiş hâli
+
+- ❌ *"77 uç korumasız"* — **yanlış**: 2'si alan guard'lı, 3'ü **bilinçli ve doğru** açık.
+- ✅ *"**72** uç kimlik doğrulanmış ama **rol kısıtı yok** — yani **herhangi bir oturum
+  açmış kullanıcı** erişebilir."*
+
+📌 Fark küçük görünüyor ama `K-2.6.6`'nın gerekçesi bu cümlenin üstünde duruyor. Ve
+`3` bilinçli-açık uç, `isPublic` işaretinin **kullanılmamasının** bedelini gösteriyor:
+doğru davranıyorlar ama **işaretsiz**, yani bir sonraki okuyucu onları da ihlal sayar.
+
+### GET-olmayan `17`'nin dağılımı (ürün sahibinin sorusu)
+
+```
+15 POST · 2 PATCH        (60 GET ile toplam 77)
+```
+
+Ve **`13`'ü `JwtAuthGuard + RolesGuard`** taşıyor — yani yazma yapan korumasız uçlar
+**var**, ve `GET`'ten farklı bir risk sınıfı: `spend-calculation/distribute/…` ·
+`spend-calculation/recalculate-on-volume-change/…` · `budget-allocations/…` gibi
+**hesaplama tetikleyen** uçlar bunların içinde.
+
+⚠️ Ve `2` onay/iş-akışı ucu tam da **alan guard'ı taşıyan ikisi** — yani en riskli
+görünen alt küme aslında **korunuyor**. Bu, ölçüm yapılmadan yazılan bir *"en riskli"*
+etiketinin nasıl yanılabileceğinin örneği.
+
+---
+
 ## 5 · Ölçümün sınırları
 
 - **Yalnız `*.controller.ts`.** Bir route başka bir yerde tanımlıysa (dinamik kayıt,
