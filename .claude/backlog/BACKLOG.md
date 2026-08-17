@@ -237,7 +237,7 @@ status: active        # planned | active | closed
 | [[T-234]] | 🔴 `migration:generate` **1390 satır** drift — `T-219`'un sınıfı (geri bildirim döngüsü YOK). İçinde **gerçek bir ayrışma gizli** (`lta_agreements.metadata`) | **P1** | architect | todo |
 | [[T-235]] | 🔴 Kapsam filtresi **5 rolün 4'ünde kapalı** — ve bayrağın kapanış şartı (*"prod/UAT'de doğrulanana kadar"*) **var olmayan bir ortama adresli**; `K-2.6.9` sapmasının adresi | **P1** | architect | todo |
 | [[T-236]] | İki onay anomalisi — **kod bir kuralı uyguluyor, kural `L2`'de yazılı değil** (`approvals/:id/approve` `ADMIN`'siz · `FINANCE` devredilen planı göremiyor). `Faz B`'yi bloklamıyor | P2 | architect | todo |
-| [[T-237]] | 🔴 `user_scopes.category_id` **FK'siz** — aynı tabloda üç FK var, dördüncüsü yok. **115/148 satır öksüz**, etkisi **SESSİZ erişim kaybı** (kategori silinip yeniden yaratılınca müdürü onu kaybediyor) | **P1** | data-engineer | todo |
+| [[T-237]] | `user_scopes.category_id` FK eklendi (`RESTRICT`, migration `1808`), `115` öksüz silindi, **kaynağı kapatıldı** (`cleanup-data.ts`). `RESTRICT` izole hedefte kırmızı-yeşil kanıtlı. ⛔ `code-reviewer` bekliyor | **P1** | data-engineer | review |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |
