@@ -173,6 +173,44 @@ Kural: her sonuç **liste** olarak raporlanır; sayı tek başına dayanak deği
 > gerekçesi değil: kayıt olmadan `report-only` çıktısı *"beklenmedik mi, kabul edilmiş mi"*
 > diye **ayırt edilemez**.
 >
+> ### ✅ SONUÇ — `4` çözüldü, `5` DUR (2026-08-17, ölçüldü)
+>
+> Union `@Roles` **dekoratöründen** hesaplandı (dosya adı değil — `find-entity` dersi), ve
+> taban bağımsız olarak doğrulandı: **`237` route · `160` `@Roles`'lu · `77` filtresiz** —
+> `0072`'nin tabanıyla birebir. Pozitif kontrol geçti.
+>
+> ```
+> ÇÖZÜLDÜ (4)                                                    dal
+>   MODES_WRITE    {ADMIN,FINANCE,PLANNER}                        3   genişleme
+>   SHARED_WRITE   {ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER}       3   genişleme (4 filtresiz HARİÇ)
+>   TENANT_READ    {ADMIN}                                        1+2 tek küme + 2 filtresiz hariç
+>   USER_WRITE     {ADMIN}                                        1+2 tek küme + 5 filtresiz hariç
+>
+> DUR (5) — hiçbir role ATANMADI
+>   MODES_READ · SHARED_READ · USER_READ    union = 5 rolün 5'i → ÇÖKÜŞ
+>   MODES_APPROVE · SHARED_APPROVE          onay yeteneği       → K-2.5.12
+> ```
+>
+> **İkinci dal tuttu — ve bağımsız ölçümle doğrulandı:** hiçbir yazma-sınıfı route
+> `READONLY` taşımıyor. `READONLY` geçen **31** route'un **hepsi `Get`** — spread sabitleri
+> çözülerek de (`sales-actuals` `WRITE_ROLES = {ADMIN,FINANCE}` ↔ `READ_ROLES` = 5 rol).
+> Yani çözülen iki `WRITE` hücresinin union'ından `READONLY`'nin dışarıda kalması bir
+> tercih değil, **ölçülmüş bir sonuç**.
+>
+> ⚠️ **Üç `READ` hücresinin çöküşü union'ın kusuru DEĞİL:** o hücrelerde zaten **5 rolün
+> 5'ini** taşıyan bir route var (`dashboard-summary` · `approval my-requests` ·
+> `sales-actuals` `READ_ROLES`). Union onları yalnız **görünür** kıldı. Yani soru
+> *"union yanlış mı"* değil, *"bu geniş route'lar dar olanlarla aynı hücreye mi düşmeli"*
+> — taksonomi sorusu, ürün sahibine gider.
+>
+> ⚠️ **`PATCH /approval-policies/:id` özel işaretli:** bugün `@Roles(ADMIN)` (ölçüldü,
+> `approval-policy.controller.ts:33-34`), union onu 3 role daha açıyor. Bir onay
+> **politikası** konfigürasyon ucu — davranışsal ağırlığı `yazma` sınıfından büyük.
+> `report-only` fazında **önce buraya bakılır**.
+>
+> 📌 Route × eklenen rol × gerekçe dökümü **`capabilities.ts` başlığında** — kayıt şartı
+> (üstteki *"genişleyen her hücre kayda geçer"*) orada karşılandı.
+>
 > ### Faz B — TÜKETİCİ (ayrı tur)
 >
 > `@RequireCapability` + `159` `@Roles` göçü + `roles.guard.ts:16-18`'in default-deny'a
