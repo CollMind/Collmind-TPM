@@ -184,26 +184,40 @@ göremediği veriyi göremez (`K-2.4.31`).
 
 ## Sayım
 
-| Durum | Sayı |
-|---|---|
-| ✅ çalışıyor | 21 |
-| 🔶 kısmen | 6 |
-| ⚠️ kırık | 6 |
-| 🔒 **yüzeysiz** | 3 |
-| ❌ yok | 38 |
+> ⛔ **Sayım tablosu KALDIRILDI** (`Z13`, 2026-08-20 — ürün sahibi kararı).
+>
+> ```
+> sayılar   dört durum satırının TÜREVİ — bağımsız bilgi taşımıyor
+> liste     her yeteneğin işareti ZATEN satırında
+> ```
+>
+> Elle tutulan bir türev **bayatlar**, ve `guard.sh` bu tabloya **bakmıyordu** —
+> `Z9`/`Z10`'un kapattığı sınıfın aynısı.
+>
+> **Nasıl sayılır:** yukarıdaki bölüm tablolarındaki `Durum` sütunu okunur. Böyle
+> üretilen bir sayı **tanımı gereği günceldir**.
+>
+> `F12` izi — silinen bloğun son doğru hâli (2026-08-20):
+> `✅ 21 · 🔶 6 · ⚠️ 6 · 🔒 3 · ❌ 38`
 
-## İki `🔒` vakası — öncelikli
+## `🔒` vakaları — öncelikli
 
 ```
 Anlaşma kapanışı      mekanizma olgun, ekran yok
 Formül doğrulaması    uç + sarmalayıcı var, çağıran yok
+Kapsam atama          POST /users yazma yolunu açtı, besleyecek ekran yok
 ```
 
-> İkisi de **tamamlanmış iş.** Düzeltmesi yeni kod değil, **kablolama.**
+> **Hepsi tamamlanmış iş.** Düzeltmesi yeni kod değil, **kablolama.**
 
-## Beş `⚠️` — kullanıcıya görünür
+⚠️ **Üçüncüsü `Z12` ile eklendi** (2026-08-20): `T-241` `POST /users`'a kapsam yazma
+yolunu **açtı** ve aynı anda mevcut ekranı **kırdı** — yani bir `🔒` ile bir `⚠️`
+**aynı değişiklikten** doğdu. → [[T-243]]
+
+## `⚠️` vakaları — kullanıcıya görünür
 
 ```
+Kullanıcı yönetimi (T-241 sonrası)    → varsayılan yol 400 · [[T-243]]
 Taktik değeri hücreye dönmüyor        → MVP şartı
 Anlaşma detayında kimlik numaraları    → basit
 Finans paneli hata ekranı              → yazılım hatası

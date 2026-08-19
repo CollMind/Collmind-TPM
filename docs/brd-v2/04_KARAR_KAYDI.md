@@ -1155,3 +1155,60 @@ kapattığı sınıfın **aynısı**, `EK_E` yüzeyinde.
 **Bu turda kaldırılmadı** — `Z10`'un ayrımı gereği karar ürün sahibinin: sayılar
 yanlarındaki listeyle (dört durum satırı) doğrulanabilir mi, yoksa bağımsız bir
 bayatlama yüzeyi mi? Şimdilik **güncellendi ve doğru**; kalıcı karar açık.
+
+---
+
+## Z13 · `EK_E`'nin SAYIM bloğu KALDIRILDI — `Z10`'un birebir uygulaması
+
+**Tarih:** 2026-08-20 · **Karar:** ürün sahibi · **Kaydeden:** Team Lead
+**Açtığı düzenleme:** `EK_E_YETENEK_ARAYUZ_ESLEMESI.md` (donmuş — `Z1`, **sekizinci
+uygulama**)
+**Bulan:** Team Lead, `Z12` turunun yan gözlemi
+
+### Bulgu
+
+`Z12` `EK_E`'de iki satır değiştirdi, ve bu **sayım bloğunu** da değiştirmek zorunda
+bıraktı (`🔶 8→6` · `⚠️ 5→6` · `🔒 2→3`). O blok **elle tutuluyor** ve `guard.sh` ona
+**bakmıyor** — `Z9`/`Z10`'un kapattığı sınıfın aynısı, `EK_E` yüzeyinde.
+
+### Karar: **sayım bloğu kalkar** — `Z10`'un ayrımı birebir
+
+> **Ürün sahibi:**
+> ```
+> sayılar   dört durum satırının TÜREVİ — bağımsız bilgi taşımıyor
+> liste     her yeteneğin işareti ZATEN satırında
+> ```
+> *"Sayım bloğu hesaplanabilir, ve elle tutulduğu için bayatlar."*
+
+`Z10`'da hücre sayıyı **kendi listesiyle** taşıyordu ve *"daha zayıf vaka"* diye
+işaretlenmişti; orada **sayı** düştü, **liste** kaldı. Burada aynı ilke tabloya
+uygulanıyor: **işaretler satırlarında kalır, toplamları kalkar.**
+
+⚠️ **Ve `Z9`'dan farkı yok** (ürün sahibi tespiti): orada dağılım guard'ın **bastığı**
+bir teşhisti; burada sayım **tablonun kendisinden** okunuyor. **İkisi de türev.**
+
+### İlkenin tamamlanmış hâli — beş kayıtta
+
+```
+Z8    guard'ın DENETLEDİĞİ sayı bayatladı        → kapı ateşledi, sayı güncellendi
+Z9    guard'ın denetlemediği sayı, taşıyıcı YOK  → SATIR kalktı
+Z10   guard'ın denetlemediği sayı, taşıyıcı VAR  → SAYI kalktı, LİSTE kaldı
+Z12   (yan gözlem) aynı sınıf EK_E'de bulundu
+Z13   türev bir sayım tablosu                    → TABLO kalktı, işaretler kaldı
+```
+
+> **Denetlenen sayı kalır. Denetlenmeyen sayı kalkar. Türev bir sayı hiç yazılmaz —
+> kaynağından okunur.**
+
+### `F12` izi
+
+Silinen bloğun son doğru hâli (2026-08-20, `Z12` sonrası):
+`✅ 21 · 🔶 6 · ⚠️ 6 · 🔒 3 · ❌ 38`.
+
+📌 Yerine **nasıl sayılacağı** yazıldı — sayının kendisi değil. *"Bu tabloyu okuyan,
+işaretleri satırlardan sayar"*: bir sonraki okuyucu sayıyı **isterse üretir**, ve
+ürettiği sayı **tanımı gereği güncel** olur.
+
+⚠️ **`İki 🔒 vakası — öncelikli`** başlığı da bir sayı taşıyordu ve artık **üç** vaka
+var (`Kapsam atama` eklendi). Başlık sayısızlaştırıldı; bölümün kendisi vakaları
+**adıyla** sayıyor.
