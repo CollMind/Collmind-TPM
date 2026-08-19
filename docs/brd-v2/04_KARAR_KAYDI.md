@@ -1090,3 +1090,68 @@ bir belgede bayat bir olgu; düzeltildi.
 **kanıtlanmış talep** üzerine açılır. Fark: bölgede mekanizma tam kuruluydu ve korundu;
 burada kolon boştu ve düştü — **yeniden açmak bir migration gerektirir.** Bu bedel
 bilinçli kabul edildi.
+
+---
+
+## Z12 · `EK_E`'de iki satır güncellendi — `T-241` arayüzü KIRDI
+
+**Tarih:** 2026-08-20 · **Karar:** ürün sahibi · **Kaydeden:** Team Lead
+**Açtığı düzenleme:** `EK_E_YETENEK_ARAYUZ_ESLEMESI.md` (donmuş — `Z1`, **yedinci
+uygulama**)
+**Bulan:** `code-reviewer` (`dfdbe7f` review'u) — **`B2` blocker'ı**
+
+### Bulgu
+
+`T-241` (`POST /users` rol + kapsam birlikte) **backend sözleşmesini değiştirdi**, ve
+frontend'in kullanıcı ekleme formu bu sözleşmeyi bilmiyor:
+
+```
+collmind.frontend/src/types/user.types.ts:52-65   CreateUserDto'da `scope` alanı YOK
+collmind.frontend/src/components/forms/UserForm.tsx:153   Object.values(UserRole)
+                                                          → PLANNER ve CM seçilebilir
+collmind.frontend/src/components/forms/UserForm.tsx:54    VARSAYILAN rol = PLANNER
+```
+
+⚠️ **Yani varsayılan yol kırık:** formu açıp hiçbir şey değiştirmeden kullanıcı
+yaratmak artık **`400`** döner.
+
+📌 `CLAUDE.md`'nin *"bir DUR listesi her sınırı saymalı"* + *"kabul listesi
+BOZABİLECEĞİNİ de saymalı"* maddelerinin vakası: `T-241`'in `touches:` alanı yalnız
+backend'i sayıyordu ve metninde **`frontend`/`arayüz` kelimesi hiç geçmiyordu**.
+Eksiklik yapılmamış değil — **kayıtlı da değildi.**
+
+### `EK_E`'de iki satır
+
+| satır | önce | sonra | gerekçe |
+|---|---|---|---|
+| Kullanıcı yönetimi | `🔶` | **`⚠️`** | `EK_E`'nin kendi tanımı: *"yetenek var, arayüzü var, **kırık**"* |
+| Kapsam atama | `🔶` filtre kapalı | **`🔒`** | *"yetenek var, arayüzü **yok**"* — `T-241` yazma yolunu **açtı**, ama onu besleyecek **hiçbir ekran yok** |
+
+> `EK_E`: *"`🔒` en pahalı durumdur: iş yapılmış, tamamlanmış, test edilmiş — ve
+> kullanıcıya ulaşmıyor. Bir `❌` dürüsttür; bir `🔒` israftır."*
+>
+> ⚠️ Ve *"`🔒` bir kabul değil, bir **alarmdır**"* — bu yüzden [[T-243]] açıldı.
+
+### Sıralama kararı — `B1` önce, `B2` sonra (ürün sahibi)
+
+```
+B1   güvenlik kusuru, fail-open, CATEGORY_MANAGER'da BUGÜN CANLI   → önce (25f6b07)
+B2   yetenek kaybı, ekran çalışmıyor, prod etkisi YOK (lokal)      → sonra (T-243)
+```
+
+> *"`B1` açık bir delik, `B2` kapalı bir kapı. Ve kapalı bir kapı kimseye zarar
+> vermiyor."*
+
+Ve `B2`'nin brief'i **`B1` kararından SONRA** yazıldı — bilinçli: joker yasaklandığına
+göre `UserForm`'un kapsam seçicisi **zorunlu** olacak, opsiyonel değil. Önce yazılsaydı
+**iki kez** yazılacaktı.
+
+### ⚠️ Bir yan gözlem — `EK_E`'nin sayım bloğu GUARD'SIZ
+
+Bu düzenleme `EK_E`'nin *"Sayım"* tablosunu da değiştirdi (`🔶 8→6` · `⚠️ 5→6` ·
+`🔒 2→3`). O tablo **elle tutuluyor ve `guard.sh` ona bakmıyor** — `Z9`/`Z10`'un
+kapattığı sınıfın **aynısı**, `EK_E` yüzeyinde.
+
+**Bu turda kaldırılmadı** — `Z10`'un ayrımı gereği karar ürün sahibinin: sayılar
+yanlarındaki listeyle (dört durum satırı) doğrulanabilir mi, yoksa bağımsız bir
+bayatlama yüzeyi mi? Şimdilik **güncellendi ve doğru**; kalıcı karar açık.

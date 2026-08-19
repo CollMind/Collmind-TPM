@@ -804,6 +804,38 @@ Ve üçüncüsü en pahalıya mal olacaktı: bir `code-reviewer` bulgusunu (*"t�
 2. **Bir sayı bir bulguyu ÇÜRÜTÜYORSA, örnek zorunludur.** Doğrulayan bir sayı yanılırsa
    fazladan iş üretir; **çürüten** bir sayı yanılırsa **gerçek bir kusuru kapatır.**
 
+### Bir SAYIM FARKI, farkın KAYNAĞI gösterilmeden yorumlanamaz (ZORUNLU)
+
+> **Bir sayım farkı, farkın KAYNAĞI gösterilmeden yorumlanamaz.**
+> **"Her şey reddediliyor" ile "yanlış sebeple reddediliyor" AYNI SAYIYI verir.**
+
+`§`'nin *"bir sayı, eşleşmeleri örneklenmeden raporlanamaz"* kuralı **eşleşme
+sayıları** içindi. Bu, **hata/sonuç sayıları** için ve daha sinsi: orada sayı bir
+kümeyi anlatıyordu, burada bir **yargıyı**.
+
+Ölçülmüş vaka (2026-08-19, `T-241` `B1` blocker'ı): bir `code-reviewer` bulgusunu
+**doğrulamak** için DTO doğrulaması ölçüldü. Team Lead'in fixture'ı `fullName: 'X'`
+taşıyordu ve `MinLength`'i ihlal ediyordu — yani **her vakaya sabit `+1` hata**
+ekliyordu:
+
+```
+okunan                          gerçek
+FAIL(1)  scope:[{}]             1 hata = fullName        → scope hatası YOK
+FAIL(2)  POZ.KONTROL scope YOK  2 hata = fullName·scope  → scope hatası VAR
+```
+
+İlk okuma **"her şey reddediliyor, review yanlış"** idi. Ve pozitif kontroller de
+`FAIL` döndüğü için **çalışıyor göründüler** — kayma onları da kaydırmıştı.
+
+⚠️ **Bedeli:** o okuma raporlansaydı **gerçek bir blocker gömülecekti**, ve gerekçesi
+*"ben ölçtüm, review yanılıyor"* olacaktı. Yani hata **çürüten** yöndeydi — `§7.1`'in
+*"çürüten bir sayı yanılırsa gerçek bir kusuru kapatır"* maddesinin tam vakası.
+
+**Pratik:** bir sayım farkını yorumlamadan önce **farkın kaynağını bas** — hangi
+alan, hangi kural, hangi satır. `errs.length` değil `errs.map(e => e.property)`.
+Ve **sabit bir kayma her vakayı aynı yönde bozar**, yani pozitif kontrol onu
+yakalamaz: kontrol de kayar.
+
 ### Bir yazma işleminin DÖNÜŞ DEĞERİ, yazdığının kanıtı değildir (ZORUNLU)
 
 > **Bir yazma işleminin dönüş değeri, yazdığının kanıtı değildir — DELTAYI ölç.**

@@ -99,7 +99,7 @@ görünmeyen ihtiyaçlar için) çıkarıldı.
 | `skus` | ✅ | — | — | — | 5 |
 | `tactics` | ✅ | — | — | — | 3 |
 | `tenants` | ✅ | ✅ | — | ✅ | 1,3 |
-| `user_scopes` | ✅ | — | — | — | 3 |
+| `user_scopes` | ✅ | ✅ | — | — | 3,21 |
 | `users` | ✅ | ✅ | ✅ | ✅ | 1,2,4,5 |
 | `v_budget_summary` (VIEW) | ✅ | — | — | — | 14 |
 
@@ -246,3 +246,39 @@ yalnız "already exists" hatasını bastırıyor, izin denetimini değil. Yani
   `CREATE SCHEMA IF NOT EXISTS` satırını kaldırmak/korumak (bu task'ın
   "`src/`'ye DOKUNMA" sınırı içinde — ayrı bir tur, B4 deseniyle aynı).
   **Team Lead'e bildirildi.**
+
+## S3 tur 21 (T-241, 2026-08-19) — `user_scopes` INSERT
+
+**Ölçen:** `backend-engineer`. **Kaynak:** `.claude/backlog/tasks/T-241.md`
+(`POST /users` artık rol + kapsam BİRLİKTE alır; kapsamsız kullanıcı
+YARATILMAZ).
+
+`user_scopes` bugüne kadar yalnız SELECT taşıyordu (tur 3 —
+`AccessScopeService#resolveScope`'un OKUMA yolu). T-241 ile `POST /users`
+PLANNER/CATEGORY_MANAGER yaratılırken kapsam satır(lar)ını **aynı
+transaction'da** yazıyor (`user.service.ts#create`,
+`dataSource.transaction` içinde `manager.getRepository(UserScope).save`).
+
+**Ölçüm (izole e2e koşumu, `test/user-scope-creation.e2e-spec.ts`,
+`app_runtime` bağlantısı):**
+
+```
+GRANT öncesi:
+  INSERT INTO "main"."user_scopes"(...) → error: permission denied for
+  table user_scopes
+  → transaction ROLLBACK — kullanıcı satırı da GERİ ALINDI (atomiklik tam
+    tasarlandığı gibi çalıştı; eksik olan yalnızca DB-rol izniydi)
+
+GRANT sonrası (GRANT INSERT ON :"schema".user_scopes TO app_runtime;):
+  test/user-scope-creation.e2e-spec.ts: 9/9 yeşil
+  test/role-journey.e2e-spec.ts (N9 dahil, tam suite): 86/86 yeşil
+  [T-047 invariant] PASS — satır sayıları suite öncesi/sonrası birebir aynı
+```
+
+**UPDATE/DELETE bilerek verilmedi** — T-241'in kapsamı yalnız YARATMA
+(`isActive: true` ile INSERT); kapsam GÜNCELLEME ayrı bir task ([[T-242]]),
+kendi GRANT ihtiyacını kendi S3 turunda ölçer.
+
+`scripts/db-roles/02-runtime-grants.sql`'e uygulandı (yerel dev DB'de
+`bash scripts/db-roles-grants.sh` ile doğrulandı — yakınsak betik, REVOKE
+ALL + ölçülmüş envanteri yeniden kurar).

@@ -152,18 +152,18 @@ ulaşmıyor. Bir `❌` dürüsttür; bir `🔒` israftır.
 
 # E.8 · Yönetim
 
-| Yetenek | Durum |
-|---|---|
-| Ürün ağacı yönetimi (marka → SKU) | ✅ |
-| Müşteri ve kanal yönetimi | ✅ |
-| Bölge yönetimi | ✅ *(ekran var, veri yok)* |
-| Mekanik ve taktik tanımları | ✅ |
-| Kullanıcı yönetimi | 🔶 |
-| Rol / yetenek yönetimi | ❌ |
-| Kapsam atama | 🔶 filtre **kapalı** |
-| Eşik ve politika yönetimi | ❌ |
-| Kurulum sihirbazı | ❌ |
-| Denetim kaydı görünümü | 🔶 yalnız yönetici işlemleri |
+| Yetenek | Durum | Not |
+|---|---|---|
+| Ürün ağacı yönetimi (marka → SKU) | ✅ | |
+| Müşteri ve kanal yönetimi | ✅ | |
+| Bölge yönetimi | ✅ *(ekran var, veri yok)* | |
+| Mekanik ve taktik tanımları | ✅ | |
+| Kullanıcı yönetimi | ⚠️ | ⚠️ **`T-241` sonrası KIRIK** (`Z12`, 2026-08-20): `POST /users` artık `PLANNER`/`KATEGORİ MÜDÜRÜ` için kapsam ZORUNLU kılıyor; frontend `CreateUserDto`'da `scope` alanı YOK ve formun **varsayılan rolü `PLANNER`** → varsayılan yol `400`. → [[T-243]] |
+| Rol / yetenek yönetimi | ❌ | |
+| Kapsam atama | 🔒 | ⚠️ **`T-241` yazma yolunu AÇTI** (`Z12`): kapsam artık `POST /users` ile yazılabiliyor — ama onu besleyecek **hiçbir ekran yok**. *Yetenek var, arayüzü yok.* Ayrıca kapsam **güncelleme** yolu da yok ([[T-242]]). ⚠️ Filtre hâlâ kapalı ([[T-235]]: `SCOPE_ENFORCEMENT_ENABLED`) → [[T-243]] |
+| Eşik ve politika yönetimi | ❌ | |
+| Kurulum sihirbazı | ❌ | |
+| Denetim kaydı görünümü | 🔶 yalnız yönetici işlemleri | |
 
 ---
 
@@ -187,9 +187,9 @@ göremediği veriyi göremez (`K-2.4.31`).
 | Durum | Sayı |
 |---|---|
 | ✅ çalışıyor | 21 |
-| 🔶 kısmen | 8 |
-| ⚠️ kırık | 5 |
-| 🔒 **yüzeysiz** | 2 |
+| 🔶 kısmen | 6 |
+| ⚠️ kırık | 6 |
+| 🔒 **yüzeysiz** | 3 |
 | ❌ yok | 38 |
 
 ## İki `🔒` vakası — öncelikli
