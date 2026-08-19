@@ -238,7 +238,7 @@ status: active        # planned | active | closed
 | [[T-235]] | Kapsam filtresi: `ADIM 1` (joker seed) + `ADIM 2` (`İZLEYİCİ` kod dalından çıktı) **bitti**; kapanış şartı **var olan bir sağlayıcıya** revize edildi ve **bugün sağlanıyor**. ⛔ Kalan: `.env.example` (**Team Lead'in izni yok** — metin hazır) + bayrağın açılması (ürün sahibi kararı) | **P1** | architect | in-progress |
 | [[T-236]] | İki onay anomalisi — **kod bir kuralı uyguluyor, kural `L2`'de yazılı değil** (`approvals/:id/approve` `ADMIN`'siz · `FINANCE` devredilen planı göremiyor). `Faz B`'yi bloklamıyor | P2 | architect | todo |
 | [[T-239]] | ✅ `(b)` — bölüm dağılımı satırı **kaldırıldı** (`Z9`). *Denetlenen sayı kalır, denetlenmeyen kalkar.* ⚠️ Kör nokta taraması **bir tane daha** buldu: `Açık karar (kural dışı) = 2` — aynı sınıf, karar bekliyor | P2 | qa-engineer | review |
-| [[T-238]] | `T-237`'nin **kapsam bulgusu** — aynı sınıfın aranmamış örnekleri: `ledger_entries`'in 5 FK'siz kolonu (`cleanup-data.ts` sert siliyor, tablo bugün boş → **yapısal yol**) + `user_scopes.channel_id` (yazan da okuyan da yok → FK mi DROP mu) | P2 | data-engineer | todo |
+| [[T-238]] | `T-237`'nin **kapsam bulgusu**: `ledger_entries`'in 5 FK'siz kolonu + `user_scopes.channel_id`. ⚡ **`T-235`'in bayrağı buna bağlı** — bütünlüğü tam olmayan veriye fail-closed kapı bağlanmaz | **P1** | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |

@@ -971,3 +971,44 @@ sayı kalkar.**
 Satır **silinmiş** olarak kaydedilir; *"burada bir dağılım vardı ve neden kaldırıldı"*
 sorusunun cevabı bu kayıttır. Silinen içerik (son doğru hâli):
 `150 · 49 · 92 · 89`.
+
+---
+
+## Z10 · `Açık karar (kural dışı)` satırından SAYI düşürüldü — liste kalır
+
+**Tarih:** 2026-08-18 · **Karar:** ürün sahibi · **Kaydeden:** Team Lead (tek kanal)
+**Açtığı düzenleme:** `00_PAKET_INDEKSI.md` (donmuş belge — `Z1` şartı)
+**Bağlam:** `Z9`'un kör nokta taramasının bulduğu ikinci vaka.
+
+### `Z9` kararı VERMEDİ, soruyu SORDU — cevap bu kayıt
+
+`Z9` şunu ölçmüştü: `Açık karar (kural dışı) | **2** — veri ayrımı modeli · iade
+temsili` satırı **guard tarafından denetlenmiyor**, yani bölüm dağılımıyla **aynı
+sınıf**. Ama *"daha zayıf vaka"* diye işaretlendi ve karar ürün sahibine bırakıldı —
+çünkü o hücre sayıyı **kendi listesiyle** taşıyor, yani aynı hücrede doğrulanabilir.
+
+### Karar: **sayı düşer, liste kalır**
+
+> **Ürün sahibi gerekçesi:** *"Sınıf aynı: liste ile sayı ayrışırsa hiç kırmızıya
+> dönmez. Ve sayının hiçbir işi yok — liste zaten iki madde gösteriyor. `2` yazmak,
+> okuyucuya saymayı kolaylaştırmıyor, yalnız bir **bayatlama yüzeyi** ekliyor."*
+
+```
+önce   | Açık karar (kural dışı) | **2** — veri ayrımı modeli · iade temsili |
+sonra  | Açık karar (kural dışı) | veri ayrımı modeli · iade temsili |
+```
+
+📌 **`Z9`'dan farkı:** orada satırın **tamamı** kalktı, çünkü taşıdığı dört sayının
+hiçbiri kendi içinde doğrulanamıyordu. Burada **taşıyıcı bilgi (liste) değerli**,
+yalnız sayı gereksiz. **Aynı ilke, farklı kesim.**
+
+### İlkenin son hâli — üç kayıtta oluştu
+
+```
+Z8   guard'ın denetlediği sayı bayatladı → kapı ateşledi, sayı güncellendi
+Z9   guard'ın denetlemediği sayı → satır KALKTI
+Z10  guard'ın denetlemediği sayı, ama taşıyıcı bilgi değerli → SAYI kalktı, LİSTE kaldı
+```
+
+> **Denetlenen sayı kalır. Denetlenmeyen sayı kalkar — ve yanındaki bilgi değerliyse
+> yalnız sayı kalkar.**
