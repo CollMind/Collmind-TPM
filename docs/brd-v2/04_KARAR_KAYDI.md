@@ -928,3 +928,46 @@ model kaosa dönüşür?"* — uzman görüşü ilk saha verisi olarak işlenir 
 Ve gelecek seçenek, **bugün yapılmıyor**, kayıt için: pilotta kronik çekişme kaosu
 **ölçülürse** *"gönderim kontrolü: bilgilendirici | katı"* bir tenant politikası olarak
 eklenebilir. `İlke 1` — kanıt gelmeden eklenmez.
+
+---
+
+## Z9 · `00_PAKET_INDEKSI`'nden bölüm dağılımı satırı KALDIRILDI
+
+**Tarih:** 2026-08-18 · **Karar:** ürün sahibi · **Kaydeden:** Team Lead (tek kanal)
+**Açtığı düzenleme:** `00_PAKET_INDEKSI.md` — donmuş belge, `Z1` şartı gereği bu kayıt önce.
+
+### Bulgu (`Z8` turunun yan ürünü)
+
+`guard.sh` kural **toplamını** denetliyor ve `Z8`'de doğru şekilde ateşledi
+(`indeks 375 ↔ gerçek 380` → ⛔). Ama **bölüm dağılımını yalnız BASIYOR**, kontrol
+etmiyor. Ölçüldü:
+
+```
+indeks satırı   147 + 49 + 89 + 89 = 374
+kendi toplamı   375        ← KENDİYLE bile tutmuyordu
+gerçek          150 + 49 + 92 + 89 = 380
+```
+
+**Ne zaman bayatladığı bilinmiyor — çünkü hiç kırmızıya dönmedi.**
+
+### Karar: **(b)** — satır tümüyle kalkar
+
+| şık | neden reddedildi / seçildi |
+|---|---|
+| (a) guard dağılımı da denetlesin | ⛔ indekste **elle tutulan bir sayı daha** kalır — `F8`'i çözmez, ikinci bir bekçiyle **erteler** |
+| (c) satır kalsın + uyarı | ⛔ *"bir uyarı bir kapı değildir"* — `Z8` turunda bu geçici olarak yapıldı, kalıcı çözüm değil |
+| **(b) satır kalksın** | ✅ `CLAUDE.md`: *"kural sayısı hiçbir belgeye yazılmaz — **kanonik kaynak `guard.sh` çıktısıdır**."* Dağılım bir **teşhis bilgisidir, bir sözleşme değil**; guard onu zaten basıyor, okumak isteyen oradan okur |
+
+> **Ürün sahibi gerekçesi:** *"İndeksin bölüm dağılımı ikinci bir kopya — guard onu
+> denetlemiyor, yani `F8`'in tam tanımı: elle tutulan sayı bayatlar, ve bayatladığını
+> söylemez."*
+
+⚠️ **Ve `L2` kural toplamı satırı KALIYOR** — o guard tarafından denetleniyor, yani
+bayatladığında **kırmızıya döner**. Ayrım budur: **denetlenen sayı kalır, denetlenmeyen
+sayı kalkar.**
+
+### `F12` izi
+
+Satır **silinmiş** olarak kaydedilir; *"burada bir dağılım vardı ve neden kaldırıldı"*
+sorusunun cevabı bu kayıttır. Silinen içerik (son doğru hâli):
+`150 · 49 · 92 · 89`.

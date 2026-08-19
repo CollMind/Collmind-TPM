@@ -237,7 +237,7 @@ status: active        # planned | active | closed
 | [[T-234]] | 🔴 `migration:generate` **1390 satır** drift — `T-219`'un sınıfı (geri bildirim döngüsü YOK). İçinde **gerçek bir ayrışma gizli** (`lta_agreements.metadata`) | **P1** | architect | todo |
 | [[T-235]] | 🔴 Kapsam filtresi **5 rolün 4'ünde kapalı** — ve bayrağın kapanış şartı (*"prod/UAT'de doğrulanana kadar"*) **var olmayan bir ortama adresli**; `K-2.6.9` sapmasının adresi | **P1** | architect | todo |
 | [[T-236]] | İki onay anomalisi — **kod bir kuralı uyguluyor, kural `L2`'de yazılı değil** (`approvals/:id/approve` `ADMIN`'siz · `FINANCE` devredilen planı göremiyor). `Faz B`'yi bloklamıyor | P2 | architect | todo |
-| [[T-239]] | `guard.sh` bölüm dağılımını **basıyor ama kontrol etmiyor** — indeks satırı `374` diyordu, kendi toplamıyla (`375`) bile tutmuyordu, gerçek `380`. Kapısız sayı, hiç kırmızıya dönmemiş | P2 | qa-engineer | todo |
+| [[T-239]] | ✅ `(b)` — bölüm dağılımı satırı **kaldırıldı** (`Z9`). *Denetlenen sayı kalır, denetlenmeyen kalkar.* ⚠️ Kör nokta taraması **bir tane daha** buldu: `Açık karar (kural dışı) = 2` — aynı sınıf, karar bekliyor | P2 | qa-engineer | review |
 | [[T-238]] | `T-237`'nin **kapsam bulgusu** — aynı sınıfın aranmamış örnekleri: `ledger_entries`'in 5 FK'siz kolonu (`cleanup-data.ts` sert siliyor, tablo bugün boş → **yapısal yol**) + `user_scopes.channel_id` (yazan da okuyan da yok → FK mi DROP mu) | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
