@@ -542,6 +542,18 @@ bağlıdır.
 
 **K-2.6.7** — Yetki kapsamı üç eksende tanımlanır: **kanal · müşteri · kategori.**
 
+> ❌ **Ölçülmüş sapma (2026-08-18, `Z11`):** **kanal ekseni kod tarafında uygulanmıyor.**
+> `user_scopes.channel_id` düşürüldü (`T-238`, migration `1809`) — kolon ölüydü (okuyan
+> `0` · yazan `0` · dolu satır `0/37`), ama **eksen ölü değildi.**
+>
+> Kanal kapsamı bugün **CPL'ler tek tek sayılarak** ifade ediliyor
+> (`user-scope.seed.ts:217-219`) — ve **sayım eşdeğer değildir:** yarın o kanala eklenen
+> bir CPL kullanıcının kapsamına **girmez**. `K-2.1.4` **müşteri → kanal**'ı garanti
+> ediyor; kapsamın ihtiyacı olan **kanal → {müşteri}** ise zaman içinde sabit değil.
+>
+> Yeniden açılırsa yol `K-2.6.7a`'nın bölge deseni — ama **bir migration gerektirir**
+> (bölgede mekanizma korunmuştu, burada kolon düştü). Bedel bilinçli kabul edildi.
+
 > ⚠️ Kaynak kategoriyi bir **ürün** ekseni sayıyor ve yetkiyi organizasyon ekseninde
 > (kanal · bölge · satış ekibi) tanımlıyor. Bu **bilinçli bir sapmadır.**
 >

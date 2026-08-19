@@ -1012,3 +1012,81 @@ Z10  guard'ın denetlemediği sayı, ama taşıyıcı bilgi değerli → SAYI ka
 
 > **Denetlenen sayı kalır. Denetlenmeyen sayı kalkar — ve yanındaki bilgi değerliyse
 > yalnız sayı kalkar.**
+
+---
+
+## Z11 · `A7`'nin **kanal ekseni** kod tarafında DÜŞTÜ — `user_scopes.channel_id` kaldırıldı
+
+**Tarih:** 2026-08-18 · **Karar:** ürün sahibi (`T-238`) · **Kaydeden:** Team Lead
+**Açtığı düzenleme:** `L2_03` `K-2.6.7` · `EK_C_VERI_SOZLUGU.md` (ikisi de donmuş — `Z1`)
+**Bulan:** `code-reviewer` (`7ece5a9` review'u) — **blocker olarak**
+
+### ⚠️ Bu kayıt bir DÜZELTMEDİR: `T-238` gerekçesi EKSİKTİ
+
+`T-238` `DROP`'u `K-2.1.4` · `K-2.6.7a` · `K-2.6.7b` ile gerekçelendirdi. **Kanalı eksen
+ilan eden üç kaynağa hiç değinmedi:**
+
+```
+04_KARAR_KAYDI  A7   "KARAR — Kapsam kanal + müşteri + kategori KALIR"
+L2_03           K-2.6.7  "Yetki kapsamı ÜÇ EKSENDE tanımlanır: kanal · müşteri · kategori"
+EK_C            kullanici_kapsamlari → "kanal · müşteri · kategori referansları"
+```
+
+Ve karar defterinde `T-238` · `channel_id` · *"kanal ekseni"* için **sıfır** kayıt vardı
+(ölçüldü). Yani dondurulmuş bir ek (`EK_C`) **kayıtsız olarak yanlış kılınıyordu.**
+
+### ⛔ Ve gerekçenin YÖNÜ eksikti — asıl bulgu bu
+
+`T-238` şöyle diyordu: *"`DROP` bir yetenek kaybetmiyor, kullanılmayan bir kısayolu
+kapatıyor."* **Bugünkü KOD için doğru** (okuyan `0`, yazan `0` — ölçüldü). **Kural için
+DEĞİL:**
+
+```
+K-2.1.4 garanti eder   müşteri → kanal       GARANTİLİ (cpls.channel_id NOT NULL, tekil FK)
+kapsamın ihtiyacı      kanal → {müşteri}     ZAMAN İÇİNDE SABİT DEĞİL
+```
+
+*"X kanalındaki tüm müşteriler"* kapsamı, kolon düştükten sonra ancak CPL'ler **tek tek
+sayılarak** yazılabilir — ve **sayım eşdeğer değildir**: yarın o kanala eklenen bir CPL
+kullanıcının kapsamına **girmez**.
+
+📌 **Ve bu varsayımsal değil, ürünün bugünkü davranışı:**
+`src/database/seeds/user-scope.seed.ts:217-219` planlamacıların kanal kapsamını tam olarak
+böyle kuruyor — `cplRepo.find({ where: { channelId } })`, yani **o anki** CPL listesi.
+
+> `CLAUDE.md`: *"bir düzeltmenin iki ekseni vardır: hedefi ve yönü. Hedef hatası görünür;
+> yön hatası görünmez."* Burada hedef doğruydu (kolon gerçekten ölüydü), **yön eksikti**
+> (kolonun ölü olması, eksenin gereksiz olduğunu göstermez).
+
+### KARAR — `DROP` GEÇERLİ, ama sapma olarak KAYITLI
+
+Ürün sahibi kararı **değişmiyor**: kolon düştü (`7ece5a9`, migration `1809`). Gerekçe
+`İlke 1` (ihtiyaçsızlık ölçüldü) + `İlke 4` (ikinci ve zorlanmayan kaynak) — ve
+**yeniden tartışılmıyor.**
+
+Değişen şey **kaydın kendisi**: `A7`'nin kanal ekseni bugün **uygulanmıyor**, ve bu
+artık `K-2.6.9`'un deseniyle **görünür**:
+
+```
+A7 KARAR        kanal + müşteri + kategori          ← KURAL, geçerli
+kod bugün       müşteri (cpl) + kategori            ← UYGULAMA, eksik
+kanal kapsamı   CPL sayımıyla ifade edilir          ← ve sayım EŞDEĞER DEĞİL
+```
+
+**`F12` izi:** `A7` kaydı **silinmiyor** — bu kayıt onun üstüne *"kod tarafında
+uygulanmıyor (2026-08-18, `T-238`)"* izini yazıyor. Karar hâlâ karar; **uygulama** sapıyor.
+
+### Bunun açtığı iş
+
+`docs/analysis/0056` `K5` (*"Kapsam eksenleri: `channel` açılsın mı?"*) **açık bir
+karardı** ve bu commit onu fiilen `(c)` yönünde kapatıyor. ⚠️ Ve `0056:510`'un
+`(b)` şıkkı *"kolonu **zaten var** … migration **gerekmez**"* diyordu — **bu cümle
+artık YANLIŞ**, düzeltildi.
+
+⚠️ `ADR 0001:101` de *"CTPM `user_scopes` cpl+category+**channel**"* diyordu — bağlayıcı
+bir belgede bayat bir olgu; düzeltildi.
+
+→ Kanal ekseni bir gün gerekirse yol **`K-2.6.7a`'nın bölge deseni**: mekanizma
+**kanıtlanmış talep** üzerine açılır. Fark: bölgede mekanizma tam kuruluydu ve korundu;
+burada kolon boştu ve düştü — **yeniden açmak bir migration gerektirir.** Bu bedel
+bilinçli kabul edildi.

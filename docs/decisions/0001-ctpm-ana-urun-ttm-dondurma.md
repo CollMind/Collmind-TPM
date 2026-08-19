@@ -98,7 +98,7 @@ dönük sınadı.
 
 | gerekçe | ölçüm |
 |---|---|
-| *"Mimari üstünlük"* | **Ayakta.** TTM `apps/api` **entity'siz**, ham SQL (`queryRunner.query`) üzerine kurulu; kapsam modeli daha dar (`user_cpl_assignments` yalnız CPL ↔ CTPM `user_scopes` cpl+category+channel) |
+| *"Mimari üstünlük"* | **Ayakta.** TTM `apps/api` **entity'siz**, ham SQL (`queryRunner.query`) üzerine kurulu; kapsam modeli daha dar (`user_cpl_assignments` yalnız CPL ↔ CTPM `user_scopes` cpl+category ⚠️ *`+channel` idi; `T-238`/`Z11` ile düşürüldü 2026-08-18 — bu satır o tarihte ölçülmüştü*) |
 | *"Jenerik/çok kiracılı ana ürün"* | **Ayakta.** Wella bağlantısı TTM'de belge ve seed düzeyinde yoğun |
 | *"BRD uyumu"* (o gün ölçülemezdi) | **TTM daha uyumlu DEĞİL.** CTPM'de eksik bulunan Phase 1 konfigürasyon tablolarının (`scope_policies` · `tactic_policies` · `budget_policies` · `approval_policies` · `permissions` · `capabilities` · `tenant_features`) **hiçbiri TTM'de de yok**; RLS de yok |
 

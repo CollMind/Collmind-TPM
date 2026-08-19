@@ -398,6 +398,13 @@ Bir kullanıcı **birden çok rol** taşıyabilir; etkin yetki rollerin **birle�
 kanal · müşteri · kategori referansları
 ```
 
+> ❌ **Ölçülmüş sapma (2026-08-18, `Z11`):** **kanal referansı ARTIK YOK.**
+> `user_scopes.channel_id` düşürüldü (`T-238`, migration `1809`). Tablonun bugünkü
+> kapsam alanları: **`cpl_id` (müşteri) · `category_id` (kategori)**.
+>
+> Bu satır **düzeltilmiyor, sapma olarak işaretleniyor** — `A7`'nin kararı (kanal bir
+> eksendir) hâlâ geçerli; sapan şey **uygulama**. Gerekçe ve bedel `Z11`'de.
+
 ⚠️ **Boş kapsam = erişim yok.** Tüm veriye erişim açık bir joker atamasıyla verilir
 (`K-2.6.8a`).
 
