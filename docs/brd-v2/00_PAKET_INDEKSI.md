@@ -26,14 +26,15 @@ Geri alındı 2026-08-15: paket donduruldu (`04_KARAR_KAYDI.md` `Z1`).
 > ⚠️ Bu blok **script ile sayılır**, elle yazılmaz. Paketin başka hiçbir yerinde durum
 > sayısı tutulmaz (dış denetim `F8`: sayı dört yerde dört farklıydı).
 
-**Ölçüm: 2026-08-13** (son güncelleme: `K-2.6.4` rol kataloğu + `K-2.5.12` tek onay hattı —
-**son iki açık kural kapandı**)
+**Ölçüm: 2026-08-16** (son güncelleme: karar defteri **`Z8`** — plan→bütçe netleştirmesi;
+`K-2.2.9i1` · `K-2.2.9i2` · `K-2.5.6a` · `K-2.5.6b` · `K-2.6.12a`. **Dondurma sonrası ilk
+kural EKLEMESİ**, ve sayının artması `Z8`'de önceden bildirilmişti)
 
 | | |
 |---|---|
-| `L2` kural tanımı | **375** |
+| `L2` kural tanımı | **380** |
 | Açık (⛔) kural | **0** ✅ — `L2`'de dayanaksız yürürlükte madde kalmadı<br>⏸️ `K-2.9.0`: saklama bölümü **askıda** (hukuki mütalaa) — açık değil, **dondurulmuş**<br>⚠️ `K-2.13.14h6a` · `K-2.1.19a`: **ön karar**, [[T-209]] ölçümüne bağlı — açık değil; karar verildi, yalnız beslendiği kaynak ölçüm bekliyor |
-| Bölüm dağılımı | veri/bütçe/defter/hesap **147** · veri kalitesi/entegrasyon/bildirim/denetim **49** · onay/yetki/uyum **89** · hakediş/AI/kurulum **89** |
+| Bölüm dağılımı | veri/bütçe/defter/hesap **150** · veri kalitesi/entegrasyon/bildirim/denetim **49** · onay/yetki/uyum **92** · hakediş/AI/kurulum **89**<br>⚠️ Bu satır **guard tarafından KONTROL EDİLMİYOR** — guard dağılımı yalnız *basar*, toplamı denetler. `Z8` turunda ölçüldü: satır `147+49+89+89 = 374` diyordu, kendi toplamıyla (`375`) bile tutmuyordu. Kanonik kaynak **guard çıktısıdır** ([[T-239]]) |
 | Açık karar (kural dışı) | **2** — veri ayrımı modeli · iade temsili<br>(`ADR 0002` 2026-08-13'te kapandı → **`0002-R`**, `K-2.5.12`) |
 
 **Sayım ve doğrulama:**

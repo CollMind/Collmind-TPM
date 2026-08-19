@@ -847,3 +847,84 @@ adlandırma. Yine de 64 çağrı yeri değişir → ADIM 3'ün DUR listesine gir
 
 > **`F12`/`0006-R`:** `EK_C`'nin erteleme notu **silinmiyor** — üstüne bu kaydın izi
 > yazılıyor. *"Neden ertelenmişti"* kayıtta kalır.
+
+---
+
+## Z8 · Plan → bütçe etkisinin netleştirilmesi
+
+**Tarih:** 2026-08-16 · **Kaynak:** dış değerlendirme turu
+**Kaydeden:** Team Lead (tek kanal) · **Karar:** ürün sahibi
+
+Dört madde `L2`'ye girer. Üçü kural, biri ölçüm.
+
+⚠️ **Dondurma sonrası ilk kayıtlı `L2` KURAL EKLEMESİ** — `Z1` rejiminin ilk gerçek
+testi. Guard'ın kural sayısı **artacak; bu beklenen.**
+
+> 📌 `Z3` dondurma sonrası ilk **düzenlemeydi** (mevcut bir kurala not); bu, ilk
+> **ekleme**. İkisi farklı sınıf: birincisi metni değiştirir, ikincisi sayıyı.
+
+### Girdi belgesi
+
+`docs/decisions/PLAN_BUTCE_NETLESTIRME.md` (2026-08-15, Fable derledi, ürün sahibi
+onayladı). Çekirdek karar **değişmedi**: onay bekleyen plan deftere yazmaz; bütçeye
+dokunan tek an onaydır (`K-2.2.9i` ailesi). Kilitleme / soft-reserve **reddedildi**.
+
+> Uzman itirazının kabul edilen çekirdeği: **kilitlemesiz model, görünürlük olmadan
+> savunulamaz.**
+
+### Ne indi — ve nereye
+
+| # | kural | dosya · yer | numara |
+|---|---|---|---|
+| 1 | bekleyen kuyruk görünürlüğü + değişmez sınır | `L2_01` · `K-2.2.9i`'den sonra | `K-2.2.9i1` · `K-2.2.9i2` |
+| 2 | toplu onay = sıralı tekil onaylar | `L2_03` · `K-2.5.6`'dan sonra | `K-2.5.6a` · `K-2.5.6b` |
+| 3 | raporlama yolları kiracı izolasyonuna tabi | `L2_03` · `K-2.6.12`'den sonra | `K-2.6.12a` |
+| 4 | negatif kullanılabilirlik invariantı — **ölçüm** | `FAZ1_PLAN` `Adım 2`, 6. satır | — |
+
+### ⚠️ Kural 3'ün yeri Team Lead tarafından DEĞİŞTİRİLDİ — gerekçesiyle
+
+Ürün sahibi *"`L2_02` · `2.11` bölümüne, `K-2.11.x`"* dedi ve **numara tahsisini Team
+Lead'e bıraktı.** Ölçüldü:
+
+```
+L2_02 §2.11        DENETİM KAYDI bölümü  (2.11.1 Kapsam … 2.11.4 Saklama)
+K-2.6.12           KİRACI İZOLASYONU     — L2_03 §2.6.5 "Veri izolasyonu", satır 594
+```
+
+Kural metninin konusu **kiracı izolasyonu** (`K-2.6.12`'ye açık atıf), denetim kaydı
+değil. `K-2.11.x` olarak yazılsaydı **denetim bölümünün içinde izolasyon kuralı**
+dururdu — `F8` sınıfının belge tarafındaki hâli (*"aynı soru iki yerde"*).
+`K-2.6.12a` olarak, kaynağının **yanına** yazıldı.
+
+### ⚠️ Ve girdi belgesiyle bir SAPMA — kayda geçiyor, sessiz kalmıyor
+
+`PLAN_BUTCE_NETLESTIRME.md`'nin 3. maddesi *"rapor izolasyonu"* diyordu ve konusu
+**bekleyen talebin raporlara girmemesiydi.** Bu kayıttaki Kural 3'ün konusu ise
+**kiracı izolasyonu** — farklı bir şey.
+
+**Team Lead okuması:** ikisi çelişmiyor, çünkü girdi belgesinin 3. maddesi
+`K-2.2.9i2` tarafından **zaten kapsanıyor** (*"bekleyen toplam hesaba, renge ve blok
+mantığına asla girmez"* — bir rapor rakamı bir hesaptır). Kural 3 bunun **yerine
+geçmiyor, üstüne ekleniyor.**
+
+> Bu bir **okuma**dır, ölçüm değil. Ürün sahibi aksini söylerse `F12` deseniyle
+> düzeltilir.
+
+### Kullanıcı dili — `L2`'ye GİRMEZ
+
+> *"Gönderim bir taleptir, onay bir taahhüttür; para taahhütte ayrılır, talepte
+> görünür. Sıradaki herkes aynı bakiyeyi görür — bakiyeyi yalnız onaylanan alır."*
+
+Yeri: `URUN_OZETI` ya da bir arayüz metni kaynağı. **`L2` bir iş kuralı belgesidir,
+bir anlatım kaynağı değil.**
+
+### Açık kalan (bu kayıtla kapanmaz)
+
+`PLAN_BUTCE_NETLESTIRME.md`'nin dağıtım listesinden **danışman C-seti sorusu** hâlâ
+açık: *"Gönderilen ama onaylanmamış talepler sahada bütçeyi fiilen 'tutar' mı; hangi
+model kaosa dönüşür?"* — uzman görüşü ilk saha verisi olarak işlenir (dayanak:
+**gözlem**).
+
+Ve gelecek seçenek, **bugün yapılmıyor**, kayıt için: pilotta kronik çekişme kaosu
+**ölçülürse** *"gönderim kontrolü: bilgilendirici | katı"* bir tenant politikası olarak
+eklenebilir. `İlke 1` — kanıt gelmeden eklenmez.

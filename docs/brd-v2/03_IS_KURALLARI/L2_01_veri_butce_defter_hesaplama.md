@@ -645,6 +645,34 @@ doğru davranıştır; sebep kullanıcıya açıkça gösterilir.
 > Bu kabul edilen bir durumdur, bir kusur değil. Bekleyen planları da sayan bir ön-rezervasyon
 > modeli Faz 1 için gereksiz karmaşıklıktır.
 
+**K-2.2.9i1** — ⚠️ **Bekleyen kuyruk görünürlüğü zorunludur**, bir arayüz tercihi değil.
+
+Bekleyen bir plan bütçe yazmaz (`K-2.2.9i`) — ve bu doğru. Ama o tasarım, bekleyen
+toplamın **görünür olmasını** şart koşar: kullanıcı `300` bekleyen ile `200`
+kullanılabilir arasındaki farkı görebilmelidir.
+
+Üç yüzey:
+
+```
+zarf görünümü    ayrılan · rezerve · taahhüt · BEKLEYEN · kullanılabilir
+gönderim anı     "bu plan gönderilirse bekleyen toplam X olur"
+onay kuyruğu     kuyruktaki planların toplam etkisi
+```
+
+> **Şart:** gönderim kontrolünün uygulandığı dalganın **kabul listesine girer** —
+> kontrol görünürlüksüz inemez.
+
+**K-2.2.9i2** — ⚠️ **Değişmez sınır:** bekleyen toplam **hesaba, renge ve blok
+mantığına asla girmez.**
+
+> `K-2.2.5`'in kullanılabilirlik formülü bekleyeni içermez, `K-2.2.7`'nin merdiveni
+> onu saymaz, `K-2.2.9f`'nin bloğu ona bakmaz.
+>
+> Görünürlük bir **bilgi** katmanıdır; bir davranış katmanı değil. `K-2.2.7`'nin
+> renk/davranış ayrımının üçüncü uygulaması.
+
+> 📌 Kaynak: karar defteri `Z8` (2026-08-16) — dondurma sonrası ilk kural eklemesi.
+
 ## 2.2.6 Bütçe transferi
 
 > ✅ **Karar verildi** (2026-08-12, Oturum 2.6). `TRANSFER` Faz 1'e girer; devir Faz 1 dışı.

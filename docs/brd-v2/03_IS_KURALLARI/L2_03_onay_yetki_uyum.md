@@ -67,6 +67,26 @@ kaydedilip taahhüt yazılmayan bir durum oluşamaz.
 > **REZERVE** yazar. Bu bölümde *"rezervasyon"* jenerik olarak kullanılmaz — `K-2.2.6`'nın
 > ölçülmüş ihlali (iki kovanın birleştirilmesi) tam olarak bu belirsizlikten doğuyor.
 
+**K-2.5.6a** — Toplu onay bir **kolaylıktır**, ayrı bir mekanizma değil. Her plan
+kendi kontrolünden ve kendi işleminden geçer.
+
+⚠️ **İki desen yasaktır:**
+
+```
+ön-kontrollü ya-hep-ya-hiç   hepsini önce kontrol et, sonra hepsini yaz
+                             → kontrol ile yazım arasında zarf değişebilir
+tek-kontrol-çok-yazım        bir kez kontrol et, N plan yaz
+                             → K-2.2.9h'in atomikliği delinir
+```
+
+**K-2.5.6b** — Kısmi başarı **normaldir ve gösterilir:** hangi planlar onaylandı,
+hangileri neden reddedildi.
+
+> Arayüz toplu sonucu tek bir başarı/başarısızlık olarak göstermez — `K-2.2.11a`'nın
+> *"teşhis netliği"* ilkesi.
+
+> 📌 Kaynak: karar defteri `Z8` (2026-08-16).
+
 **K-2.5.7** — ⚠️ **Bekleyen bir planın bütçe kaydı yoktur.**
 
 Gönderilmiş ama onaylanmamış bir plan **hiçbir kova yazmaz** (`K-2.2.9i`). Dolayısıyla
@@ -599,6 +619,21 @@ veritabanı seviyesinde zorlama. Biri diğerinin yerine geçmez.
 > ⚠️ **Ve bu ertelenebilir değil:** hakediş bir finansal işlemdir ve finansal kontrol
 > denetimi sektörde bir satın alma kriteridir. İzolasyon *"ikinci müşteri gate'i"* değil,
 > **ilk kurumsal satışın ön koşulu.**
+
+**K-2.6.12a** — **Raporlama yolları da kiracı izolasyonuna tabidir.**
+
+> Bir rapor sorgusu ham SQL ya da görünüm kullanıyorsa, uygulama filtresi devrede
+> olmayabilir — ve `K-2.6.12`'nin ikinci katmanı (veritabanı seviyesi) henüz yok.
+
+⚠️ **Guard adayı, uyarı statüsünde:** rapor sorgularında kiracı koşulu var mı.
+
+> Kapıya **terfi eder**, kapı doğmaz — yanlış-pozitif oranı ölçülmeden bağlanmaz
+> (`mode-split` dersi).
+
+> 📌 Kaynak: karar defteri `Z8` (2026-08-16). ⚠️ Ürün sahibi bu kuralı `L2_02 §2.11`
+> (`K-2.11.x`) diye adresledi ve **numara tahsisini Team Lead'e bıraktı**; ölçüldü ki
+> `§2.11` **denetim kaydı** bölümüdür, kuralın konusu ise kiracı izolasyonu. Kaynağının
+> yanına yazıldı — gerekçe `Z8`'de.
 
 **K-2.6.13** — Veritabanı izolasyonu, **ayrıcalıklı olmayan** bir bağlantı rolü gerektirir.
 

@@ -71,7 +71,7 @@ Issue hazır (`_ISSUE_DB_ROLU.md`), hiç başlamadı `[ÖLÇÜLDÜ: 0071 §5]`. 
 envanteri, `docs/verification/`) Adım 5'in girdisidir. Migration numarası Team Lead
 tahsis eder (DUR-4).
 
-## 4 · ADIM 2 — Ölçüm paketi (beş kalem, tek tur; inşa değil)
+## 4 · ADIM 2 — Ölçüm paketi (beş kalem + `Z8`'in altıncısı; inşa değil)
 
 > ### Durum — 2026-08-16: **beşi de kapandı**, biri *"yapılamaz"* olarak
 >
@@ -103,8 +103,27 @@ tahsis eder (DUR-4).
 5. **`K-2.6.9` filtresi:** ayarın arkasındaki filtre `A7`'nin üç ekseninden hangilerini
    fiilen uyguluyor — cevap Adım 4'ün "ayar mı, inşa mı" olduğunu belirler `[VARSAYIM
    çözülür]`
+6. ⚡ **Negatif kullanılabilirlik invariantı — TEST VAR MI?** (karar defteri `Z8`,
+   2026-08-16 · girdi: `docs/decisions/PLAN_BUTCE_NETLESTIRME.md` madde 4)
+
+   ```
+   iddia  : "hiçbir zarf negatif kullanılabilirliğe düşemez"
+   statü  : ⛔ ÖLÇÜLMEDİ
+   ```
+
+   Bu bir **varlık teyididir**, bir inşa değil: test **varsa** referansı kaydedilir,
+   **yoksa** eklenir. `B5`'in *"10 eşzamanlı onay"* senaryosuyla aynı aile —
+   `K-2.2.9h`'in atomikliği ve `K-2.2.15`'in veritabanı seviyesi koruması tam olarak
+   bu invariantı savunuyor, ama **savunduğunun sınandığı ölçülmedi.**
+
+   ⚠️ Ve `CLAUDE.md`'nin *"bir doğrulamanın çalıştığı sanılması, girdinin ona hiç
+   ULAŞMAMASINDAN gelebilir"* maddesi burada doğrudan geçerli: invariant hiç
+   tetiklenmediyse doğru olduğu **bilinmiyor** — ne doğru ne yanlış.
 
 Kural: her sonuç **liste** olarak raporlanır; sayı tek başına dayanak değildir.
+
+⚠️ **`6.` kalem beşi kapandıktan SONRA eklendi** (`Z8`) — yukarıdaki *"beşi de kapandı"*
+durum tablosu `1–5` içindir. `6` **açıktır**.
 
 ## 5 · ADIM 3 — `K-2.6.3` + `K-2.6.6` tek dalga (yetenek modeli + default-deny)
 
