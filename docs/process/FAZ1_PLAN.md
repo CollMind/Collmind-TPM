@@ -253,6 +253,25 @@ durum tablosu `1–5` içindir. `6` **açıktır**.
 >
 > **Ters sıra ölçülmüş bir riski gerçekleştirir**, bir tercih değil.
 >
+> ### ⛔ VE ZİNCİR UZADI (2026-08-18) — üç halka, sırası bağlayıcı
+>
+> ```
+> T-238   user_scopes.channel_id DROP        ← şimdi (migration 1809)
+> bayrak  SCOPE_ENFORCEMENT_ENABLED          ← T-238 kapanınca
+> Faz B   union + 159 @Roles göçü            ← bayrak açılınca
+> ```
+>
+> **Neden bayrak `T-238`'i bekliyor** (ürün sahibi): *"Bayrağı açmak, henüz bütünlüğü
+> sağlanmamış bir veriye davranışsal bir kapı bağlamak olur — ve yönü fail-closed,
+> yani hata **erişim kaybı** olarak görünür."*
+>
+> **Neden union bayrağı bekliyor:** union kararının ön koşulu `A` sınıfının gerekçesiydi
+> (*"`@Roles` kaba kapı, gerçek daraltma serviste"*) — ve o gerekçe **bayrak açılmadan
+> `4/5` rol için geçersiz** (`ADIM3_OLCUM_2`). Bugün `@Roles` **tek** kapı; union onu
+> gevşetirse iki kapı da aynı anda açık kalır.
+>
+> 📌 Yani üç halka **aynı tek gerekçeye** bağlı: kapsam katmanı gerçekten çalışıyor mu.
+>
 > ### Faz B — TÜKETİCİ (ayrı tur)
 >
 > `@RequireCapability` + `159` `@Roles` göçü + `roles.guard.ts:16-18`'in default-deny'a
