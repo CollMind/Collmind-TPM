@@ -256,10 +256,19 @@ durum tablosu `1–5` içindir. `6` **açıktır**.
 > ### ⛔ VE ZİNCİR UZADI (2026-08-18) — üç halka, sırası bağlayıcı
 >
 > ```
-> T-238   user_scopes.channel_id DROP        ← şimdi (migration 1809)
-> bayrak  SCOPE_ENFORCEMENT_ENABLED          ← T-238 kapanınca
+> T-238   user_scopes.channel_id DROP        ✅ (migration 1809, review'da)
+> T-241   user_scopes'a YAZMA YOLU           ⛔ 2026-08-18'de doğdu
+> bayrak  SCOPE_ENFORCEMENT_ENABLED          ← T-241 kapanınca
 > Faz B   union + 159 @Roles göçü            ← bayrak açılınca
 > ```
+>
+> ⚡ **`T-241` zinciri uzattı** — ve sebebi ürün sahibinin tek bir sorusuydu:
+> *"Gerçek bir tenant'ta bu satırlar **kim tarafından** yazılacak?"*
+> **Ölçüm: yazma yolu YOK.** HTTP ucu `0` · `POST /users` kapsam yazmıyor · tek
+> yollar seed ve tek-seferlik backfill. Migration `1792` bunu **kendi başlığında**
+> kabul ediyor (*"admin'in manuel satır eklemesi gerekir"*) — **ama o manuel yol da
+> yok.** Yani *"mekanizma var, yol yok"* sınıfının bir vakası daha, ve bu kez
+> mekanizma **fazlasıyla** hazır.
 >
 > **Neden bayrak `T-238`'i bekliyor** (ürün sahibi): *"Bayrağı açmak, henüz bütünlüğü
 > sağlanmamış bir veriye davranışsal bir kapı bağlamak olur — ve yönü fail-closed,
