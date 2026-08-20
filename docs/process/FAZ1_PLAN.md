@@ -333,6 +333,39 @@ durum tablosu `1–5` içindir. `6` **açıktır**.
 > 📌 **Sonucu:** [[T-242b]] (rol değiştirme) artık **hiçbir şeyi bloklamıyor** —
 > `ADIM 3`'ün yalnız ertelenen yarısına bağlıydı.
 >
+> ### 🔴 SOMUT VAKA — `notifications` (2026-08-20, [[T-249]] turunda ölçüldü)
+>
+> `ADIM 3`'ün soyut gerekçesi (*"`72` uç rol-kısıtsız"*) bugün **elle tutulur bir
+> vakayla** karşılandı. `notification.controller.ts`:
+>
+> ```
+> @Controller('notifications')     üç rota, HİÇBİRİNDE @Roles yok      ← katman 1 yok
+> markAsRead(tenantId, id)         kullanıcıyı HİÇ ALMIYOR             ← katman 2 yok
+> ```
+>
+> Yani: rota herkese açık (`72`'nin içinde), **ve** içindeki kontrol *"kimin
+> bildirimi"* sorusunu hiç sormuyor. Bir UUID bilen herhangi bir kimliklenmiş
+> kullanıcı, tenant'taki **başkasının** bildirimini okundu işaretleyebilir.
+>
+> ⚠️ **Bugün sömürülemez — ve sebebi KAZA:** tablo boş, **ve** `app_runtime`'ın o
+> tabloda hiç ayrıcalığı yok, yani rota zaten `500` veriyor. **`INV-C-*` ailesi:
+> kazara güvenli.**
+>
+> ```
+> bugün           izin yok  →  500  →  delik ERİŞİLEMEZ
+> T-249 sonrası   izin var  →  rota çalışır  →  delik ERİŞİLEBİLİR
+> ```
+>
+> 📌 **Bu, `ADIM 3` ile [[T-249]] arasında bir SIRA KISITI doğuruyor** ve `T-249`'a
+> yazıldı: `GRANT` tek başına inerse **bugün kapalı olan bir delik açılır.**
+> `@Roles` eklemek *kimin* çağırabileceğini daraltır — ***kimin bildirimini***
+> sorusu bu adımın (`default-deny` + kaynak sahipliği) konusudur ve `@Roles` onu
+> kapatmaz.
+>
+> ⚠️ Ve vaka **tek değil olabilir**: `T-249` aynı izin sınıfında `brands` ve
+> `mechanic_spend_breakdown`'ı da buldu, ve **onların rotalarında `@Roles` olup
+> olmadığı ÖLÇÜLMEDİ.** Aynı analiz üç uç için de tekrarlanmalı.
+
 > ### Faz B — TÜKETİCİ (ayrı tur)
 >
 > `@RequireCapability` + `159` `@Roles` göçü + `roles.guard.ts:16-18`'in default-deny'a
