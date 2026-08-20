@@ -250,6 +250,40 @@ her biri **gerekçeli** yazılır.
 `@Roles` eklemek **yetmez**, `@UseGuards` de gerekir. `B2`'nin listesi ikisini
 **ayırmalı**.
 
+## 4c · ⛔ İKİ ÖLÇÜM DÖRT BLOCKER ÇIKARDI — SIRA (ürün sahibi, 2026-08-21)
+
+```
+T-256   READ_OWN'ın TABANI çürük        ← B1'DEN ÖNCE, EN ACİL
+T-255   kimlik materyali sızıntısı      ← B1'DEN ÖNCE, P0 sayılabilir, RLS'ten önce
+T-253   dashboard-summary bypass        ← B2 ile
+T-254   [] iki katmanda zıt             ← B2 ile
+```
+
+**`T-256`/`T-255` neden `B1`'den önce:** ikisi de `B1`'in **sınıflandırmasını**
+doğrudan etkiliyor — `READ_OWN`'ın ne olduğu (`T-255`: etiket URL'e takılı, veri
+sınıfına değil) ve `Z18`'in *"tam örnek"* dediği ucun çalışıp çalışmadığı (`T-256`:
+bugün `500`).
+
+## 4d · ✅ `B2`'NİN EMSALİ — `settlements/summary`
+
+> **Eksiklik *"yapılamaz"* değil, *"yapılmamış"*.**
+
+```
+GET /actuals-first/settlements/summary
+  @Roles YOK (bilinçli)
+  ama servis içeride resolveScope çağırıp GERÇEK farkı üretiyor
+  davranışsal: planner → 1 · planner2 → 0
+```
+
+📌 **Ve gösterdiği şey `B2` için kritik:** `@Roles` olmadan da **kapsam uygulanabiliyor.**
+Yani `B2`'nin işi yalnız *"dekoratör ekle"* değil — bazı uçlarda doğru cevap
+**servis içinde kapsam** olabilir, rota filtresi değil.
+
+⚠️ İkisi **farklı katman**: `@Roles` *"kim çağırabilir"*, kapsam *"neyi görür"*.
+`B2`'nin listesi her uç için **hangisinin gerektiğini** ayırmalı — ve bazılarında
+**ikisi birden** gerekir (`T-255`'in `GET /users/:id`'si tam bu: rol · sahiplik ·
+DTO, üçü ayrı).
+
 ## 5 · `B1`'İN GİRDİSİ — iki ölçüm ÖNCE
 
 ```
