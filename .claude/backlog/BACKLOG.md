@@ -247,6 +247,7 @@ status: active        # planned | active | closed
 | [[T-242a]] | ✅ `PATCH /users/:id/scope` CANLI — replace · `intent` · sözlük `Madde 1` kaydı. `ADIM 0` bir **sessiz no-op** buldu (`scope` 200 dönüp hiçbir şey yazmıyordu). Review 2 BLOCKER/4 MAJOR kapandı; `GRANT` **kolon düzeyine** daraldı, `clearCache` bağlandı | **P1** | architect | review |
 | [[T-242b]] | ⏸️ **ERTELENİR** — rol **DEĞİŞTİRME** yolu (arayüzsüz). `ADIM 3`'ün *ertelenen* yarısına bağlıydı → **artık hiçbir şeyi bloklamıyor**. ⚠️ `T-243`'ün yazılamayan test kaleminin sağlayıcısı | P3 | architect | todo |
 | [[T-247]] | `sales-actuals` `{manager}` ile denetim yazıp **hiç flush etmiyor** — 6/6 emsal izliyor, o izlemiyor. ⚠️ Etkisi ÖLÇÜLMEDİ: `isHighRiskAction` kesişimi boşsa `P3`, doluysa **alarm hiç gitmiyor** | P2 | backend-engineer | todo |
+| [[T-248]] | Sahipsiz CPL — `Saldos Ticaret` **hiçbir** PLANNER kapsamında değil (29 CPL'nin 28'i kapsanıyor). Bayrak onu GÖRÜNÜR kıldı: kapalıyken sessizce herkese açıktı. ⚠️ Kategori boyutu da ölçülmeli | P2 | data-analyst | todo |
 | [[T-240]] | ⏸️ **ERTELENİR** — `ledger_entries`'in 5 FK'siz kolonu. Tablo bugün **boş** → yapısal yol, canlı hata değil | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
