@@ -649,6 +649,79 @@ sonra doğdu. Bunun bugün **bir** vakası var. *"İki vaka bir desendir"* — i
 araç yazılır, gelmezse kural yeter. Henüz desen olmayan bir şeye araç yazmak `İlke 1`'in
 ihlalidir.
 
+### ENJEKSİYON kullanım değildir — ailenin üçüncü yüzü (ZORUNLU)
+
+> **Bir bağımlılığın enjekte edilmesi, KULLANILDIĞI anlamına gelmez.**
+> **Tanım yüzeyi constructor'dır; kullanım yüzeyi ÇAĞRIDIR.**
+
+Ölçülmüş vaka (2026-08-20, `T-249`): *"hangi modüller `mechanic_spend_breakdown`
+okuyor"* sorusu `InjectRepository(MechanicSpendBreakdown)` ile arandı ve **üç dosya**
+çıktı. Sonuç bir kapsam kararına ve bir alt-ajan brief'ine girdi:
+*"`/finance-reporting` · 7+ rota · 3 servis okuyor."*
+
+**Yanlıştı.** Kullanımı ölçünce:
+
+```
+finance-reporting.service.ts     1 atıf  = yalnız constructor   → ÖLÜ
+spend-calculation.service.ts     1 atıf  = yalnız constructor   → ÖLÜ
+spend-distribution.service.ts    6 atıf  = gerçek çağrılar      → /spend-calculation/*
+```
+
+Gerçek rota ailesi **`/finance-reporting` değil `/spend-calculation`**'dı — ve brief'in
+`@Roles` ölçüm talimatı bu yüzden **yanlış controller'ı** işaret ediyordu. Alt-ajan
+düzeltti; ölçümü yapan yakalayamadı.
+
+📌 **Aile:** `T-079` (*"alan kullanılıyor"* → sıfır çağıran) ve `decimal`↔`numeric`
+(*yanlış yüzeyin dili*) ile aynı sınıf. Fark şu ki burada iki yüzey **aynı dosyada**
+yaşıyor, o yüzden ayrımı görmek daha zor.
+
+**Pratik — ayrımı sayıyla yap:**
+
+```bash
+grep -c 'fooRepository' <dosya>           # 1 ise: YALNIZ constructor → ölü
+grep -n 'this\.fooRepository\.' <dosya>   # çağrı yüzeyi — asıl soru bu
+```
+
+⚠️ Ve bir **kapsam kararı** ya da **brief** bu sayıya dayanıyorsa, `§4.1` gereği
+enjeksiyon değil **çağrı** referansı verilir: ❌ *"3 servis okuyor"* ·
+✅ *"`spend-distribution.service.ts:206` `this.mechanicSpendBreakdownRepository.find`"*.
+
+### Bir kusur, BAŞKA bir kusur tarafından örtülebilir (ZORUNLU)
+
+> **Bir kusur, başka bir kusur tarafından örtülebilir — ve dıştaki düzeltilince
+> içteki ORTAYA ÇIKAR.**
+> **Yani bir düzeltme turu, kapattığından fazlasını AÇABİLİR; ve fark yazılmazsa
+> "düzelttik" denilen tur bir deliği açmış olur.**
+
+`§2.7`'nin *"doğrulama maskeleme"* ailesi **ölçümün** kusuru gizlemesini konu alıyor.
+Bu farklı: gizleyen şey **ürünün kendi ikinci kusurudur**, ve ölçüm doğrudur.
+
+**İki ölçülmüş vaka (2026-08-20, `T-249`), ve YÖNLERİ ZIT:**
+
+| # | içteki kusur | örten şey | düzeltme ne yapıyor |
+|---|---|---|---|
+| 1 | `markAsRead` **kullanıcıyı hiç almıyor** — bir UUID bilen herkes başkasının kaydını işaretleyebilir | `app_runtime`'ın izni yok → rota **`500`** | `GRANT` **deliği ERİŞİLEBİLİR kılıyor** |
+| 2 | `plan_sku_id` **katalog id'siyle** dolduruluyor → FK ihlali | aynı `permission denied` **daha önce** ateşliyor | `GRANT` **kusuru GÖRÜNÜR kılıyor** |
+
+Birincisi **kazara güvenli** (`INV-C-*`): koruma bir tasarım değil, bir arıza.
+İkincisi **kazara sessiz**: kusur duruyordu, kimse ona varamıyordu.
+
+⚠️ **Ve ikisi aynı `GRANT`'ten doğuyor** — yani tek bir düzeltme, bir deliği açıyor
+**ve** bir kusuru gösteriyor. Bunlar farklı sonuçlardır ve **ayrı ayrı** yazılmalıdır.
+
+**Pratik — bir kusuru düzeltmeden önce sor:**
+
+```
+1. Bu kusur ŞU ANDA başka bir şeyi ÖRTÜYOR mu?
+   → örtüyorsa: düzeltme onu ortaya çıkarır. TASK aç, aynı turda değilse bile.
+2. Bu kusurun VARLIĞI şu anda bir korumaya mı dönüşmüş?
+   → dönüşmüşse: düzeltme o korumayı KALDIRIR. Yerine gerçek koruma konmalı.
+```
+
+📌 `T-249`'da ikisi de yazıldı — task dosyasında, `FAZ1_PLAN §5`'te ve bir sonraki
+adımın önceliğinde. **Yazılmasaydı, "üç kırık ucu düzelttik" cümlesi doğru olur ve
+eksik kalırdı.**
+
 ### Yazma ile commit arasına bir DOĞRULAMA koy (ZORUNLU)
 
 Bir dosyayı yazan adım ile onu commit'leyen adım arasında **hiçbir kontrol yoksa**, sessizce
