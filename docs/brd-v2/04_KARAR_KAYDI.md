@@ -1344,3 +1344,102 @@ kural yazılmadı**, gerekçesi:
 > **sarkan atıf** olarak yakaladı (*"var olmayan kurala atıf"*) — **doğru davranış**:
 > var olmayan bir kurala atıf, o kural varmış gibi okunur. Numara **tahsis edildiğinde**
 > yazılır, önce değil.
+
+---
+
+## Z16 · Sözlük ↔ `L2` bağı **iki yönlü** oldu — ve `T-244`'ün kapsamı yazılı olarak daraldı
+
+> **Tarih:** 2026-08-20 · **Karar veren:** ürün sahibi · **Yazan:** Team Lead
+> **Açtığı düzenleme:** `L2_02` `K-2.11.2` altına **atıf notu** (`Z1` dondurma kuralı gereği
+> bu kayıt olmadan düzenlenemezdi)
+
+### 0 · Neden bu kayıt var
+
+`Z15`'in Team Lead notu şöyle bitiyordu: *"**Aksi kararlaştırılırsa** … **Bu satır o
+kararın adresidir.**"* Aksi kararlaştırıldı — ama **yazıldığı biçimde değil.**
+
+```
+Z15'in reddettiği    L2'ye YENİ KURAL yazmak        → hâlâ reddedilmiş durumda
+Z16'nın açtığı       L2'den sözlüğe ATIF NOTU       → yeni kural DEĞİL
+```
+
+⚠️ **Ayrım korunuyor:** yeni bir `K-2.11.x` **tahsis edilmedi**, kural sayısı
+değişmedi, guard'ın tanım deseni (`^\*\*K-`) hiç tetiklenmiyor — not **atıf**
+biçiminde (`` `K-2.11.2` ``). `İlke 1` ihlali doğmuyor, çünkü karşılığı olmayan bir
+kural yazılmıyor; **var olan** bir kuralın uygulamasına yol gösteriliyor.
+
+### 1 · Karar — bağ **iki yönlü** olmalı
+
+> **Ürün sahibi:** *"sözlük `K-2.11.2`'ye atıf versin, `L2` sözlüğe. İki yönlü olmazsa
+> sözlük dayanaksız görünür."*
+
+```
+sözlük → K-2.11.2    "bu belge o kuralı UYGULAR"        (dayanağını gösterir)
+L2     → sözlük       "kanonik biçim orada"              (uygulamasını gösterir)
+```
+
+**Tek yönlü bağın ölçülmüş riski:** sözlük `docs/process/` altında, `L2` okuyan biri onu
+**hiç görmez**. Sözlük dayanağını gösterse bile, `K-2.11.2`'yi okuyan biri kanonik biçimin
+var olduğunu bilemez ve **beşinci aileyi** yazar — yani `Z15`'in tam olarak engellemek için
+açtığı sözlük, görünmediği için işlevsiz kalır.
+
+> 📌 Bu, `CLAUDE.md`'nin *"port ederken davranış taşınır, onu DOĞRU KILAN BAĞLAM
+> taşınmaz"* dersinin belge tarafındaki hâli: sözlük doğruluğunu taşıyor, **bağını**
+> taşımıyordu.
+
+### 2 · `T-244`'ün kapsamı — iki soru, iki karar
+
+| soru | karar | gerekçe |
+|---|---|---|
+| Yaratma anındaki kapsam verme hangi olay türü? | **`SCOPE_UPDATE`, eski küme = `∅`** | üçüncü tür açılmadı |
+| Kullanıcı yaratmanın **kendisi** bu turda kaydedilsin mi? | **HAYIR** — sözlük `Madde 2`'ye | `T-244`'ün dar kapsamı korunuyor |
+
+**Birinci kararın gerekçesi (ürün sahibi):**
+
+- Sözlüğün ayrımı **"hedef küme boşalıyor mu"** ekseninde — *"ilk verme mi"* ekseninde
+  değil. Üçüncü tür **farklı bir eksende** bölerdi ve `T-242a`'nın kayıtlarıyla
+  **karşılaştırılamaz** hâle gelirdi.
+- Asıl test: *"bugün bu kullanıcı neyi görüyor"* sorusu **iki durumda da aynı okunur** —
+  eski küme `∅` ise yeni küme her şeyi anlatıyor.
+- `İlke 1`: üçüncü tür için **kanıtlanmış ihtiyaç yok.** *"Bu erişim doğuştan mı geldi"*
+  sorusu bugün sorulmuyor — sorulursa `before_values = ∅` **zaten cevaplıyor.**
+
+**İkinci kararın gerekçesi:** `T-244`'ün dar kapsamı *"başka olay türü tanımlanmaz"*
+şartını taşıyor ve o şartın gerekçesi `ADIM 2`'nin **dört aile** ölçümüydü. Kullanıcı
+yaşam döngüsünü bu turda tanımlamak, `Z15`'in engellemek için yazıldığı **erken-tanım**
+hatasının kendisi olurdu.
+
+### 3 · ⛔ Ve `A7` YARIM kapanıyor — bu bir kilit, sessiz kalmıyor
+
+```
+A7'nin iddiası    "kullanıcı yaratma VE kapsam verme hiçbir yere loglanmıyor"
+T-244 kapatıyor   kapsam verme          ✅
+T-244 kapatMIYOR  kullanıcı yaratma     ⛔ → adres: sözlük Madde 2 (AÇIK)
+```
+
+⚠️ **`CLAUDE.md` gereği bir adres yazıldı** (*"bilinen eksiklik TODO ile değil, TASK ile
+kaydedilir"* · *"bir şartın SAĞLAYICISI yoksa şart bir kilittir"*):
+
+```
+ŞART        kullanıcı yaratma olayı kaydedilsin
+SAĞLAYICI   sözlük Madde 2 (kullanıcı yaşam döngüsü)
+DURUM       ⛔ bugün YOK — ADIM 6'da yazılacak, sözlükte AÇIK olarak işaretli
+```
+
+Yani `§2.3`'ün *"her işlem loglanır"* ihlali **sürüyor ve biliniyor** — kapandı diye
+işaretlenmiyor.
+
+### 4 · ⚠️ Sınır — `A1` bu turda, ve kayıt biçimiyle KARIŞTIRILMAZ
+
+> **Ürün sahibi:** *"`A1` bir kusur, kayıt biçimi değil. Yaratma olayının kaydedilmesi
+> ayrı, `createdBy`'ın doğru yazılması bu turda. İkisi karışmasın."*
+
+```
+A1  createdBy: savedUser.id → gerçek aktör       ⚡ BU TURDA (kusur)
+A7  kapsam kaydı SCOPE_UPDATE                    ⚡ BU TURDA (biçim uygulaması)
+—   kullanıcı yaratma OLAYI                      ⛔ kapsam dışı (Madde 2)
+```
+
+`A1`'in yaratma olayının kaydedilmemesiyle **ilgisi yok**: `createdBy` bir denetim kaydı
+alanı değil, `user_scopes` satırının **kendi kolonu**. Yanlış aktör yazması, olay
+kaydedilse de kaydedilmese de bir kusurdur.

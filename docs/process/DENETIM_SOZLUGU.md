@@ -3,6 +3,13 @@
 > **Açılış:** 2026-08-20 · **Karar:** `04_KARAR_KAYDI.md` `Z15` · **Yazan:** Team Lead
 > **Statü:** `ADIM 6` teslimi, **erken açıldı** — `T-244` bloke kalmasın diye.
 > **Kanal:** yalnız Team Lead yazar (`L2` ile aynı gerekçe: tek yazar, tek kanal).
+> **Dayanağı:** `L2_02` **`K-2.11.2`** — *"aşağıdaki olay grupları kaydedilir"*.
+> Bu belge o kuralı **uygular**, yeni bir kural koymaz: `K-2.11.2` olay **gruplarını**
+> zorunlu kılar, sözlük o grupların **alan biçimini** tanımlar.
+>
+> ⚠️ Bağ **iki yönlüdür** — `K-2.11.2`'nin altında bu belgeye atıf vardır. Tek yönlü
+> olsaydı `L2` okuyan biri sözlüğü hiç görmez ve **beşinci aileyi** yazardı; yani
+> sözlük, görünmediği için işlevsiz kalırdı. Karar: `04_KARAR_KAYDI.md` `Z16`.
 
 ---
 
@@ -61,6 +68,22 @@ SCOPE_REVOKE_ALL   kapsam tümüyle boşaltıldı  ⚠️ AYRI OLAY TÜRÜ
 güncelleme değil, bir **erişim kaldırma**. Aynı olay türüne konsaydı denetim
 *"kullanıcı neden hiçbir şey göremiyor"* sorusunu **cevaplayamazdı**.
 
+#### ⚡ Yaratma anı — **üçüncü tür AÇILMADI** (`Z16`)
+
+Bir kullanıcı yaratılırken verilen ilk kapsam da **`SCOPE_UPDATE`**'tir; eski küme
+**`∅`** yazılır.
+
+| | |
+|---|---|
+| ayrım ekseni | **"hedef küme boşalıyor mu"** — *"ilk verme mi"* DEĞİL |
+| üçüncü tür neden yok | farklı bir eksende bölerdi → [[T-242a]]'nın kayıtlarıyla **karşılaştırılamaz** olurdu |
+| asıl test | *"bugün bu kullanıcı neyi görüyor"* **iki durumda da aynı okunur** |
+| `İlke 1` | *"bu erişim doğuştan mı geldi"* sorusu **bugün sorulmuyor** — sorulursa `eski küme = ∅` zaten cevaplıyor |
+
+> ⚠️ **Yaratma OLAYININ kendisi bu maddenin konusu değildir** — o `Madde 2`'ye aittir
+> ve bugün **açıktır** (aşağıya bakınız). Bu madde yalnız **kapsam verme** olayını
+> tanımlar.
+
 ### Alanlar
 
 | alan | zorunlu | not |
@@ -86,5 +109,25 @@ kullanıcı neyi görüyor"* sorusu **birikimli okuma** gerektirirdi.
 ## Açık maddeler (sözlük tamamlanmamıştır)
 
 `ADIM 6` bu belgeyi tamamlar. Bugün **yalnız `Madde 1`** yazılı.
+
+### `Madde 2` · Kullanıcı yaşam döngüsü — ⛔ **AÇIK**
+
+**Kapsamı:** kullanıcı yaratıldı · rolü değişti · pasifleştirildi · silindi.
+
+```
+ŞART        kullanıcı yaratma olayı denetim kaydına girsin
+SAĞLAYICI   bu madde
+DURUM       ⛔ bugün YOK → ADIM 6'da, ADIM 2 ölçümünden SONRA yazılır
+```
+
+⚠️ **Bu bir kilittir, bir erteleme değil** — ve sessiz kalmıyor: [[T-244]]'ün `A7`
+bulgusu *"kullanıcı yaratma **ve** kapsam verme loglanmıyor"* diyordu. `T-244`
+**yalnız kapsam verme** yarısını kapatıyor; yaratma yarısının adresi **burasıdır**.
+Yani `CLAUDE.md §2.3`'ün *"her işlem loglanır"* ihlali **sürüyor ve biliniyor.**
+
+> **Neden bu turda yazılmadı:** `T-244`'ün dar kapsamı *"başka olay türü
+> tanımlanmaz"* şartını taşıyor, ve o şartın gerekçesi `ADIM 2`'nin **dört aile**
+> ölçümü. Erken tanımlamak, `Z15`'in engellemek için yazıldığı hatanın kendisi
+> olurdu. Karar: `Z16`.
 
 ⚠️ **Ve `ADIM 2`'nin dört ailesi henüz TAŞINMADI** — taşındığında bu satır kalkar.

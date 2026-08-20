@@ -293,6 +293,16 @@ kaydedilir:
 > (`admin_audit_logs`, `admin_id`). Dev verisinde dört işlem türü görülüyor, ve tür için
 > bir tanımlı küme yok.
 
+> 📌 **Kanonik olay biçimleri `docs/process/DENETIM_SOZLUGU.md`'de yazılıdır.**
+> Bu kural olay **gruplarını** zorunlu kılar; sözlük o grupların **alan biçimini**
+> tanımlar (`kim` · `ne zaman` · `ne` · `neye`, ve olay türüne özel alanlar).
+> Yeni bir denetim kaydı yazan **önce sözlüğe bakar** — orada bir madde varsa onu
+> uygular, yoksa madde **Team Lead tarafından** açılır.
+>
+> ⚠️ Sözlük bir **süreç artefaktıdır**, kural değildir: yeni `K-2.11.x` tahsis etmez
+> ve bu belgenin kural sayısını değiştirmez. Bağ **iki yönlüdür** — sözlük de bu
+> kurala atıf verir. Karar: `04_KARAR_KAYDI.md` `Z16`.
+
 **K-2.11.3** — Denetim kaydı bir özellik değil, bir **uyum gereksinimidir.** Kapsamı
 regülasyonun gerektirdiği kadardır, ürün tercihi kadar değil.
 
