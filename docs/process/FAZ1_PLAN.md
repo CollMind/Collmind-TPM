@@ -27,11 +27,31 @@
 
 ```
 1  ayrıcalıksız DB rolleri, sessiz geri dönüş yok       ✅ K-2.6.13 — KAPANDI (ADIM 1)
-2  kapsam filtresi AÇIK ve besleyen yolları var         ⏳ bayrak + [[T-242a]]
+2  kapsam filtresi AÇIK ve besleyen yolları var         ✅ KAPANDI — bayrak CANLI (davranışsal) + [[T-242a]]
 3  yetenek modeli + default-deny                        ⏳ ADIM 3
-4  denetim kaydı: kim, ne zaman, neye dayanarak         ⏳ [[T-244]]
+4  denetim kaydı: kim, ne zaman, neye dayanarak         🔶 [[T-244]] YARIM — sözlük `Madde 2` (kullanıcı yaşam döngüsü) AÇIK
 5  RLS uygulanmış                                       ⏳ ADIM 5
 ```
+
+> ### ✅ MADDE 2 KAPANDI (2026-08-20) — davranışsal, çalışan üründe
+>
+> ```
+> planner   → 3 anlaşma      planner2 → 0 anlaşma      admin → 3 anlaşma
+> ```
+>
+> `SCOPE_ENFORCEMENT_ENABLED` `.env`'de **ve süreç yeniden başlatıldı**. Gerçek login →
+> gerçek `GET /agreements`. **Ön beklenti tablosuyla birebir**, ve tablo ölçümden
+> **önce** yazılmıştı: `docs/verification/T235_BAYRAK_ACILIS_ON_BEKLENTI.md`.
+>
+> ⚠️ **`planner2 → 0` BEKLENEN sonuç, kusur değil** — 17 kapsam satırı var, ama üç
+> anlaşmanın üçü de `Gratis`'te ve `Gratis` onun kapsamında yok. *"Bayrak açılıp
+> hiçbir şey değişmeseydi, o zaman endişelenirdik."*
+>
+> 📌 Bayrağın kapsamı **yalnız `PLANNER`** (ölçüldü): `CATEGORY_MANAGER` enforcement'ı
+> `T-028b`'de zaten prod'a gitti, `READONLY` joker satırdan çözülüyor.
+>
+> ⚠️ Ve besleyen yol [[T-242a]] ile geldi: `PATCH /users/:id/scope`. Kapsam artık
+> **yönetilebilir** — bir kez seed'lenmiş değil. Bayrağın ön koşulu buydu.
 
 **Ve ölçütün kendisi:** `K-2.6.12`'nin *"izolasyon **iki katmanda** korunur —
 uygulama katmanı filtresi **ve** veritabanı seviyesinde zorlama"* şartı **sağlanıyor

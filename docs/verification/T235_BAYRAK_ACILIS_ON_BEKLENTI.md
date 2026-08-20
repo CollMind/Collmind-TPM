@@ -185,3 +185,45 @@ echo 'SCOPE_ENFORCEMENT_ENABLED=true' >> collmind.backend/.env
 
 **ve `start:dev` yeniden başlatılır.** Sonra yukarıdaki canlı ölçüm tekrarlanır:
 `planner2 → 0` görülmelidir.
+
+
+---
+
+# ✅✅ BAYRAK CANLI — ÇALIŞAN ÜRÜNDE doğrulandı (2026-08-20)
+
+Önceki bölüm bayrağın **açık olmadığını** ölçmüştü (`planner2 → 3`). `.env` satırı
+eklendi **ve `start:dev` yeniden başlatıldı** (ürün sahibi). Ölçüm tekrarlandı —
+**gerçek sunucu, gerçek login, gerçek `GET /agreements`**:
+
+```
+planner@wella.com   →  3 anlaşma
+planner2@wella.com  →  0 anlaşma        ⛔ BEKLENEN — kusur DEĞİL
+admin@wella.com     →  3 anlaşma
+```
+
+**Ön beklenti tablosuyla BİREBİR** — ve tablo bu ölçümden **önce** yazılmıştı.
+
+## Bu ölçümün önceki ikisinden FARKI
+
+| tur | ortam | ne kanıtladı |
+|---|---|---|
+| 1 | komut satırı env'i, e2e app'i | **mekanizma** çalışıyor (`false→3`, `true→0`) |
+| 2 | canlı sunucu, bayrak öncesi | bayrak **okunmuyor** (süreç bayat) |
+| **3** | **canlı sunucu, bayrak sonrası** | **bayrak CANLI ve doğru daraltıyor** |
+
+📌 Üçü birlikte `§2.7 #9`'u sağlıyor: **sinyal sabit değil**, ve farkı üreten şeyin
+bayrak olduğu **iki farklı ortamda** gösterildi.
+
+⚠️ **Ve `2 → 3` geçişi bir dersin kanıtı:** `.env` satırı yazılmıştı ama ölçüm hâlâ `3`
+diyordu. Sebep **bayat süreç**ti (`ConfigService` env'i açılışta okur — `T-113`). O tur
+*"bayrak açık"* diye kaydedilseydi yanlış olurdu; **iki açıklama da yazıldığı için**
+doğru teşhis edildi.
+
+> `CLAUDE.md` / `§7.1`: *"bir komutun koşulması, etkisinin gerçekleştiği anlamına
+> gelmiyor."*
+
+## Kalan
+
+`#4`/`#5` (**yazma** yolu reddi) hâlâ davranışsal ölçülmedi — gerekçesi yukarıda
+(paylaşılan DB'de yan etki). Ve `Saldos Ticaret`'in sahipsizliği artık **etkin**:
+hiçbir `PLANNER` oraya plan/anlaşma açamaz → [[T-248]].
