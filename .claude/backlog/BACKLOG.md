@@ -242,9 +242,9 @@ status: active        # planned | active | closed
 | [[T-238]] | ✅ KAPANDI — `user_scopes.channel_id` düşürüldü (`1809`), üç dal ampirik. Review **blocker** buldu: kanal ekseni `A7`/`K-2.6.7`/`EK_C`'de bağlayıcıydı → **`Z11`** + `❌ ölçülmüş sapma` notları. Karar değişmedi, **sapma görünür oldu** | **P1** | data-engineer | done |
 | [[T-241]] | ✅ KAPANDI — `POST /users` rol + kapsam **birlikte**, atomik (DB seviyesinde kanıtlı). İki tur review: `B1`·`R1`·`R2`·`A3`·`A4`·`A5`·`A6`·`A8` kapandı; `B2`→[[T-243]] · `A1`+`A7`→[[T-244]] · `A2`→[[T-245]] | **P1** | backend-engineer | done |
 | [[T-243]] | ✅ KAPANDI — `UserForm` kapsam seçicisi, dört kapıya uyum, `R-1` **yapısal** olarak korundu. Yedi davranış pinlendi, **her biri mutasyonla kırmızı**. ⛔ `R2` pinlenemedi (kayıtlı kilit → [[T-242]]) | **P1** | frontend-engineer | done |
-| [[T-244]] | ⚡ **FAZ 1** (çıkış ölçütü md.4) — denetim kaydı: `createdBy` **yanlış aktör** (`A1`, **bugün CANLI**) + `POST /users` izi **YOK** (`A7`). İkisi birlikte: kayıt eksikliği yanlış aktörü **gizliyor** | **P1** | backend-engineer | todo |
+| [[T-244]] | ⚡ **FAZ 1** (çıkış ölçütü md.4) — denetim kaydı. `Z15`: biçim **sözlüğün ilk maddesi** (`DENETIM_SOZLUGU.md`), bağımsız format DEĞİL. ⛔ **`T-242a`'dan ÖNCE** | **P1** | backend-engineer | todo |
 | [[T-245]] | ⏸️ **ERTELENİR** — tekrarlı çift → `500` / sessiz çift satır. **Kusur**, ama hiçbir şeyi bloklamıyor | P2 | backend-engineer | todo |
-| [[T-242a]] | ⚡ **FAZ 1** (çıkış ölçütü md.2) — kapsam **GÜNCELLEME** yolu: filtreyi **besleyen** yol. Bayrağı blokluyor | **P1** | architect | todo |
+| [[T-242a]] | ⚡ **FAZ 1** (md.2) — kapsam **GÜNCELLEME**. `Z15`'in üç kararı işlendi (replace · `intent: UPDATE\|REVOKE_ALL` · biçim sözlükten). ⛔ **`T-244`'ü bekliyor** | **P1** | architect | todo |
 | [[T-242b]] | ⏸️ **ERTELENİR** — rol **DEĞİŞTİRME** yolu (arayüzsüz). `ADIM 3`'ün *ertelenen* yarısına bağlıydı → **artık hiçbir şeyi bloklamıyor**. ⚠️ `T-243`'ün yazılamayan test kaleminin sağlayıcısı | P3 | architect | todo |
 | [[T-240]] | ⏸️ **ERTELENİR** — `ledger_entries`'in 5 FK'siz kolonu. Tablo bugün **boş** → yapısal yol, canlı hata değil | P2 | data-engineer | todo |
 

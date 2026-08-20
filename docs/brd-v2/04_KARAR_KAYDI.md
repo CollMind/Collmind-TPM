@@ -1242,3 +1242,105 @@ T-220     "hesaplanamayan bir değer NEREDE bir iş yargısına
 
 📌 Bu, `Z13`'ün *"liste kendini doğrular — **ancak liste TAMSA**"* dersinin ikinci
 uygulaması: orada eksik olan bir **vaka**ydı, burada eksik olan bir **sınıf**.
+
+---
+
+## Z15 · Kapsam güncelleme — **sıra + üç karar**, ve denetim biçimi SÖZLÜĞÜN İLK MADDESİ
+
+**Tarih:** 2026-08-20 · **Karar:** ürün sahibi · **Kaydeden:** Team Lead (tek kanal)
+**Etkilediği:** [[T-244]] · [[T-242a]] · `FAZ1_PLAN` `ADIM 6`
+
+### 0 · SIRA — `T-244` önce, **dar kapsamla ve bir ÇAPA şartıyla**
+
+`İlke 4`, **iki seviyede**:
+
+```
+seviye 1   T-242a önce giderse   → ikinci bir kayıt biçimi doğar,
+                                    ve birleştirilmesi HİÇ YAPILMAZ
+seviye 2   T-244 kendi başına    → sözlük (ADIM 6) geldiğinde ÜÇÜNCÜ
+           bir biçim tanımlarsa    uyumsuzluk adayı oluruz
+```
+
+> **Çözüm (ürün sahibi):** *"`T-244`'ün biçimi, **denetim sözlüğünün ilk maddesi**
+> olarak tanımlansın — yani `T-244` **bağımsız bir format değil**, **sözlüğün erken
+> açılan ilk sayfası**. Böylece hem `T-242a` bloktan çıkar hem `ADIM 6` geldiğinde
+> biçim zaten **evinde**."*
+
+📌 Bu, `ADIM 2` ölçümünün bulgusunu doğrudan adresliyor: *"kanonik sözlük **YOK**,
+dört ayrı aile"* — sözlük **artık var**, tek maddeyle açıldı.
+
+⚠️ **Ve `ADIM 2`'nin ölçümü sözlüğün TABANI**, yeniden sayılmaz.
+
+### 1 · Uç şekli — **TAM DEĞİŞTİRME** (declarative replace)
+
+> **Kapsam bir KÜME DURUMUDUR, olay akışı değil.**
+
+Ekle/çıkar modelinin üç maliyeti:
+
+```
+sıra bağımlılığı
+kısmi-başarı ara durumları
+⚠️ ve ASIL ÖNEMLİSİ: R1/R2 guard'larının ARA DURUMLARI denetleme zorunluluğu
+   — CATEGORY_MANAGER joker sızıntısı tam böyle bir ara-durum vakasıydı
+```
+
+**Replace'te:** güvenlik kontrolleri **tek noktada**, **hedef durum** üzerinde koşar ·
+istek **idempotent** · denetim kaydı doğal olarak *"eski küme → yeni küme"* olur ve
+**`T-244` biçimini basitleştirir.**
+
+📌 Ekle/çıkar **ergonomisi UI'nin işi**: ekran diff'i hesaplar, **tek replace** gönderir.
+Ve `T-241`'in **atomik-yaratma** deseniyle **simetrik**.
+
+### 2 · Boşaltma — **izinli, ama SESSİZ OLAMAZ**
+
+`K-2.6.8a` doğru kural, ve boş küme **meşru bir hedef durum** (ayrılan kullanıcı,
+askıya alma). ⚠️ **Risk kural değil, KAZA:**
+
+> UI hatası boş dizi yollar → kullanıcı **sessizce kilitlenir** → ve bunu **hiçbir test
+> yakalamaz**. **Sessiz-yıkım sınıfı.**
+
+**Çözüm onay diyaloğu DEĞİL** (o UI katmanında yaşar ve **API'yi korumaz**) —
+**açık niyet alanı**:
+
+```
+aynı uçta      intent: UPDATE | REVOKE_ALL
+doğrulama      boş küme ∧ intent ≠ REVOKE_ALL  →  RET
+```
+
+**Tek uç, tek kod yolu** (`İlke 4` korunur) — boşaltma **ayrı mekanizma değil**, aynı
+ucun **bilinçli-niyet doğrulaması**.
+
+**Ve iki bağ:**
+- `REVOKE_ALL` denetim kaydında **ayrı olay türü** — `T-244` biçiminin **ilk alan
+  gereksinimi** bu ayrımı taşımak
+- **Gerekçe zorunluluğu** `K-2.5.15` ailesiyle tutarlı **bölünür**: `REVOKE_ALL`'da
+  **zorunlu**, normal güncellemede **opsiyonel**
+
+### 3 · Yürüme sırası
+
+```
+T-244    dar: kayıt biçimi = SÖZLÜĞÜN İLK MADDESİ
+         alanlar: eski küme · yeni küme · kim · ne zaman · niyet ·
+                  gerekçe[REVOKE_ALL'da zorunlu]
+T-242a   üç karar kabul listesine İŞLENMİŞ hâlde
+```
+
+### ⚠️ Team Lead notu — L2'ye kural EKLENMEDİ, ve bu bir tercih
+
+Ürün sahibi *"kural/olay numaralarını ben seçmiyorum"* dedi. Ölçüldü ve **L2'ye yeni
+kural yazılmadı**, gerekçesi:
+
+- `K-2.11.2` **zaten** olay gruplarını zorunlu kılıyor; sözlük onu **uygular**, yeni
+  bir kural koymaz
+- Sözlük bir **süreç artefaktıdır** (`ADIM 6` teslimi, erken açıldı) — `L2` bir **iş
+  kuralı** belgesi
+- Yeni bir `L2` kuralı guard sayısını değiştirir ve **`Z1` kaydı** ister; bugün
+  **karşılığı olmayan** bir kural yazmak `İlke 1` ihlali olurdu
+
+> **Aksi kararlaştırılırsa** `K-2.11` ailesinden bir numara tahsis edilir ve `F12`
+> deseniyle işlenir. **Bu satır o kararın adresidir.**
+>
+> ⚠️ İlk yazımda buraya somut bir kural numarası yazılmıştı ve `guard.sh` onu
+> **sarkan atıf** olarak yakaladı (*"var olmayan kurala atıf"*) — **doğru davranış**:
+> var olmayan bir kurala atıf, o kural varmış gibi okunur. Numara **tahsis edildiğinde**
+> yazılır, önce değil.

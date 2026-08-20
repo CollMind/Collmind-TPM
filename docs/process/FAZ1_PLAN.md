@@ -365,6 +365,18 @@ Adım 2/5 ölçümünün sonucuna göre "ayarı aç" ya da "kapsam çözümlemes
 
 ## 8 · ADIM 6 — Denetim ailesi
 
+> ### ⚡ SÖZLÜK ERKEN AÇILDI (`Z15`, 2026-08-20)
+>
+> `docs/process/DENETIM_SOZLUGU.md` — **`Madde 1` yazılı** (`SCOPE_CHANGE`), gerisi
+> bu adımın teslimi.
+>
+> **Neden erken:** [[T-244]] bir kayıt biçimine ihtiyaç duyuyordu ve `Faz 1` çıkış
+> ölçütünün **4. maddesi**. Bağımsız tanımlansaydı, sözlük geldiğinde **beşinci aile**
+> olurdu (`ADIM 2` ölçümü bugün **dört** aile buldu).
+>
+> ⚠️ **Ve `ADIM 2`'nin dört-aile ölçümü sözlüğün TABANIDIR** — yeniden sayılmaz;
+> tamamlandığında o dört aile sözlüğe **taşınır**, kopyalanmaz.
+
 Sıra: sözlük **tanımı** (L2'ye yalnız Team Lead yazar — DUR-3) → mekanizma → yayılım
 (`K-2.7.2` işaretleri · `K-2.11.5` yazarı · `K-2.11.7` mekanizması). Rol dalgasından
 sonra gelir: aynı servis dosyalarına iki dalga aynı anda dokunmaz `[GEREKÇELİ]`.
