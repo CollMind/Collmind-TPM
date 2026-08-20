@@ -147,3 +147,41 @@ davranışıdır.
 
 > `CLAUDE.md`: *"Bir küme hakkında sonuç yazılıyorsa, kümenin NASIL SINIRLANDIĞI aynı
 > cümlede yazılır."* Bu bölüm o sınırdır.
+
+
+---
+
+# ⚠️ BAYRAK BUGÜN AÇIK DEĞİL — ölçüldü 2026-08-20
+
+Yukarıdaki doğrulama **mekanizmayı** kanıtladı (`false→3`, `true→0`), ama bayrak
+**çalışan ortamda AÇILMADI**: `.env` Team Lead'in izin listesinin dışında
+(`Read(./**/.env)` deny — `ls` bile reddedildi), o yüzden ölçüm komut satırı env'iyle
+yapıldı.
+
+**Canlı süreçte ölçüm** (`localhost:3000`, gerçek login → gerçek `GET /agreements`):
+
+```
+planner2@wella.com  →  HTTP 200 · 3 anlaşma
+```
+
+Ön beklenti tablosuna göre `3` = **bayrak KAPALI**.
+
+## ⚠️ Ve bu sonucun İKİ açıklaması var — ayırt edilemedi
+
+| # | açıklama | nasıl ayırt edilir |
+|---|---|---|
+| 1 | bayrak `.env`'de **yok** | `.env` okunur — ⛔ **izin yok** |
+| 2 | bayrak var ama **süreç BAYAT** (`ConfigService` env'i açılışta okur) | süreç yeniden başlatılıp tekrar ölçülür |
+
+`CLAUDE.md`'nin *"ölçüm ortamının bayatlığı da bir maskeleme sınıfıdır"* maddesi
+(`T-113` vakası) tam olarak `#2`'yi anlatıyor. **Hangisi olduğu bilinmiyor** ve
+varsayılmıyor.
+
+## Bayrağı gerçekten açmak için
+
+```bash
+echo 'SCOPE_ENFORCEMENT_ENABLED=true' >> collmind.backend/.env
+```
+
+**ve `start:dev` yeniden başlatılır.** Sonra yukarıdaki canlı ölçüm tekrarlanır:
+`planner2 → 0` görülmelidir.
