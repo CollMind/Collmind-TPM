@@ -396,6 +396,39 @@ Adım 2/5 ölçümünün sonucuna göre "ayarı aç" ya da "kapsam çözümlemes
   RLS altında bağlamsız zamanlayıcı ya boş veri görür ya ayrıcalık ister `[GEREKÇELİ]`.
 - Kabul mekanizması `_ISSUE_DB_ROLU`'nun RLS sonda testi deseni: kırmızı-sonra-yeşil.
 
+> ### ⚠️ `S3`'ÜN KÖR NOKTASI RLS'TE DE VAR — brief'e girsin (ürün sahibi, 2026-08-20)
+>
+> [[T-249]] turunda ölçüldü ve envantere yazıldı:
+>
+> ```
+> S3 izinleri "suite'in TETİKLEDİĞİ" yollardan türetiyor
+>   → e2e yok → döngü hiç çalışmadı → GRANT yok → uç kırık → KİMSE GÖRMEDİ
+> ```
+>
+> Üç canlı uç (`/notifications` · `/master-data/brands` · `/spend-calculation/*`) tam
+> bu yüzden `500` dönüyordu, ve **hiçbir test bunu görmüyordu.**
+>
+> ⚠️ **Ve yöntem DÜZELTİLMEDİ — kullanımı düzeltildi.** `T-249` sırayı tersine çevirdi
+> (önce e2e, kırmızı görüldü, sonra `GRANT`), ama `S3`'ün kendisi hâlâ *"suite ne
+> tetiklerse onu görür"* mantığında.
+>
+> **RLS aynı boşluğu taşır, ve orada daha sinsi:**
+>
+> ```
+> bir tabloya politika YAZILIR   →   e2e o tabloya DOKUNMAZ   →   politika HİÇ SINANMAZ
+> ```
+>
+> Fark yönde: eksik bir `GRANT` **gürültülü** başarısız olur (`permission denied` →
+> `500`). Eksik ya da **yanlış** bir RLS politikası **sessizce yanlış satır kümesi**
+> döndürür — ne hata, ne log, yalnız eksik (ya da **fazla**) veri.
+>
+> 📌 **Bu adımın kabul kriterine:** *"her RLS politikası için, o politikanın
+> REDDETMESİ gereken bir satırı isteyen bir test."* Politikanın varlığı değil,
+> **ayırt ettiği** ölçülür — `§2.7 #9`: *"sinyal sabitse, sinyal değildir."*
+>
+> Ve `ADIM 1` envanterinin bu adımın girdisi olması (`§4`, yukarıda) bunu **zorunlu**
+> kılıyor: girdi bayat ya da eksikse, `ADIM 5` yanlış tablo kümesiyle başlar.
+
 ## 8 · ADIM 6 — Denetim ailesi
 
 > ### ⚡ SÖZLÜK ERKEN AÇILDI (`Z15`, 2026-08-20)
