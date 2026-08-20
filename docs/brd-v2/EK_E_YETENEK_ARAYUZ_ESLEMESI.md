@@ -123,6 +123,7 @@ ulaşmıyor. Bir `❌` dürüsttür; bir `🔒` israftır.
 | Plan üzerinde gösterge görünümü | ✅ | |
 | Renk (RAG) | ⚠️ | Kapsama oranı istemciye ulaşmıyor |
 | `GRİ` durumu (kapsama rozeti + eksik listesi) | ❌ | |
+| **`null` → iş yargısı çöküşü** (SINIF) | ⚠️ | ⚠️ `Z14`: yukarıdaki iki satır **semptomu** anlatıyor; sınıf daha geniş — *hesaplanamayan bir değer NEREDE bir iş yargısına çöküyor* (beş nokta, iki repo). Adres: [[T-220]]. **Semptomu kapatmak sınıfı kapatmaz** |
 | Fiyat simülasyonu | ❌ | Kaynak tarif ediyor |
 
 > Formül doğrulaması ikinci `🔒` vakası — ve daha tehlikelisi: yönetici bugün geçersiz sonuç
@@ -222,6 +223,7 @@ Taktik değeri hücreye dönmüyor        → MVP şartı
 Anlaşma detayında kimlik numaraları    → basit
 Finans paneli hata ekranı              → yazılım hatası
 Kapsama oranı ulaşmıyor                → GRİ durumu eksik
+null → iş yargısı çöküşü (SINIF)       → T-220, semptom değil sınıf
 Beş rapor menüde, tıklanamıyor         → yanlış beklenti
 ```
 

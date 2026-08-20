@@ -1212,3 +1212,33 @@ işaretleri satırlardan sayar"*: bir sonraki okuyucu sayıyı **isterse üretir
 ⚠️ **`İki 🔒 vakası — öncelikli`** başlığı da bir sayı taşıyordu ve artık **üç** vaka
 var (`Kapsam atama` eklendi). Başlık sayısızlaştırıldı; bölümün kendisi vakaları
 **adıyla** sayıyor.
+
+---
+
+## Z14 · `EK_E`'ye `T-220`'nin SINIFI eklendi — semptom kayıtlıydı, sınıf değil
+
+**Tarih:** 2026-08-20 · **Karar:** ürün sahibi · **Kaydeden:** Team Lead
+**Açtığı düzenleme:** `EK_E_YETENEK_ARAYUZ_ESLEMESI.md` (donmuş — `Z1`, **dokuzuncu**)
+
+### Bulgu (`0074 §6.2`'nin şerh ölçümü)
+
+`T-220` **ertelendi** (izolasyon kusuru değil, `Faz 3` konusu) — ve ürün sahibi
+*"sessizce ertelenmesin"* dedi. Ölçüldü: `EK_E`'de **görünür**, ama **yanlış
+seviyede**:
+
+```
+EK_E:124  "Renk (RAG) ⚠️ — Kapsama oranı istemciye ulaşmıyor"    ← SEMPTOM
+T-220     "hesaplanamayan bir değer NEREDE bir iş yargısına
+           çöküyor" — beş nokta, iki repo                         ← SINIF
+```
+
+> **Ürün sahibi:** *"`D1` turunda tam bu ısırdı: `|| 'GREEN'` aradık, `AMBER`'e çökme
+> kaçtı. `EK_E`'ye bir satır yeterli — sınıfın adı ve `T-220` adresi. Yoksa bir
+> sonraki okuyucu **semptomu kapatıp sınıfı açık bırakır.**"*
+
+### Eklenen
+
+`E.5` bölümüne bir satır: **`null` → iş yargısı çöküşü** · `⚠️` · adres `T-220`.
+
+📌 Bu, `Z13`'ün *"liste kendini doğrular — **ancak liste TAMSA**"* dersinin ikinci
+uygulaması: orada eksik olan bir **vaka**ydı, burada eksik olan bir **sınıf**.

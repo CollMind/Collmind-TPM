@@ -123,7 +123,8 @@ status: active        # planned | active | closed
 | [[T-101]] | Eşikler bütün olarak alınıyor + `source`/`reason` + aralık CHECK | P1 | backend-engineer | review |
 | [[T-108]] | RAG eşikleri üretimde konfigüre EDİLEMİYOR — admin ucu + provisioning | P2 | architect | todo |
 | [[T-112]] | Escape **yazma** tetikliyor ve geçersiz girdi hücreyi kilitliyor | P1 | frontend-engineer | review |
-| [[T-113]] | ✅ `lint-ratchet` KAPI — baseline `(dosya,kural)` çifti (dosya-toplamı körlüğü self-test case 9 ile sınandı); iki yönlü kırmızı kanıtı. ⚠️ `T-100` hâlâ açık | **P1** | qa-engineer | review |
+| [[T-246]] | ⏸️ **ERTELENİR** — **ratchet'lerin kendi bakım borcu**: baseline azaldıkça güncellenmiyor, kapanan her hata bir **açık bütçe** bırakıyor. ⚠️ Kaç tuple bu durumda **ÖLÇÜLMEDİ**. [[T-234]] ile aynı aile | P2 | qa-engineer | todo |
+| [[T-113]] | ✅ KAPANDI — üç konusu ayrıştırıldı: özgün `500` **çözülmüş** (ortam bayatlığıydı) · lint-ratchet kapısı `ADIM 0`'da indi · `A8` borcu → [[T-246]] | **P1** | qa-engineer | done |
 | [[T-114]] | lint ratchet + self-test kuruldu (taban 488/112); `npm run lint` kapsamı değişmedi | P2 | frontend-engineer | review |
 | [[T-115]] | `ledger.service.test.tsx` flaky — tam suite'te 4 koşumda 1 düşüyor | P3 | qa-engineer | todo |
 | [[T-116]] | `type-check` artık `tests/`'i kapsıyor — 210 hata düzeltildi, bir kör test bulundu | P2 | frontend-engineer | review |
