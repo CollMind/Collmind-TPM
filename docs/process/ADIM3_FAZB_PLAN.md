@@ -185,8 +185,9 @@ B0  statik kapsama RATCHET'i          ← 0073'ün "şimdi" yarısı
 B1  K1/K2/K3 kararları                ← ürün sahibi
       üç READ hücresi · iki APPROVE · approval-policies
 
-B2  61 ucun @Roles'a bağlanması       ← guard B0 sayacı DÜŞERKEN ölçülür
+B2  61 ucun @Roles'a bağlanması       ← B0 baseline'ı DÜŞERKEN, ayrı commit'ler
       her uç: hangi yetenek hücresi · hangi roller · GEREKÇE
+      ⚠️ 59'u EKSİK DEKORATÖR, 2'si guard zinciri de yok — aşağı bkz.
 
 B3  @RequireCapability + 172 @Roles göçü
       ⚠️ İlke 4: iki mekanizma AYNI ANDA yaşamamalı
@@ -216,6 +217,38 @@ kapanır, yani bu adım **bir borcu ödüyor** — kayıtlı ve adresli.
 | 6 | `approval-policies` genişlemesi | ⛔ **`K3`** |
 | 7 | `61` uç tek dalga mı, kademeli mi | ⛔ **`K4`** |
 | 8 | `@Roles` ↔ `@RequireCapability` **aynı anda yaşamaz** (`İlke 4`) | hayır — `§5`'te karar var |
+
+## 4b · ⚡ `B2`'NİN KAPSAMI YENİDEN ÇERÇEVELENDİ — `59/61` (T-252 ölçümü, 2026-08-21)
+
+`B0` ratchet'i baseline'ı çıkarırken bir ayrım ölçüldü:
+
+```
+59 rota   JwtAuthGuard, RolesGuard ZİNCİRİ BAĞLI  ·  @Roles metadata'sı YOK
+ 2 rota   guard zinciri de yok
+```
+
+**Sebep koddadır:** `roles.guard.ts:16-18` metadata **yokken `true` döndürüyor** — yani
+zincir koşuyor ve **hiçbir şey ayırt etmiyor**.
+
+> **`§2.7 #9`'un rota tarafındaki hâli, ve `59` vakayla:** *"sinyal sabitse, sinyal
+> değildir."* Guard her istekte çalışıyor ve her isteğe `true` diyor.
+
+📌 **`GUARD'IN VARLIĞI KORUMA DEĞİLDİR.**
+
+### Ve bu `B2`'nin kapsamını KÜÇÜLTÜYOR
+
+| | |
+|---|---|
+| ⛔ **değil** | mimari değişiklik — guard zinciri, metadata okuma, `Reflector` altyapısı **zaten yerinde** |
+| ✅ **evet** | **eksik dekoratör** — her uç için bir `@Roles(...)` satırı |
+
+**Ama iş yine de ucuz değil:** her uç için **hangi roller** sorusu bir **karar**, ve
+`Z18` gereği *"hiçbir hücre-rol çifti union gerekçesiyle yaşayamaz."* Yani `59` satırın
+her biri **gerekçeli** yazılır.
+
+⚠️ **Ve `2` istisna ayrı ele alınır** — guard zinciri de olmayan uçlar. Onlarda
+`@Roles` eklemek **yetmez**, `@UseGuards` de gerekir. `B2`'nin listesi ikisini
+**ayırmalı**.
 
 ## 5 · `B1`'İN GİRDİSİ — iki ölçüm ÖNCE
 

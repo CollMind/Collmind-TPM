@@ -722,6 +722,37 @@ Birincisi **kazara güvenli** (`INV-C-*`): koruma bir tasarım değil, bir arız
 adımın önceliğinde. **Yazılmasaydı, "üç kırık ucu düzelttik" cümlesi doğru olur ve
 eksik kalırdı.**
 
+### YORUM KİRLİLİĞİ iki yönde birden yanıltır (ZORUNLU)
+
+> **Bir dekoratörü/çağrıyı ararken yorum satırları hem VAR OLANI GİZLER hem
+> OLMAYANI GÖSTERİR — ve iki yön de aynı taramadan çıkar.**
+
+Aynı kaynaktan **zıt yönlerde** iki ölçülmüş vaka:
+
+| yön | vaka | sonuç |
+|---|---|---|
+| **olmayanı gösterdi** | `@Roles(` bir **yorumda** geçiyordu | `plans/:id/reject` *"filtresiz"* sanıldı — **değildi** |
+| **olmayanı gösterdi** | `T-249`'un açıklama yorumları `@Roles` içeriyordu | *"sınıf seviyesi `@Roles` var"* sanıldı — **yoktu** (2026-08-21) |
+
+⚠️ **İkincisini yapan Team Lead'di, ve birincisi `CLAUDE.md`'de zaten yazılıydı.**
+Kural biliniyordu; **refleks** yoktu.
+
+📌 Ve tehlikesi yöne göre değişir:
+
+```
+olmayanı göstermek   →  var olmayan bir kusur için İŞ ÜRETİR  (fazla ölçüm)
+var olanı gizlemek   →  gerçek bir kusuru KAÇIRIR             (eksik ölçüm)
+```
+
+**Pratik — bir dekoratör/çağrı ararken:**
+
+- Eşleşmeyi **bağlamıyla oku** (`§7.1`: *"bir sayı, eşleşmeleri örneklenmeden
+  raporlanamaz"*). Bir satırın `//` ya da `*` ile başlaması ilk kontrol.
+- Sayım yapan bir **araç** yazıyorsan yorumları **ayıkla** — ve ayıkladığını
+  **fixture ile sına**, çünkü ayıklamanın kendisi sessizce bozulabilir.
+- Ve bir iddiayı **çürütürken** ekstra dikkat: yorumdan gelen bir eşleşme, gerçek
+  bir bulguyu *"zaten korunuyor"* diye kapatabilir.
+
 ### MEKANİK olarak türetilmiş bir değer, GEREKÇE değildir (ZORUNLU)
 
 > **`union` asla bir gerekçe değildir.**
