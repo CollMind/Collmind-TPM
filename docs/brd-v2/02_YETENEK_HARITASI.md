@@ -733,14 +733,18 @@ Muhasebe tahakkuku             hiçbir faz — ERP'nin işi
 
 # Açık kalanlar
 
+> ⚠️ **Bu tablo bir KOPYADIR ve 2026-08-13'te bayat yakalandı** — üç satırı kapanmıştı ve
+> burada açık görünüyordu. Kanonik liste `04_KARAR_KAYDI.md §Hâlâ açık`; guard bunu
+> **görmüyor** (`L2` kural kimliklerine bakıyor, `L1` metnine değil).
+
 | Konu | Bekliyor |
 |---|---|
-| Rol kümesi | Karar |
-| Finans yöneticisinin onay hattı | Karar — dayanağı düştü |
-| Saklama sürelerinin bağlayıcılığı | Hukuk |
-| Kişi bazlı raporlama | Hukuk |
+| ~~Rol kümesi~~ | ✅ **kapandı** 2026-08-12 → `K-2.6.4` ailesi |
+| ~~Finans yöneticisinin onay hattı~~ | ✅ **kapandı** 2026-08-12 → `K-2.5.12` ailesi · `ADR 0002-R` |
+| Saklama sürelerinin bağlayıcılığı | Hukuk — ⏸️ `K-2.9.0` askısı altında |
+| ~~Kişi bazlı raporlama~~ | ✅ **kapandı** 2026-08-12 → `K-2.9.6` (süreç metriği) |
 | Veri ayrımı modeli | Teknik ölçüm |
-| İadenin veri temsili | Teknik ölçüm |
+| İadenin veri temsili | Teknik ölçüm — ⚠️ `C2` ölçüldü: temsil **yok**, kanal **açık** ([[T-208]]) |
 
 ---
 

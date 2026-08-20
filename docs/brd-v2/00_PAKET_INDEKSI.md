@@ -192,6 +192,9 @@ karma çalışma biçimi · serbest biçimli kural motoru · orantısal atıf ·
 4. ✅ **Ekran katmanının yeri kararlaştırıldı** — üçe bölündü: bilgi gereksinimi `L2`'de,
    yetenek↔arayüz eşlemesi `EK_E`'de, görsel tasarım BRD dışı.
    ⛔ Ama o tasarım katmanı **bugün yok** ve nerede yaşayacağı ayrı bir karardır.
+   → Üç açık soru (nerede yaşar · versiyonlanır mı · kim sahiplenir) ve `Faz 2`/`Faz 3`'e
+   ait iki karar daha (senaryo katmanı · ekran denetimi)
+   **`docs/process/YOL_HARITASI_EKRAN_VE_SENARYO.md`**'de kayıtlı.
 5. **Müşteri karması bilinmiyor** — ve üç kararı askıda tutuyor: kârlılık kademesinin ilk
    günden zorunlu olup olmayacağı, artımsallık katmanının zamanlaması, genel amaçlı iş akışı
    motorunun gerekliliği.
