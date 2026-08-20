@@ -722,6 +722,28 @@ Birincisi **kazara güvenli** (`INV-C-*`): koruma bir tasarım değil, bir arız
 adımın önceliğinde. **Yazılmasaydı, "üç kırık ucu düzelttik" cümlesi doğru olur ve
 eksik kalırdı.**
 
+### ⚠️ VE SIKLIK BİR DESEN — `500` bu kod tabanında YAYGIN BİR ÖRTÜ
+
+Dört vaka, **hepsi `T-249`/`T-256` turlarında**, ve dördünde de örten şey **aynı**:
+
+| içteki kusur | örten | düzeltince ne oldu |
+|---|---|---|
+| `markAsRead` kullanıcı körlüğü | `500` (izin yok) | delik **ERİŞİLEBİLİR** oldu |
+| `plan_sku_id` FK ihlali | `500` (izin yok) | kusur **GÖRÜNÜR** oldu |
+| self-approval kontrolü hiç ateşlemiyor | `500` (obje→`uuid`) | **kazara güvenliydi** — düzeltince koruma **gerçekten** çalıştı |
+| genel onay ucu domain akışını atlıyor | `500` (obje→`uuid`) | **atomiklik ihlali** erişilebilir oldu |
+
+> **Bir `500`, bir kusurun YOKLUĞU değil — çoğu zaman İKİNCİ bir kusurdur, ve
+> birincisini saklar.**
+
+📌 **Pratik sonuç:** `500` veren bir ucu düzeltirken, o `500`'ün **arkasında ne
+olduğunu** sor. Uç *"çalışmıyor"* değil — **hiç ölçülmemiş** demektir, ve arkasındaki
+kod yolu **hiçbir zaman koşmamıştır**.
+
+⚠️ Ve bu, `CLAUDE.md`'nin *"bir doğrulamanın çalıştığı sanılması, girdinin ona hiç
+ULAŞMAMASINDAN gelebilir"* maddesinin **rota tarafındaki** hâli: `500` veren bir uçtaki
+hiçbir kural, doğru olduğu **bilinerek** orada durmuyor.
+
 ### YORUM KİRLİLİĞİ iki yönde birden yanıltır (ZORUNLU)
 
 > **Bir dekoratörü/çağrıyı ararken yorum satırları hem VAR OLANI GİZLER hem
