@@ -92,11 +92,50 @@ Bir kullanıcı yaratılırken verilen ilk kapsam da **`SCOPE_UPDATE`**'tir; esk
 | `yeni küme` | ✅ | **sonraki** çiftler — `REVOKE_ALL`'da **boş** |
 | `kim` | ✅ | **aktör** (`A1`'in kusuru: etkilenen yazılıyordu) |
 | `ne zaman` | ✅ | |
-| `niyet` | ✅ | `UPDATE` \| `REVOKE_ALL` — çağrının **açık** alanı |
+| `niyet` | ✅ | `UPDATE` \| `REVOKE_ALL` — çağrının **açık** alanı. ⚠️ **Kayıtta `ne` alanına düşer** — aşağıya bakınız |
 | `gerekçe` | ⚠️ **koşullu** | `REVOKE_ALL`'da **ZORUNLU** · `UPDATE`'te opsiyonel |
 
 📌 **Gerekçenin koşullu zorunluluğu** `K-2.5.15` ailesiyle tutarlı bölünmüştür
 (`Z15`): yıkıcı olan eylem gerekçe ister, olağan olan istemez.
+
+### ⚠️ `niyet` kayıtta AYRI bir alan DEĞİL — `ne`'ye düşer (`Z17`)
+
+```
+UÇ'ta      intent: UPDATE | REVOKE_ALL      ← girdi alanı, ZORUNLU
+KAYITTA    ne = SCOPE_UPDATE | SCOPE_REVOKE_ALL   ← tek alan, aynı bilgi
+```
+
+`Z15`'in `intent` kararı **ucun girdi alanıydı**: boş bir dizinin *"temizle"* mi
+*"hata"* mı olduğunu ayırmak için. **Kayıt tarafında ikinci bir kolona ihtiyaç yok** —
+iki tür zaten iki değer.
+
+> **`İlke 1`:** ayrı bir `niyet` kolonu yaratmada **her zaman sabit `UPDATE`** olurdu,
+> yani hiçbir bilgi taşımazdı.
+>
+> Ve *"çağıran ne demek istedi ↔ sistem ne kaydetti"* sapması **oluşamaz**: doğrulama
+> katmanı `boş küme ∧ intent ≠ REVOKE_ALL → ret` kuralıyla onu zaten reddediyor.
+
+📌 **[[T-242a]] aynı tek alanı yazar.**
+
+### ⚠️ `hedef` = KULLANICI, kapsam satırı değil (`Z17`)
+
+```
+entity_type = 'user'          entity_id = <kullanıcının id'si>
+```
+
+Olay, **kullanıcının kapsamının değişmesidir** — bir kapsam satırının değil. `replace`
+semantiği bunu zaten söylüyor: hedef bir **küme**, ve kümenin sahibi **kullanıcı**.
+
+**Kapsam kümesi `eski küme`/`yeni küme` alanlarında yaşar** — `hedef`in taşımasına
+gerek yok.
+
+> ❌ **Ölçülmüş kusur (`T-244` review, `m1`):** ilk uygulama `entity_type='user_scope'`
+> + `entity_id=<kullanıcı id>` yazıyordu. Repodaki **16 üreticinin 16'sında** `entity_id`,
+> `entity_type`'ın adlandırdığı tablonun id'sidir — bu tek istisnaydı, ve sonucu ölçüldü:
+> `JOIN user_scopes ON id = entity_id` **her zaman 0 satır** döner.
+>
+> ⚠️ `Z15` bu biçimi *"sözlüğün ilk maddesi"* ilan ettiği için düzeltilmeseydi
+> [[T-242a]] istisnayı **miras alır**, ve sözlük **yanlış bir deseni kanonikleştirirdi**.
 
 ### Neden *"eski küme → yeni küme"*
 

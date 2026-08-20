@@ -246,6 +246,7 @@ status: active        # planned | active | closed
 | [[T-245]] | ⏸️ **ERTELENİR** — tekrarlı çift → `500` / sessiz çift satır. **Kusur**, ama hiçbir şeyi bloklamıyor | P2 | backend-engineer | todo |
 | [[T-242a]] | ⚡ **FAZ 1** (md.2) — kapsam **GÜNCELLEME**. `Z15`'in üç kararı işlendi (replace · `intent: UPDATE\|REVOKE_ALL` · biçim sözlükten). ⛔ **`T-244`'ü bekliyor** | **P1** | architect | todo |
 | [[T-242b]] | ⏸️ **ERTELENİR** — rol **DEĞİŞTİRME** yolu (arayüzsüz). `ADIM 3`'ün *ertelenen* yarısına bağlıydı → **artık hiçbir şeyi bloklamıyor**. ⚠️ `T-243`'ün yazılamayan test kaleminin sağlayıcısı | P3 | architect | todo |
+| [[T-247]] | `sales-actuals` `{manager}` ile denetim yazıp **hiç flush etmiyor** — 6/6 emsal izliyor, o izlemiyor. ⚠️ Etkisi ÖLÇÜLMEDİ: `isHighRiskAction` kesişimi boşsa `P3`, doluysa **alarm hiç gitmiyor** | P2 | backend-engineer | todo |
 | [[T-240]] | ⏸️ **ERTELENİR** — `ledger_entries`'in 5 FK'siz kolonu. Tablo bugün **boş** → yapısal yol, canlı hata değil | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.

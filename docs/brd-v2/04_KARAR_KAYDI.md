@@ -1443,3 +1443,61 @@ A7  kapsam kaydı SCOPE_UPDATE                    ⚡ BU TURDA (biçim uygulamas
 `A1`'in yaratma olayının kaydedilmemesiyle **ilgisi yok**: `createdBy` bir denetim kaydı
 alanı değil, `user_scopes` satırının **kendi kolonu**. Yanlış aktör yazması, olay
 kaydedilse de kaydedilmese de bir kusurdur.
+
+---
+
+## Z17 · Sözlük `Madde 1`'in iki belirsizliği kapandı — `niyet` ve `hedef`
+
+> **Tarih:** 2026-08-20 · **Karar veren:** ürün sahibi · **Yazan:** Team Lead
+> **Kaynak:** `T-244` `code-reviewer` turu, bulgular `m2` ve `m1`
+> **Etkilediği belge:** `docs/process/DENETIM_SOZLUGU.md` `Madde 1` (süreç artefaktı,
+> `Z1` dondurması kapsamında **değil**) — `L2`'ye dokunulmadı
+
+### 1 · `niyet` kayıtta AYRI bir alan değil (`m2`)
+
+```
+UÇ'ta      intent: UPDATE | REVOKE_ALL              girdi alanı, ZORUNLU
+KAYITTA    ne = SCOPE_UPDATE | SCOPE_REVOKE_ALL     tek alan, aynı bilgi
+```
+
+**Gerekçe (ürün sahibi):** `Z15`'in `intent` kararı **ucun girdi alanıydı** — boş bir
+dizinin *"temizle"* mi *"hata"* mı olduğunu ayırmak için. Kayıt tarafında ikinci bir
+kolona ihtiyaç yok, çünkü **iki tür zaten iki değer**.
+
+- `İlke 1`: ayrı bir `niyet` kolonu yaratmada **her zaman sabit `UPDATE`** olurdu →
+  hiçbir bilgi taşımaz.
+- *"Çağıran ne demek istedi ↔ sistem ne kaydetti"* sapması **oluşamaz**: doğrulama
+  katmanı `boş küme ∧ intent ≠ REVOKE_ALL → ret` ile onu zaten reddediyor.
+
+⚠️ **`code-reviewer` varsaymadı, `§2.4`'ü uyguladı:** iki okumanın da belgeyle uyumlu
+olduğunu ölçüp **DUR** dedi. Belirsizlik iki tur sonra iki farklı kayıt üretecekti.
+
+### 2 · `hedef` = KULLANICI, kapsam satırı değil (`m1`) — **bir DÜZELTME**
+
+```
+❌ entity_type='user_scope'  entity_id=<kullanıcı id>     ilk uygulama
+✅ entity_type='user'        entity_id=<kullanıcı id>     düzeltilmiş
+```
+
+**Ölçüm (`code-reviewer`):** repodaki **16 `logAdminAction` üreticisinin 16'sında**
+`entity_id`, `entity_type`'ın adlandırdığı tablonun id'sidir. `T-244` **tek istisnaydı**,
+ve sonucu ölçüldü: `JOIN user_scopes ON id = entity_id` **her zaman 0 satır** döner —
+üstelik `@Index(['entityType','entityId'])` tam da o aramayı hızlandırmak için var.
+
+**Gerekçe (ürün sahibi):** olay **kullanıcının kapsamının değişmesidir**, bir kapsam
+satırının değil. `replace` semantiği bunu zaten söylüyor: hedef bir **küme**, kümenin
+sahibi **kullanıcı**. Ve küme `eski küme`/`yeni küme` alanlarında yaşıyor — `hedef`in
+taşımasına gerek yok.
+
+> **Reddedilen alternatif:** `entity_type='user_scope'` + `entity_id=<kapsam satırı id>`.
+> ⛔ `replace` semantiğinde **tek bir satır yok** — küme değişiyor.
+
+### ⚠️ Ve asıl bedel biçimin YAYILMASI olurdu
+
+`Z15` bu biçimi *"sözlüğün ilk maddesi"* ilan etti. Düzeltilmeseydi [[T-242a]]
+istisnayı **miras alır** ve sözlük **yanlış bir deseni kanonikleştirirdi** — yani hata
+bir uygulamada kalmaz, **kanona** girerdi.
+
+📌 `CLAUDE.md`'nin *"bir düzeltme de bir iddiadır"* dersinin tersi yönü: burada
+**düzeltmenin kendisi** değil, **kanonikleştirilecek biçim** ölçüldü. Bir biçim
+kanona girmeden önce, onu **miras alacak** tüketici sorulmalı.
