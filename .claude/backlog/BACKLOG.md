@@ -222,7 +222,7 @@ status: active        # planned | active | closed
 | [[T-218]] | `plans.coverage_ratio` — değer hesaplanıyor, `plan.service` atıyor (iki ajan bağımsız buldu) | **P1** | data-engineer | todo |
 | [[T-217]] | `GRİ`'nin üçüncü öğesi: eksik listesi — veri bugün taşınmıyor | P2 | architect | todo |
 | [[T-219]] | ✅ İddia ÇÜRÜTÜLDÜ: `S5`'ten geliyordu, ve e2e suite'inin **tamamı** (17/17) kırıktı — düzeltildi | **P1** | qa-engineer | done |
-| [[T-220]] | **TAM ENUMERASYON**: hesaplanamayan değer nerede bir iş yargısına çöküyor — liste, sayı değil | **P1** | code-reviewer | todo |
+| [[T-220]] | ⏸️ **ERTELENİR** — canlı kusur, ama **izolasyon** kusuru değil (`§2.5` ailesi, `Faz 3`/rapor konusu). ⚠️ Sessiz değil: `EK_E` `Renk (RAG) ⚠️` + `GRİ ❌` satırlarında görünür | **P1** | architect | todo |
 | [[T-221]] | ✅ `plan.entity.ts` 24 kolon — string→number, çökme koşarak reprodüklendi ve kapandı. ⚠️ `T-197` sayımı bayatladı (89→101) | **P1** | backend-engineer | done |
 | [[T-222]] | İki grid implementasyonu, biri karanlıkta — `PlanningGrid.tsx` ölü kod (`İlke 4`) | P2 | frontend-engineer | todo |
 | [[T-223]] | 🔒 `utils/export.ts` sıfır çağıran — mekanizma var, yol yok | P2 | frontend-engineer | blocked-unreachable |
@@ -232,19 +232,20 @@ status: active        # planned | active | closed
 | [[T-229]] | **`Karar 6` YARIM uygulanacak**: 49 `DecimalTransformer` kolonunun **37'si PARA** — yuvarlama `MoneyTransformer`'a konursa atlanırlar (ölçüldü) | **P1** | architect | todo |
 | [[T-230]] | **`§2.5` ALAN A'da**: eksik sayı sessizce `0` oluyor — `\|\| 0` 59 · `?? 0` 14 (Alan A). SAYAR, düzeltmez | **P1** | code-reviewer | todo |
 | [[T-231]] | 🔴 `BudgetTransactionType` **İKİ KEZ** tanımlı — aynı TS adı, 7 vs 8 değer, küçük vs BÜYÜK harf. Tip kapısı SUSAR | **P1** | architect | todo |
-| [[T-232]] | `bitbucket-pipelines.yml` **ÖLÜ** (CI yok: 0 workflow, gh run list boş) ama **yanıltıcı** — tek-rol modelini miras verir, `K-2.6.13`'ü geri alır | P2 | architect | todo |
+| [[T-232]] | ⚡ **FAZ 1** (kalem 6 kenarı) — `bitbucket-pipelines.yml` ölü ama **yanıltıcı**; konuşlandırma ayağa kalkarsa **`K-2.6.13`'ü geri alır** | P2 | architect | todo |
 | [[T-233]] | ✅ `capabilities`/`role_capabilities` DÜŞÜRÜLDÜ (`1807`) + `users.permissions` (`1806`) — entity sınıfları da kaldırıldı (kayıt `Z5`: ölçümüm yanlıştı) | P2 | architect | review |
-| [[T-234]] | 🔴 `migration:generate` **1390 satır** drift — `T-219`'un sınıfı (geri bildirim döngüsü YOK). İçinde **gerçek bir ayrışma gizli** (`lta_agreements.metadata`) | **P1** | architect | todo |
+| [[T-234]] | ⏸️ **ERTELENİR** — `migration:generate` **1390 satır** drift. Sürekli bakım, izolasyonla ilgisiz. ⚠️ [[T-113]] ile aynı aile: **baseline bakım borcu** | P2 | architect | todo |
 | [[T-235]] | Kapsam filtresi: `ADIM 1` (joker seed) + `ADIM 2` (`İZLEYİCİ` kod dalından çıktı) **bitti**; kapanış şartı **var olan bir sağlayıcıya** revize edildi ve **bugün sağlanıyor**. ⛔ Kalan: `.env.example` (**Team Lead'in izni yok** — metin hazır) + bayrağın açılması (ürün sahibi kararı) | **P1** | architect | in-progress |
 | [[T-236]] | İki onay anomalisi — **kod bir kuralı uyguluyor, kural `L2`'de yazılı değil** (`approvals/:id/approve` `ADMIN`'siz · `FINANCE` devredilen planı göremiyor). `Faz B`'yi bloklamıyor | P2 | architect | todo |
 | [[T-239]] | ✅ `(b)` — bölüm dağılımı satırı **kaldırıldı** (`Z9`). *Denetlenen sayı kalır, denetlenmeyen kalkar.* ⚠️ Kör nokta taraması **bir tane daha** buldu: `Açık karar (kural dışı) = 2` — aynı sınıf, karar bekliyor | P2 | qa-engineer | review |
 | [[T-238]] | ✅ KAPANDI — `user_scopes.channel_id` düşürüldü (`1809`), üç dal ampirik. Review **blocker** buldu: kanal ekseni `A7`/`K-2.6.7`/`EK_C`'de bağlayıcıydı → **`Z11`** + `❌ ölçülmüş sapma` notları. Karar değişmedi, **sapma görünür oldu** | **P1** | data-engineer | done |
 | [[T-241]] | ✅ KAPANDI — `POST /users` rol + kapsam **birlikte**, atomik (DB seviyesinde kanıtlı). İki tur review: `B1`·`R1`·`R2`·`A3`·`A4`·`A5`·`A6`·`A8` kapandı; `B2`→[[T-243]] · `A1`+`A7`→[[T-244]] · `A2`→[[T-245]] | **P1** | backend-engineer | done |
 | [[T-243]] | ✅ KAPANDI — `UserForm` kapsam seçicisi, dört kapıya uyum, `R-1` **yapısal** olarak korundu. Yedi davranış pinlendi, **her biri mutasyonla kırmızı**. ⛔ `R2` pinlenemedi (kayıtlı kilit → [[T-242]]) | **P1** | frontend-engineer | done |
-| [[T-244]] | Kapsam verme **DENETİM KAYDI** — `createdBy` **yanlış aktörü** yazıyor (yeni kullanıcının kendisi) + `POST /users` denetim izi **YOK**. ⚠️ İkisi BİRLİKTE: kayıt eksikliği yanlış aktörü **gizliyor** | **P1** | backend-engineer | todo |
-| [[T-245]] | `scope`'ta tekrarlı çift → **`500`** (yakalanmamış `23505`) ya da `NULL`'lu çiftte **sessizce iki özdeş satır** — `UQ` `NULLS NOT DISTINCT` taşımıyor | P2 | backend-engineer | todo |
-| [[T-242]] | Kapsam **GÜNCELLEME** + ⚡ **rol DEĞİŞTİRME** yolu — ikisi de **arayüzsüz** (`updateUserSchema`'da `role` YOK, ölçüldü). `R2`'nin `409`'u bugün arayüzden **tetiklenemiyor**. ⛔ `T-235 ADIM 3`'ü blokluyor | **P1** | architect | todo |
-| [[T-240]] | `ledger_entries`'in **5 FK'siz kolonu** — `cleanup-data.ts` bağlı tabloları sert siliyor, ledger'a dokunmuyor. Bugün tablo **boş** → yapısal yol, canlı hata değil. ⚠️ Defter (`K-2.3.4`) — dolduğu an sessiz öksüz üretir | P2 | data-engineer | todo |
+| [[T-244]] | ⚡ **FAZ 1** (çıkış ölçütü md.4) — denetim kaydı: `createdBy` **yanlış aktör** (`A1`, **bugün CANLI**) + `POST /users` izi **YOK** (`A7`). İkisi birlikte: kayıt eksikliği yanlış aktörü **gizliyor** | **P1** | backend-engineer | todo |
+| [[T-245]] | ⏸️ **ERTELENİR** — tekrarlı çift → `500` / sessiz çift satır. **Kusur**, ama hiçbir şeyi bloklamıyor | P2 | backend-engineer | todo |
+| [[T-242a]] | ⚡ **FAZ 1** (çıkış ölçütü md.2) — kapsam **GÜNCELLEME** yolu: filtreyi **besleyen** yol. Bayrağı blokluyor | **P1** | architect | todo |
+| [[T-242b]] | ⏸️ **ERTELENİR** — rol **DEĞİŞTİRME** yolu (arayüzsüz). `ADIM 3`'ün *ertelenen* yarısına bağlıydı → **artık hiçbir şeyi bloklamıyor**. ⚠️ `T-243`'ün yazılamayan test kaleminin sağlayıcısı | P3 | architect | todo |
+| [[T-240]] | ⏸️ **ERTELENİR** — `ledger_entries`'in 5 FK'siz kolonu. Tablo bugün **boş** → yapısal yol, canlı hata değil | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
 | [[T-145]] | ~~BRD tek ledger~~ → **bulgu yanlıştı**: iki-tablolu model BRD'nin modeli | P2 | architect | done |

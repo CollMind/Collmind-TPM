@@ -21,6 +21,40 @@
 
 ---
 
+## 0b · ⚡ ÇIKIŞ ÖLÇÜTÜ (ürün sahibi, 2026-08-20) — `0071 §6`'dan BAĞIMSIZ
+
+> **`Faz 1` = izolasyonun ön koşulları hazır.**
+
+```
+1  ayrıcalıksız DB rolleri, sessiz geri dönüş yok       ✅ K-2.6.13 — KAPANDI (ADIM 1)
+2  kapsam filtresi AÇIK ve besleyen yolları var         ⏳ bayrak + [[T-242a]]
+3  yetenek modeli + default-deny                        ⏳ ADIM 3
+4  denetim kaydı: kim, ne zaman, neye dayanarak         ⏳ [[T-244]]
+5  RLS uygulanmış                                       ⏳ ADIM 5
+```
+
+**Ve ölçütün kendisi:** `K-2.6.12`'nin *"izolasyon **iki katmanda** korunur —
+uygulama katmanı filtresi **ve** veritabanı seviyesinde zorlama"* şartı **sağlanıyor
+mu?** Tek bir kanıtla sınanabilir.
+
+### ⚠️ Neden bu, kalem listesinden BAĞIMSIZ yazıldı
+
+Eski ölçüt fiilen *"`12` kalem bitince"*ydi ve **hiçbir yerde yazılı değildi**
+(ölçüldü, `0074 §0`). Sorun: `T-235`'ten `11` yeni task doğdu — hepsi gerçek
+bulgulardan, ama **kalem sayısı büyüdükçe ölçüt kayıyordu.**
+
+> **Beş madde sabittir; kalem sayısı büyüse de ölçüt kaymaz.**
+
+📌 `Faz 0`'ın *"guard temiz · `0` açık kural"* ölçütünün karşılığı: **ölçülebilir ve
+tek kanıtlı.** Ve `Faz 1`'in gerekçesi baştan buydu (`K-2.6.12`): *"izolasyon
+ertelenemez — finansal kontrol denetimi bir **satış ön koşulu**."*
+
+⚠️ **Ve `0071 §6`'nın `12` kalemi ONAYLANDI** (aynı karar) — ama artık **ölçüt
+değil, girdi**. Bir kalem `Faz 1`'e giriyorsa yukarıdaki beş maddeden **birine**
+bağlanabildiği için girer.
+
+---
+
 ## 1 · ADIM 0 — Kapılar + dış kuyruk
 
 Hiçbir inşa kalemi bu adımdan önce başlamaz. Gerekçe: dört mekanizmanın hiçbiri bugün
@@ -38,7 +72,7 @@ gereken sınıf.
 
 | karar | blokladığı | durum |
 |---|---|---|
-| `0071 §6` sınıflandırma onayı (12 kalem) | planın tamamı | ⛔ açık — bu plan öneri statüsünde |
+| `0071 §6` sınıflandırma onayı (12 kalem) | planın tamamı | ✅ **ONAYLANDI** 2026-08-20 — ama artık **ölçüt değil, GİRDİ**: çıkış ölçütü `§0b`'nin beş maddesi (bkz. `0074`) |
 | `K-2.6.13a` + kabul testi tanımı | Adım 1 | ⛔ açık `[ÖLÇÜLDÜ: 0071 §5]` |
 | `0056-K3` rol seed kararı | Adım 3 | ⛔ açık `[ÖLÇÜLDÜ: 0071 §1.1]` |
 | `T-214` katalog ↔ tenant ayrımı | Adım 3'ün politika üretim yolu | ⛔ açık — üretim yolu bu karardan önce yazılırsa yanlış satır modeli API sözleşmesine döner `[GEREKÇELİ]` |
@@ -280,6 +314,24 @@ durum tablosu `1–5` içindir. `6` **açıktır**.
 > gevşetirse iki kapı da aynı anda açık kalır.
 >
 > 📌 Yani üç halka **aynı tek gerekçeye** bağlı: kapsam katmanı gerçekten çalışıyor mu.
+>
+> ### ⛔ ADIM 3 BÖLÜNDÜ (ürün sahibi, 2026-08-20)
+>
+> ```
+> yetenek modeli + default-deny          FAZ 1   ← çıkış ölçütü madde 3
+> UNRESTRICTED kod dalı temizliği        ERTELENİR
+> ```
+>
+> **`Faz 1` yarısının gerekçesi:** `K-2.6.6` *"tanımlanmamış uç herkese açık"* — ve
+> **`72` uç bugün öyle** (`0072 §4b`). Bu bir **izolasyon kusuru**, ve ⚠️ **`RLS` onu
+> KAPATMAZ:** `RLS` **satır** seviyesi, bu **rota** seviyesi. İki farklı katman.
+>
+> **Ertelenen yarısının gerekçesi:** `UNRESTRICTED_ROLES` temizliği bir `İlke 4`
+> kalemi (iki mekanizma aynı soruyu cevaplıyor), ve `K-2.6.8a` **veri tarafında
+> zaten karşılandı** (`T-235 ADIM 1` — joker satırlar yazıldı).
+>
+> 📌 **Sonucu:** [[T-242b]] (rol değiştirme) artık **hiçbir şeyi bloklamıyor** —
+> `ADIM 3`'ün yalnız ertelenen yarısına bağlıydı.
 >
 > ### Faz B — TÜKETİCİ (ayrı tur)
 >

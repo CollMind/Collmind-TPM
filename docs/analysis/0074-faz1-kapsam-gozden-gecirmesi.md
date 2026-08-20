@@ -143,3 +143,97 @@ BELİRSİZ     T-244  denetim ailesi — kalem 8/9'a YAKIN ama aynısı değil
    konusudur**, bir varsayım değil.
 3. **`ADIM 3` `Faz 1` kapsamında mı?** Bu ölçümde **varsayıldı**. Değilse `T-242`'nin
    bloklaması yarıya iner (yalnız bayrak kalır).
+
+
+---
+
+# ✅ 6 · KARARLAR (ürün sahibi, 2026-08-20) — ölçümden SONRA
+
+## 6.1 · Çıkış ölçütü — **`Faz 1` = izolasyonun ön koşulları hazır**
+
+```
+1  ayrıcalıksız DB rolleri, sessiz geri dönüş yok       ✅ KAPANDI
+2  kapsam filtresi AÇIK ve besleyen yolları var         ⏳ bayrak + T-242a
+3  yetenek modeli + default-deny                        ⏳ ADIM 3 (Faz 1 yarısı)
+4  denetim kaydı: kim, ne zaman, neye dayanarak         ⏳ T-244
+5  RLS uygulanmış                                       ⏳ ADIM 5
+```
+
+**Ve ölçütün kendisi:** `K-2.6.12`'nin iki katmanlı izolasyon şartı — tek kanıtla
+sınanabilir. → `FAZ1_PLAN §0b`.
+
+> **Beş madde sabittir; kalem sayısı büyüse de ölçüt kaymaz.** `12` kalem **onaylandı**
+> ama artık **ölçüt değil, girdi**.
+
+## 6.2 · `BELİRSİZ` dörtlüsü çözüldü
+
+| task | karar | gerekçe |
+|---|---|---|
+| `T-244` | ⚡ **FAZ 1** | çıkış ölçütünün **4. maddesi**, ve `A1` **bugün canlı bir kusur** |
+| `T-234` | ⏸️ **ERTELENİR** | sürekli bakım, izolasyonla ilgisiz. ⚠️ `T-113` ile aynı aile: **baseline bakım borcu** |
+| `T-220` | ⏸️ **ERTELENİR** | canlı kusur, ama **izolasyon** kusuru değil — `§2.5` ailesi, `Faz 3` konusu |
+| `T-113` | ✅ **ÖLÇÜLDÜ** | aşağıda |
+
+### `T-220`'nin şerhi — *"sessizce ertelenmesin"* — ÖLÇÜLDÜ
+
+Ürün sahibi: *"canlı bir kusur ertelenebilir, ama sessizce değil — `EK_E`'de `⚠️`
+olarak duruyor mu?"*
+
+```
+EK_E:124  | Renk (RAG) | ⚠️ | Kapsama oranı istemciye ulaşmıyor |
+EK_E:125  | GRİ durumu (kapsama rozeti + eksik listesi) | ❌ |
+EK_E:224  Kapsama oranı ulaşmıyor → GRİ durumu eksik
+```
+
+✅ **Görünür** — ama ⚠️ **birebir aynı değil**: `EK_E` satırları *kullanıcıya görünen
+semptomu* (kapsama oranı ulaşmıyor) anlatıyor; `T-220`'nin kapsamı daha geniş
+(*"hesaplanamayan bir değer nerede bir iş yargısına çöküyor"* — beş nokta, backend +
+frontend). **Semptom kayıtlı, sınıf değil.**
+
+### `T-113` — ölçüldü: **özgün kusur ÇÖZÜLMÜŞ**
+
+```
+başlık        "POST /plans/:id/fus 500 dönüyor — grid e2e'leri hiç koşamıyor"
+bugün         o uç e2e logunda 6 kez geçiyor, ve kullanan üç suite PASS:
+              optimistic-locking · kpi-optimistic-locking · recalc-perf-regression
+```
+
+📌 Sebebi zaten kayıtlı: **ölçüm ortamının bayatlığıydı**, kod kusuru değil
+(`CLAUDE.md`: *"`start:dev` süreci ayaktayken kaynak düzenlenirse rotalar bozulabilir"*).
+
+⚠️ **Ama task `review`'da ve KONUSU KAYMIŞ:** `BACKLOG` satırı artık `lint-ratchet`
+kapısını anlatıyor, başlık hâlâ `500`'ü. Üstüne `A8`'in **baseline bakım borcu**
+eklendi. Yani tek bir task **üç ayrı konu** taşıyor — ve bu bir *"kapsam kayması"*
+vakası, bir kusur değil.
+
+## 6.3 · `ADIM 3` — **`Faz 1`'de**, ama BÖLÜNMÜŞ
+
+```
+yetenek modeli + default-deny        FAZ 1       ← çıkış ölçütü md.3
+UNRESTRICTED kod dalı temizliği      ERTELENİR
+```
+
+**`Faz 1` yarısının gerekçesi:** `K-2.6.6` — `72` uç bugün **rol kısıtsız**, ve bu bir
+**izolasyon kusuru**. ⚠️ **`RLS` onu KAPATMAZ:** `RLS` **satır** seviyesi, bu **rota**
+seviyesi.
+
+**Ertelenen yarısı:** `İlke 4` kalemi, ve `K-2.6.8a` **veri tarafında zaten
+karşılandı** (`T-235 ADIM 1`).
+
+> 📌 **`§4`'ün birinci sınırı KAPANDI:** `ADIM 3` eşlemesi *"plan yazarının kararıydı"*
+> denilmişti — şimdi **çıkış ölçütünün 3. maddesiyle doğrulandı**, varsayım değil.
+
+**Ve sonucu:** `T-242b` (rol değiştirme) `ADIM 3`'ün **ertelenen** yarısına bağlıydı
+→ **artık hiçbir şeyi bloklamıyor.** `T-242` bu yüzden **bölündü**:
+
+```
+T-242a  kapsam GÜNCELLEME    FAZ 1       bayrağı blokluyor
+T-242b  rol DEĞİŞTİRME       ERTELENİR   hiçbir şeyi bloklamıyor
+```
+
+## 6.4 · `§4`'ün ikinci sınırı da kapandı
+
+*"`12` kalem hâlâ onaylanmadı — bu tablo onaylanmamış bir tabana göre ölçüldü."*
+
+✅ **Onaylandı** (2026-08-20). Ve daha güçlüsü: **çıkış ölçütü artık o listeden
+bağımsız**, yani tablonun tabanı bir daha kaymayacak.
