@@ -181,6 +181,41 @@ durum tablosu `1–5` içindir. `6` **açıktır**.
 
 ## 5 · ADIM 3 — `K-2.6.3` + `K-2.6.6` tek dalga (yetenek modeli + default-deny)
 
+> ### 📌 `Faz B` PLANI AYRI BELGEDE — `docs/process/ADIM3_FAZB_PLAN.md` (2026-08-21)
+>
+> Bu bölüm `ADIM 3`'ün **tarihçesini** taşıyor. Aşağıdaki beş revizyon **burada
+> yazılı değil**, ve bu bölümü tek başına okuyan biri yanlış planlar:
+>
+> | # | revizyon | nerede |
+> |---|---|---|
+> | 1 | **`report-only` ÇÜRÜTÜLDÜ** — değersizleştiren girdi *"eksik harita"* değil **trafik yokluğu**; statik guard + dinamik telemetri olarak **ikiye bölündü** | `0073 §3` |
+> | 2 | `FINANCE_MANAGER` key → `FINANCE` **çözüldü** | `Z7` |
+> | 3 | `77` → **`72` boşluk · `3` açık · `2` alan-guard'lı** kırılımı | `0072`/`0074` |
+> | 4 | **`ADIM 3` BÖLÜNDÜ** — `UNRESTRICTED` temizliği ERTELENDİ | bu bölümün sonu |
+> | 5 | **`T-249`/`markAsRead` deliği `ADIM 3`'e bağlandı** | `T-249` |
+>
+> **Ve `Faz A` ZATEN İNDİ** (`src/common/authorization/capabilities.ts`) — sıfırdan
+> planlayan bir ajan onu **tekrar önerir**.
+>
+> ### ⛔ İKİ GÜNCELLEME (2026-08-21, ürün sahibi)
+>
+> **`B0` KAPI DEĞİL, RATCHET.** Bugün `61` filtresiz uç var; *"sıfır mı"* soran bir
+> kapı **kalıcı kırmızı** olurdu (`§2.7 #9`: sinyal sabitse sinyal değildir), ve
+> `T-113`'ün ölçülmüş sonucu: **kapı bir hafta içinde devre dışı bırakılır.**
+> ```
+> B0  baseline 61'in LİSTESİ · yalnız ARTIŞ kırmızı
+> B2  baseline DÜŞÜRÜLÜR (kabul kriteri, ayrı commit)
+> B4  baseline 0 → guard KAPIYA TERFİ EDER
+> ```
+> `mode-split`'in dersi: **yeni guard'lar kapı doğmaz, kapıya terfi eder.**
+>
+> **`K1` KARARA BAĞLANDI (`Z18`):** `READ` üçe ayrılır (`READ_OWN` · `ÖZET` ·
+> `modül-READ`), dördüncü eksen **yok**, `UNRESTRICTED` üyeliği **koşulsuz sabitten
+> kayıtlı rol özelliğine** terfi eder, ve **hiçbir hücre-rol çifti union gerekçesiyle
+> yaşayamaz.**
+>
+> **`K4` cevaplandı: KADEMELİ** — ve ratchet onu **zorluyor**, tercih değil.
+
 > ### Faz A — SABİT YAZIMI (2026-08-17, ürün sahibi kapsamı)
 >
 > ```

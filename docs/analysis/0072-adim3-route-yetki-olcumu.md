@@ -311,3 +311,33 @@ hücresinin çöküşü tam olarak oradan geliyor. Reklasifikasyon **yapılmadı
   ölçümünde görüldü) ve bir ucu `@Roles`'suz da koruyabilirler. **`77`'nin bir kısmı bu
   guard'larla korunuyor olabilir.**
 - İşlem sınıfı **metot adından** türetildi, gövdesinden değil.
+
+
+---
+
+## ⚡ ÇAPRAZ SINAMA — `§4c`'nin `A`/`C` ayrımı bağımsız bir yoldan doğrulandı (2026-08-21)
+
+`Z18`'de `ADIM 3`'ün üç `READ` hücresi **taksonomi** ekseninden çözüldü (union
+çöküşünün sebebi aranırken), `§4c`'nin sınıf ayrımına **bakılmadan**. İki yol aynı
+yere vardı:
+
+```
+READ_OWN + ÖZET   ⊂   A sınıfı   (servis kapsamı VAR)
+sales-actuals     =   C sınıfı   (kapsam YOK)
+```
+
+⚠️ **Ve `§4c`'nin AÇIK bıraktığı soru bu turda cevaplandı:** `sales-actuals`
+`SHARED_READ`'in **meşru sakini değil** — kapsamsız ham finansal veri. Adresi
+`ADIM 4`.
+
+📌 **İki bağımsız yolun aynı taksonomiye varması güçlü bir sinyaldir** — ve
+`CLAUDE.md`'nin *"bir hipotezi DOĞRULAYAN ölçüm, ÇÜRÜTEN ölçümden daha fazla
+doğrulama ister"* maddesinin karşılandığı hâl: ikinci ölçüm **farklı bir yüzeyden**
+geldi, aynı ölçümün tekrarı değil.
+
+⚠️ **Ve bu belgede bayat bir satır var** (`capabilities.ts`'in *"Filtresiz 4"* listesi
+üzerinden): `POST /spend-calculation/distribute/...` ve
+`.../recalculate-on-volume-change/...` artık **filtresiz DEĞİL** — `T-249` onlara
+`@Roles` ekledi (`SPEND_WRITE_ROLES = {ADMIN, PLANNER}`). Bugünkü sayım:
+**`238` rota · `172` `@Roles`'lu · `66` filtresiz** (`3` `@Public` + `2` alan-guard'lı
++ **`61` gerçek boşluk**).

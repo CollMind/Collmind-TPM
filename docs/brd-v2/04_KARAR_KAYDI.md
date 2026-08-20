@@ -1501,3 +1501,117 @@ bir uygulamada kalmaz, **kanona** girerdi.
 📌 `CLAUDE.md`'nin *"bir düzeltme de bir iddiadır"* dersinin tersi yönü: burada
 **düzeltmenin kendisi** değil, **kanonikleştirilecek biçim** ölçüldü. Bir biçim
 kanona girmeden önce, onu **miras alacak** tüketici sorulmalı.
+
+---
+
+## Z18 · `K1` — `READ` üçe ayrıldı, ve `UNRESTRICTED` üyeliği STATÜ değiştirdi
+
+> **Tarih:** 2026-08-21 · **Karar veren:** ürün sahibi · **Yazan:** Team Lead
+> **Bağlam:** `ADIM 3` `Faz B`, üç `READ` hücresinin union çöküşü
+> **Açtığı düzenleme:** `L2`'de `UNRESTRICTED` üyeliğinin **statüsü** (`Z1` dondurma
+> kuralı gereği bu kayıt olmadan düzenlenemezdi)
+
+### 0 · Kapı neden şimdi açıldı
+
+`FAZ1_PLAN §5`'in bağlayıcı sırası: *"üç `READ` hücresinin union'ı **`T-235`
+kapanmadan** değerlendirilmez."* `T-235` **2026-08-20'de kapandı** (bayrak canlı,
+davranışsal doğrulandı).
+
+**Ve engelin gerekçesi de değişti — ölçülerek:**
+
+```
+o gün    kapsam filtresi 5 rolün 1'inde aktif  →  @Roles TEK kapı  →  union onu gevşetir
+bugün    bayrak AÇIK, PLANNER de kapsamlı      →  İKİNCİ KAPI ÇALIŞIYOR
+```
+
+### 1 · `READ` **ÜÇ SINIFA** ayrılır
+
+```
+READ_OWN      işlem ekseninin SÖZLÜK GENİŞLEMESİ — dördüncü eksen DEĞİL
+ÖZET          kendi hücresi — çapraz-modül yüzey
+modül-READ    kalan, YENİDEN ÖLÇÜLÜR
+```
+
+### 2 · ⛔ DÖRDÜNCÜ EKSEN YOK — ve zemin değişimi kararı GÜÇLENDİRDİ
+
+`0073` bunu zaten teyit etmişti. Yeni gerekçe **daha güçlü**:
+
+> **Yeteneğe kapsam taşımak, artık ÇALIŞAN bir katmanı KOPYALAMAK olurdu.**
+
+Bayrak kapalıyken kapsam katmanı `5` rolün `1`'inde etkindi — o gün *"yeteneğe kapsam
+taşıyalım"* savunulabilir görünüyordu. Bayrak açıldığında ikinci kapı **gerçek** oldu,
+ve aynı öneri `İlke 4`'ün (aynı yetenek iki kez) doğrudan ihlali hâline geldi.
+
+📌 Yani zemin değişimi bir kararı **bozmadı, sağlamlaştırdı** — ve bu, `T-235`'i
+`ADIM 3`'ün önüne koymanın ölçülmüş getirisidir.
+
+### 3 · `UNRESTRICTED` üyeliği — koşulsuz SABİT → kayıtlı ROL ÖZELLİĞİ
+
+```
+küme      AYNI kalır       {ADMIN, FINANCE, READONLY}
+statü     DEĞİŞİR          koşulsuz  →  gerekçeli
+```
+
+| rol | statü | gerekçe |
+|---|---|---|
+| `ADMIN` | **tanımsal** | `K-2.6.4` |
+| `READONLY` | **tanımsal** | `K-2.6.4` |
+| `FINANCE` | ⚠️ **işlevsel savunulabilir ama BUGÜN KAYITSIZ** | yazılmalı |
+
+⚠️ **`FINANCE`'ın satırı bir kilittir, bir kabul değil:** *"savunulabilir"* ile
+*"savunulmuş"* aynı şey değildir. Gerekçe yazılana kadar bu satır **açık** sayılır.
+
+📌 Terfinin tamamlanması `ADIM 3`'ün **ertelenen** yarısındadır
+(`UNRESTRICTED_ROLES` kod dalının kaldırılması) — **ama kaydı bugün**, çünkü kararı
+veren tur budur.
+
+### 4 · ⛔ HİÇBİR hücre-rol çifti UNION gerekçesiyle YAŞAYAMAZ
+
+**Ve korunan şey bugünkü erişim değil, EMSAL:**
+
+> **Ürün sahibi:** *"Çöküşün gerçek maliyeti bugünkü erişim değil, o emsal.
+> **'Union'la 5/5 olsun, zararsız' kabul edilirse, aynı tembellik `WRITE`/`MANAGE`
+> hücrelerinde tekrarlar.**"*
+
+`READ` hücrelerinde `5/5` bugün **görece zararsız** görünür — okuma, ve kapsam katmanı
+altta daraltıyor. Ama kabul edilen şey bir **küme** değil, bir **yöntem**: *"union ne
+diyorsa o."* O yöntem `WRITE`'a uygulandığında zararsız değildir.
+
+**Bu bir KURAL olarak yazılır** (`CLAUDE.md`), yalnız `B2`'nin kabul kriteri olarak
+değil.
+
+### 5 · Çapraz sınama — iki bağımsız yol AYNI taksonomiye vardı
+
+`0072 §4c`'nin `A`/`C` sınıf ayrımıyla örtüştü:
+
+```
+READ_OWN + ÖZET  ⊂  A sınıfı   (servis kapsamı VAR)
+sales-actuals    =  C sınıfı   (kapsam YOK)
+```
+
+⚠️ **Ve `sales-actuals`'ın açık bırakılan sınıfı `C`'nin ölçümüyle cevaplandı:**
+`SHARED_READ`'in **meşru sakini değil** — kapsamsız ham finansal veri. Adresi
+`ADIM 4`.
+
+📌 İki bağımsız yolun aynı yere varması **güçlü sinyaldir** — ve `CLAUDE.md`'nin
+*"bir hipotezi DOĞRULAYAN ölçüm, ÇÜRÜTEN ölçümden daha fazla doğrulama ister"*
+maddesinin karşılandığı hâli: burada ikinci ölçüm **farklı bir yüzeyden** geldi.
+
+### 6 · `K2` kendiliğinden kapandı
+
+`K-2.5.12` bu oturumda karara bağlandı: **onay yetkisi bir rol kümesi değil, şablonun
+kademesi.** Yani `MODES_APPROVE`/`SHARED_APPROVE` hücreleri `@RequireCapability`
+**almaz**.
+
+Ve sorunun kalan yarısı — *"onay ekranını görebilir mi"* — `READ_OWN`'ın **tam
+örneğidir** (`approval my-requests`).
+
+### 7 · `K3` ölçüldü — ZATEN KAPALIYDI
+
+`PATCH /approval-policies/:id`: `capabilities.ts:206` *"UNION'DAN ÇIKARILDI
+(2026-08-17)"* → `SHARED_MANAGE`, `ADMIN` kalıyor. Canlı controller doğruladı
+(`@Roles(UserRole.ADMIN)`).
+
+⚠️ **Team Lead planı onu "açık" saymıştı** — `FAZ1_PLAN §5`'in **uyarısı** okunmuş,
+`capabilities.ts`'in **çözümü** okunmamıştı. `§7.1`: *"bir kaynakta bulunan uyarı,
+başka bir kaynakta çözülmüş olabilir."*

@@ -722,6 +722,45 @@ Birincisi **kazara güvenli** (`INV-C-*`): koruma bir tasarım değil, bir arız
 adımın önceliğinde. **Yazılmasaydı, "üç kırık ucu düzelttik" cümlesi doğru olur ve
 eksik kalırdı.**
 
+### MEKANİK olarak türetilmiş bir değer, GEREKÇE değildir (ZORUNLU)
+
+> **`union` asla bir gerekçe değildir.**
+> **Bir kümeyi mekanik olarak hesaplamak, o kümenin DOĞRU olduğunu göstermez —
+> yalnız nasıl elde edildiğini gösterir.**
+
+Ölçülmüş vaka (2026-08-21, `Z18`): `ADIM 3`'ün üç `READ` hücresinde yetenek→rol
+union'ı **`5` rolün `5`'ine** çöktü. *"Union böyle diyor, ve okuma zaten zararsız"*
+kabul edilebilirdi — kapsam katmanı altta daraltıyor.
+
+**Reddedildi, ve gerekçesi bugünkü erişim değil EMSAL:**
+
+> **Ürün sahibi:** *"Çöküşün gerçek maliyeti bugünkü erişim değil, o emsal. **'Union'la
+> 5/5 olsun, zararsız' kabul edilirse, aynı tembellik `WRITE`/`MANAGE` hücrelerinde
+> tekrarlar.**"*
+
+📌 **Kabul edilen şey bir KÜME değil, bir YÖNTEMdir:** *"union ne diyorsa o."* O yöntem
+`READ`'de görece zararsız, `WRITE`'da değil — ve yöntem bir kez kabul edilince
+uygulandığı yeri sormaz.
+
+**Genel biçim — `union` yalnız bir örnek:**
+
+| mekanik değer | *"gerekçe"* diye kullanılışı | neden değil |
+|---|---|---|
+| `union` / birleşim | *"kümeler birleşti, sonuç bu"* | hangi elemanın **neden** girdiğini söylemez |
+| ortalama / medyan | *"eşik buradan çıktı"* | dağılımın kuyruğunu saklar |
+| `max` / `min` | *"en katısını aldık"* | neden **o** boyutun bağlayıcı olduğunu söylemez |
+| baseline | *"öncekinden az"* | **sınıf kırılımını** vermez |
+
+⚠️ Sonuncusu bu dosyada zaten ayrı bir kural: *"bir TOPLAMIN azalması, bir SINIFIN
+girmediğinin kanıtı değildir."* Aynı ailenin üyesi.
+
+**Pratik:** mekanik bir değer bir karara dayanak yapılıyorsa, **her elemanı için ayrı
+bir cümle** yazılabilmeli. Yazılamıyorsa değer bir **girdi**dir, karar değil.
+
+- Yetersiz: *"`SHARED_READ` = 5 rol, union'dan"*
+- Yeterli: *"`SHARED_READ` = 5 rol; `READONLY` şu route yüzünden, ve o route bu hücrede
+  **olmamalı** — taksonomi düzeltilir"*
+
 ### Yazma ile commit arasına bir DOĞRULAMA koy (ZORUNLU)
 
 Bir dosyayı yazan adım ile onu commit'leyen adım arasında **hiçbir kontrol yoksa**, sessizce
