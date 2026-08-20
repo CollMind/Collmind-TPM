@@ -284,6 +284,27 @@ Yani `B2`'nin işi yalnız *"dekoratör ekle"* değil — bazı uçlarda doğru 
 **ikisi birden** gerekir (`T-255`'in `GET /users/:id`'si tam bu: rol · sahiplik ·
 DTO, üçü ayrı).
 
+## 4e · ⚡ `B1`'İN ÜÇÜNCÜ GİRDİSİ — kuyruğun SAHİBİ (`0075` `Boşluk 4`)
+
+`0076` `0075`'in `18` boşluğunu `L2 2.13`'e karşı ölçtü; `9`'u **gerçek boşluk**
+çıktı. Sekizi `Faz 2`'ye gitti (`docs/process/FAZ2_ACIK_KARARLAR.md`) — **biri
+buraya**:
+
+```
+Boşluk 4   Kuyruğun SAHİBİ / SLA / eskalasyon
+L2 sınırı  K-2.13.13   "kaybolmaz, elle çözülür"
+           K-2.13.12a  kimin ONAYLAYAMAYACAĞINI söyler,
+                       kimin SAHİP olduğunu SÖYLEMEZ
+```
+
+**Neden `Faz 2`'ye ertelenemez:** `B1`'in taksonomisi kuyruğu **bir yetenek hücresine
+koyacak**. Yani *"kuyruğa kim bakar"* sorusu `ADIM 3`'ün **zaten cevaplamak zorunda
+olduğu** bir soru — ertelenirse hücre **gerekçesiz** doldurulur.
+
+⚠️ Ve `Z18` burada bağlayıcı: **hiçbir hücre-rol çifti union gerekçesiyle yaşayamaz.**
+Kuyruğu bir hücreye koyarken *"union böyle dedi"* **yetersizdir** — sahiplik bir
+**ürün kararıdır**.
+
 ## 5 · `B1`'İN GİRDİSİ — iki ölçüm ÖNCE
 
 ```
