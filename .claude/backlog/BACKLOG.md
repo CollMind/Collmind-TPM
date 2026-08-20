@@ -251,6 +251,7 @@ status: active        # planned | active | closed
 | [[T-249]] | ✅ Üç canlı uca **GRANT + `@Roles`** — ve sıra tersine çevrildi: **önce e2e (kırmızı görüldü), sonra izin**. Fiiller SQL logundan ölçüldü. ⚠️ Atıf düzeltmesi: canlı rota `/spend-calculation` (`/finance-reporting` DEĞİL) → `CLAUDE.md §7.1` *"enjeksiyon kullanım değildir"* | **P1** | backend-engineer | review |
 | [[T-250]] | ✅ **GUARD İNDİ** — `A \\ B = ∅`, ÜÇ kanal (`forFeature` ∪ `InjectRepository` ∪ `dataSource.getRepository`), kanal-başına pozitif kontrol + üç ayrı mutasyon. ⚡ İlk koşuşunda **dördüncü vakayı** buldu (`lta_plan_overrides` → ölü kayıt kaldırıldı) | P2 | qa-engineer | review |
 | [[T-251]] | ⏸️ **[[T-063]]'E BAĞLI** — `mechanic_spend_breakdown.plan_sku_id` katalog `skus.id` ile dolduruluyor → FK ihlali. Servis **yaşarsa DÜZELTİLİR, silinirse KAPANIR**. ⚠️ `GRANT` eksikliği bu kusuru örtüyordu | **P1** | debugger | blocked |
+| [[T-252]] | **`ADIM 3` `B0`** — rota yetki kapsama **RATCHET**'i (kapı DEĞİL; `B4`'te terfi eder). Baseline **liste**, üç kova ayrı (`61` filtresiz · `3` `@Public` · `2` alan-guard'lı). ⚡ `K4`'ü cevaplıyor: ratchet tek-dalgayı imkânsız kılıyor | **P1** | qa-engineer | todo |
 | [[T-240]] | ⏸️ **ERTELENİR** — `ledger_entries`'in 5 FK'siz kolonu. Tablo bugün **boş** → yapısal yol, canlı hata değil | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
