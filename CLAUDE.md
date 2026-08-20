@@ -1596,6 +1596,46 @@ Pratik kural: bir düzeltme yaparken "bu deseni başka kim kullanıyor?" sorusun
 **grep çıktısı** olmalı, bir sezgi değil. Ve "etkilenmiyor" diyorsan, **neden** etkilenmediğini
 ölçtüğün şeyle birlikte yaz — sonraki okuyucu o gerekçeyi doğrulayabilsin.
 
+### Bir CACHE İNVALİDASYONU yazıldığında çağıranı AYNI TURDA bağlanır (ZORUNLU)
+
+> **Bir cache invalidasyonu yazıldığında çağıranı aynı turda bağlanır.**
+> **Bağlanmazsa o mekanizma "var ama yol yok" ailesinin sessiz bir üyesidir — ve
+> sessizliği FAIL-OPEN yöndedir: eski değer okunmaya devam eder.**
+
+`T-052/T-062` ailesi *"mekanizma var, üretim yolu yok"* diyor ve sekiz vakası sayılı.
+Cache invalidasyonu o ailenin **özel bir sınıfı**, ve iki farkı var:
+
+| | genel aile | cache invalidasyonu |
+|---|---|---|
+| çağıransız hâli | özellik **çalışmaz** — görünür | özellik **eski veriyle çalışır** — görünmez |
+| yönü | değişken | **fail-open** (eski, daha geniş yetki okunur) |
+
+**İki ölçülmüş vaka — ve ikincisi kuralı doğurdu:**
+
+| # | mekanizma | çağıran | sonucu |
+|---|---|---|---|
+| 1 | `kpi.service` `clearCache` (`T-039`) | **0 üretim çağıranı** | eski KPI konfigürasyonu okunmaya devam ediyordu |
+| 2 | `access-scope.service` `clearCache` (`T-242a`, 2026-08-20) | **0 üretim çağıranı** | `REVOKE_ALL`'dan sonra **5 sn boyunca kaldırılmış kapsamda işlem yapılabiliyor** |
+
+⚠️ **İkincisinin yönü can alıcı:** bir **erişim kaldırma** ucu yazıldı, ve kaldırma
+5 sn gecikiyor. Sözlüğün kendi ifadesiyle `REVOKE_ALL` *"bir güncelleme değil, bir
+erişim kaldırma"* — **bir erişim kaldırma gecikemez.**
+
+📌 Ve TTL'in kısalığı bir savunma değil: *"5 sn küçük"* argümanı, kusurun **yönünü**
+değil **büyüklüğünü** tartışıyor. Fail-open bir gecikme, süresi ne olursa olsun bir
+yetki penceresi açar.
+
+**Pratik:** bir `clearCache`/`invalidate`/`evict` yazdığında ya da bulduğunda, **aynı
+turda** iki soruyu cevapla:
+
+```
+1. Bu cache'in içeriğini DEĞİŞTİREN her yazma yolu hangisi?   ← say, hafızadan değil
+2. Her biri invalidasyonu çağırıyor mu?                        ← grep çıktısıyla
+```
+
+Cevap *"hayır"*sa, çağırmak bu turun işidir — ayrı bir task değil. Çünkü invalidasyonu
+yazan tur, onu **çağırmanın gerektiğini bilen tek turdur**.
+
 ### `new Date(kullanıcıGirdisi)` — beş sessiz hata biçimi, hepsi ölçüldü (ZORUNLU)
 
 `parseFloat` için söylediğimizin tarih karşılığı: **hata vermez, yanlış yapar.** T-107/T-121/

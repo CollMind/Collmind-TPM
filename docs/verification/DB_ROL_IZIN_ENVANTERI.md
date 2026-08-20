@@ -99,9 +99,34 @@ görünmeyen ihtiyaçlar için) çıkarıldı.
 | `skus` | ✅ | — | — | — | 5 |
 | `tactics` | ✅ | — | — | — | 3 |
 | `tenants` | ✅ | ✅ | — | ✅ | 1,3 |
-| `user_scopes` | ✅ | ✅ | — | — | 3,21 |
+| `user_scopes` | ✅ | ✅ | **yalnız `created_by`,`updated_by`,`is_active`,`updated_at`** | — | 3,21,**22** |
 | `users` | ✅ | ✅ | ✅ | ✅ | 1,2,4,5 |
 | `v_budget_summary` (VIEW) | ✅ | — | — | — | 14 |
+
+> ⚠️ **S3 tur 22 ([[T-242a]], 2026-08-20) — `user_scopes` UPDATE, KOLON DÜZEYİNDE.**
+> `PATCH /users/:id/scope` (`UserService#updateScope`) replace semantiğinde satırları
+> **silmez**, `is_active` ile deaktive/reaktive eder — bu `UPDATE` gerektiriyor
+> (ölçüldü: izole e2e, `app_runtime` → *"permission denied for table user_scopes"*).
+>
+> Kolon listesi **ölçülerek** çıkarıldı, tahminle değil: `NODE_ENV=development` SQL
+> logu, **iki farklı aktörle**. ⚠️ Tek aktörle ölçülseydi liste **eksik** çıkardı —
+> TypeORM'un diff-tabanlı `UPDATE`'i değişmeyen kolonu `SET`'ten atlar, yani
+> `created_by` hiç görünmezdi:
+> ```
+> deaktivasyon:  SET updated_by, is_active, updated_at
+> reaktivasyon:  SET created_by, updated_by, is_active, updated_at
+> ```
+> `created_by` reaktivasyonda **bilerek** yazılıyor (`M2`, ürün sahibi kararı):
+> reaktivasyon **yeni bir verme eylemidir**, satırın yeniden kullanılması olayın
+> aynı olduğu anlamına gelmez.
+>
+> **`DELETE` verilmedi ve bu tutarlı** — replace semantiği satır silmiyor.
+> ⚠️ Ve bu tablo özellikle dar tutuldu: **kimin neyi gördüğünü tanımlayan tablo.**
+> `app_runtime`'ın `user_id`'yi yazabilmesi, bir kullanıcının kapsamını **başkasına
+> taşıyabilmesi** demektir — `K-2.6.13f` asgari yetki.
+>
+> Kapı: `test/db-role-negative-yetki.e2e-spec.ts` (negatif: `user_id` UPDATE reddedilir
+> · pozitif kontrol: `is_active` reddedilMEZ).
 
 **Kapsam dışı bırakılan tablolar:** yukarıdaki 35 nesne DIŞINDA hiçbir tabloya
 `app_runtime` erişimi yoktur. Katalogda bundan fazla tablo/sequence varsa
