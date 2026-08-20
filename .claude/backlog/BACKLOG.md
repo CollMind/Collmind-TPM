@@ -248,9 +248,9 @@ status: active        # planned | active | closed
 | [[T-242b]] | ⏸️ **ERTELENİR** — rol **DEĞİŞTİRME** yolu (arayüzsüz). `ADIM 3`'ün *ertelenen* yarısına bağlıydı → **artık hiçbir şeyi bloklamıyor**. ⚠️ `T-243`'ün yazılamayan test kaleminin sağlayıcısı | P3 | architect | todo |
 | [[T-247]] | `sales-actuals` `{manager}` ile denetim yazıp **hiç flush etmiyor** — 6/6 emsal izliyor, o izlemiyor. ⚠️ Etkisi ÖLÇÜLMEDİ: `isHighRiskAction` kesişimi boşsa `P3`, doluysa **alarm hiç gitmiyor** | P2 | backend-engineer | todo |
 | [[T-248]] | Sahipsiz CPL — `Saldos Ticaret` **hiçbir** PLANNER kapsamında değil (29 CPL'nin 28'i kapsanıyor). Bayrak onu GÖRÜNÜR kıldı: kapalıyken sessizce herkese açıktı. ⚠️ Kategori boyutu da ölçülmeli | P2 | data-analyst | todo |
-| [[T-249]] | 🔴 `app_runtime` **sekiz tabloda yetkisiz** — `notifications`/`brands`/`mechanic_spend_breakdown`'ın CANLI rotası var, hepsi **500**. Ampirik: `SET ROLE` → `permission denied` (poz.kontrol `agreements` ✅). ⚠️ Sebep yapısal: **test yok → GRANT yok → uç kırık → kimse görmüyor** | **P1** | backend-engineer | todo |
+| [[T-249]] | ✅ Üç canlı uca **GRANT + `@Roles`** — ve sıra tersine çevrildi: **önce e2e (kırmızı görüldü), sonra izin**. Fiiller SQL logundan ölçüldü. ⚠️ Atıf düzeltmesi: canlı rota `/spend-calculation` (`/finance-reporting` DEĞİL) → `CLAUDE.md §7.1` *"enjeksiyon kullanım değildir"* | **P1** | backend-engineer | review |
 | [[T-250]] | **GUARD** — modülde enjekte edilen her entity'nin tablosu `app_runtime` GRANT listesinde olmalı (`A \\ B = ∅`). ⚠️ Statik olarak tespit EDİLEMEYEN bir sınıfı yakalar: *kod doğru · rota canlı · tablo var · izin yok*. Kolon düzeyi ve fiil ayrımı **bilerek kapsam dışı** | P2 | qa-engineer | todo |
-| [[T-251]] | 🔴 `mechanic_spend_breakdown.plan_sku_id` **katalog `skus.id`** ile dolduruluyor, FK `plan_skus(id)`'e bakıyor → entered>0 olan her dağıtım **FK ihlali**. Dört stratejinin dördü de aynı; okuma tarafı tersini varsayıyor. ⚠️ `GRANT` eksikliği bu kusuru ÖRTÜYORDU | **P1** | debugger | todo |
+| [[T-251]] | ⏸️ **[[T-063]]'E BAĞLI** — `mechanic_spend_breakdown.plan_sku_id` katalog `skus.id` ile dolduruluyor → FK ihlali. Servis **yaşarsa DÜZELTİLİR, silinirse KAPANIR**. ⚠️ `GRANT` eksikliği bu kusuru örtüyordu | **P1** | debugger | blocked |
 | [[T-240]] | ⏸️ **ERTELENİR** — `ledger_entries`'in 5 FK'siz kolonu. Tablo bugün **boş** → yapısal yol, canlı hata değil | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
@@ -283,7 +283,7 @@ status: active        # planned | active | closed
 | [[T-064]] | 🔴 on-invoice validateBatch hâlâ kırık (aynı .toISOString() hatası) — yarım çalışan finansal modül | P1 | backend-engineer | todo |
 | [[T-066]] | finance-reporting sortField — whitelist'siz dinamik orderBy (injection + INV-N-001 kör noktası) | P1 | backend-engineer | todo |
 | [[T-067]] | Şema ayırma — bir veritabanı, bir ürün şeması (INV-M-003; allowlist'teki tek susturmanın karşılığı) | P2 | data-engineer | todo |
-| [[T-063]] | SpendDistributionService'in kaderi — sil/deprecate/bağla (test yok, çağrı yok, karar ihlali var) | P2 | architect | todo |
+| [[T-063]] | SpendDistributionService'in kaderi — sil/deprecate/bağla. ⚡ **`ADIM 3`'ten SONRA, ürün sahibine gelir** — `A9` (götürü dağıtım tabanı) `L2`'de kural, yani **domain kararı**. Üç dalın işi farklı, tablo task'ta. [[T-251]] · [[T-228]] buna bağlı | P2 | architect | todo |
 | [[T-058]] | /submit-for-approval endpoint'ini kaldır (deprecation faz 2) | P3 | backend-engineer | todo |
 | [[T-061]] | on/off üçüncü türetim noktası (plan.service.ts:2227) — tek kaynağa bağla | P2 | backend-engineer | todo |
 | [[T-059]] | Seed fixture: aynı agreement iki zarfta 150.000 encumber ediyor | P2 | data-engineer | todo |

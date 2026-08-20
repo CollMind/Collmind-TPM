@@ -70,6 +70,7 @@ görünmeyen ihtiyaçlar için) çıkarıldı.
 | `agreement_transactions` | ✅ | ✅ | **yalnız `is_reversed`,`updated_at`** | ⛔ **KARAR 1 (2026-08-16)** — bkz. not | 5,6,16,18 |
 | `agreements` | ✅ | ✅ | ✅ | ✅ | 1,4,5 |
 | `approval_requests` | ✅ | ✅ | ✅ | ✅ | 1,6,5,15 |
+| `brands` | ✅ | ✅ | ✅ | — | **23** |
 | `budget_alert_configurations` | ✅ | — | — | — | 3 |
 | `budget_allocations` | ✅ | ✅ | — | ✅ | 3,4 |
 | `budget_envelopes` | ✅ | ✅ | ✅ | ✅ | 4,6 |
@@ -85,12 +86,14 @@ görünmeyen ihtiyaçlar için) çıkarıldı.
 | `ledger_entries` | ✅ | ✅ | **yalnız `is_reversed`,`updated_at`** | ⛔ **KARAR 1 (2026-08-16)** — bkz. not | 4,5,9,17 |
 | `lta_agreements` | ✅ | — | — | — | 10 |
 | `lta_rates` | ✅ | — | — | — | 11 |
+| `mechanic_spend_breakdown` | ✅ | ✅ | — | ✅ | **23** |
 | `mechanics` | ✅ | ✅ | ✅ | ✅ | 3,4,19 |
 | `on_invoice_batches` | ✅ | ✅ | ✅ | ✅ | 5,7,10 |
 | `on_invoice_entries` | ✅ | ✅ | ✅ | ✅ | 6,8,9 |
 | `plan_approval_history` | ✅ | ✅ | — | ✅ | 5,7,15 |
+| `notifications` | ✅ | — | ✅ | — | **23** |
 | `plan_fus` | ✅ | ✅ | ✅ | ✅ | 1,8,5,13 |
-| `plan_mechanic_values` | ✅ | — | — | ✅ | 5,6 |
+| `plan_mechanic_values` | ✅ | ✅ | ✅ | ✅ | 5,6,**23** |
 | `plan_skus` | ✅ | ✅ | ✅ | ✅ | 1,9,5,12 |
 | `plans` | ✅ | ✅ | ✅ | ✅ | 1,4,5,7 |
 | `regions` | ✅ | — | — | — | 4 |
@@ -128,7 +131,27 @@ görünmeyen ihtiyaçlar için) çıkarıldı.
 > Kapı: `test/db-role-negative-yetki.e2e-spec.ts` (negatif: `user_id` UPDATE reddedilir
 > · pozitif kontrol: `is_active` reddedilMEZ).
 
-**Kapsam dışı bırakılan tablolar:** yukarıdaki 35 nesne DIŞINDA hiçbir tabloya
+> ⚠️ **S3 tur 23 ([[T-249]], 2026-08-20) — dört satır.** `app_runtime`'ın SEKİZ
+> tabloda **hiç** ayrıcalığı yoktu ve **üçünün canlı rotası vardı** → hepsi `500`.
+> Ampirik: `SET ROLE app_runtime; SELECT ... FROM main.notifications` →
+> *"permission denied"* (poz.kontrol: `agreements` → 3 satır).
+>
+> **Fiiller SQL logundan ölçüldü**, tahmin değil — `notifications` `INSERT` almadı
+> (`createNotification` üretim çağıranı olmayan ölü kod), `brands` hard `DELETE`
+> almadı (`softRemove`), `mechanic_spend_breakdown` `UPDATE` almadı (hep
+> delete+recreate). `plan_mechanic_values` aynı rota ailesinin **yazma** tarafıydı ve
+> `SELECT`/`DELETE` ile yarım kalmıştı — tamamlandı.
+>
+> ⚠️ **Yöntemin kör noktası burada ölçüldü:** `S3` izinleri **suite'in tetiklediği**
+> yollardan türetiyor. Bu üç uçta **e2e yoktu** → döngü hiç çalışmadı → `GRANT` hiç
+> verilmedi → uç kırık kaldı → **ve test olmadığı için kimse görmedi.** Bu turda sıra
+> tersine çevrildi: **önce e2e (kırmızı görüldü), sonra `GRANT`.**
+>
+> 📌 Ve kalan tablolar için `GRANT` **verilmedi**: `InjectRepository` **ve**
+> `forFeature` iki yüzeyde de sıfır tüketici (ölçüldü) → *"bilerek yetkisiz"*,
+> `İlke 1`.
+
+**Kapsam dışı bırakılan tablolar:** yukarıdaki tabloda **listelenenler DIŞINDA** hiçbir tabloya
 `app_runtime` erişimi yoktur. Katalogda bundan fazla tablo/sequence varsa
 (ör. gelecekteki B/C dalgası şema kalemleri), bu envanter onlar için henüz
 BİR HAK VERMEMEKTEDİR — yeni bir e2e/production yolu o tabloya dokunduğunda
