@@ -274,6 +274,73 @@ değişken belgeliyor (`JWT_EXPIRES_IN` ↔ `JWT_EXPIRATION`, sessizce `1h`).
 
 ---
 
+## `S2` ÖLÇÜMÜ (2026-08-21) — ve soru YENİDEN ÇERÇEVELENDİ
+
+### Ölçüm 1 · YAN ETKİ — `7/7` YAZMA YOK
+
+```
+checkAvailability · getForecastReport · getLTAForPlanContext
+calculateBaseLTASpend · calculatePlannedLTASpend
+getApplicableMechanics · checkCombinationValidity      →  YAZMA: 0
+POZ.KONTROL  reserveBudget → 1 · mechanic.create → 1   →  desen ÇALIŞIYOR
+```
+
+⚡ **Ve bu `T-249` emsalinin gerekçesini netleştiriyor:**
+
+```
+T-249'un distributeMechanicSpend'i   →  YAZMA: 3  (ölçüldü)
+```
+
+Yani `T-249`'un dar rolleri (`ADMIN,PLANNER`) **kalıcılaştırma** yüzünden dardı,
+*"hesaplama"* olduğu için değil. **Emsal bu yedi ucu yazma sınıfına KOYMUYOR.**
+
+### Ölçüm 2 · `500ms` BÜTÇESİ — bu uçlara UYGULANMIYOR
+
+⚠️ **Ve `K-2.4.8` bu kural DEĞİL** (ölçüldü — o *"boş bırakmak ile sıfır yazmak"*
+kuralı). Doğrusu **`EK_B §3`**, ve tanımı **dar**:
+
+> *"Kullanıcının bir hücreye değer girmesinden **güncellenmiş göstergeleri
+> görmesine** kadar geçen toplam süre."*
+
+Yani bütçe **grid düzenleme yolunun**; genel bir uç bütçesi değil. Bu yedi uç o yolda
+**değil** (aşağı bkz.).
+
+📌 Ve `EK_B §3`'ün kendi notu: hedef **bugün karşılanmıyor** (`52` SKU'da `~540ms`,
+eşzamanlıda `~1100ms`) ve **telemetri yok** — yani uyum **iddia edilemez**.
+
+### ⚡ Ölçüm 3 · ASIL BULGU — `7/7` TÜKETİCİSİZ
+
+```
+check-availability · reports/forecast · context/rates
+calculate/base-spend · calculate/planned-spend · check-combination   →  0 tüketici
+
+mechanics/applicable   →  endpoints dosyasında TANIMLI (getApplicable)
+                          ama mechanicEndpoints.getApplicable ÇAĞIRANI: 0
+                          POZ.KONTROL: mechanicEndpoints. → 3 dosyada kullanılıyor
+```
+
+⚠️ **`§7.1` uygulandı:** modülün import edilmesi fonksiyonun çağrıldığı anlamına
+gelmiyor. İlk ölçüm *"1 tüketici"* demişti — **fonksiyon adıyla arayınca `0`.**
+
+## ⛔ `S2`'NİN GERÇEK SORUSU BAŞKA
+
+Soru *"hesaplama ucu hangi hücrede"* değil — **`T-063`/`T-225`/`T-257` ailesinin
+DÖRDÜNCÜ vakası:**
+
+> **Bu yedi ucun var olma gerekçesi ne?**
+
+| şık | sonucu |
+|---|---|
+| **rol ata, `B2`'de kalsın** | `T-257`'nin dersi: *"silinecekse bile **silinene kadar** açık kalamaz"* |
+| **`T-063` deseniyle karara bağla** | üç dalın işi önceden yazılır; ama `B2`'yi **bekletir** |
+| **ikisi birden** | `B2`'de rol atanır **ve** ayrı bir kader task'ı açılır — `B2` beklemez |
+
+📌 **Önerim `(ikisi birden)`:** `T-257`'de `(c)` seçilebildi çünkü uçlar `K-2.5.6`'yı
+**ihlal ediyordu**. Burada ihlal **yok** — yalnız tüketici yok. Yani silme gerekçesi
+`T-257`'deki kadar güçlü **değil**, ve `B2`'yi bekletmeye değmez.
+
+---
+
 ## 3 · ⚠️ `DUR` SAYISININ SEBEBİ TEK BİR YAPISAL OLGU
 
 `30`'un `30`'u **üç soruya** indirgeniyor:
