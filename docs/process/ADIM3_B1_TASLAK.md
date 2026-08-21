@@ -25,7 +25,9 @@ FİNANS           eşik üstü onay/bildirim · transfer · mutabakat · içe ak
 
 ---
 
-## SAYIM — `29` otomatik çözülüyor · `30` KARAR gerektiriyor
+## SAYIM — ✅ **TAMAMLANDI**: `29` otomatik · `11` `S1` · `14` tüketicisiz · `5` bütçe
+
+⚠️ Süreç boyunca sayım iki kez düzeltildi; **son hâli aşağıda doğrulanmış**.
 
 ⚡ **`S1` KARARA BAĞLANDI** (`Z19a`) — `11` uç `B2`'de kalıyor, rol katmanı uygulanıyor.
 **Kalan gerçek karar: `S2` (`7`) · `S3` (`10`).**
@@ -407,6 +409,74 @@ S3   5 uç   budget-allocation 3 · kpi grid 2
 
 > **`59` ucun tamamında geriye kalan gerçek karar: `budget.controller`'ın `5` okuma
 > ucu için rol kümesi.**
+
+---
+
+## ✅ SON KARAR — `budget.controller`'ın `5` okuma ucu: **BEŞ ROL**
+
+> Ürün sahibi, 2026-08-21. **Union değil — her rol için `K-2.6.4`'ten ayrı cümle:**
+
+```
+YÖNETİCİ          tanım gereği
+FİNANS            "eşik üstü onay · transfer · mutabakat" — zarf BAKİYESİNİ görmeden yapamaz
+KATEGORİ MÜDÜRÜ   "kategori bütçe sahibi" — kendi zarfını görmek TANIMSAL
+PLANLAMACI        POST /reserve'de ZATEN VAR (kardeş uç) — yazabildiği bir zarfı
+                  okuyamaması TUTARSIZ olurdu
+İZLEYİCİ          "salt görüntüleme" — bütçe durumu izlemenin ÇEKİRDEĞİ
+```
+
+📌 **`PLANLAMACI` özellikle kardeş-uç gerekçesi**: `POST /budget/reserve` `@Roles(PLANNER,
+ADMIN)` taşıyor. Rezerve edeceği zarfın bakiyesini göremezse **rezervasyon körlemesine**
+yapılır.
+
+### ⛔ AMA KAPSAM SÜTUNU `❌` — ÖLÇÜLDÜ
+
+```
+src/modules/shared/budget/  →  AccessScope · resolveScope · accessScope  →  0 atıf
+POZ.KONTROL: dashboard.service.ts → resolveScope 5 atıf   (desen çalışıyor)
+```
+
+> **`5/5` rol DOĞRU, ama kapsam olmadan bir `KATEGORİ MÜDÜRÜ` BAŞKASININ kategorisinin
+> zarfını görür.**
+
+```
+@Roles sütunu   ✅  beş rol
+kapsam sütunu   ❌  → [[T-253]]/[[T-254]] adresli, KAPSAM RATCHET'ine girer (Z19b)
+```
+
+⚠️ Ve [[T-254]] **tam bu ailede**: `finance-reporting`'in `budgetUtilization`'ı boş
+kapsamda kısıtı **düşürüyor**.
+
+## ⚠️ SAYIM HATASI DÜZELTİLDİ — *"örtüşme"* değil, **BOŞLUK**
+
+Taslağın önceki hâli *"`11+7+10=28`, kalan `2` örtüşme"* diyordu. **Yanlıştı** — ölçüldü:
+
+```
+lta filtresizleri: 6
+  cpl/:cplId/active          →  S1
+  context/rates · base-spend · planned-spend  →  S2
+  GET /lta-agreements · GET /:id              →  HİÇBİR YERE KONMAMIŞTI
+```
+
+İki uç **sınıflandırılmamıştı**. Ve ölçüm: **`0` frontend tüketicisi** → tüketicisiz
+aileye katılıyorlar.
+
+📌 `CLAUDE.md`: *"bir enumerasyona dayanan her karar, enumerasyonun kendisi ölçülene
+kadar bir tahmindir."* Bu taslağın kendi enumerasyonu eksikti, ve **toplamı doğrulamak**
+onu yakaladı.
+
+## ✅ `59` TAMAMLANDI — doğrulanmış dağılım
+
+```
+29  OTOMATİK    1a(18) · 1b(3) · 1c(2) · 1d(3) · 1e(1) · 1f(1) · 1g(1)
+11  S1          Z19a — B2'de kalır, rol katmanı uygulanır
+14  TÜKETİCİSİZ S2(7) + S3'ün 5'i + lta okuma(2)   → rol atanır + KADER TASK'I
+ 5  budget.controller  →  BEŞ ROL (yukarıda), kapsam ❌
+                                                      ────
+                                                        59  ✅
+```
+
+> **Ve geriye hiçbir açık karar kalmadı.**
 
 ---
 
