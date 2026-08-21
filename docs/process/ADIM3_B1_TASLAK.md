@@ -25,10 +25,12 @@ FİNANS           eşik üstü onay/bildirim · transfer · mutabakat · içe ak
 
 ---
 
-## SAYIM — `28` otomatik çözülüyor · `31` KARAR gerektiriyor
+## SAYIM — `29` otomatik çözülüyor · `30` KARAR gerektiriyor
 
-⚠️ **`1g` (`logout`) `DUR`'a TAŞINDI** (ürün sahibi, 2026-08-21) — kanıtı statikti,
-davranışsal koşum yok. Bkz. `2f`.
+⚡ **`S1` KARARA BAĞLANDI** (`Z19a`) — `11` uç `B2`'de kalıyor, rol katmanı uygulanıyor.
+**Kalan gerçek karar: `S2` (`7`) · `S3` (`10`).**
+
+✅ **`1g` (`logout`) ÇÖZÜLDÜ** — koşum yapıldı, izolasyon tutuyor. Yan bulgular → [[T-264]].
 
 ⚠️ **Beklenenden fazla `DUR`** (beklenti: *"çoğu kardeşle çözülür, azınlık gelir"*). Ve
 sebebi tek bir yapısal olguda toplanıyor — aşağıda `§3`.
@@ -137,7 +139,31 @@ asıl soru rol değil:**
 `T-253`/`T-254` gösterdi ki kapsam **her yerde uygulanmıyor**. Bu uçlara *"5 rol"*
 demek, kapsam katmanı yoksa **herkes her şeyi görür** demek.
 
-**Karar:** rol kümesi + **kapsam uygulanacak mı**. İkisi ayrı katman.
+### ✅ `S1` KARARI (ürün sahibi, 2026-08-21) — `Z19a`
+
+```
+11 uç B2'DE KALIR, rol katmanı UYGULANIR
+```
+
+**Reddedilen `(c)` (uçları çıkar):** *"çıkarmak onları **tamamen filtresiz** bırakır;
+`(a)` en azından **bir** katmanı kapatır."*
+
+📌 **Rol katmanı gereksiz değil — YETERSİZ.** Tür-düzeyi koruma, kapsam gelse **de**
+gerekli.
+
+### ⚠️ RİSK SINIFI DÜZELTİLDİ — ölçüldü
+
+```
+customer.service.ts   tenantId               →  37 atıf
+                      tenantId'siz `where:`  →  YOK   (pozitif kontrollü)
+```
+
+Risk **tenant-içi AŞIRI GÖRÜNÜRLÜK**, **dış sızıntı DEĞİL.**
+
+> *"Kanayan yara değil, **yanlış-teminat**."*
+
+⚠️ Ve bu ayrım analizi değiştiriyor: `S1` bir **güvenlik açığı** değil, bir **koruma
+iddiasının fazla geniş olması**.
 
 ### 2b · `budget` (`10`) ⛔ — kardeşler **ÇELİŞİYOR**
 
@@ -228,8 +254,23 @@ async logout(@Request() req)  →  req.user.sub        ← @CurrentUser('id') DE
 2. **URL'de başkasını adlandıracak bir girdi YOK** — yüklem sorusundan **daha güçlü**:
    saldırı yüzeyi yok
 
-⚠️ **Ama davranışsal koşum hâlâ eksik.** `T-256`'nın dersi tam da *"statik kanıt yeter
-sanıldı"* idi. Karar ürün sahibinde: bu iki argüman yeterli mi, yoksa koşum mu gerekli?
+### ✅ ÇÖZÜLDÜ — koşum YAPILDI (2026-08-21)
+
+Ürün sahibi *"koşum gerekli"* dedi, ve ölçüm ucuzdu:
+
+```
+A logout                →  204
+A logout SONRASI B      →  200   ✅ İZOLASYON TUTUYOR
+A logout SONRASI A      →  200   ⚠️ POZİTİF KONTROL
+```
+
+**`2f` çözüldü → `1g`'ye geri döner** (otomatik, `28 → 29`).
+
+⚡ **Ama pozitif kontrol İKİ BULGU daha çıkardı** → [[T-264]]:
+`logout` yalnız `refreshToken`'ı siliyor, **ve** `.env.example` kodun **okumadığı** bir
+değişken belgeliyor (`JWT_EXPIRES_IN` ↔ `JWT_EXPIRATION`, sessizce `1h`).
+
+📌 **Pozitif kontrol, asıl sorunun cevabını değil, YANINDAKİ kusuru buldu.**
 
 ---
 
@@ -275,6 +316,26 @@ verilince `30` uç mekanik olarak çözülür.
 ```
 uç  ·  @Roles durumu  ·  KAPSAM durumu      ← İKİSİ AYRI SÜTUN
 ```
+
+### ⛔ VE KAPSAM SÜTUNU KENDİ RATCHET'İNİ ALIR (`Z19b`)
+
+İki sütun **yetmez** — çünkü ikinci sütun bir **metin notu** olarak kalabilir:
+
+> *"**'Adresle'** fiilinin yumuşaklığı — adres bir metin notuysa, `59→0` olduğunda
+> ratchet **yeşillenir** ve kapsamsız uçlar **korunmuş sayılır**."*
+
+```
+@Roles sütunu    59 → 0        B2 KAPATIR
+kapsam sütunu    AYRI RATCHET  bugün ❌ olanların LİSTESİ, tek yön AŞAĞI
+                 T-253/T-254 kapanışları listeyi ERİTİR
+```
+
+⛔ **`B2`'nin *"bitti"* tanımı İKİYE AYRILIR:**
+
+> **`B2`'nin yeşili YALNIZ `@Roles` sütununu kapatır.**
+
+Kapsam sütunu **ayrı bir kapanış** ister, ve `T-252`'nin desenini izler: **liste, sayı
+değil** · **yalnız artış kırmızı** · **baseline `0` → kapıya terfi**.
 
 ⚠️ **Tek sütunlu bir liste `B2`'yi yanlış bitirir:** `59 → 0` olur, ratchet yeşile
 döner, ve kapsamsız uçlar **korunmuş sayılır**.
