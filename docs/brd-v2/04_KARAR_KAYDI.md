@@ -1615,3 +1615,116 @@ Ve sorunun kalan yarısı — *"onay ekranını görebilir mi"* — `READ_OWN`'�
 ⚠️ **Team Lead planı onu "açık" saymıştı** — `FAZ1_PLAN §5`'in **uyarısı** okunmuş,
 `capabilities.ts`'in **çözümü** okunmamıştı. `§7.1`: *"bir kaynakta bulunan uyarı,
 başka bir kaynakta çözülmüş olabilir."*
+
+---
+
+## Z19 · `Z18`'in *"ayrı katman"* hükmüne ÖN KOŞUL — katmanın uygulandığı ÖLÇÜLMELİ
+
+> **Tarih:** 2026-08-21 · **Karar veren:** ürün sahibi · **Yazan:** Team Lead
+> **Biçim:** `F12`/`0006-R` deseni — `Z18` **silinmiyor**, üstüne bir ön koşul yazılıyor.
+
+### Neyi düzeltiyor
+
+`Z18 §2` şöyle diyordu:
+
+> *"Yeteneğe kapsam taşımak, artık **ÇALIŞAN** bir katmanı KOPYALAMAK olurdu."*
+
+Bu hüküm doğruydu **ve bir varsayım taşıyordu**: kapsam katmanının **çalıştığı**.
+`Z18` o varlığı **ölçmeden** varsaydı.
+
+### Ölçüm hükmü çürüttü — katman KISMİ
+
+```
+T-253   /users/dashboard-summary   @Roles'lu BEŞ ROL, ve kapsam YOK
+                                   iki farklı kapsamlı PLANNER → BİREBİR AYNI yanıt
+        plan-performance · agreement-transactions ×2  →  aynı sınıf
+T-254   boş kapsam [] iki katmanda ZIT → budgetUtilization tüm tenant'ı veriyor
+```
+
+### ✅ EK HÜKÜM
+
+> **Bir *"ayrı katman"* hükmü, o katmanın **uygulandığının ÖLÇÜLMESİNE** bağlıdır.
+> **Uygulanmayan bir yüzeyde, hüküm koruma ÜRETMEZ — yalnız koruma VARSAYAR.**
+
+⚠️ `Z18`'in **kararı** geçerli (dördüncü eksen yok, `İlke 4` gerekçesi ayakta). Değişen
+şey: o kararın **koruma ürettiği iddiası**, artık yüzey-bazlı **ölçüme** bağlı.
+
+### 📌 VE BU, BU OTURUMUN TEKRAR EDEN SINIFI
+
+```
+T-028c bayrağı      şart: "prod/UAT'de doğrulanana kadar"   sağlayıcı: prod/UAT YOK
+report-only         şart: "fiili trafikte doğrulanır"        sağlayıcı: trafik YOK
+B4                  şart: "ölçüm sonrası"                    sağlayıcı: örneklem 0
+Z18 §2              hüküm: "çalışan bir katman"              ölçüm: katman KISMİ
+```
+
+**Dördü de aynı şekil: sağlayıcısı ölçülmemiş şartlar.** `CLAUDE.md` bunu *"bir şartın
+SAĞLAYICISI yoksa, şart bir erteleme değil bir KİLİTTİR"* diye kaydetmişti — `Z18`
+dördüncü vaka, ve farkı şu ki burada eksik olan bir **ortam** değil, bir **kod
+katmanının kapsamı**.
+
+## Z19a · `S1` kararı — `11` uç `B2`'de KALIR, rol katmanı uygulanır
+
+```
+S1 kapsamı   customer 10 · lta /cpl/:cplId/active 1
+```
+
+**Reddedilen `(c)` (uçları çıkar):** *"çıkarmak onları **tamamen filtresiz** bırakır;
+`(a)` en azından **bir** katmanı kapatır."*
+
+📌 **Rol katmanı gereksiz değil — YETERSİZ.** Tür-düzeyi koruma, kapsam gelse **de**
+gerekli.
+
+### ⚠️ RİSK SINIFI DÜZELTİLDİ — dış sızıntı DEĞİL
+
+```
+customer.service.ts   tenantId  →  37 atıf
+                      tenantId'siz `where: {` →  YOK (ölçüldü, pozitif kontrollü)
+```
+
+Yani risk **tenant-içi AŞIRI GÖRÜNÜRLÜK**, dış sızıntı değil.
+
+> **Ürün sahibi:** *"Kanayan yara değil, **yanlış-teminat**."*
+
+⚠️ Ve bu ayrım `DUR` analizini değiştiriyor: `S1` bir **güvenlik açığı** değil, bir
+**koruma iddiasının fazla geniş olması**.
+
+## Z19b · Kapsam sütunu KENDİ RATCHET'ini alır
+
+`B1` taslağı `B2`'nin kabul kriterine *"uç · `@Roles` durumu · **kapsam** durumu"* diye
+iki sütun koymuştu. **Yetersiz:**
+
+> **Ürün sahibi:** *"**'Adresle'** fiilinin yumuşaklığı — adres bir **metin notuysa**,
+> `59→0` olduğunda ratchet yeşillenir ve kapsamsız uçlar **korunmuş sayılır**."*
+
+```
+@Roles sütunu    59 → 0        B2 KAPATIR
+kapsam sütunu    AYRI RATCHET  bugün ❌ olanların LİSTESİ, tek yön AŞAĞI
+                 T-253/T-254 kapanışları listeyi ERİTİR
+```
+
+### ⛔ VE `B2`'NİN *"BİTTİ"* TANIMI İKİYE AYRILIR
+
+> **`B2`'nin yeşili YALNIZ `@Roles` sütununu kapatır.**
+
+Kapsam sütunu **ayrı bir kapanış** ister. Bir metin notu değil, bir **ratchet** —
+`T-252`'nin deseni (`liste, sayı değil` · `yalnız artış kırmızı` · `baseline 0 → kapıya
+terfi`).
+
+## Z19c · `T-242a`'nın *"bitti"* tanımına bir satır
+
+```
+REVOKE_ALL, T-254'ün tek-nokta düzeltmesi PİNLENMEDEN canlı kabul edilmez.
+```
+
+**Gerekçe:** `T-242a` bu oturumda **inşa edildi** ve **var olan** bir fail-open'a **yol
+açtı** (`T-254`: boş kapsam → `budgetUtilization` tüm tenant'ı veriyor). Kusur tek
+noktada, ve `T-254`'ün `AC` sırası zaten doğru:
+
+```
+1  fixture + REPRODÜKSİYON   ← kusur önce GÖRÜLMELİ
+2  düzeltme
+3  `length > 0` taraması     ← sınıfın diğer örnekleri
+```
+
+⚠️ **Bu `B2`'yi BEKLETMEZ** — paralel yürür.

@@ -263,6 +263,7 @@ status: active        # planned | active | closed
 | [[T-261]] | ⚠️ **ORTAM** — `collmind-tpm-backend` container'ı **BAŞKA BİR REPODAN** (`/Code/TPM/`, 2026-04-09). Beş alanı da yanlış, ve `DB_USERNAME=postgres` → **`K-2.6.13` öncesi ayrıcalıklı rol**. ⛔ Adı bu reponunkine benziyor, `docker ps`'te ayırt edilemez. [[T-232]] ile aynı aile | P2 | architect | todo |
 | [[T-262]] | `ClassSerializerInterceptor` kaydının **regresyon pini YOK** — `APP_INTERCEPTOR` satırı silinse hiçbir test kırmızıya dönmez. `T-260`'ın kanıtı **geçici bir probe'du ve silindi** | **P1** | qa-engineer | todo |
 | [[T-263]] | `app-runtime-grants-self-test` `case 14` **FLAKY** — ve *"ilgisiz"* bir teşhis bir **tahmindir** (`T-114` emsali). ⚠️ `case 14` tam olarak **kanal bağımsızlığını** sınıyor: aralıklı bir self-test o körlüğü aralıklı gizler | P2 | qa-engineer | todo |
+| [[T-264]] | `logout` erişim token'ını **geçersizleştirmiyor** (yalnız `refreshToken`) + ⛔ `.env.example` **okunmayan** bir değişken belgeliyor (`JWT_EXPIRES_IN` ↔ kod `JWT_EXPIRATION`, sessizce `1h`'e düşüyor). ⚡ İkisini de **pozitif kontrol** buldu | P2 | backend-engineer | todo |
 | [[T-240]] | ⏸️ **ERTELENİR** — `ledger_entries`'in 5 FK'siz kolonu. Tablo bugün **boş** → yapısal yol, canlı hata değil | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
