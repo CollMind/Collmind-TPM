@@ -260,6 +260,7 @@ status: active        # planned | active | closed
 | [[T-258]] | ✅ `GET /tenants/:id` — `@Roles(ADMIN)` + `relations:['users']` **KÖK ÇÖZÜM olarak kaldırıldı** (ölçüm: `tenant.users` okuyan **0** kod). `READONLY→403` · `ADMIN→200` users **YOK**. ⛔ Tenant-scope kusuru **ADIM 5**'e adresli, koda yazıldı | **P1** | backend-engineer | review |
 | [[T-259]] | Gömülü `User` — `plan` yanıtlarında `approvedBy`/`rejectedBy`/`actionedBy` **ham**. RBAC doğru, veri katmanı yanlış. ⚠️ Bugün örneksiz (onaylı plan yok) — **bir plan onaylanır onaylanmaz canlı** | P2 | backend-engineer | todo |
 | [[T-260]] | **Global `ClassSerializerInterceptor`** — `4 @Exclude()` yazılmış, `0` kullanım: sözleşme HİÇ çalışmamış. Sınıfı kapatır (`12` uç + yenileri). ⚠️ `B0` deseni: **ölç-sonra-aç**, ve beklenen kırmızı ÖNCEDEN. Alan düşerse **iki repo** — beşinci sınır | **P1** | backend-engineer | todo |
+| [[T-261]] | ⚠️ **ORTAM** — `collmind-tpm-backend` container'ı port `3000`'de döngüde (`7 restart` · `HTTP 000`), ve konfigürasyonu `CLAUDE.md`'nin ortam notlarıyla ÇELİŞİYOR (`5433`/`public` ↔ `5434`/`main`). Davranışsal ölçümleri bloklıyor; **e2e etkilenmiyor** | P2 | data-engineer | todo |
 | [[T-240]] | ⏸️ **ERTELENİR** — `ledger_entries`'in 5 FK'siz kolonu. Tablo bugün **boş** → yapısal yol, canlı hata değil | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.
