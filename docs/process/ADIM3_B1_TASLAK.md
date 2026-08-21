@@ -341,6 +341,75 @@ DÖRDÜNCÜ vakası:**
 
 ---
 
+## `S3` ÖLÇÜMÜ (2026-08-21) — çelişkinin sebebi: **İKİ PARALEL YÜZEY**
+
+**Soru:** *"Kardeşler neden çelişiyor — tarihsel kaza mı, gerçek bir ayrım mı?"*
+
+### ⚡ Sinyal: `reserve` İKİ controller'da da var, FARKLI rollerle
+
+```
+budget-allocation.controller  POST /reserve   @Roles(ADMIN, CATEGORY_MANAGER)
+                                              → budgetAllocationService.reserveBudget()
+budget.controller             POST /reserve   @Roles(PLANNER, ADMIN)
+                                              → budgetService.reserveBudget()
+```
+
+**İki ayrı `reserveBudget` metodu, iki ayrı serviste.** Bu `İlke 4` — ve rol çelişkisi
+bir **taksonomi sorusu değil, SEMPTOM**.
+
+### Ölçüm — biri CANLI, biri TÜKETİCİSİZ
+
+```
+budget.controller             frontend TÜKETİYOR
+  POZ.KONTROL: budgetEndpoints.{createEnvelope · getAllEnvelopes · getEnvelopeById
+               · getReservedAmount · getTransactions · reserveBudget}  →  çağrılıyor
+  ⚡ Ve son DÖRDÜ tam olarak S3'ün filtresizleri
+
+budget-allocation.controller  frontend'de "/budget-allocations"  →  0 eşleşme
+  POZ.KONTROL: "'/budget/" → budget.endpoints.ts'te 4 eşleşme (desen çalışıyor)
+  ⚠️ AMA BudgetAllocationService CANLI — spend-validation ve finance-reporting
+     onu kullanıyor. Yani SERVİS canlı, HTTP CONTROLLER'ı değil (T-249'un şekli)
+
+kpi grid (2 uç)               frontend'de "kpis/grid"  →  0 eşleşme
+```
+
+### ✅ `S3`'ÜN CEVABI: çelişki TARİHSEL KAZA
+
+```
+5 uç  budget.controller             CANLI       →  gerçek rol sorusu
+5 uç  budget-allocation (3) + kpi grid (2)      →  TÜKETİCİSİZ, S2 ile aynı aile
+```
+
+Kardeşlerin çelişmesi **iki paralel bütçe yüzeyinin** yan ürünü. `CATEGORY_MANAGER`
+↔ `PLANNER` farkı **bir iş kuralı değil** — biri terk edilmiş yüzeyin rolü.
+
+⚠️ **Yani `S3`'ün `10` ucundan yalnız `5`'i gerçek bir karar.** Kalan `5`, `S2`'nin
+`7`'siyle birleşiyor.
+
+## ⚡ `S2` + `S3` BİRLEŞİYOR — `12` TÜKETİCİSİZ UÇ, TEK AİLE
+
+```
+S2   7 uç   budget 2 · lta 3 · mechanic 2
+S3   5 uç   budget-allocation 3 · kpi grid 2
+           ─────
+          12 uç   T-063 / T-225 / T-257 ailesi
+```
+
+📌 **`30` `DUR`'un gerçek dağılımı:**
+
+```
+11  S1   karara bağlandı (Z19a) — B2'de kalır, rol katmanı uygulanır
+12  S2+S3 tüketicisiz — rol atanır VE ayrı kader task'ı
+ 5  S3   budget.controller — GERÇEK rol kararı, ve TEK gerçek karar bu
+ 1  2f   logout — çözüldü (T-264'e devredildi)
+ 1  ⚠️ örtüşme düzeltmesi (budget'ın 2 hesaplama POST'u S2 ve S3'te sayılmıştı)
+```
+
+> **`59` ucun tamamında geriye kalan gerçek karar: `budget.controller`'ın `5` okuma
+> ucu için rol kümesi.**
+
+---
+
 ## 3 · ⚠️ `DUR` SAYISININ SEBEBİ TEK BİR YAPISAL OLGU
 
 `30`'un `30`'u **üç soruya** indirgeniyor:
