@@ -36,6 +36,28 @@ Bu kök repo (`collmind.team`) orkestrasyon kurulumunu (`.claude/`) + dokümanta
 >   **Doğrusu `staging`** (bkz. §5 branch modeli). README düzeltilecek.
 > - CTPM bugün yalnızca lokal geliştirme ortamında koşuyor. Deploy edilmiş staging/production
 >   **yok**. §5'teki promote akışı branch modelidir, çalışan ortam değil.
+> - ⚠️ **`docker ps`'te `collmind-tpm-backend` adlı bir container GÖREBİLİRSİN — O BU
+>   REPONUN DEĞİL** (ölçüldü 2026-08-21, `T-261`):
+>   ```
+>   imaj  tpm-backend · oluşturuldu 2026-04-09 · compose projesi "tpm"
+>   dosya /Users/sertact/Documents/CollMind/Code/TPM/docker-compose.yml
+>   env   DB_HOST=postgres · DB_PORT=5433 · DB_DATABASE=tpm_database
+>         DB_SCHEMA=public · DB_USERNAME=postgres
+>   ```
+>   **Beş alanın beşi de bu repo için yanlış**, ve `DB_USERNAME=postgres`
+>   **`K-2.6.13` ÖNCESİ** ayrıcalıklı rolü taşıyor.
+>
+>   ⛔ **Adı bu reponunkine benziyor ve `docker ps` çıktısında AYIRT EDİLEMEZ.** Port
+>   `3000`'i işgal eder, `ENOTFOUND postgres` ile döngüye girer, ve **davranışsal
+>   ölçümleri bozar** — bu oturumda bir kez bozdu (`T-258`'in doğrulaması koddan
+>   yapılmak zorunda kaldı).
+>
+>   **Bir `curl localhost:3000` başarısız olduğunda ÖNCE bunu kontrol et:**
+>   `docker ps | grep backend` → varsa durdur, `npm run start:dev` kullan.
+>
+>   ⚠️ Ve bir konuşlandırma turunda **kaynak sanılmamalı** — `K-2.6.13`'ün kaldırdığı
+>   ayrıcalıklı-rol bağını geri getirir. `T-232` (ölü `bitbucket-pipelines.yml`) ile
+>   **aynı aile**: ölü artefakt, **yetkili görünüyor**.
 
 ### Ürün konumu / TTM ilişkisi (ZORUNLU)
 
