@@ -305,6 +305,28 @@ olduğu** bir soru — ertelenirse hücre **gerekçesiz** doldurulur.
 Kuyruğu bir hücreye koyarken *"union böyle dedi"* **yetersizdir** — sahiplik bir
 **ürün kararıdır**.
 
+## 4f · ✅ `B1` TASLAĞI ÇIKTI — `docs/process/ADIM3_B1_TASLAK.md` (2026-08-21)
+
+```
+59 uç sınıflandırıldı
+ → 28  OTOMATİK   (rol TANIMI · KARDEŞ uç · ölçülmüş DAVRANIŞ)
+ → 31  KARAR      ve BU 31, ÜÇ SORUYA iniyor
+```
+
+⚡ **`31` ayrı karar değil — üç karar:**
+
+```
+S1  KAPSAM mı ROL mü?          11 uç   customer 10 · lta 1
+S2  HESAPLAMA ucu nerede?       7 uç   budget 2 · lta 3 · mechanic 2
+S3  KARDEŞLER ÇELİŞİYOR        10 uç   budget 8 · kpi grid 2
+    + 2f logout (kanıt statik)   1 uç
+```
+
+📌 **`T-255`'in dersi bir uçta doğrudan işe yaradı:** `GET /master-data/kpis/grid/:planId`
+`master-data` altında ama **plan verisi** döndürüyor — uç bazında sınıflandırılsaydı
+kardeşleriyle (`ADMIN`) aynı hücreye giderdi. **Veri sınıfı bazında** bakınca `plan`
+uçlarına ait.
+
 ## 5 · `B1`'İN GİRDİSİ — iki ölçüm ÖNCE
 
 ```
