@@ -914,6 +914,7 @@ etiketler değil, **yeniden adlandırılan** etiketlerdi.
 | **tel protokolü** | bu **değer** JWT/API/URL üzerinden geçiyor mu — öbür uçta kim karşılaştırıyor |
 | dosya biçimi | bir içe/dışa aktarma bu biçimi okuyor/yazıyor mu |
 | başka repo | aynı kavramın **ikinci bir tanımı** var mı (`grep` ile, hafızadan değil) |
+| **serileştirme** | yanıtın **şekli** değişiyor mu — bir alan **düşüyor** mu? ⚠️ Bir alanın düşmesi bir **regresyon** da olabilir, bir **kusurun kapanması** da; ikisi aynı kırmızıyı verir |
 
 Ve **görüntü ↔ tel ayrımını koru:** bir iş belgesinin Türkçe adlandırması (`K-2.6.4`'ün rol
 kataloğu) bir **şema tanımı değildir**. `L2`'nin her yerinde kavramlar Türkçe yazılı

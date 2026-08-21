@@ -451,6 +451,21 @@ Adım 2/5 ölçümünün sonucuna göre "ayarı aç" ya da "kapsam çözümlemes
   RLS altında bağlamsız zamanlayıcı ya boş veri görür ya ayrıcalık ister `[GEREKÇELİ]`.
 - Kabul mekanizması `_ISSUE_DB_ROLU`'nun RLS sonda testi deseni: kırmızı-sonra-yeşil.
 
+> ### ⚡ SOMUT GİRDİ — `GET /tenants/:id` tenant predicate'i TAŞIMIYOR ([[T-258]])
+>
+> ```
+> tenant.service.ts   findOne(id)  →  çağıranın tenant'ına BAKMIYOR
+> bugün               gösterilemiyor — dev DB'de TEK tenant
+> ```
+>
+> `T-258`'in `@Roles(ADMIN)` düzeltmesi bunu **kapatmaz**: bir `ADMIN` yine başka bir
+> tenant'ın kaydını `id` ile isteyebilir. **Rota katmanı bunu çözemez** — `RLS`'in
+> konusu.
+>
+> 📌 Ve bu adımın kabul kriterinin **tam vakası**: *"her politika için, o politikanın
+> REDDETMESİ gereken bir satırı isteyen bir test."* İkinci bir tenant fixture'ı
+> olmadan doğrulanamaz.
+
 > ### ⚠️ `S3`'ÜN KÖR NOKTASI RLS'TE DE VAR — brief'e girsin (ürün sahibi, 2026-08-20)
 >
 > [[T-249]] turunda ölçüldü ve envantere yazıldı:
