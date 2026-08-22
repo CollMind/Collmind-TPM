@@ -327,6 +327,36 @@ S3  KARDEŞLER ÇELİŞİYOR        10 uç   budget 8 · kpi grid 2
 kardeşleriyle (`ADMIN`) aynı hücreye giderdi. **Veri sınıfı bazında** bakınca `plan`
 uçlarına ait.
 
+## 4g · ⛔ `B4`'ÜN ÖN KOŞULU — DÖRDÜNCÜ KOVA: `SELF` (ürün sahibi önerisi, 2026-08-21)
+
+`B4`'ün şartı `FILTRESIZ = 0`. Bugün **`3`**: `/users/me` ailesi (`GET` · `PATCH` ·
+`PATCH me/password`).
+
+⚠️ **Ve onlar `@Public` DEĞİL** — kimlik **gerektiriyorlar**, yalnız **rol**
+gerektirmiyorlar.
+
+```
+@Public       kimlik GEREKMİYOR              health · auth/login · auth/refresh
+SELF          kimlik gerekli, rol GEREKMİYOR  /users/me ailesi          ← YENİ
+alan-guard    kendi guard'ı                   reversal · settlement
+@Roles        rol gerekli
+```
+
+**Default-deny `SELF`'i TANIYARAK geçirir** — bir dekoratörle (`@SelfScoped()` ya da
+eşdeğeri).
+
+### ⛔ Yoksa İKİ KÖTÜ SEÇENEK kalır
+
+```
+(a) @Roles(5 rol) yazılır      →  UNION, ve Z18'in AÇIK ihlali
+(b) default-deny onları keser  →  /users/me KIRILIR
+```
+
+📌 **Ve bu karar `B3`'TEN ÖNCE verilmeli**, çünkü `@RequireCapability` göçü o
+dekoratörü **de taşıyacak**. Sonradan eklemek göçü iki kez yaptırır.
+
+⚠️ Sıradaki yeri: `T-254` → `T-265` → **`SELF` kararı** → `B3`.
+
 ## 5 · `B1`'İN GİRDİSİ — iki ölçüm ÖNCE
 
 ```
