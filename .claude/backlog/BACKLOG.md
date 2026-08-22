@@ -266,6 +266,7 @@ status: active        # planned | active | closed
 | [[T-264]] | `logout` erişim token'ını **geçersizleştirmiyor** (yalnız `refreshToken`) + ⛔ `.env.example` **okunmayan** bir değişken belgeliyor (`JWT_EXPIRES_IN` ↔ kod `JWT_EXPIRATION`, sessizce `1h`'e düşüyor). ⚡ İkisini de **pozitif kontrol** buldu | P2 | backend-engineer | todo |
 | [[T-265]] | **`14` tüketicisiz uç — kader kararı** (`T-063`/`T-225`/`T-257` ailesinin 4. vakası). ⛔ Karar **YÜZEY** hakkında, servis değil: `BudgetAllocationService` CANLI. ⚡ `B2`'yi **bekletmez** — rol atanır, kader ayrı yürür. Üç dalın işi önceden yazıldı | P2 | architect | todo |
 | [[T-266]] | ✅ **KAPSAM RATCHET'i CANLI** — `A1 67` (kapı) · `A2 27` (defter) · `B 38` · `C 103` = `235`. ⚡ Sınıflandırma **iki kez bağımsız** yapıldı, **birebir** aynı sonuç. `envanter \\ (A1∪A2∪B∪C)=∅` → sınıflandırılmamış rota `exit 2` | **P1** | qa-engineer | review |
+| [[T-267]] | **`ADIM 3` `B2`** — `59` uç `@Roles`'a bağlanır, gerekçeler `B1`'den (yeniden türetilmez, `Z18`). ⚠️ İKİ SÜTUN: `B2`'nin yeşili **yalnız `@Roles`** sütununu kapatır; `scope-a1-baseline` **dokunulmaz** | **P1** | backend-engineer | todo |
 | [[T-240]] | ⏸️ **ERTELENİR** — `ledger_entries`'in 5 FK'siz kolonu. Tablo bugün **boş** → yapısal yol, canlı hata değil | P2 | data-engineer | todo |
 
 > **Karar turu 2026-08-10:** [[T-163]] → **ADR 0011** (`TOTAL_PLANNED_SPEND`) · [[T-169]] → **Phase 2 bekler, taban sırası: T-167/T-165 → T-168 → T-156** · [[T-170]] → karar yok, `INV-C-*` ailesi açıldı, üç ölçüm sırada.

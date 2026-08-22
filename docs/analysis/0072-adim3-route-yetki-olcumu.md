@@ -341,3 +341,34 @@ geldi, aynı ölçümün tekrarı değil.
 `@Roles` ekledi (`SPEND_WRITE_ROLES = {ADMIN, PLANNER}`). Bugünkü sayım:
 **`238` rota · `172` `@Roles`'lu · `66` filtresiz** (`3` `@Public` + `2` alan-guard'lı
 + **`61` gerçek boşluk**).
+
+
+---
+
+## ⚡ `§4c` ÇAPRAZ SINAMASININ İKİNCİ VAKASI — ve bu sefer KAZARA (2026-08-21, `T-266`)
+
+`T-266`'nın kapsam sınıflandırması **iki kez, bağımsız** yapıldı:
+
+```
+1. tur   235 rota sınıflandırıldı  →  ajan yazılı DUR'a çarptı, durdu
+         ⚠️ oturumu KAPANDI, ve liste DOSYAYA YAZILMAMIŞTI
+2. tur   sıfırdan sınıflandırdı    →  67/27/38/103 ve controller dağılımı BİREBİR
+```
+
+📌 **İki bağımsız yol aynı taksonomiye vardı** — `§4c`'nin `A`/`C` ayrımıyla aynı
+desen, ve **ikinci vakası**.
+
+### ⚠️ Ama bu sefer çapraz sınama KAZARA oldu
+
+> **Ajan oturumu kapanmasaydı, sınıflandırma bir kez yapılacak ve doğrulanmayacaktı.**
+
+Yani bir **kayıp** (transkriptte kalan iş) bir **doğrulamaya** dönüştü. Bu bir yöntem
+değil, bir **tesadüf** — ve tesadüfe güvenilmez.
+
+**Ders:** çapraz sınama **istenerek** yapılır. Bir sınıflandırma bir karara dayanak
+olacaksa (burada: `A1` ratchet'inin baseline'ı), **ikinci bir bağımsız ölçüm planlanır**
+— birincinin kaybolmasını beklemek yerine.
+
+📌 Ve pratik sonuç: **ara çıktılar dosyaya yazılır.** `1.` turun listesi bir dosyada
+olsaydı `2.` tur onu **doğrulayamazdı** — ama `2.` tur zaten **beklenti tablosuna**
+karşı ölçtü, yani doğrulama **tabloyla** yapıldı, listeyle değil.
