@@ -1943,6 +1943,29 @@ para kaynağı            →  denormalize kolon ↔ defter (v_budget_summary)
 girer**: tüketicisi kim, ve zarf yoluna göçü ne? *"POST kalır"* ancak **geçiş dönemi +
 kapanış kaydıyla** kalabilir.
 
+> ### ⛔ REVİZE — ŞARTIN HESABI DEĞİŞTİ (`T-265` ölçümü, 2026-08-23)
+>
+> Bu şartın *"`POST` kalmalı"* tarafı **iki bacağa** dayanıyordu. **Biri düştü:**
+>
+> ```
+> bacak 1  "t254 e2e'si onu çağırıyor"    →  ⛔ ARTIK YANLIŞ
+>          dosya T-270/Z21 turunda yeniden yazıldı, artık POST /budget/envelopes
+>          çağırıyor. `budget-allocations` literaline SIFIR atıf.
+> bacak 2  "tablonun tek yazma yolu"      →  ✅ hâlâ doğru
+>          ama Z21'e göre bu bir TUTMA gerekçesi değil, MUSLUK'un TANIMI
+> ```
+>
+> **Ölçüldü (poz.kontrollü):** repo genelinde `POST /budget-allocations`'ın
+> **controller dışında hiçbir çağıranı yok** — ne e2e, ne seed, ne frontend.
+>
+> ⇒ **Musluk kararı artık çok daha ucuz:** *"geçiş dönemi"* bir **kimin için**
+> sorusuydu, ve cevap **hiç kimse**. Kapanış koşulu (*"e2e akışları zarf yoluna
+> göçtüğünde"*) **zaten karşılanmış** — göç `T-270`'te oldu.
+>
+> 📌 Ve bu, `CLAUDE.md`'nin *"test dosyası sözleşme adı taşır"* kuralının **öngördüğü**
+> durum: dosya yeniden yazıldı, **adı** düzeltildi, ama ona **atıf veren bir gerekçe
+> metni** bayatladı. Sarkan atıf **dosya adında değil, KARARIN GEREKÇESİNDE**.
+
 > ### ⛔ VE KAPANIŞ BİR TAKVİM TARİHİ DEĞİL, BİR KOŞUL (ürün sahibi, 2026-08-23)
 >
 > ```
