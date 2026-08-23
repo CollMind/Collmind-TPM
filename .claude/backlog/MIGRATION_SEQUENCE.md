@@ -3,6 +3,44 @@
 Ajan kendi numarasını SEÇMEZ. Team Lead buradan tahsis eder ve satırı işaretler.
 Sebep: T-030/T-028'de 1790 iki kez alındı (elle yakalandı).
 
+## ⛔ HER ŞEMA-DOKUNUŞLU MIGRATION'IN KABUL KRİTERİ (emsal: `1811000000000`, `Z24`)
+
+**1 · `up()` ÜÇ durumu ayırt eder** (`1805`/`1808`/`1809`/`1810`/`1811` hepsi ampirik):
+
+```
+beklenen durum   →  işlemi yap + assert
+zaten uygulanmış →  NO-OP, sessizce geç      ← taze/prod DB'de TIKANMAMALI
+beklenmeyen      →  ⛔ İPTAL — küme değişmiş, sessizce geçme
+```
+
+**2 · `down()` BYTE-BİREBİR doğrulanır** — ⛔ *"`down()` yazıldı ✅"* bir **niyet
+beyanıdır**, ölçüm değil:
+
+```bash
+pg_dump --schema-only  >  /tmp/before.sql     # DROP/ALTER ÖNCESİ
+npm run migration:run
+npm run migration:revert
+pg_dump --schema-only  >  /tmp/after.sql
+diff /tmp/before.sql /tmp/after.sql            # ⛔ BOŞ OLMALI
+```
+
+⚠️ **Ve `down()` elle eski migration metinleri birleştirilerek YAZILMAZ** — **canlı
+katalogdan** alınan DDL ile yazılır. `1811` böyle yazıldı ve PK/index/FK adları dahil
+birebir tuttu; elle birleştirme bu adları **sessizce kaybeder**.
+
+**3 · Dalların en az ikisi AMPİRİK koşturulur** — yazılmış bir dal, çalıştığı anlamına
+gelmez.
+
+**4 · `migration:generate` sessiz mi** — `T-101`: entity'de kalan bir tanım bir sonraki
+`generate`'te **gerekçesiz** geri gelir. ⚠️ Bilinen gürültü: `T-234`'ün ~1300 satırlık
+pre-existing drift'i — **kendi kalemini ondan ayırt et**, throwaway dosyayı **sil**.
+
+**5 · Katalog sorguları ŞEMA-NİTELENDİRİLİR** (`nspname`/`schemaname` predicate'i).
+Ve bir nesnenin **yokluğunu** iddia etmeden önce **iki katalogu da** sorgula —
+`@Index({unique:true})` bir **index** yaratır, constraint değil.
+
+---
+
 | Numara | Task | Durum |
 |---|---|---|
 | 1795000000000 | AddSpendTypeToBudgetDimensions | kullanıldı |

@@ -33,6 +33,23 @@ kuralı: *"sağlayıcısı olmayan şart bir erteleme değil bir kilittir."*
 **vardı, geldi, ve kimse fark etmedi.** İkincisi daha sinsi, çünkü liste *"bekliyor"*
 derken doğru görünür.
 
+### ⛔ VE AYRIM İKİ FARKLI BAKIM REJİMİ DEMEK (ürün sahibi, 2026-08-23)
+
+Bu tablonun `DURUM` kolonu bir etiket değil, bir **bakım talimatıdır**:
+
+| rejim | ne zaman | nasıl bakılır |
+|---|---|---|
+| **⛔ KİLİT** — *pasif bekler* | sağlayıcı **yok** | sağlayıcı **doğduğu gün** liste bir kerede taranır. Arada bakım **gerekmez** |
+| **⏳ KOŞUL** — *aktif izlenir* | sağlayıcı **var, tetiklenmeyi bekliyor** | tetikleyen task **kapanışta bu listeyi günceller** (`Z25`) |
+
+> **Beş satır kendi bakım talimatını taşıyor** — `F8`'in *"bayat durum"* sınıfına karşı
+> **yapısal bağışıklık**.
+
+📌 Fark neden önemli: bir **kilit**, sağlayıcısı olmadığı için *"bekliyor"* demek
+**doğrudur**. Bir **koşul** için aynı cümle, tetikleyici geldiyse **yalandır** — ve
+ikisi tabloda aynı görünür. Rejim yazılmadan, `Z25`'in vakası (`Z21` şart 3, üç tur
+sessiz bekledi) **tekrarlanabilir**.
+
 ---
 
 ## Nereden geldi

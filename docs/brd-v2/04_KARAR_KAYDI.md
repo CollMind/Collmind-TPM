@@ -2257,6 +2257,44 @@ capabilities.ts:49     tek satırlık yorum düzeltmesi, bindirildi
 *"farklı bir yol farklı bir boyut kümesiyle zarf arayamaz"* **doğduğu andan beri**
 ihlal ediyordu. Ölçülen tüketim: **sıfır satır, sıfır dış çağıran.**
 
+### ⛔ EMSAL — `down()` DOĞRULAMASININ KANONİK BİÇİMİ (ürün sahibi, 2026-08-23)
+
+> **Şema-dokunuşlu her migration'ın kabul kriterine girer:**
+>
+> ```
+> pg_dump --schema-only   →   DROP ÖNCESİ dump saklanır
+> migration:run
+> migration:revert
+> pg_dump --schema-only   →   ve iki dump BYTE-BİREBİR karşılaştırılır
+> ```
+>
+> **`down()` elle eski migration metinleri birleştirilerek YAZILMAZ** — canlı katalogdan
+> alınan DDL ile yazılır. `1811000000000` böyle yazıldı ve PK/index/FK adları dahil
+> **birebir** tuttu.
+
+**Neden emsal ilan ediliyor:** *"`down()` yazıldı ✅"* bir **niyet beyanıdır**
+(`CLAUDE.md`: *"`@deprecated` bir niyet beyanıdır"* ailesi). Byte-karşılaştırma bir
+**ölçümdür**. Yazılmazsa bir sonraki migration niyetle geçer ve **emsal bir kereliğe
+düşer**.
+
+⚠️ Ve bu, `§`'nin *"assert taşıyan migration ÜÇ durumu ayırt etmeli"* kuralının
+**tamamlayıcısı**: o `up()`'ın dallarını, bu `down()`'ın **doğruluğunu** kapatıyor.
+
+### 📌 MİKRO-DERS — sınıf düzeltmesi verilirken SINIFIN ENVANTERİ de ölçülür
+
+`Z23` cascade'i **iki vaka** sayarak kaldırdı (`LTAAgreement.rates` ·
+`LTAAgreement.planOverrides`). `Z24` turunda **üçüncüsü** çıktı:
+
+```
+budget-allocation.entity.ts:193   @OneToMany('BudgetTransactionLog', …, { cascade: true })
+```
+
+**Karar doğruydu, envanter eksikti.** Sınıf temelli bir karar verilirken *"bu sınıfın
+başka üyesi var mı"* sorusu **tek grep'lik iş** — ve sorulmadı.
+
+📌 Desen tanıdık: **sapma envanteri** vakası (`§`: *"sekiz vaka gibi bir sayı, LİSTESİYLE
+anılır ya da HİÇ anılmaz"*). Burada sayı **iki** diye anıldı ve **üç**tü.
+
 ---
 
 ## Z25 · Kapanış-KOŞULLU her karar, koşulun ÖLÇÜM ADRESİYLE yaşar
