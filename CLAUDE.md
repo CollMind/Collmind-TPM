@@ -1580,6 +1580,41 @@ Bu, §2.7 ailesinin bir üyesi ama tersinden: orada kanıt kurulumu **kusuru giz
 > **Bir hata gördüğünde, önce onu üreten ortamın taze olduğunu doğrula. Yeniden başlat, tekrar
 > ölç — ancak ondan sonra kodu suçla.**
 
+### BAYAT SÜREÇ BİRİKİR — ve ölçümü ARALIKLI bozar (ZORUNLU)
+
+`§`'nin *"ölçüm ortamının bayatlığı"* kuralı **tek** bir bayat süreci konu alıyor. Bu, o
+kuralın **birikim** hâli ve daha sinsi:
+
+Ölçülmüş vaka (2026-08-23, `Z24` turu): aynı DB'ye bağlı **üç** `nest start` süreci
+bulundu — başlangıç saatleri `3:06PM` · `3:20PM` · `8:30PM`, yani **beş saatlik** bir
+aralığa yayılmış. Bir e2e koşumunda `T-047` invaryantı **düştü** (`plans 4→0`,
+`planSkus 159→0`), sonraki **iki** koşumda **geçti**.
+
+```
+tek bayat süreç   →  rotalar eski, hata KOD KUSURU gibi görünür     (bilinen kural)
+BİRİKMİŞ süreçler →  aynı DB'ye yazan çoklu yazar, sonuç ARALIKLI   ← bu vaka
+```
+
+⚠️ **Ve teşhis tuzağı `§`'nin flaky maddesiyle aynı yerde:** *"ortam yavaş"* ve *"test
+kırılgan"* açıklamaları hazır bekliyor. Üçüncüsü — **birden çok süreç aynı fixture'a
+yazıyor** — daha az akla gelir çünkü **görünmez**: `docker ps` göstermez, `git status`
+göstermez, testin çıktısı göstermez.
+
+**Pratik — bir e2e invaryantı aralıklı düşerse ÖNCE bunu ölç:**
+
+```bash
+ps aux | grep -E 'nest start|node dist/main' | grep -v grep
+lsof -nP -iTCP:3000 -sTCP:LISTEN
+```
+
+⛔ **Ve bir dev sunucusu başlatan her tur, onu KAPATMAKTAN sorumludur** — ya da
+başlattığını **raporlar**. Bu oturumda üç süreç birikti ve hiçbirinin sahibi belli
+değildi.
+
+📌 `§1`'in *"yabancı container"* uyarısıyla **aynı aile, farklı yüzey**: orada başka bir
+ürünün container'ı `docker ps`'te ayırt edilemiyordu; burada **kendi ürünümüzün** bayat
+süreçleri hiçbir listede görünmüyor.
+
 ### Testler bir ŞARTNAMEDİR — kod silinse bile (ZORUNLU, ve bir kurtarmayla ölçüldü)
 
 Testlerin bilinen getirisi regresyonu yakalamaktır. T-126'da **ikinci bir getirisi** ölçüldü:
