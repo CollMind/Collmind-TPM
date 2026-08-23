@@ -2338,3 +2338,165 @@ sağlayıcı **yoktu**; burada sağlayıcı **vardı, geldi, ve kimse fark etmed
 ⚠️ **Sarkan atıf dosya adında değil, KARARIN GEREKÇESİNDEYDİ** — `CLAUDE.md`'nin
 *"test dosyası sözleşme adı taşır"* kuralının bir bükülmesi: ad düzeltilebilir,
 **ona atıf veren gerekçe metni** düzeltilmez, çünkü onu kimse okumaz.
+
+---
+
+## Z26 · `SELF` = **yüklem + ALAN-SÖZLEŞMESİ**, ve ikincisi dekoratörün PARAMETRESİ
+
+**Tarih:** 2026-08-23 · **Karar veren:** ürün sahibi · **Ölçüm:** `docs/process/SELF_OLCUM_RAPORU.md`
+
+### Karar
+
+> **`SELF` bir kova değil, bir YÜKLEM SINIFIDIR** — ve sözleşmesi **iki parçalıdır**:
+>
+> ```
+> YÜKLEM   "kayıt benim mi"      →  @SelfScoped() dekoratörü
+> ALAN     "neyi yazabilirim"    →  DAR DTO  (dekoratörün parametresi, AYRI mekanizma DEĞİL)
+> ```
+
+`Z18`'in reddettiği **dördüncü eksen** korunuyor: `SELF_WRITE` diye bir **yetenek hücresi
+açılmaz** — *kapsam-varyantlı yetenek neyse, özne-varyantlı yetenek de o*.
+
+### Neden genişledi — iskeletin KENDİ `DUR` koşulu ateşledi
+
+İskelet, `PATCH /users/me`'nin **dar alan-listeli** olduğunu **örtük olarak** varsayıyordu.
+**Ölçüm tersini gösterdi:**
+
+```
+PATCH /users/me   KENDİ DTO'SUNA SAHİP DEĞİL
+                  PATCH /users/:id ile (USER_MANAGE ile) AYNI UpdateUserDto'yu paylaşıyor
+                  daraltma:  tek satırlık  `delete dto.role`   (controller:111)
+```
+
+⇒ Bir `SELF` ucu, bir `ADMIN` ucunun yazma yüzeyinin **12 alanının 10'unu** taşıyor;
+ikisi bir **kimlik kapısı** (`status`), biri **kimliğin kendisi** (`email`).
+
+### ⛔ GENİŞLEMENİN ŞEKLİ — `İlke 4` gözetilir
+
+> **Alan sınırını `delete dto.role` gibi **imperative daraltmalarla** ya da paylaşılan
+> DTO'ya **istisna yamalarıyla** çözmek, tam da `T-269`/`T-273`'te öldürdüğümüz
+> **"görünmez davranış"** sınıfını yeniden üretir.**
+
+**Doğru temsil — `SELF` ucu KENDİ DAR DTO'sunu taşır:**
+
+```
+UpdateSelfDto     alanlar ÖLÇÜMDEN gelir (bugünkü ölçüm: fullName · firstName · lastName
+                  · phoneNumber · department · jobTitle)
+                  ⛔ role · scope · status · tenantId  TİPTE YOKTUR
+ValidationPipe    forbidNonWhitelisted: true  → fazlalığı 400 ile REDDEDER
+```
+
+> **Böylece *"neyi yazabilirim"* sorusunun cevabı TİP SİSTEMİNDE yaşar** —
+> grep'lenebilir, guard'lanabilir, **sessizce genişleyemez**.
+
+### ⛔ SINIF KURALI — `SELF` ucu `MANAGE` ucunun DTO'sunu MİRAS ALAMAZ
+
+Bugünkü kusurun **sınıf-kuralı hâli**. İki uç aynı DTO'yu paylaşırsa, `MANAGE` tarafına
+eklenen her alan `SELF` tarafına **sessizce** düşer.
+
+### `status` bulgusu — ayrı karar GEREKMEZ
+
+Ölçüm: `status` **rolsüz bir uçtan yazılabiliyor**, ve `POST /users/:id/activate`
+(`@Roles(ADMIN)`) o kolonun **resmî ucu**. Yönü **fail-closed** (kilitlenebilir, geri
+açamaz — `JwtStrategy` her istekte yeniden okur).
+
+> **"Kendi hesabını kilitleyebilme" bir ÖZELLİK değil, bir KAZA.**
+
+Dar DTO onu **zaten dışarıda bırakır** — ayrı bir karar gerekmez.
+
+📌 Ve `status` bir **alan değil, bir DURUM GEÇİŞİDİR** — `activate`/`deactivate` uçları
+zaten öyle modelliyor. Genel bir `PATCH` gövdesinden yazılması bir **tasarım kazası**.
+
+### Açık kalan (bu kararın DIŞINDA, kayda geçiyor)
+
+```
+role → 200 SESSİZ DÜŞÜRME · permissions → 200 SESSİZ NO-OP · tenantId/scope → 400
+```
+
+Dar DTO `SELF` tarafında bunu kapatır. **`PATCH /users/:id` (`USER_MANAGE`) tarafında
+kapatmaz** — `T-242a`'nın `scope` için yaptığı düzeltme (`§2.5`: *"sessiz no-op'u açık bir
+hataya çevirir"*) `role`/`permissions` için **yapılmadı**.
+
+⚠️ Ve `user.service.ts:807 update()` **hiçbir denetim kaydı yazmıyor** — hem `/users/me`
+hem **`/users/:id` (rol değişimi dahil)** bu yoldan geçiyor, `updated_by` da `NULL`.
+`§2.3` (*"her işlem loglanır"*) ihlali; `Z20`'nin `USER_MANAGE` hücresini ilgilendirir.
+
+---
+
+## Z27 · `GET /approvals/pending` = **ONAYCI perspektifi**, `SELF` yüklemi DEĞİL
+
+**Tarih:** 2026-08-23 · **Karar veren:** ürün sahibi · **Uygulama:** `T-276`
+
+### Karar
+
+```
+(a) "benim onayımı bekleyenler"      →  ✅ SEÇİLDİ — meşru bir ekran
+(b) "benim gönderdiklerimden bekleyenler"  →  ⛔ RET — /my-requests'in KOPYASI (İlke 4)
+```
+
+⚠️ **Ve `(a)` bir `SELF` yüklemi DEĞİL** — *"onay kademesinde ben varım"* yüklemi. Yani
+`SELF` kovasına **girmez**; `rol + kapsam` kesişimidir.
+
+**Ürün dayanağı:** `PLAN_BUTCE_NETLESTIRME` `netleştirme-1(c)` — *"onay kuyruğunda zarf
+bazlı toplam talep"*. Onay kuyruğu **onaycıya** gösterilen bir yüzey.
+
+### Yüklem — bugünkü ASGARİ DOĞRU uygulama
+
+Tam çözüm **şablon çözümlemesi + `K-2.5.12-R`'nin tek-hat kuralı** ister, ve o **`Faz 2`
+işi**. Bugün uygulanacak:
+
+```
+kullanıcının rolü  ==  isteğin MEVCUT KADEME rolü
+        ∧
+kapsam kesişimi    !=  ∅
+```
+
+**Ölçüm doğrulaması:** `FINANCE`'in `ADMIN`'in kaydını görmesi **bu yüklemle de düşer**.
+
+### ⛔ FIXTURE BORCU AÇIK KALIR — `Z25` tablosuna tetikleyicisiyle
+
+```
+KOŞUL       approval_levels DOLDUĞUNDA
+NE OLUR     yüklem ŞABLON-ÇÖZÜMLEMELİ hâline göç eder
+TETİKLEYEN  şablon motoru (Faz 2)
+DURUM       ⏳ koşul — AKTİF İZLENİR (Z25 rejimi)
+```
+
+📌 **`(a)`/`(b)` ayrımının koddan okunamaması bir ÖLÇÜM SINIRI değil, bir VERİ
+YOKLUĞUDUR** — `approval_levels` **`0` satır**. `CLAUDE.md`'nin *"verinin yokluğu örter"*
+alt sınıfı: yol bugün koşmuyor, o yüzden semantiği **kod söylemiyor**.
+
+---
+
+## Z28 · `B4`'ün kabul kriteri **ÜÇ SAYACIN SIFIRI**
+
+**Tarih:** 2026-08-23 · **Karar veren:** ürün sahibi
+
+`FILTRESIZ = 0` **gerekli ama YETERLİ DEĞİL** — ölçüm üç ayrı sayaç gösterdi:
+
+```
+1  FILTRESIZ = 0                                    bugün 3   (/users/me ailesi)
+2  @Roles taşıyan SELF uçları = 0                   bugün 4   (logout · 2× notifications
+                                                                · my-requests)
+3  guard DÖRDÜNCÜ KOVAYI iki-girdi-iki-çıktı ile TANIYOR      bugün ⛔ TANIMIYOR
+```
+
+### `3.` neden bir kabul kriteri — ölçülmüş sessizlik
+
+`route-scope.awk` yalnız `Roles` · `Public` · `UseGuards` tanıyor. Fixture ile ölçüldü
+(beklentiler **önceden** yazıldı, üçü de tuttu):
+
+| varyant | beklenen | **ÖLÇÜLEN** |
+|---|---|---|
+| `v1` çıplak `@SelfScoped()` | `FILTRESIZ=3` | **`3` · EXIT=0** ⛔ **SESSİZ** |
+| `v2` guard biçimi | `exit 2` | **`EXIT=2`** — guard'ın kendi `DUR`'u çalışıyor |
+| `v3` **poz.kontrol** `@Roles(ADMIN)` | `FILTRESIZ=2` | **`2`** ✅ harness ayırt edici |
+
+> **`v1`'in sessizliği, dekoratör + guard'ın AYNI TURDA inme zorunluluğunu kanıtladı** —
+> ve o zorunluluk kabul kriterine **yazılmazsa bir sonraki dekoratör aynı sessizliğe
+> düşer**.
+
+### Ve `ADIM 3`'ün hikâyesi
+
+> *"`61`'le başlayan hikâye sıfırla bitiyor"* — **düzeltilmiş hâli: sıfır, ÜÇ SAYACIN
+> sıfırıdır.**
