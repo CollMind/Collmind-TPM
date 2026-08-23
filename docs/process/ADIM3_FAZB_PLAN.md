@@ -357,6 +357,26 @@ dekoratörü **de taşıyacak**. Sonradan eklemek göçü iki kez yaptırır.
 
 ⚠️ Sıradaki yeri: `T-254` → `T-265` → **`SELF` kararı** → `B3`.
 
+> ### ⛔ BAĞIMLILIK YÖNÜ AÇIK YAZILIR (ürün sahibi, 2026-08-23)
+>
+> **`SELF` kararı `B3`'ün GİRDİSİDİR, ÇIKTISI DEĞİL.**
+>
+> `B3` (`@RequireCapability` göçü) **`172` `@Roles`**'u taşırken `/users/me` ailesinin
+> **hedef hücresi belirsizse**, göç iki kötü sonuçtan birini üretir:
+>
+> ```
+> ya onları ATLAR              →  kalıntı: iki mekanizma yan yana
+> ya GEÇİCİ bir sınıfa koyar   →  İlke 4'ün "iki mekanizma" uyarısı TAM BURADA
+> ```
+>
+> 📌 **Karar küçük:** `Z18`'in `READ_OWN` sınıfı zaten **yarısını verdi**; kalan soru
+> **self-WRITE'ın bir yetenek mi yoksa bir YÜKLEM mi** olduğu
+> (`PATCH /users/me` · `PATCH /users/me/password` — `Z20`'nin `SELF` kovası).
+>
+> ⚠️ Ve `Z20` `SELF`'i **`B4`'ün `FILTRESIZ = 0` ön koşuluna** bağladı: o üç uç `@Roles`
+> almaz, `SELF` alır. Yani `SELF` kararı **iki** kapıyı birden açıyor — `B3`'ün göç
+> hedefini ve `B4`'ün ön koşulunu.
+
 ## 5 · `B1`'İN GİRDİSİ — iki ölçüm ÖNCE
 
 ```

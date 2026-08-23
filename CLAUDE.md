@@ -422,6 +422,25 @@ mutasyona dayanıklı" diye okunurdu: **sahte kanıt**.
 > *"hipotezin çürümesi iyi ölçümün işaretidir — çürüten ölçüm, doğrulayan ölçümden
 > değerlidir."*
 
+> ### ⛔ VE REPRODÜKSİYON ŞARTI YÖNSÜZDÜR (ZORUNLU)
+>
+> **`"Kusur önce görülmeli"` kuralı, `"düzelttik"` inancını korumak için konur.**
+> **Ama aynı kapı `"kusur var"` inancını da eler — ve bu, kuralın TAM GÜCÜDÜR.**
+>
+> Ölçülmüş vaka (2026-08-23, `T-273`): bir task dosyasına *"ilk gerçek satırda `500`
+> verecek"* yazıldı. Reprodüksiyon şartı (*fixture kur → kusuru GÖR → sonra düzelt*)
+> uygulandı ve **`500` hiç görülmedi** — `200`/`204`/`204`, ve canlı sorgu logu ilgili
+> tabloya **sıfır SQL** gösterdi.
+>
+> ```
+> korunan sanılan   "düzelttik" inancı        ← kuralın yazılış gerekçesi
+> gerçekte elenen   "kusur var" inancı        ← ve o iddiayı YAZAN taraf ölçmemişti
+> ```
+>
+> 📌 **Reprodüksiyon şartı iddiayı da, düzeltmeyi de AYNI KAPIDAN geçirir.** Bir kusur
+> raporu, bir düzeltme raporu kadar ölçüm ister — ve *"kusur var"* demek, *"kusur yok"*
+> demek kadar bir iddiadır.
+
 **Ve bu kural yetmez — T-111'de iki kez, kurala UYULARAK yanılındı.**
 
 Mutasyon dosya içeriğinden doğrulandı (`grep -c` = 1, kural sağlandı) ama değiştirilen metin
@@ -488,6 +507,11 @@ bilinmez.
 
 > **Geri almanın SONUCUNU ölç, komutun çalıştığını değil.** `shasum -a 256 -c` bunu yapar;
 > `git checkout` yalnız bir niyet beyanıdır.
+
+📌 **İkinci vaka (2026-08-23, `T-272`):** izole bir worktree'den ana ağaca senkronlarken
+bir **`cp` YÖN hatası**, worktree'deki düzeltmeyi ana ağacın **eski hâliyle ezdi**.
+`shasum -a 256` yakaladı ve düzeltme yeniden uygulandı. Yani kural yalnız *"geri alma"*
+için değil, **her dosya taşımasında** geçerli — ve **iki kanıtlı**.
 
 Bu, guard yazarken özellikle geçerlidir — guard dosyaları doğdukları commit'e kadar
 untracked'dır, yani mutasyonla sınanan her yeni guard tam olarak bu tuzağın içindedir.
@@ -848,6 +872,28 @@ hiçbir dosyada bir çağrı olarak görünmez.
 
 > **Bir tablonun YAZMA yüzeyini ararken `{ cascade: true }` taşıyan her ebeveyn ilişkiyi
 > say** — ve şüphedeysen **sorgu logunu** oku, grep'i değil.
+
+> ### ⛔ ŞERH — aynı dekoratör, aynı davranış DEĞİLDİR (ZORUNLU)
+>
+> **Statik olarak ÖZDEŞ iki yapı, davranışsal olarak özdeş sayılamaz.**
+> **Yüzey taraması SINIFI bulur; davranışı FIXTURE söyler.**
+>
+> Ölçülmüş vaka (2026-08-23, `T-273`): **aynı dosyada, aynı metin**:
+>
+> ```
+> @OneToMany('LTARate',         'ltaAgreement', { cascade: true })   → ATEŞLİYOR
+> @OneToMany('LTAPlanOverride', 'ltaAgreement', { cascade: true })   → SIFIR SQL
+> ```
+>
+> Fark **dekoratörde değil, JOIN GRAFİĞİNDE**: `LTAPlanOverride`'ın iç ilişkileri
+> (`plan` · `ltaRate` · `ltaAgreement`) `findById`'de **join edilmiyor** → `undefined`
+> kalıyorlar → TypeORM'un diff motoru o alanı **hiç karşılaştırmıyor**.
+>
+> ⚠️ Ve bu, bir taramaya dayanarak yazılan **kusur iddiasını** çürüttü — kaldırma kararı
+> **ayakta kaldı** çünkü gerekçesi **sınıf temelliydi**, tek bir vakaya değil.
+>
+> 📌 Pratik: bir yüzey taraması *"burada da var"* dediğinde, o **bir aday**dır — bir
+> bulgu değil. Bulguya dönüşmesi için **davranışın ölçülmesi** gerekir.
 
 Kaç yüzeyin tarandığı **aynı cümlede yazılır** (`§ KAPSAM MASKELEMESİ`: *"bir küme
 hakkında sonuç yazılıyorsa, kümenin NASIL SINIRLANDIĞI aynı cümlede yazılır"*).
