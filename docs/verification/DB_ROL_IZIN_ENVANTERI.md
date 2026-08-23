@@ -405,7 +405,7 @@ cevaplanacak.
 lta_agreements  INSERT   createAgreement
 lta_agreements  UPDATE   updateAgreement · activateAgreement · terminateAgreement
 lta_rates       INSERT   createAgreement + updateAgreement rate yazımı
-lta_rates       UPDATE   ⚠️ ORM CASCADE — aşağıya bkz.
+lta_rates       UPDATE   ⚠️ ORM CASCADE — ⛔ REVİZE EDİLDİ (Z23/T-273): GRANT KALDIRILDI
 lta_rates       DELETE   updateAgreement, `dto.rates` gönderildiğinde eski oranların silinmesi
 ```
 
@@ -455,3 +455,66 @@ eklendi, yani cascade'in besleneceği dizi artık dolabilir.
 
 📌 Örten şey ikinci bir kusur değil, **verinin yokluğu** — *"bir kusur başka bir kusur
 tarafından örtülebilir"* ailesinin **zaman eksenli** hâli.
+
+
+---
+
+## S3 tur 26 (T-273 / Z23, 2026-08-23) — cascade kaldırıldı, `lta_rates UPDATE` geri alındı
+
+**Karar:** `Z23` — `@OneToMany(..., { cascade: true })` **kaldırılır**, yazma serviste
+açık yapılır. Gerekçe: cascade *"hiçbir dosyada çağrı olarak görünmeyen yazma yolu"*
+üretiyor (**beşinci yüzey**), ve onu **yönetmek** yerine **ortadan kaldırmak** bir sınıf
+düzeltmesi.
+
+### Ayrıcalık deltası — canlı DB doğrulandı
+
+| tablo | fiil | önce | sonra | gerekçe |
+|---|---|---|---|---|
+| `lta_rates` | `UPDATE` | ✅ | ❌ **REVOKE** | yalnız cascade'in **fantom** `UPDATE`'i içindi; gerçek üretim yolu yok |
+| `lta_rates` | `INSERT` · `DELETE` | ✅ | ✅ | `createAgreement`/`updateAgreement`'ın **açık** yazma yolları |
+| `lta_plan_overrides` | `SELECT` | ✅ | ✅ | `findById` join'i |
+| `lta_plan_overrides` | `INSERT` · `UPDATE` | ❌ | ❌ | hâlâ **hiçbir** üretim yazma yolu yok |
+
+```
+canlı:  lta_agreements      INSERT · SELECT · UPDATE
+        lta_rates           DELETE · INSERT · SELECT
+        lta_plan_overrides  SELECT
+```
+
+⇒ **Envanter iki tabloda daraldı** — ve envanter `ADIM 5` (RLS)'in **girdisi** olduğu için
+daralma **ileriye de ödüyor** (`Z23` gerekçe `2`).
+
+### ⛔ VE `S3 tur 25`'in *"UYKUDA KALAN"* BÖLÜMÜ DÜZELTİLDİ
+
+O bölümde şöyle yazıyordu: *"ilk gerçek override satırında `PATCH`/`activate`/`terminate`
+`500` verecek."*
+
+**Ölçüldü ve ÇÜRÜDÜ.** Gerçek bir `lta_plan_overrides` satırı fixture'ıyla, düzeltmeden
+**ÖNCE**:
+
+```
+PATCH  →  200        activate  →  204        terminate  →  204
+canlı sorgu logu:  lta_plan_overrides'a SIFIR SQL
+```
+
+**Sebep:** `LTAPlanOverride.plan` / `.ltaRate` / `.ltaAgreement` ilişkileri `findById`'de
+**hiç join edilmiyor** → `undefined` kalıyorlar → TypeORM'un diff motoru o alanı **hiç
+karşılaştırmıyor**. `LTARate`'in çift-eşlemeli nullable ilişkisiyle **aynı mekanizma
+değil**.
+
+⚠️ **İki ilişki AYNI dekoratörü taşıyordu ve AYNI DAVRANMIYORDU** — ve `lta_rates`
+cascade'i **gerçekten** ateşliyordu (canlı log):
+
+```
+UPDATE lta_rates SET channel_id=$1, category_id=$2 ... WHERE id IN ($3)
+```
+
+📌 Kaldırma **yine de** uygulandı, **sınıf** gerekçesiyle: `rates`'te ateşlediği kanıtlı
+aynı mekanizma, bir sonraki join eklemesinde **sessizce tekrarlanabilirdi**.
+
+### Kalıcı karşı-önlem
+
+`lta_plan_overrides`'ın **`0`-satır körlüğü kırıldı**:
+`test/t269-lta-agreement-permission-grant.e2e-spec.ts`'e **gerçek override satırıyla**
+üç uç + poz.kontrol (override satırının `updated_at`/değerleri **değişmedi**) eklendi.
+`CLAUDE.md`'nin *"verinin yokluğu örter"* alt sınıfının **ilk kalıcı karşı-önlemi**.
