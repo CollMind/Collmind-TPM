@@ -708,6 +708,29 @@ grep -n 'this\.fooRepository\.' <dosya>   # çağrı yüzeyi — asıl soru bu
 enjeksiyon değil **çağrı** referansı verilir: ❌ *"3 servis okuyor"* ·
 ✅ *"`spend-distribution.service.ts:206` `this.mechanicSpendBreakdownRepository.find`"*.
 
+### ⚠️ VE SIKLIK — bu kural bir REFLEKS üretmiyor, bir KONTROL üretiyor
+
+Kural yazıldıktan sonra **aynı oturumda üç kez daha ihlal edildi, ve üçünde de ihlal eden
+kuralı yazan taraftı**:
+
+| # | iddia | gerçek | yakalayan |
+|---|---|---|---|
+| 1 | *"`/finance-reporting` · 3 servis okuyor"* | ikisi **yalnız constructor** → ölü | alt-ajan |
+| 2 | *"`BudgetAllocationService`'i finance-reporting kullanıyor"* (bir **task dosyasına** yazıldı) | enjeksiyon `1` · **çağrı `0`** | `architect` |
+| 3 | *"`Capability` entity yok"* (dosya adı sayıldı) | `role.entity.ts` içinde **iki sınıf** | `data-engineer` |
+
+📌 **Üçü de kendi turunda yakalandı** — yani kural işliyor. Ama **hiçbirini yazan
+yakalamadı**: kural bir *"yazarken hatırlanan refleks"* değil, bir *"sonradan uygulanan
+kontrol"* üretiyor.
+
+> **Bu yeterli olabilir — ama o zaman kontrolün KOŞTUĞUNDAN emin olmak gerekir.**
+> Review'ın koşmadığı bir turda bu sınıf **sessizce geçer**, ve `#2`'de olduğu gibi bir
+> **task dosyasına** yerleşip sonraki turun girdisi olur.
+
+**Pratik:** bir sayıyı bir **brief**'e ya da **task dosyasına** yazarken — yani başka birinin
+girdisi olacaksa — enjeksiyon/çağrı ayrımını **o anda** ölç. Kod yorumunda yanılmak yanlış
+bilgi üretir; **bir brief'te yanılmak yanlış İŞ üretir.**
+
 ### `@deprecated` bir NİYET BEYANIDIR, bir ölçüm değil (ZORUNLU)
 
 > **Bir kopya *"ölü"* diye işaretlendiğinde ölçüm DURUR.**
