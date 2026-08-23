@@ -371,6 +371,31 @@ mutasyona dayanıklı" diye okunurdu: **sahte kanıt**.
 
 > **Kural: mutasyonu dosya içeriğinden doğrula, `git diff`'ten değil.**
 
+> ### 🔴 SINIFIN KANONİK ÖRNEĞİ — *"yanılan ölçüm gerçek kusuru KAPATIYORDU"* (`T-270`)
+>
+> Yukarıdaki maddelerin çoğu *"yeşil ama hiçbir şey kanıtlamıyor"* ile biter. Bu vaka bir
+> adım öteye gider: **ölçüm doğruydu, soru dardı, ve sonuç bir bulguyu KAPATTI.**
+>
+> ```
+> soru      "budget_allocations tablosunu kim okuyor?"
+> arananan  budgetAllocationService     → enjeksiyon 1 · ÇAĞRI 0   → "tüketici yok"
+> yazılan   bir TASK DOSYASINA: "gerçek tüketim tek bir çağrı"
+> gerçek    budgetAllocationRepository:160 .find(…)  → getBudgetUtilization
+>                                                    → GET /dashboard/summary
+> ölçüm     DB ₺1.600.000 (4 zarf) · dashboard ₺0 · GREEN · status:"ok"
+> ```
+>
+> Yani *"tek tüketici"* cümlesi, **canlı bir finansal ekranda kullanıcıya yanlış rakam
+> gösteren** bir kusurun önüne perde çekti — ve bir sonraki turun **girdisi** olarak
+> kaydedildi.
+>
+> 📌 `§7.1`'in *"çürüten bir sayı yanılırsa gerçek bir kusuru kapatır"* maddesinin en
+> pahalı hâli, çünkü burada çürüten şey bir sayı değil **bir kapsam tanımıydı**.
+>
+> ⚠️ Ve yakalayan **hipotezi çürüten bir ölçüm** oldu. Ürün sahibinin kaydı:
+> *"hipotezin çürümesi iyi ölçümün işaretidir — çürüten ölçüm, doğrulayan ölçümden
+> değerlidir."*
+
 **Ve bu kural yetmez — T-111'de iki kez, kurala UYULARAK yanılındı.**
 
 Mutasyon dosya içeriğinden doğrulandı (`grep -c` = 1, kural sağlandı) ama değiştirilen metin
@@ -762,9 +787,27 @@ gerçek bir kusuru **kapatıyordu** (canlı bir dashboard ₺1.6M zarf bütçesi
 | bu **tabloyu** kim okuyor | bir servis adı | **entity adı** + `Repository` + `getRepository` + `relations: [` + ham SQL |
 | bu **kolonu** kim yazıyor | entity dosyası | her yazma yolu (`§`: seed · migration · servis · uç · fixture) |
 
-⚠️ Ve bir tablo sorusunun cevabı **tek bir ada** dayanıyorsa, cevap **eksiktir** — kaç ad
-tarandığı aynı cümlede yazılır (`§ KAPSAM MASKELEMESİ`: *"bir küme hakkında sonuç
-yazılıyorsa, kümenin NASIL SINIRLANDIĞI aynı cümlede yazılır"*).
+> ### ⛔ VE KURAL BUDUR — ürün sahibi düzeltmesi (2026-08-23)
+>
+> **DI-çağrı taraması YALNIZ servis-tüketimini kanıtlar; TABLO-tüketimi DÖRT YÜZEYDE
+> aranır:**
+>
+> ```
+> 1  DI çağrıları        this.fooService.        this.fooRepository.
+> 2  repository erişimi  dataSource.getRepository(Foo)  ·  manager.find(Foo)
+> 3  ham SQL             query('… FROM foo …')  ·  createQueryBuilder('foo')
+> 4  view'lar            v_foo_summary — bir view'ı okuyan, TABLOYU okuyor
+> ```
+>
+> **Negatif bir bulgunun geçerliliği ARAMA UZAYININ TANIMINA bağlıdır.** Uzay yazılmadan
+> *"tüketici yok"* denemez.
+
+⚠️ Ve dördüncü yüzey en sessizidir: `relations: ['planOverrides']` bir string'dir, bir
+sınıf atfı değil — `T-269`'da `app-runtime-grants` guard'ı tam bu yüzden **`EXIT=0`
+verirken canlı bir `500` duruyordu.
+
+Kaç yüzeyin tarandığı **aynı cümlede yazılır** (`§ KAPSAM MASKELEMESİ`: *"bir küme
+hakkında sonuç yazılıyorsa, kümenin NASIL SINIRLANDIĞI aynı cümlede yazılır"*).
 
 ### `@deprecated` bir NİYET BEYANIDIR, bir ölçüm değil (ZORUNLU)
 

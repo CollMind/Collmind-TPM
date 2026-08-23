@@ -1819,3 +1819,119 @@ alan mı) ayrı ele alınmalı. Kayda giren şey **boşluğun varlığı ve öl�
 `Z18`'in `USER_READ` satırı **⛔ DUR**'daydı, gerekçesi *"`dashboard-summary` zaten `5/5`
 rol taşıyor → union otomatik çöküyor"*du. `T-253` o ucu sildi, öncül kalktı, ve hücre
 **union'a düşmeden** çözüldü. `Z1` append-only: `Z18`'in satırı silinmedi.
+
+---
+
+## Z21 · Bütçe: **zarf modeli kanonik**, `budget_allocations` ölü ilan edildi
+
+**Tarih:** 2026-08-23 · **Karar veren:** ürün sahibi · **Ölçüm:** `T-270`
+
+### Karar
+
+> **Doğrulama zarf modeline taşınır, `cplId` boyutu DÜŞÜRÜLEREK.**
+
+Ve *"bedel"* satırı **reddedildi**: `budget_allocations`'ın `cplId` boyutu bir **yetenek
+değildi**, bir **eksen ihlaliydi**.
+
+### Üç dayanak — ikisi ürün sahibinin, üçüncüsü ölçümden
+
+**1 · `K-2.2.1` zarfı ÜÇ boyutla tanımlıyor, ve CPL onlardan biri değil**
+
+```
+K-2.2.1   Kanal × Kategori × Dönem
+K-2.2.2   (isteğe bağlı) harcama tipi bölünmesi
+```
+
+⚠️ *"Kategori bazlı bütçe kaybolur"* iddiası **zaten yanlıştı** — kategori **zarfın kendi
+boyutu**. Kaybolan tek şey `cplId`, ve CPL-bazlı bütçe hiçbir kararda, kaynakta ya da
+kural gövdesinde **yok**.
+
+📌 Ölçüldü: `L2_01_veri_butce_defter_hesaplama.md`'de `cpl` **iki kez** geçiyor ve
+**ikisi de `K-2.2` bloğunun dışında** — `:76` `Kanal → Bölge → Müşteri (CPL)` (ana veri
+hiyerarşisi) ve `:82` (`cpls.channel_id` yabancı anahtarı). **Bütçe kurallarında sıfır.**
+
+**2 · `A7`: yetki-kapsamı ≠ bütçe-boyutu**
+
+`A7` kapsamı *"kanal + müşteri + kategori, bölge `Faz 2`"* diye kararlaştırdı
+(`FAZ1_PLAN.md:442`). CPL'in sistemdeki yeri **kapsam katmanıdır** — *kim hangi satırı
+görür*. Bir zarfın boyutu değil.
+
+> `budget_allocations`'ın `cplId` taşıması, **iki katmanın aynı tabloda karışmasıdır** —
+> `İlke 4`'ün veri-modeli ihlaline bir **eksen ihlali** ekliyor.
+
+**3 · ⛔ `K-2.2.3` bu vakayı ADIYLA yasaklıyor** — ölçüm sırasında bulundu
+
+```
+K-2.2.3 — Zarf çözümlemesi TÜM YOLLARDA AYNI boyut kümesini kullanır.
+          Farklı bir yol farklı bir boyut kümesiyle zarf arayamaz.
+
+Gerekçe:  iki farklı çözümleme, aynı harcamanın iki farklı zarfa düşmesine
+          yol açar ve FARK SESSİZDİR.
+```
+
+`findMatchingAllocation` tam olarak bunu yapıyor: **farklı bir yol**, **farklı bir boyut
+kümesi** (`cplId + kanal + kategori + tarih ARALIĞI`). Yani `budget_allocations` yalnız
+*"benimsenmemiş"* değil — **var olduğu andan beri `K-2.2.3` ihlali.**
+
+📌 Bu üçüncü dayanak, ilk ikisinden **güçlüdür**: ilk ikisi *"bu yetenek hiç olmadı"*
+diyor, üçüncüsü *"kural bu şekli ve neden tehlikeli olduğunu yazmış"* diyor.
+
+### Reddedilen seçenekler
+
+| # | seçenek | statü |
+|---|---|---|
+| 2 | boyutları **zarfa ekle** (`cpl_id` + tarih aralığı) | **bugün RET** — ama **kayıtlı gelecek-seçenek**: CPL-bazlı bütçe gerçek bir müşteri ihtiyacı olarak kanıtlanırsa (danışman turu / ilk müşteri), o gün **karar defteri kaydıyla** zarf boyutu tartışılır. Bugün eklemek, **kanıtsız ihtiyaca şema karmaşası** (`İlke 1`) |
+| 3 | `budget_allocations`'ı **doldur** | **RET** — iki mutabakatsız model, `İlke 4`'ün tam tanımı. Ölçüm de desteklemiyor: zarfın `available`'ı **defterden** türetiliyor, tahsisinki **denormalize kolon** |
+
+### ⚠️ Ölü kod bir yetenek sayılmaz — ve bu genel bir hüküm
+
+> **Kullanıcısı olmayan, mutabakatsız, iki haftalık ölü-doğmuş bir tabloda yaşayan
+> davranış, yetenek sayılmaz — sayılırsa her ölü kod bir "kayıp" üretir ve hiçbir
+> temizlik yapılamaz.**
+
+📌 `T-253`'ün *"`@deprecated` bir niyet beyanıdır"* kuralının **ters yönü**: orada bir
+etiket ölçümü durduruyordu; burada bir **varlık** temizliği durduracaktı.
+
+### Tamamlanma tanımı — DÖRT şart
+
+Bu bir **taşıma değil davranış değişikliğidir**, o yüzden **her fark pinlenir**.
+
+**1 · Davranışsal pin ÇİFTİ** (iki girdi, iki çıktı):
+
+```
+bugünkü gerçek veri (4 zarf · ₺1.600.000)  →  dashboard'da GÖRÜNÜR
+boş-zarf durumu                            →  `unavailable` / GRİ  —  `GREEN` DEĞİL
+```
+
+**2 · Üç davranış farkı TEK TEK pinlenir:**
+
+```
+sıfır-bacak semantiği   →  sıfır harcayan plan "Shortfall: 0.00" ÜRETMEMELİ
+dönem modeli            →  aralık ↔ ay
+para kaynağı            →  denormalize kolon ↔ defter (v_budget_summary)
+```
+
+**3 · ⛔ `POST /budget-allocations` bu kararla ÇELİŞKİ taşıyor ve çözülmeli**
+
+> **Tabloyu ölü ilan edip canlı yazma yolu bırakmak, ölü modeli yeniden dolduran bir
+> MUSLUK bırakmaktır.**
+
+`T-265` ölçümü o ucu tutuyorsa (`t254` e2e'si çağırıyor), sorular **`A2`'nin kapsamına
+girer**: tüketicisi kim, ve zarf yoluna göçü ne? *"POST kalır"* ancak **geçiş dönemi +
+kapanış tarihi kaydıyla** kalabilir.
+
+**4 · Tablonun kendisi:** karar defterine **`F12` deseni** kayıt (iki hafta önce bir
+migration'la doğdu — **geri alış iziyle**). Silme, şema penceresi açıkken **ucuz**; ama
+**`3.` şart çözülmeden silinmez.**
+
+### `A1` — ayrıca onaylandı, ve gerekçesi bir üst kata bağlandı
+
+`getBudgetUtilization` boş kümede `unavailable` döner. **Model kararından bağımsız
+doğru, çünkü GRİ kuralının kod hâlidir** — `allocated: 0 + GREEN` sessiz-yeşilin
+finansal ekran hâli, ve *"kapsama yoksa renk yok"* kuralının kodda ihlali.
+
+### `T-265` etkisi
+
+Dört uç (`GET` liste · `GET :id` · `reports/utilization` · `reports/forecast`)
+**silinebilir**. `check-availability` **artık zarf yoluna işaret ediyor** —
+`A2` onu bir bekleyen olmaktan çıkardı.
