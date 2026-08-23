@@ -2203,3 +2203,100 @@ Cascade düşünce `lta_rates` `UPDATE`'i envanterden **çıkar**. `GRANT` bıra
 **`Z21` şart `3`/`4` (`POST` musluğu + tablo silme) `T-273`'ten SONRA kalır.** Cascade
 kararı LTA entity'lerine dokunuyor, tablo silme migration'ı **aynı şema bölgesinde**;
 iki şema dokunuşunun sırası netken çakışma riski **sıfır**, tersken bir **rebase turu**.
+
+---
+
+## Z24 · Musluk KAPANIR ve tablo ÖLÜR — `Z21` şart 3+4, tek turda
+
+**Tarih:** 2026-08-23 · **Karar veren:** ürün sahibi · **Migration:** `1811000000000`
+
+### Karar
+
+```
+POST /budget-allocations   SİLİNİR      (ve kalan altı uç, hepsi aynı tabloya bakıyor)
+main.budget_allocations    DROP
+main.budget_transaction_logs  DROP      (tek tüketicisi BudgetAllocationService'ti)
+```
+
+### Gerekçe zinciri — iki bacak da ÖLÇÜMLE düştü
+
+`Z21` şart `3`, `POST`'u iki bacakla tutuyordu:
+
+| bacak | akıbet |
+|---|---|
+| *"e2e tüketicisi var"* | **ÖLÇÜMLE DÜŞTÜ** — `T-270`'te zarf yoluna göçtü; kapanış koşulu **kendiliğinden karşılandı** |
+| *"tablonun tek yazma yolu"* | **`Z21`'in kendi diliyle bu bir gerekçe değil, MUSLUĞUN TANIMI** |
+
+> **"Geçiş dönemi kimin için?" sorusunun cevabı HİÇ KİMSE ise, geçiş dönemi YOKTUR.**
+
+### Ve şart `4` aynı tura girer — ardışığı otomatik
+
+Yazma yolu ölünce `budget_allocations`'ın **canlılık iddiası kalmaz**. Şart `3` ve `4`'ü
+ayrı tutmanın **tek gerekçesi `POST`'un yaşama ihtimaliydi** — o ihtimal düştü.
+
+```
+tek migration          1811000000000
+F12-deseni kayıt       tablo iki hafta önce DOĞDU, K-2.2.3 ihlali olarak ÖLDÜ
+                       — doğum ve ölüm AYNI kayıtta, iziyle
+app_runtime GRANT'ları aynı commit'te düşer            (K-2.6.13 birebirlik)
+budget-report.dto.ts   bu turun doğal parçası — öksüzlüğü A2/T-265 zincirinin ürünü
+                       (aynı ölüm, aynı mezar)
+capabilities.ts:49     tek satırlık yorum düzeltmesi, bindirildi
+```
+
+### 📌 `budget_allocations`'ın doğum-ölüm kaydı (`F12` deseni)
+
+```
+2024-01-01   CreateBudgetEnvelopes             ← ZARF modeli ÖNCE
+2026-02-15   UpdateBudgetAllocationStructure   ← tahsis tablosu doğdu (~14 ay SONRA)
+2026-08-06   AddMetadataToBudgetAllocations    ← son bakım, ölümünden İKİ HAFTA önce
+2026-08-23   Z24                               ← DROP
+```
+
+**Bir göç kalıntısı değildi — ölü doğmuş paralel bir modeldi**, ve `K-2.2.3`'ü
+*"farklı bir yol farklı bir boyut kümesiyle zarf arayamaz"* **doğduğu andan beri**
+ihlal ediyordu. Ölçülen tüketim: **sıfır satır, sıfır dış çağıran.**
+
+---
+
+## Z25 · Kapanış-KOŞULLU her karar, koşulun ÖLÇÜM ADRESİYLE yaşar
+
+**Tarih:** 2026-08-23 · **Karar veren:** ürün sahibi · **Kaynak:** `Z21` şart `3`'ün vakası
+
+### Ölçülmüş vaka
+
+`Z21` şart `3` şunu yazmıştı — ve **doğru yazmıştı** (`Z22`: kapanış bir takvim tarihi
+değil, bir **koşul**):
+
+> *"`POST` kalır ancak geçiş dönemi + kapanış kaydıyla — **e2e akışları zarf yoluna
+> göçtüğünde** kaldırılır."*
+
+**Göç `T-270`'te gerçekleşti.** Ve **kimse o karara geri bildirmedi.** Koşul
+karşılanmıştı, karar hâlâ *"bekliyor"* görünüyordu — üç tur boyunca.
+
+⚠️ Bulan şey bir mekanizma değil, `T-265` ajanının **brief taramasıydı**: brief'teki
+gerekçe bayattı, ajan onu doğrulamaya çalışırken göçü fark etti. **Tesadüf değil ama
+mekanik de değil.**
+
+### Kural
+
+> **Kapanış-koşullu her karar, koşulu TETİKLEYEN task'ın *"kapattıkları"* listesine
+> girmelidir.**
+
+`T-270`'in kapanışı *"`Z21`-3 koşulu karşılandı"* satırını taşısaydı, bu tur
+**kendiliğinden** açılırdı.
+
+**Mekanik alan** — `OPEN_DECISIONS`'a:
+
+```
+KOŞUL           ne olursa kapanır
+TETİKLEYEN      hangi task o koşulu karşılar          ← BU ALAN
+DURUM           bekliyor | koşul karşılandı | kapandı
+```
+
+📌 Ve bu, `§`'nin *"sağlayıcısı olmayan şart bir KİLİTTİR"* kuralının **kardeşi**: orada
+sağlayıcı **yoktu**; burada sağlayıcı **vardı, geldi, ve kimse fark etmedi**.
+
+⚠️ **Sarkan atıf dosya adında değil, KARARIN GEREKÇESİNDEYDİ** — `CLAUDE.md`'nin
+*"test dosyası sözleşme adı taşır"* kuralının bir bükülmesi: ad düzeltilebilir,
+**ona atıf veren gerekçe metni** düzeltilmez, çünkü onu kimse okumaz.

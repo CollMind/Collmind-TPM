@@ -9,6 +9,32 @@ karara bağlandıktan sonra yazılır.
 
 ---
 
+## ⛔ KAPANIŞ-KOŞULLU KARARLAR — mekanik izleme (`Z25`, 2026-08-23)
+
+> **Kapanış-koşullu her karar, koşulu TETİKLEYEN task'ın *"kapattıkları"* listesine
+> girer.** Yoksa koşul karşılanır ve **kimse fark etmez**.
+
+**Vaka:** `Z21` şart `3` — *"`POST /budget-allocations` … e2e akışları zarf yoluna
+göçtüğünde kaldırılır."* Göç `T-270`'te oldu, karar **üç tur boyunca** *"bekliyor"*
+göründü. Bulan şey bir mekanizma değil, bir ajanın **brief taramasıydı**.
+
+| karar | KOŞUL | TETİKLEYEN | DURUM |
+|---|---|---|---|
+| `Z21` şart 3 (`POST` musluğu) | e2e zarf yoluna göçtüğünde | `T-270` | ✅ **koşul karşılandı** → `Z24` ile kapandı |
+| `Z21` seçenek 2 (`cpl_id` zarfa) | CPL-bazlı bütçe **gerçek müşteri ihtiyacı** olarak kanıtlanırsa | danışman turu / ilk müşteri | ⏳ bekliyor |
+| `Z22` paylaşılan-eksen filtresi | kanal/kategori bazlı zarf **talebi** doğarsa | — | ⏳ bekliyor · ⚠️ maliyet **revize**: tüketici tarafı zaten kurulu (`T-272`) |
+| `T-235` `T-028c` bayrağı | prod/UAT'de backfill doğrulanana kadar | prod/UAT ortamı | ⛔ **KİLİT** — sağlayıcı bugün YOK |
+| `0073` `report-only` envanteri | fiili trafikte doğrulanır | deploy edilmiş ortam | ⛔ **KİLİT** — sağlayıcı bugün YOK |
+
+⚠️ **İki satır `⛔ KİLİT`** — sağlayıcısı **var olmayan** bir ortama adresli. `§`'nin
+kuralı: *"sağlayıcısı olmayan şart bir erteleme değil bir kilittir."*
+
+📌 Ve `Z25`'in ayrımı: **kilit** = sağlayıcı yok · **kaçırılan koşul** = sağlayıcı
+**vardı, geldi, ve kimse fark etmedi.** İkincisi daha sinsi, çünkü liste *"bekliyor"*
+derken doğru görünür.
+
+---
+
 ## Nereden geldi
 
 `0075` (hakediş senaryoları, **kör sınav**) `18` boşluk iddia etti. `0076` onları
