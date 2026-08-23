@@ -1972,3 +1972,95 @@ finansal ekran hâli, ve *"kapsama yoksa renk yok"* kuralının kodda ihlali.
 Dört uç (`GET` liste · `GET :id` · `reports/utilization` · `reports/forecast`)
 **silinebilir**. `check-availability` **artık zarf yoluna işaret ediyor** —
 `A2` onu bir bekleyen olmaktan çıkardı.
+
+---
+
+## Z22 · Zarf özeti **tenant-yapısal veridir** — kapsam kapısı kaldırılır
+
+**Tarih:** 2026-08-23 · **Karar veren:** ürün sahibi · **Ölçüm:** `T-270` `A2` yan bulgusu ·
+**Uygulama:** `T-272`
+
+### Karar
+
+> **`T-270`'in interim fail-closed kapısı KALDIRILIR.** CPL-kapsamlı bir `PLANNER` zarf
+> özetini **görür**.
+
+### Birincil dayanak — *"görebilir"* değil, **"GÖRMEK ZORUNDA"**
+
+`docs/decisions/PLAN_BUTCE_NETLESTIRME.md` **`netleştirme-1`** (2026-08-15, ürün sahibi):
+
+```
+Uzman itirazının kabul edilen çekirdeği:
+  kilitlemesiz model, GÖRÜNÜRLÜK OLMADAN SAVUNULAMAZ.
+
+1 · BEKLEYEN-TALEP GÖRÜNÜRLÜĞÜ: aday → ZORUNLU.
+    (a) zarf görünümünde kalıcı "bekleyen talep" satırı
+        (PLANLAMACI PLANLARKEN GÖRÜR)
+    Statü: gönderim kontrolünün implement edildiği dalganın ŞARTI —
+           kontrol GÖRÜNÜRLÜKSÜZ İNEMEZ.
+```
+
+Gönderim kontrolü **bilgilendiricidir** (kilitleme reddedildi, `K-2.2.9i` ailesi). Bu
+modelin savunulabilirlik şartı, planlamacının zarf doluluğunu **gönderimden önce
+görmesidir**.
+
+> ⇒ **Fail-closed kapı kalırsa `PLANNER` köre gönderir.** Seçenek `1` bir güvenlik duruşu
+> değil, `netleştirme-1`'in **ihlalidir**.
+
+### `K-2.6.8a` gerilimi — çözüm taksonomide zaten duruyordu
+
+`K-2.6.8a` (*"boş kapsam = erişim yok"*) **müşteri-satırı verisini** yönetir — `A7`'nin
+koruduğu sınıf. **Zarf müşteri-satırı verisi değildir**: `Kanal × Kategori × Dönem`
+agregasyonu, içinde tek bir müşteri satırı yok.
+
+**Emsal `B1`'de çoktan kararlaştı — ve bu turda DAVRANIŞSAL olarak ölçüldü:**
+
+```
+master-data uçları:  scope-c (kapsam YOK) 63 · scope-b 1
+planner  (11 CPL) → GET /master-data/categories → 8
+planner2 (17 CPL) → GET /master-data/categories → 8      ← AYNI
+POZ.KONTROL  /dashboard/cpl-status → farklı CPL kümeleri  ← kapsam GERÇEKTEN farklı
+ayırt etme gücü: toplam 8 kategori (1 değil) — fixture ayrımı ölçebiliyor
+```
+
+**Kayıt cümlesi:**
+
+> **`REVOKE_ALL` müşteri-satırı erişimini kaldırır; tenant-yapısal veriler (katalog, zarf
+> özeti) ROL KATMANININ konusudur. Tam kilitleme isteniyorsa aracı HESAP ASKIYA ALMADIR,
+> kapsam boşaltma değil.**
+
+⚠️ Ve bu, `T-254`'ün *"artık hiçbir şey göremez"* beklentisini **dürüstçe daraltır** —
+beklenti **müşteri verisi** için doğruydu, **yapısal veri** için yanlıştı.
+
+### ⛔ HASSASİYET — karar *"bütçe kapsam-duyarsızdır"* diye YAZILMAZ
+
+**Doğru cümle:**
+
+> **Bütçe, `CPL` ekseninde TANIMSAL olarak duyarsızdır** (`A7`: kapsam ≠ bütçe-boyutu).
+> **Kapsamla PAYLAŞTIĞI eksenlerde (kanal · kategori) duyarlılık MEŞRUDUR** — ama bugün
+> veri onu ayırt etmiyor (dört zarfın dördü de **kanal-joker**, ölçüldü) ve **talep yok**.
+
+**Fark neden önemli:** düz *"duyarsızdır"* yazılırsa, yarın kanal-bazlı zarflar
+doğduğunda bir **Distribütör-`PLANNER`'ının Ulusal-Zincir zarfını görmesi** bu kayda
+yaslanarak savunulur.
+
+**Paylaşılan-eksen filtresi bugün YAPILMAZ, gelecek-seçenek olarak kayda girer** —
+`Z21` deseninin aynısı.
+
+### `Z21` seçenek 2'nin şerhi AYNEN taşınır
+
+> `CPL` bir gün **görünürlük boyutu** olarak dönerse, **çözümleme boyutu olmadığı** açıkça
+> yazılmadan giremez — `K-2.2.3`'ün **geri gelme kapısı**.
+
+### Uygulama pinleri (`T-272`)
+
+```
+kapı kaldırılır  →  CPL-kapsamlı PLANNER gerçek zarf verisini görür (4 zarf · ₺1.6M)
+       ∧            boş-zarf durumu `unavailable` KALIR (A1 korunur)
+       ∧            REVOKE_ALL'lı kullanıcı fixture'ı:
+                      müşteri panelleri KAPALI · zarf paneli AÇIK
+```
+
+📌 **`A1` ile bu karar birbirine karışmaz:** *veri yokluğu* ile *kapsam* **ayrı
+sinyallerdir**. `unavailable` birincisinin cevabıdır; kapsam ikincisinin — ve zarf
+özetinde ikincisi **uygulanmaz**.

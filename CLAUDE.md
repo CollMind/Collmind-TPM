@@ -1042,6 +1042,57 @@ karşı yazılmıştı ve *"self-test yakalar"* diyordu. Yakalayamadı: self-tes
 Ve bir kapı yazdıktan sonra `§2.7 #9`'u uygula: **iki farklı girdide iki farklı çıktı**
 verdiğini göster. Temiz halde yeşil olması, kirlide kırmızı olduğunun kanıtı değildir.
 
+### Bir SIRA şartı, AYRILABİLİRLİK şartı İÇERMEZ (ZORUNLU)
+
+> **Bir sıra şartı (*"önce A, sonra B"*) bir ayrılabilirlik şartı İÇERMEZ.**
+> **Deploy edilebilir bir ara durum isteniyorsa, A'nın AYRI BİR MEKANİZMAYA dayanması
+> ayrıca şart koşulmalıdır.**
+
+Ölçülmüş vaka (2026-08-23, `T-270`): ürün sahibi `A1`'i (*boş küme → `unavailable`*)
+`A2`'den (*zarf modeline taşıma*) **önce** istedi, ve gerekçesi **fail-safe**'ti:
+
+> *"`A1` önce inerse, `A2`'nin büyük taşıması sırasında dashboard asla `GREEN+0`
+> gösteremez — taşıma yarıda kalsa bile **yalan söylemeyen bir ara durum** bırakır."*
+
+Ajan **sırayı korudu** (önce yazdı, doğruladı). Ama kod tek fonksiyonda iç içe geçti:
+
+```
+hasData = envelopes.length > 0      ← A1'in MEKANİZMASI, A2'nin VERİ KAYNAĞIYLA tanımlı
+```
+
+Yani *"`A1` tek başına"* diye bir durum **hiç var olmadı**. Zorlama bir commit bölmesi,
+**hiç yaşamamış ve hiç test edilmemiş** bir ara durumu commit tarihine **sahte kanıt**
+olarak yazardı.
+
+📌 **İstenen özellik elde edilmedi, ve bu bir başarı değil bir sağlayıcı yokluğudur** —
+bugünkü maliyeti sıfır, çünkü deploy edilmiş ortam yok (`§1`). Ortam doğduğunda şart
+yeniden anlam kazanır.
+
+**Pratik — brief'e üç satır, ikisi yetmez:**
+
+```
+SIRA            A önce, B sonra
+AYRILABİLİRLİK  A'nın mekanizması B'den BAĞIMSIZ olmalı     ← BU EKSİKTİ
+KANIT           A tek başına derlenir ve testleri geçer
+```
+
+### Test dosyası TASK NUMARASI değil SÖZLEŞME ADI taşır (ZORUNLU)
+
+> **Task numaraları kapanır; sözleşmeler yaşar.**
+> **Bir dosya adı bir ATIFTIR — içerik başka yere taşındıysa atıf yanlış yeri gösterir.**
+
+Ölçülmüş vaka (2026-08-23): `t254-empty-scope-budget-utilization.e2e-spec.ts` `T-270`
+turunda **tümüyle yeniden yazıldı** (`Z21`, zarf modeli). Ad hâlâ `t254`, içerik
+`T-270/Z21` — **sarkan atfın dosya-sistemi hâli**, `E6`'nın yakaladığı sınıfın kod
+tarafı.
+
+```
+❌  t254-empty-scope-budget-utilization.e2e-spec.ts
+✅  empty-scope-contract.e2e-spec.ts        (task atfı DOSYA BAŞLIĞI YORUMUNDA)
+```
+
+⚠️ Ve *"git tarihçesi için eski ad kalsın"* **tutmaz** — `git mv` tarihçeyi korur.
+
 ### Bir DUR listesi, değişikliğin geçtiği HER SINIRI saymalıdır (ZORUNLU)
 
 > **Bir `DUR` koşulu listesi, değişikliğin geçtiği HER sınırı saymalıdır.**
