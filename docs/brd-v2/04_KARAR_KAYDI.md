@@ -1833,6 +1833,29 @@ rol taşıyor → union otomatik çöküyor"*du. `T-253` o ucu sildi, öncül ka
 Ve *"bedel"* satırı **reddedildi**: `budget_allocations`'ın `cplId` boyutu bir **yetenek
 değildi**, bir **eksen ihlaliydi**.
 
+### ⛔ DAYANAK HİYERARŞİSİ (ürün sahibi, 2026-08-23) — ve sebebi GELECEKTE
+
+```
+BİRİNCİL      K-2.2.3 İHLALİ                    ← doğrudan NORM ihlali
+DESTEKLEYİCİ  K-2.2.1 + A7 eksen ayrımı         ← KAPSAM argümanı
+```
+
+**Neden bu sıra:** kapsam argümanı (*"bu yetenek hiç kararlaştırılmadı"*) savunulabilir
+ama **kıyaslamalıdır** — müzakere edilebilir. Norm ihlali kaydı ise müzakere edilmez.
+
+> **Altı ay sonra biri *"CPL bazlı bütçe ekleyelim"* dediğinde, kapsam argümanı tartışılır;
+> norm ihlali kaydı ise *"önce `K-2.2.3`'ü revize et"* der — ve DOĞRU KAPIYA yönlendirir.**
+
+### 📌 Ve bu `L2`'nin bir BAŞARI ANI
+
+**Kural, ihlalinden ÖNCE yazılmıştı ve ihlali ADIYLA yakaladı.**
+
+`K-2.2.3`'ün gerekçe cümlesi (*"aynı harcamanın iki farklı zarfa düşmesi, ve fark
+sessizdir"*) `findMatchingAllocation`'ın **tam tarifidir** — kural yazılırken bu vaka
+bilinmiyordu.
+
+> *"Kural veridir"* yatırımının **ilk somut temettüsü.**
+
 ### Üç dayanak — ikisi ürün sahibinin, üçüncüsü ölçümden
 
 **1 · `K-2.2.1` zarfı ÜÇ boyutla tanımlıyor, ve CPL onlardan biri değil**
@@ -1918,7 +1941,21 @@ para kaynağı            →  denormalize kolon ↔ defter (v_budget_summary)
 
 `T-265` ölçümü o ucu tutuyorsa (`t254` e2e'si çağırıyor), sorular **`A2`'nin kapsamına
 girer**: tüketicisi kim, ve zarf yoluna göçü ne? *"POST kalır"* ancak **geçiş dönemi +
-kapanış tarihi kaydıyla** kalabilir.
+kapanış kaydıyla** kalabilir.
+
+> ### ⛔ VE KAPANIŞ BİR TAKVİM TARİHİ DEĞİL, BİR KOŞUL (ürün sahibi, 2026-08-23)
+>
+> ```
+> ❌  "2026-10-01'de kaldırılacak"
+> ✅  "e2e akışları zarf yoluna göçtüğünde kaldırılır"
+> ```
+>
+> **Gerekçe:** tarih gelir, e2e hâlâ eski yoldadır, ve tarih **ertelenir** — *bayat-tarih
+> deseni*. Bir koşul ertelenemez; ve bu koşul **e2e göçünü de birinin işi yapar.**
+>
+> 📌 `§`'nin *"şartın SAĞLAYICISI yoksa bu bir KİLİTTİR"* kuralının **tersi**: orada
+> sağlayıcısı olmayan bir şart kilit oluyordu; burada koşul, **sağlayıcıyı bir işe
+> dönüştürüyor**.
 
 **4 · Tablonun kendisi:** karar defterine **`F12` deseni** kayıt (iki hafta önce bir
 migration'la doğdu — **geri alış iziyle**). Silme, şema penceresi açıkken **ucuz**; ama
