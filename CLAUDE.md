@@ -797,6 +797,7 @@ gerçek bir kusuru **kapatıyordu** (canlı bir dashboard ₺1.6M zarf bütçesi
 > 2  repository erişimi  dataSource.getRepository(Foo)  ·  manager.find(Foo)
 > 3  ham SQL             query('… FROM foo …')  ·  createQueryBuilder('foo')
 > 4  view'lar            v_foo_summary — bir view'ı okuyan, TABLOYU okuyor
+> 5  ORM CASCADE         @OneToMany(..., { cascade: true })  +  .save(parent)
 > ```
 >
 > **Negatif bir bulgunun geçerliliği ARAMA UZAYININ TANIMINA bağlıdır.** Uzay yazılmadan
@@ -805,6 +806,22 @@ gerçek bir kusuru **kapatıyordu** (canlı bir dashboard ₺1.6M zarf bütçesi
 ⚠️ Ve dördüncü yüzey en sessizidir: `relations: ['planOverrides']` bir string'dir, bir
 sınıf atfı değil — `T-269`'da `app-runtime-grants` guard'ı tam bu yüzden **`EXIT=0`
 verirken canlı bir `500` duruyordu.
+
+⚠️ **Ve BEŞİNCİ yüzey grep'e hiç görünmez** — ölçüldü (2026-08-23, `T-271`):
+
+```
+@OneToMany('LTARate', 'ltaAgreement', { cascade: true })
+rates!: any[];
+        ↓
+.save(agreement)   →  agreement alanları DEĞİŞMESE BİLE lta_rates'e UPDATE dener
+```
+
+Bir DI-çağrı taraması *"`lta_rates` UPDATE gerekmiyor"* dedi ve **çürütüldü** — kanıt
+grep değil, **canlı sorgu logu** oldu. Cascade bir **yazma yolu üretir** ve o yol
+hiçbir dosyada bir çağrı olarak görünmez.
+
+> **Bir tablonun YAZMA yüzeyini ararken `{ cascade: true }` taşıyan her ebeveyn ilişkiyi
+> say** — ve şüphedeysen **sorgu logunu** oku, grep'i değil.
 
 Kaç yüzeyin tarandığı **aynı cümlede yazılır** (`§ KAPSAM MASKELEMESİ`: *"bir küme
 hakkında sonuç yazılıyorsa, kümenin NASIL SINIRLANDIĞI aynı cümlede yazılır"*).

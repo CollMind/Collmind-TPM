@@ -391,3 +391,67 @@ izin eksikliğini **maskeliyor**.
 ⚠️ `T-271`'de yazma ayrıcalığı verilirken `K-2.6.13`'ün ayrıcalıklı-rol bağı
 **geri getirilmemeli** — *"hangi tablolara, ve neden o kadar?"* sorusu ayrıca
 cevaplanacak.
+
+---
+
+## S3 tur 25 (T-271, 2026-08-23) — LTA yazma ayrıcalıkları
+
+**Tetikleyen:** `T-269`'un `500`'ü kapanınca arkasından iki kusur çıktı, ve **dört canlı
+`@Roles(ADMIN)` ucunun dördü de** çalışmıyordu.
+
+### Verilen — her fiil için bir gerekçe (`K-2.6.13`)
+
+```
+lta_agreements  INSERT   createAgreement
+lta_agreements  UPDATE   updateAgreement · activateAgreement · terminateAgreement
+lta_rates       INSERT   createAgreement + updateAgreement rate yazımı
+lta_rates       UPDATE   ⚠️ ORM CASCADE — aşağıya bkz.
+lta_rates       DELETE   updateAgreement, `dto.rates` gönderildiğinde eski oranların silinmesi
+```
+
+### ⛔ VERİLMEYEN — bilinçli
+
+```
+lta_agreements     DELETE            softRemove çağıranı YOK
+lta_plan_overrides INSERT · UPDATE   S3 tur 24'ün "yalnız SELECT" kararı korundu → T-273
+```
+
+**Canlı DB doğrulandı:**
+
+```
+lta_agreements      SELECT · INSERT · UPDATE
+lta_rates           SELECT · INSERT · UPDATE · DELETE
+lta_plan_overrides  SELECT
+```
+
+### ⛔ BEŞİNCİ ERİŞİM YÜZEYİ — ORM CASCADE
+
+`S3 tur 24` dördüncü yüzeyi (`relations: [...]` string'i) ölçmüştü. Bu tur **beşincisini**
+buldu:
+
+```
+lta-agreement.entity.ts:67   @OneToMany('LTARate',         'ltaAgreement', { cascade: true })
+lta-agreement.entity.ts:70   @OneToMany('LTAPlanOverride', 'ltaAgreement', { cascade: true })
+                             ↓
+.save(agreement)   →  ebeveynin alanları DEĞİŞMESE BİLE çocuk tabloya UPDATE dener
+```
+
+⚠️ **Ve ilk tarama bunu KAÇIRDI.** DI-çağrı grep'i *"`lta_rates` UPDATE gerekmiyor"* dedi;
+**çürüten kanıt grep değil, CANLI SORGU LOGU oldu.**
+
+> **Cascade bir yazma yolu ÜRETİR ve o yol hiçbir dosyada bir çağrı olarak görünmez.**
+> Bir tablonun yazma yüzeyini ararken `{ cascade: true }` taşıyan **her ebeveyn ilişki**
+> sayılır — ve şüphedeysen **sorgu logu** okunur, grep değil.
+
+`CLAUDE.md`'nin dört-yüzey kuralı bu vakayla **beşe** çıkarıldı.
+
+### ⛔ UYKUDA KALAN — `T-273`
+
+`lta_plan_overrides` bugün **0 satır**, o yüzden cascade dizisi boş ve hiç ateşlemiyor.
+**İlk gerçek override satırında** `PATCH` · `activate` · `terminate` **`500`** verecek.
+
+⚠️ Ve `T-269` bunu **erişilebilir** yaptı: `findById`'nin `relations`'ına `planOverrides`
+eklendi, yani cascade'in besleneceği dizi artık dolabilir.
+
+📌 Örten şey ikinci bir kusur değil, **verinin yokluğu** — *"bir kusur başka bir kusur
+tarafından örtülebilir"* ailesinin **zaman eksenli** hâli.
