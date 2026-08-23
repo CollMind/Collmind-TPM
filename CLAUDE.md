@@ -362,6 +362,32 @@ istekte** gönderiyordu — orada iki semantik aynı sonucu verir. Eksik test de
 şekilli test**. Kural: bir davranışı test ederken "bu testin şekli iki alternatifi ayırt
 edebiliyor mu?" diye sor. Yeşil olması, ayırt ettiği anlamına gelmez.
 
+> ### ⛔ `6`'NIN DAVRANIŞSAL SİMETRİĞİ — *"verinin yokluğu örter"* (ZORUNLU)
+>
+> **Negatif bir DAVRANIŞSAL kanıt, tetikleyen fixture olmadan kanıt değildir.**
+>
+> `§`'nin *"negatif sonuç pozitif kontrolsüz raporlanamaz"* kuralı **taramalar** içindi.
+> Bu onun **davranış** tarafı: bir uç `500` vermiyorsa, bir kural reddetmiyorsa, bir
+> cascade ateşlemiyorsa — **o yolu tetikleyecek veri var mıydı?**
+>
+> **Üç ölçülmüş vaka, üç ayrı turda (2026-08-23):**
+>
+> | vaka | *"kanıt"* | gerçek |
+> |---|---|---|
+> | `T-254` | boş kapsam davranışı yeşildi | fixture ayrımın **iki tarafında da** aynı değeri taşıyordu |
+> | `T-253` | üç kardeş uç *"sessiz"* | `plans` ve `off_invoice_transactions` **boş** — hiç ölçülmediler |
+> | `T-273` | cascade *"ateşlemiyor"* | `lta_plan_overrides` **0 satır** — dizi boş, yol hiç koşmadı |
+>
+> **Üç vaka bir desendir.**
+>
+> 📌 Ve bu `§`'nin *"bir kusur başka bir kusur tarafından örtülebilir"* ailesinin
+> **zaman eksenli** üyesi: örten şey ikinci bir kusur değil, **verinin yokluğu** — ve
+> veri geldiği gün kusur **kendiliğinden** ortaya çıkar, bir düzeltme turu olmadan.
+>
+> **Pratik:** *"bu yol bugün koşuyor mu?"* sorusunu *"bu yol doğru mu?"*dan **önce** sor.
+> Koşmuyorsa, cevabın bir **fixture** olmalı — ve o fixture **kalıcı değer** taşır:
+> `0`-satır körlüğünü kalıcı olarak kırar.
+
 **7 — en tehlikeli olan, çünkü iki yönde birden yanılabilir.** T-080: mutasyon uygulandı,
 `git diff` boş çıktı, "uygulanmadı" sanıldı. Sebep: mutasyon commit **edilmemiş** bir
 değişikliği geri alıyordu, yani dosyayı HEAD'e eşitliyordu — diff bir referansa göredir ve

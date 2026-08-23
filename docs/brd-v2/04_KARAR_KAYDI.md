@@ -2064,3 +2064,98 @@ kapı kaldırılır  →  CPL-kapsamlı PLANNER gerçek zarf verisini görür (4
 📌 **`A1` ile bu karar birbirine karışmaz:** *veri yokluğu* ile *kapsam* **ayrı
 sinyallerdir**. `unavailable` birincisinin cevabıdır; kapsam ikincisinin — ve zarf
 özetinde ikincisi **uygulanmaz**.
+
+---
+
+## Z23 · ORM `cascade` KALDIRILIR — iki tablodan birden
+
+**Tarih:** 2026-08-23 · **Karar veren:** ürün sahibi · **Uygulama:** `T-273`
+
+### Karar
+
+```
+@OneToMany('LTARate',         'ltaAgreement', { cascade: true })   →  KALDIRILIR
+@OneToMany('LTAPlanOverride', 'ltaAgreement', { cascade: true })   →  KALDIRILIR
+```
+
+Yazma **serviste açık** yapılır.
+
+### Üç kat gerekçe — güçlüden zayıfa
+
+**1 · Cascade, BEŞİNCİ YÜZEY bulgusunun KAYNAĞI — semptomu değil**
+
+`{ cascade: true }`, *"hiçbir dosyada çağrı olarak görünmeyen yazma yolu"* üretiyor. Bu,
+dört-yüzey dersinin doğurduğu **kural sınıfının ta kendisi**:
+
+```
+T-271   bu yol bir kusuru MASKELEDİ   (DI-çağrı taraması "UPDATE gerekmiyor" dedi, çürüdü)
+T-273   uykuda bir 500 taşıyor         (lta_plan_overrides yalnız SELECT)
+        ↑ aynı mekanizma, iki vaka, iki tur
+```
+
+> **Görünmez yazma yolunu YÖNETMEK** (GRANT genişletmek, davranış pinlemek) yerine
+> **ORTADAN KALDIRMAK** bir **sınıf düzeltmesidir**; tutmak, vakaları **tek tek
+> kovalamaktır**.
+
+📌 `§7.1`: *"kapsam, kusurun SINIFIYLA tanımlanır — bulunduğu ilk vakanın yazımıyla
+değil."*
+
+**2 · Ayrıcalık daralması yönü doğru ve ÖLÇÜLEBİLİR**
+
+```
+cascade düşerse  →  lta_rates UPDATE gerekçesi DÜŞER          (T-271'in kendi tespiti)
+                 →  lta_plan_overrides'a hiç UPDATE AÇILMAZ
+                 →  app_runtime izin envanteri İKİ TABLODA daralır
+```
+
+`K-2.6.13`'ün **asgari küme** ilkesiyle aynı yön. Ve izin envanteri **`ADIM 5` (RLS)'in
+girdisi** olduğu için daralma **ileriye de ödüyor**.
+
+**3 · Açık yazma, ilişkinin GERÇEK SAHİPLİĞİNİ koda getirir**
+
+`rates`/`overrides` değişimi bilinçli bir servis eylemi olur
+(`ratesRepository.save(...)` **açıkça**) — okunabilir, grep'lenebilir, `GRANT`'la
+**birebir**.
+
+⚠️ ORM konforu kaybı **gerçek ama küçük** — ve bu kod tabanında konfor/görünürlük
+takasının yönü **hep aynı** seçildi: sessiz-tahmin yasağı (`§2.5`), açık kalem, `niyet`
+alanı (`Z17`).
+
+### ⛔ ÜÇ UYGULAMA ŞARTI
+
+**1 · ÖNCE ÖLÇÜM — bugün cascade'e yaslanan MEŞRU yol var mı?**
+
+`T-271` *"gereksiz `UPDATE`"* gösterdi. Ama **create akışı** rate'leri ebeveynle **tek
+`.save()`**'de yazıyorsa, cascade kaldırma o yolu **kırar** — ve düzeltmesi açık yazmaya
+taşımaktır.
+
+> **Kaldırma commit'i bu ölçümün SONUCUYLA şekillenir** — *"cascade'i sil, yeşile bak"*
+> **değil**.
+
+Tek grep + create e2e'si söyler.
+
+**2 · `T-273`'ün `500`'ü KALDIRMADAN ÖNCE REPRODÜKLENİR**
+
+```
+override satırı fixture'ı  +  PATCH   →  500 GÖRÜLÜR
+düzeltme
+aynı fixture                            →  YEŞİL
+```
+
+`T-254`'ün *"kusur önce görülmeli"* disiplini — yoksa *"düzelttik"* iddiası, **hiç
+ateşlenmemiş kod hakkında bir inanç** olur.
+
+📌 Ve bu fixture **kalıcı değer** taşır: `lta_plan_overrides`'ın **`0`-satır körlüğünü**
+(*verinin-yokluğu-örter* alt sınıfının) **kalıcı olarak kırar**.
+
+**3 · `GRANT` SİMETRİSİ AYNI COMMIT'TE**
+
+Cascade düşünce `lta_rates` `UPDATE`'i envanterden **çıkar**. `GRANT` bırakılırsa
+**kullanılmayan izin** doğar ve **envanter↔`GRANT` birebirlik kriteri**
+(`K-2.6.13` kabul-5) **sessizce bozulur**.
+
+### Sıra notu
+
+**`Z21` şart `3`/`4` (`POST` musluğu + tablo silme) `T-273`'ten SONRA kalır.** Cascade
+kararı LTA entity'lerine dokunuyor, tablo silme migration'ı **aynı şema bölgesinde**;
+iki şema dokunuşunun sırası netken çakışma riski **sıfır**, tersken bir **rebase turu**.
