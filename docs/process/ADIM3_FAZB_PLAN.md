@@ -403,3 +403,52 @@ doğrulama ister."*
 `61` sayısı **bugünkü** kod tabanından. `B1`/`B2` sırasında yeni rota eklenirse sayı
 değişir — bu yüzden `B0` guard'ı bir **sayaç** değil bir **kapı** olmalı: sayıyı değil,
 *"sıfır mı"*yı sorar.
+
+
+---
+
+## `SELF` KOVASI İNDİ (2026-08-24, `Z26`/`Z27`/`Z28`)
+
+```
+FILTRESIZ  3 → 0        SELF 7      PUBLIC 3    ALAN_GUARD 2    ROLES 211 / 223
+```
+
+`Z28`'in **üç sayacının** ikisi tuttu, üçüncüsü (guard tanıma) **iki-girdi-iki-çıktı ile
+kanıtlandı** — ve kanıtın şekli `SELF_OLCUM_RAPORU §4`'ün `v1` sessizliğinin **tersi**:
+tanıma kanalı mutasyonla kırılınca rota **sessizce `FILTRESIZ`'e düşüyor**.
+
+⚠️ **Baseline UYGULANMADI** — aşağıdaki `DUR` yüzünden.
+
+### ⛔ AÇIK KARAR — ratchet'in "TAMAMLANDI" durumunu nasıl temsil edeceği
+
+`route-scope.sh:343`:
+
+```bash
+if [ ! -s "$BASE_KEYS" ]; then
+  echo "SETUP HATASI: baseline dosyası var ama SIFIR 'F ' satırı ayrıştı"
+  exit 2
+fi
+```
+
+Bu kontrol **bozuk baseline** yakalamak için yazıldı, ve *"ratchet TAMAMLANDI"*
+durumundan **ayırt edemiyor**. `FILTRESIZ` bugüne kadar hiç `0` olmadığı için bu dal
+**hiç koşmamıştı** — `SELF` turu ona ilk kez ulaştı.
+
+📌 `§`: *"Bir kuralın doğru olduğunu kırmızıya dönmemesinden çıkarma — önce sor: o
+kuralın reddedeceği girdi ona ULAŞIYOR mu?"* **Ulaşmıyordu.**
+
+| # | seçenek | değerlendirme |
+|---|---|---|
+| **a** | baseline'a açık **sentinel** (`# ratchet: COMPLETE`) | açık, kendini belgeler; yeni biçim alanı |
+| **b** | kontrolün **NİYETİNİ** düzelt — *"ayrıştırma çalıştı mı"* sorusu `F` sayısıyla değil **başlık biçimiyle** cevaplanır | ✅ **Team Lead önerisi** — kontrol zaten **yanlış soruyu** soruyordu |
+| **c** | üç bayat `F` satırı kalsın | ⛔ ratchet **yalan söyler**, `İYİLEŞTİ` gürültüsü kalıcılaşır |
+
+⚠️ **`(b)` seçilirse `§`'nin kuralı geçerli:** gerçekten bozuk bir baseline hâlâ
+`exit 2` vermeli, boş-ama-geçerli `exit 0` — **iki farklı girdi, iki farklı çıktı**.
+
+### 📌 VE BU KARAR `B3b`'Yİ DE İLGİLENDİRİYOR
+
+`B3b`'nin **kalan-`@Roles` baseline'ı da bir gün sıfıra inecek** ve **aynı duvara
+çarpacak**.
+
+> **Yani `(b)` bir kerelik düzeltme değil, `B3b`'nin ratchet'inin ÖN KOŞULU.**
