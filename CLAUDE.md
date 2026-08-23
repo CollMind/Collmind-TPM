@@ -708,6 +708,49 @@ grep -n 'this\.fooRepository\.' <dosya>   # çağrı yüzeyi — asıl soru bu
 enjeksiyon değil **çağrı** referansı verilir: ❌ *"3 servis okuyor"* ·
 ✅ *"`spend-distribution.service.ts:206` `this.mechanicSpendBreakdownRepository.find`"*.
 
+### `@deprecated` bir NİYET BEYANIDIR, bir ölçüm değil (ZORUNLU)
+
+> **Bir kopya *"ölü"* diye işaretlendiğinde ölçüm DURUR.**
+> **Ama `@deprecated` bir niyet beyanıdır, bir ölçüm değil — ve CANLI bir rota
+> `@deprecated` olabilir.**
+
+`İlke 4` (*"aynı yetenek iki kez yazıldı"*) bir **tekrar** maliyeti sayar: iki yerde
+bakım, iki yerde düzeltme. Bu vaka o maliyetin **ağırlaşmış hâlini** ölçtü — çünkü iki
+kopyadan yalnız biri kapsamı uyguluyordu.
+
+Ölçülmüş vaka (2026-08-22, `T-253`): `GET /users/dashboard-summary`, `@deprecated` ve
+yorumu *"`/dashboard/summary`'ye geçin"* diyor. `B1` taksonomisinde
+**`SINIF B · ÖLÜ İKİZ`** diye sınıflandırılmış ve *"bir yetenek sorusu DEĞİL, bir
+`İlke 4` kalıntısı"* yazılmıştı. Ölçülünce:
+
+```
+planner  (11 CPL)  →  {"managedBudget":1600000,...}
+planner2 (17 CPL)  →  BİREBİR AYNI          ← CANLI kapsam bypass'ı
+getDashboardSummary(tenantId)  ·  0 AccessScopeService atıf
+kanonik kardeş: dashboard.service.ts:82 resolveScopedCplIds — DOĞRU kapsıyor
+```
+
+Ve ikinci bir kusur daha taşıyordu: `budgetUsage` division-by-zero'da `0` dönüyordu
+(`§2.5` + `§2.3`: *"division-by-zero → null"*) — kanonik kardeş `null` +
+`'unavailable'` veriyor. **Testi o ihlali PİNLİYORDU**, ve `code-reviewer` okumasaydı
+uç silinirken ihlal de sessizce kaybolacaktı.
+
+📌 **`T-222`'nin (*"iki grid, biri karanlıkta"*) ağırlaşmış hâli.** Orada bir kopya
+görülmüyordu; burada kopya **etiketlenmişti**, ve etiket ölçümü durdurdu.
+
+**Pratik — bir kopyayı sınıflandırırken:**
+
+```
+❌  "@deprecated, ölü ikiz"        →  bir NİYET okunuyor
+✅  "rota tablosunda MI?"          →  koşan sunucunun Mapped satırı
+✅  "çağıranı var mı?"             →  grep, POZİTİF KONTROLLÜ
+✅  "iki kopya AYNI mı davranıyor?"→  davranışsal, iki farklı girdiyle
+```
+
+⚠️ Ve iki kopya **eşit değildir**: hangisinin kanonik olduğunu ölçmeden *"ikisi de aynı
+şeyi yapıyor"* yazma. Bu vakada ikisi aynı şeyi yapmıyordu — **biri güvenliydi, diğeri
+değildi**, ve silinecek olan tam da güvensiz olandı.
+
 ### Bir kusur, BAŞKA bir kusur tarafından örtülebilir (ZORUNLU)
 
 > **Bir kusur, başka bir kusur tarafından örtülebilir — ve dıştaki düzeltilince

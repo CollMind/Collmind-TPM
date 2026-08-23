@@ -1728,3 +1728,94 @@ noktada, ve `T-254`'ün `AC` sırası zaten doğru:
 ```
 
 ⚠️ **Bu `B2`'yi BEKLETMEZ** — paralel yürür.
+
+---
+
+## Z20 · `USER_READ` ikiye ayrıldı — `USER_MANAGE` + `SELF`, ve `SELF` DÖRDÜNCÜ KOVA
+
+**Tarih:** 2026-08-23 · **Karar veren:** ürün sahibi · **Bağlam:** `ADIM 3` `B1` taksonomisi ·
+**Tetikleyen:** `T-253` (`dashboard-summary` silindi → hücrenin çöküş öncülü ortadan kalktı)
+
+### Karar
+
+```
+USER_MANAGE   GET /users · GET /users/:id · (yazma uçları)   →  @Roles(ADMIN)
+SELF          /users/me ailesi (3 uç)                        →  DÖRDÜNCÜ KOVA
+```
+
+`GET /users` (tenant listesi) ile `GET /users/me` (self-servis kimlik) **farklı
+yeteneklerdir** — ve bu `K-2.6.6`'nın değil **`K-2.6.4`'ün** konusudur (rol kataloğu).
+
+**Kardeş gerekçesi:** `/users/:id` `T-255`'te `ADMIN` oldu. `GET /users` onun **liste
+hâlidir** — aynı veri sınıfı, aynı rol. Yani `USER_MANAGE` bir union'dan değil, **ölçülmüş
+bir emsalden** türüyor (`Z18`: *"mekanik olarak türetilmiş bir değer gerekçe değildir"*).
+
+**`SELF` rol gerektirmez, kimlik gerektirir.** Üç uç bir rol kümesine değil, *"istek sahibi
+kaydın sahibi mi"* koşuluna bağlanır.
+
+### Ve bu `B4`'ün ÖN KOŞULUNU çözüyor
+
+`B4` (`roles.guard.ts` default-deny) `FILTRESIZ = 0` şartına bağlıydı; bugün `3`.
+**Ölçüldü — o üç uç tam olarak `me` ailesi:**
+
+```
+route-scope-baseline.txt
+  F user.controller.ts|GET  |users/me
+  F user.controller.ts|PATCH|users/me
+  F user.controller.ts|PATCH|users/me/password
+```
+
+Üçü `@Roles` **almaz**, `SELF` alır → `FILTRESIZ` sıfırlanır ve `B4`'ün önü açılır.
+Yani `SELF` kovası bir sınıflandırma kolaylığı değil, **bir kilidin anahtarı**.
+
+### ⚠️ ÜÇÜNCÜ HÜCRE — kararın kapsamı dışında, ve ÖLÇÜLDÜ
+
+Karar yazılırken *"bu ne bozabilir"* sorusu soruldu (`§ KABUL LİSTESİ`) ve **canlı bir
+regresyon** çıktı. `T-255` `/users/:id`'yi `ADMIN`'e daralttı; frontend o ucu **dört yerden**
+çağırıyor ve çağıran sayfalar `ADMIN`'e kapalı değil:
+
+```
+davranışsal ölçüm 2026-08-23 (poz.kontrol: aynı tokenlarla /users/me → 4/4 200)
+GET /users/:id    ADMIN 200 · CM 403 · FIN 403 · PLANNER 403 · READONLY 403
+
+çağıran                       rota                    guard
+PlanApprovalsPage             /plan-approvals         ADMIN·CM·READONLY
+PlanDetailPage                /plans/:id              BEŞ ROLÜN HEPSİ
+AgreementApprovalsPage        /agreement-approvals    ADMIN·CM·FIN·READONLY
+PlanApprovalDetailModal       (alt bileşen)
+```
+
+Dördü de aynı işi yapıyor: `plan.createdBy` **UUID**'sini **görünen ada** çevirmek. Ve
+fallback sessiz — `creatorUser?.fullName || plan.createdBy || 'N/A'` → 403'te ekranda
+**ham UUID** görünüyor, hata değil.
+
+> **Yani ne `USER_MANAGE` ne `SELF` olan üçüncü bir yetenek var: `USER_LOOKUP` — bir
+> kullanıcı kimliğini GÖRÜNEN ADA çözmek.** Bugün onun **arayüzü yok**, ve ihtiyaç bir
+> **yönetim ucundan** karşılanıyordu.
+
+📌 `EK_E`'nin **`🔒`** sınıfının tersi: orada *yetenek var, arayüzü yok*; burada
+**ihtiyaç var, arayüzü bir başka yeteneğin ucu.** `T-255` o ödünç yolu kapattı ve
+ihtiyaç açıkta kaldı.
+
+⚠️ **Ve `T-255` bunu göremezdi, çünkü kabul listesi ne EKLEDİĞİNİ sayıyordu
+(korumayı), ne BOZDUĞUNU değil** — `§`'nin *"bir kabul listesi değişikliğin
+BOZABİLECEĞİNİ de saymalıdır"* kuralının yeni bir vakası, ve `DUR` listesinin
+**çapraz-repo** satırında.
+
+### Sonuç
+
+| hücre | uçlar | katman | durum |
+|---|---|---|---|
+| `USER_MANAGE` | `GET /users` · `/users/:id` · yazma uçları | `@Roles(ADMIN)` | ✅ karar verildi |
+| `SELF` | `/users/me` ailesi (3) | dördüncü kova, kimlik koşulu | ✅ karar verildi |
+| `USER_LOOKUP` | **bugün yok** — ihtiyaç `/users/:id`'ye biniyordu | ⛔ **AÇIK** | `T-268` |
+
+`USER_LOOKUP`'ın **kararı bu kayıtta verilmiyor** — ölçüm bu turda doğdu ve bir
+tasarım sorusu (dar bir `{id, fullName}` ucu mu, plan/agreement yanıtına gömülü bir
+alan mı) ayrı ele alınmalı. Kayda giren şey **boşluğun varlığı ve ölçüsü**.
+
+### Değiştirdiği kayıt
+
+`Z18`'in `USER_READ` satırı **⛔ DUR**'daydı, gerekçesi *"`dashboard-summary` zaten `5/5`
+rol taşıyor → union otomatik çöküyor"*du. `T-253` o ucu sildi, öncül kalktı, ve hücre
+**union'a düşmeden** çözüldü. `Z1` append-only: `Z18`'in satırı silinmedi.
