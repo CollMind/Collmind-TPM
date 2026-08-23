@@ -2047,6 +2047,27 @@ yaslanarak savunulur.
 **Paylaşılan-eksen filtresi bugün YAPILMAZ, gelecek-seçenek olarak kayda girer** —
 `Z21` deseninin aynısı.
 
+> ### 📌 EK — gelecek-seçeneğin MALİYETİ ölçüldü (`T-272`, 2026-08-23)
+>
+> ```
+> computeBudgetUtilization   filters.channels    →  UYGULUYOR   (:45)
+>                            filters.categories  →  UYGULUYOR   (:50)
+>                            filters.cplIds      →  HİÇ OKUMUYOR
+> dashboard budgetFilters    startDate · endDate · cplIds        ← channels/categories YOK
+> POZ.KONTROL  aynı metotta 6 where/filtre yapısı — desen çalışıyor
+> ```
+>
+> **Tüketici tarafı ZATEN KURULU.** Paylaşılan-eksen filtresi *"yeni bir filtre
+> yazmak"* değil, **var olan bir filtreyi doldurmak** — eksik olan yalnız kapsamdan
+> kanal/kategori türetmek.
+>
+> ⇒ Maliyet tahmini bu yönde **revize edilmeli**; karar (bugün yapılmaz) değişmiyor,
+> ama *"pahalı"* gerekçesi artık geçerli değil — geçerli gerekçe **talep yokluğu**.
+>
+> ⚠️ Ve bir yan bulgu: `dashboard` `cplIds`'i **özenle hesaplayıp** geçiriyor, ve onu
+> **kimse okumuyor**. *"Mekanizma var, yol yok"* ailesinin **ters** hâli — değer doğru
+> üretiliyor, tüketicisi yok.
+
 ### `Z21` seçenek 2'nin şerhi AYNEN taşınır
 
 > `CPL` bir gün **görünürlük boyutu** olarak dönerse, **çözümleme boyutu olmadığı** açıkça
