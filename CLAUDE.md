@@ -731,6 +731,41 @@ kontrol"* üretiyor.
 girdisi olacaksa — enjeksiyon/çağrı ayrımını **o anda** ölç. Kod yorumunda yanılmak yanlış
 bilgi üretir; **bir brief'te yanılmak yanlış İŞ üretir.**
 
+### ⛔ VE DÖRDÜNCÜ VAKA KURALI GENİŞLETTİ — soru TABLO'ysa, terim de TABLO olmalı
+
+Yukarıdaki üç vaka *"enjekte edildi ama çağrılmadı"* idi. Dördüncüsü **ters yönde** yanıldı
+ve bir bulguyu **kapattı**:
+
+```
+soru      "budget_allocations tablosunu kim okuyor?"
+arananan  budgetAllocationService     →  enjeksiyon 1 · ÇAĞRI 0   →  "tüketici yok"  ❌
+gerçek    budgetAllocationRepository  →  :160 this.budgetAllocationRepository.find(...)
+          ve o çağrı getBudgetUtilization'ın içinde → CANLI DASHBOARD
+POZ.KONTROL  this.*Repository. → 7 eşleşme (desen çalışıyordu)
+```
+
+**Ölçüm doğruydu, SORU yanlıştı.** `budgetAllocationService` hakkındaki cümle bugün de
+doğru; ama sorulan şey **servis** değil **tablo**ydı, ve bir tabloya **birden çok DI adı**
+üzerinden erişilebilir (servis · repository · `dataSource.getRepository` · `relations`
+string'i · ham SQL).
+
+📌 **Sınıf:** `decimal`↔`numeric`'in **DI tarafındaki** hâli — *"yanlış yüzeyin dilinde
+arama"*. Ve `§7.1`'in en pahalı yönü: bu ölçüm bir bulguyu **çürütüyordu**, yani yanılması
+gerçek bir kusuru **kapatıyordu** (canlı bir dashboard ₺1.6M zarf bütçesi dururken
+`₺0 · GREEN · status:"ok"` basıyordu).
+
+**Pratik — soruyu terime çevirirken sor: *neyin* tüketicisini arıyorum?**
+
+| soru | ❌ dar terim | ✅ doğru terim |
+|---|---|---|
+| bu **servisi** kim çağırıyor | — | `this.fooService.` |
+| bu **tabloyu** kim okuyor | bir servis adı | **entity adı** + `Repository` + `getRepository` + `relations: [` + ham SQL |
+| bu **kolonu** kim yazıyor | entity dosyası | her yazma yolu (`§`: seed · migration · servis · uç · fixture) |
+
+⚠️ Ve bir tablo sorusunun cevabı **tek bir ada** dayanıyorsa, cevap **eksiktir** — kaç ad
+tarandığı aynı cümlede yazılır (`§ KAPSAM MASKELEMESİ`: *"bir küme hakkında sonuç
+yazılıyorsa, kümenin NASIL SINIRLANDIĞI aynı cümlede yazılır"*).
+
 ### `@deprecated` bir NİYET BEYANIDIR, bir ölçüm değil (ZORUNLU)
 
 > **Bir kopya *"ölü"* diye işaretlendiğinde ölçüm DURUR.**
