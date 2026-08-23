@@ -1765,6 +1765,43 @@ pahalıya mal olan dördü burada da:
    - **Varsa** → o task'ı devam ettir/güncelle. **YENİ TASK AÇMA.**
    - **Yoksa** → yeni task dosyası oluştur (`.claude/backlog/tasks/<id>.md`), uygun agent'a `assignee` ata, `BACKLOG.md` indeksine satır ekle.
 2. **Dekompozisyon:** büyük iş → epic (`epics/<id>.md`) → task'lar. Her task tek agent'a.
+### ⛔ `touches:` KESİŞİMİ GEREKLİ AMA YETERLİ DEĞİL — ağaç PAYLAŞILIR (ZORUNLU)
+
+> **Paralel ajanlar dosya kesişmese bile AYNI WORKING TREE'yi paylaşır.**
+> **Çakışma yalnız yazma anında değil, DOĞRULAMA anında olur.**
+
+Ölçülmüş vaka (2026-08-23, `T-269` ∥ `T-270`): `touches:` kesişimi **sıfır**du ve
+davranışsal kesişim de ölçülüp **sıfır** çıkmıştı. İkisi de doğruydu. Yine de:
+
+```
+T-270 yarım bir düzenleme bıraktı  →  ana ağaç DERLENEMEZ oldu
+                                      (ReferenceError → TS2304)
+T-269 kendi diff'ini doğrulayamadı —  çünkü `npm test` AĞACIN TAMAMINI derler
+```
+
+📌 **Mekanizma:** bir test suite'i, bir `tsc`, bir guard koşumu **tüm ağacı** okur.
+Disjoint dosyalar bunu değiştirmez — bir ajanın yarım işi, diğerinin **ölçüm aracını**
+bozar. Ve sonuç `§2.7`'nin en kötü şekli: **kırmızı, ama kendi kodundan değil.**
+
+⚠️ Ve daha sinsi bir yön: paylaşılan ağaçta `--fix`, mutasyon ya da `git checkout`
+çalıştıran bir ajan **diğerinin commit edilmemiş işini siler** — bu oturumda bir kez
+yaşandı ve kaybı görünür kılan şey bir tip kapısı olmuştu.
+
+**Pratik — paralel başlatırken üç şey:**
+
+```
+1  touches: kesişimi          ← gerekli, yeterli DEĞİL
+2  davranışsal kesişim         ← aynı yüzeye veri besliyorlar mı
+3  DOĞRULAMA izolasyonu        ← BU EKSİKTİ
+```
+
+Üçüncüsü için brief'e bir satır: **doğrulamanı izole bir `git worktree`'de yap; paylaşılan
+ağaçta `--fix`/mutasyon/`git checkout` çalıştırma.** (`T-269`'un ajanı bunu kendiliğinden
+yaptı ve turu kurtardı — ama brief'te yazılı değildi, yani **şansa kalmıştı**.)
+
+Ve Team Lead tarafında: **commit SEÇİCİ yapılır** (`git add <yol>`), `git add -A` değil —
+yoksa diğerinin yarım işi commit'e girer.
+
 3. **Çakışma kontrolü (YENİ — ZORUNLU):** her task'ta `touches:` alanı dolu olmalı
    (dokunulacak dosya/modül listesi). **Paralel başlatmadan önce `touches:` kesişimini kontrol
    et.** Kesişim varsa paralel değil, **sıralı** çalıştır.

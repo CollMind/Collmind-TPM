@@ -330,3 +330,64 @@ kendi GRANT ihtiyacını kendi S3 turunda ölçer.
 `scripts/db-roles/02-runtime-grants.sql`'e uygulandı (yerel dev DB'de
 `bash scripts/db-roles-grants.sh` ile doğrulandı — yakınsak betik, REVOKE
 ALL + ölçülmüş envanteri yeniden kurar).
+
+---
+
+## S3 tur 24 (T-269, 2026-08-23) — `lta_plan_overrides` SELECT
+
+**Tetikleyen:** `GET /lta-agreements/:id` **`500`** dönüyordu. Kök neden dördüncü
+erişim yüzeyi — bir **`relations: [...]` string'i**:
+
+```
+lta-agreement.repository.ts:39   findById → relations: [… 'planOverrides' …]
+has_table_privilege('app_runtime','main.lta_plan_overrides','SELECT')  →  f
+POZ.KONTROL                      ...,'main.lta_agreements' ,'SELECT')  →  t
+```
+
+**Uygulandı:** `GRANT SELECT ON :"schema".lta_plan_overrides TO app_runtime;`
+(`02-runtime-grants.sql:543`) — ve canlı dev DB'ye de. İki temsil senkron; doğrulandı
+`has_table_privilege(...) = true`.
+
+**Davranışsal:** `GET /lta-agreements/<olmayan-uuid>` **`500` → `404`**
+(poz.kontrol: auth'suz liste `401`).
+
+### ⚠️ Ve bu tur `app-runtime-grants` GUARD'ININ KÖR NOKTASINI ölçtü
+
+Guard başlığında **üç kanal** sayıyor: `forFeature` · `InjectRepository` ·
+`dataSource.getRepository`. **Dördüncü bir kanal var:**
+
+```
+relations: ['planOverrides']      ← bir STRING, bir sınıf atfı DEĞİL
+```
+
+DI kaydı olmayan bir tabloya `LEFT JOIN` ile ulaşıyor. `T-250` `LTAPlanOverride`'ın
+`forFeature` kaydını **bilinçli** kaldırmıştı ve ölçümü (`grep 'LTAPlanOverride'`)
+**doğruydu** — ama **ilişki adı sınıf adı değildir**, o yüzden görünmedi.
+
+> **Guard `EXIT=0` verirken canlı bir `500` duruyordu.**
+
+📌 Sınıf taraması yapıldı: `app_runtime` grant'i olmayan **11** tablonun **yalnız
+`lta_plan_overrides`'ı** bir `relations` string'iyle erişiliyor. `İlke 1` gereği tek
+vakaya araç yazılmadı — **guard genişletmesi ürün sahibi kararı bekliyor.**
+
+⚠️ Ve bu, `CLAUDE.md`'nin **dört yüzey** kuralının (2026-08-23) doğduğu vakalardan
+biri: *"tablo-tüketimi DI çağrıları · repository erişimi · ham SQL · view'lar —
+ve `relations` string'i en sessizidir."*
+
+### ⛔ AÇIK KALAN — `T-271`
+
+Aynı turda ölçüldü, **düzeltilmedi**:
+
+```
+has_table_privilege('app_runtime','main.lta_agreements','INSERT')  →  false
+main.lta_rates                                                     →  yalnız SELECT
+```
+
+Dört canlı `@Roles(ADMIN)` ucu (`create` · `update` · `activate` · `terminate`) bugün
+**çalışmıyor**. Ve ikinci bir kusur (`findOverlappingAgreements`'in tipsiz `$5`
+parametresi) `create`/`activate`'te **`INSERT`'e hiç ulaşılmamasını** sağlayarak bu
+izin eksikliğini **maskeliyor**.
+
+⚠️ `T-271`'de yazma ayrıcalığı verilirken `K-2.6.13`'ün ayrıcalıklı-rol bağı
+**geri getirilmemeli** — *"hangi tablolara, ve neden o kadar?"* sorusu ayrıca
+cevaplanacak.
