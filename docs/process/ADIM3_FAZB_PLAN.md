@@ -544,7 +544,7 @@ SUMMARY_READ ∧ A1 = 0     bugün 10
 Sıfırlandığı gün kural **kapıya terfi eder**: *"yeni bir `SUMMARY_READ` rotası kapsamsız
 DOĞAMAZ"* — **doğum kontrolü**.
 
-### ⛔ AÇIK — `H1` fixpoint, `MODES_WRITE`'ın ÜÇ NATIVE KÜMESİ
+### ✅ KAPANDI (`Z35`, 2026-08-24) — `H1` fixpoint, `MODES_WRITE`'ın ÜÇ NATIVE KÜMESİ
 
 ```
 {ADMIN,FINANCE,PLANNER}  n=1    POST /agreement-transactions
@@ -557,3 +557,34 @@ BEYANI.** *"Union'ı reddet"* kuralı bu satıra **uygulanamaz**; rota gerçekte
 yazılmış.
 
 **Soru:** bağımsız üçüncü bir hücre mi, yoksa iki-hücreli bölünmenin **hangi tarafına**?
+
+### ⇒ CEVAP (`Z35`) — **İKİ-HÜCRELİ BÖLÜNMENİN `{A,F}` TARAFINA**, ve bir DÜZELTME olarak
+
+Üçüncü hücre **reddedildi**. Ürün sahibinin gerekçesi bir küme değil, bir **yöntem
+reddi**: *"hücre ile kapsam aynı eksende yarışmaz"* — ve `n=1`'i barındırmak için hücre
+açmak, taksonomiyi **rota sayısına** göre şekillendirmek olurdu.
+
+**Üç bağımsız ölçüm aynı yere çıktı** (`B3A_ESLEME_TABLOSU.md` `EK 2`):
+
+```
+YAPISAL     create ≡ batchImport — aynı yazma yolu, DOSYASIZ KAPI
+NORMATİF    K-2.6.14: görev ayrılığı VERİ GİRİŞİNİ değil FİNANSAL KARARI korur
+TAKSONOMİK  PLANNER cümlesi YAZILAMIYOR — "hacim girişi" PLAN hacmidir
+```
+
+⇒ **Rota YANLIŞ DOĞMUŞ.** `{A,F}` bir istisna değil, **düzeltme**. `T-277` ile iki repoda
+**eşzamanlı** indi (frontend `7fb2538` · backend `9f6dd53` · meta `25a3a9f`).
+
+**Bölünmenin `Z35` sonrası hâli:**
+
+```
+{ADMIN,FINANCE}   n=6   (5 + düzeltilen POST /agreement-transactions)
+{ADMIN,PLANNER}   n=12
+```
+
+> ⛔ **VE BU HARİTAYA HENÜZ İNMEDİ.** `capabilities.ts`'te `MODES_WRITE` bugün hâlâ
+> `{ADMIN, PLANNER, FINANCE}` — bölünmemiş. `B3b-0` saf düzeltme turuydu ve `H1`'in
+> `DUR`'una uydu; `Z35` o `DUR`'u **sonradan** çözdü.
+>
+> **`B3b-1`'in ADIM 0'ı budur** — ve kapanmadan göç başlarsa `Z35`'in daraltması bir
+> mekanik tur tarafından **sessizce geri alınır**. Ayrıntı: `B3B_RATCHET_TABANI.md §3`.
