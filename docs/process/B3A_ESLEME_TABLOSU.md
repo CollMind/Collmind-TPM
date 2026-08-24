@@ -404,3 +404,101 @@ bile yok**.
 
 ⛔ **Bu bir kusur iddiası DEĞİL** — davranış ölçülmedi, yalnız **veri sınıfı**. Ama `H6`
 *"ölçümsüz hücre atanmaz"* diyor, ve **hücre ataması bu gerekçe cümlesine yaslanamaz.**
+
+---
+
+# EK 2 · `n=1` ÜÇ ÖLÇÜM (2026-08-24) — ve soru TAKSONOMİ DEĞİLMİŞ
+
+## ÖLÇÜM 1 · veri sınıfı + tetiklenme
+
+```
+yazdığı 1   agreement_transactions   invoice_no · invoice_date · fiscal_period · amount
+yazdığı 2   ledger_entries           DEBIT · OFF_INVOICE · budget_envelope_id   ← service:238
+```
+
+`consumed` **`ledger_entries`'te yaşıyor** ⇒ rota **doğrudan bütçe tüketimi** yazıyor,
+**araya onay/eşleştirme girmeden, aynı çağrıda**. Ara statü **yok**.
+
+### ⛔ EN AĞIR BULGU YAPISAL — Team Lead doğruladı
+
+```
+controller:51-52  POST /agreement-transactions        @Roles(ADMIN, PLANNER, FINANCE)
+controller:62-63  POST /agreement-transactions/batch  @Roles(ADMIN, FINANCE)
+service:264       async batchImport(…)
+service:285         const transaction = await this.create(   ← AYNI METOT
+```
+
+> **`n=1` rotası, `n=5` ailesinin DOSYASIZ KAPISIDIR** — komşu değil, **aynı yazma yolu**.
+
+**Sınıf:** `off-invoice GERÇEKLEŞME kaydı`. *"Manuel işlem girişi"* **kanaldır**, veri
+sınıfı değil.
+
+### Eylem kapısı — kapatılan kapı, yanındaki AÇIK PENCERE
+
+```
+/off-invoice/upload         ['ADMIN','FINANCE']                        ← PLANNER GİREMEZ
+/off-invoice/transactions   ['ADMIN','FINANCE','PLANNER','READONLY']
+   └─ "Manuel Giriş"        rol kontrolü SIFIR (grep -c → 0)
+```
+
+📌 Frontend'in **kendi testi** yazılı olarak kabul ediyor (`routeGuards.test.tsx:194`):
+*"`PLANNER` giremez … **BRD `§7.2` ile çelişiyor**"*.
+
+⇒ **`T-277`** açıldı.
+
+## ÖLÇÜM 2 · `K-2.6.14` testi → **EVET**
+
+Kuralın **kendi ayırt edicisi** kanal değil, **defter etkisi + eşleştirmenin yokluğu**:
+
+> *"görev ayrılığı **veri girişini** değil, finansal kararı korur"*
+> *"import gerçekleşen veriyi **ve defter etkisini doğrudan yazıyor** — bugün import bir
+> veri girişi değil, **fiilen bir finansal işlem**"*
+
+⇒ `PLANNER` üyeliği yürürlükteki fazın **komşuluğunda değil, İÇİNDE**.
+⇒ `{A,F}`'ye iliştirme bir **DÜZELTMEdir**, istisna değil. **Rota yanlış doğmuş.**
+
+⚠️ **`capabilities.ts:188`'in *"`K-2.6.14`'ün konusu değil"* cümlesi ÇÜRÜDÜ** — bir
+**beyandı**, `create ≡ batchImport` bağı ölçülmemişti.
+
+### 🟡 Literal şerh — ve bu bir `DUR`
+
+Kuralın **başlığı** *"Fatura ve hakediş belgesi **içe aktarma** yetkisi"* — harfiyen **dosya
+alımı**. Manuel giriş başlıkta **sayılmıyor**; kural **gerekçe fıkralarında** genelliyor
+(`giriş`, `veri girişi`), **başlıkta genellemiyor**.
+
+```
+başlık da kapsıyor    →  DÜZELTME · ayrı istisna kaydı GEREKMEZ
+yalnız gerekçe kapsar →  DÜZELTME · ama K-2.6.14'e bir KAPSAM AÇIKLIĞI notu gerekir
+                         ("içe aktarma" = kanal değil, DEFTER-ETKİLİ gerçekleşme girişi)
+```
+
+## ÖLÇÜM 3 · üç rol cümlesi — `K-2.6.4`'ün KENDİ kelimeleriyle
+
+| rol | satır | cümle |
+|---|---|---|
+| `FİNANS` | *"…mutabakat, **içe aktarma**"* | ✅ **EVET** |
+| `PLANLAMACI` | *"Plan, taktik, hacim girişi, gönderim"* | ❌ **HAYIR** — *"hacim girişi"* **plan hacmidir**, fatura tutarı değil |
+| `YÖNETİCİ` | *"Tanımlar, kural yönetimi"* | ❌ **HAYIR** |
+
+⚠️ **`YÖNETİCİ` bulgusu bu rotaya ÖZGÜ DEĞİL** — `L2_03`'te `YÖNETİCİ` **yalnız bir kez**
+geçiyor (`:405`), yani `ADMIN`'in **üç kümede birden** bulunuşu `K-2.6.4`'e dayanmıyor.
+**Ayrı bir boşluk**, bu kalemin hakemi değil.
+
+⇒ **Ayırt eden tek satır `PLANLAMACI`, ve cümle yazılamıyor.** `PLANNER` lehine tek metin
+`K-2.6.14`'ün **saha gerekçesi** — ve o **açıkça eşleştirme fazına ERTELENMİŞ**.
+
+## Adlandırma — veri sınıfı ÖLÇÜLDÜ
+
+| küme | veri sınıfı | defter etkisi |
+|---|---|---|
+| `{A,F}` `n=5` | **olmuş olanın ALIMI** | **VAR** (`on-invoice.service.ts:499`) |
+| `{A,P}` `n=12` | **olacak olanın TAAHHÜDÜ** — `DRAFT` doğar, `PENDING→APPROVED` kapısı | **YOK** |
+
+📌 **Ölçülmüş ayırt edici:** `modes/` içinde deftere `DEBIT` yazan **yalnız iki servis** —
+`agreement-transaction.service.ts:238` (**ölçülen rota**) ve `on-invoice.service.ts:499`
+(`{A,F}` ailesi). Plan/anlaşma CRUD'un defter yazımı **sıfır**.
+
+⇒ `{A,F}` = **gerçekleşme/alım yazımı** · `{A,P}` = **plan/anlaşma yazımı**
+
+> Ve `n=1`'in cevabı: ***"bir yetenek değil, `upload`'ın kapatıldığı kapının yanındaki
+> AÇIK PENCERE."***
