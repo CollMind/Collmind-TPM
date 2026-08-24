@@ -446,6 +446,62 @@ değil.
 Kaynağı sign-off almamış bir taslak, ve `K-2.6.5f` (*"rol seti kapalı başlar, genişleme
 kanıtla"*) meseleyi kapatıyor.
 
+**K-2.6.4f** — **Kapsamsızlık bir rol sabiti değil, bir kapsam KAYDIDIR.**
+
+Tenant-genel erişim, **rol adından türemez**; `user_scopes`'ta **joker bir kayıtla**
+temsil edilir.
+
+- **`YÖNETİCİ` yapısal olarak tenant-geneldir:** kapsam katmanını **yöneten** rol, o
+  katmanın **öznesi olamaz** — joker kaydı **tanımının parçasıdır** ve bölünmesi
+  **öngörülmez**.
+- **`FİNANS` işlevsel olarak BUGÜN tenant-geneldir** (mutabakat ve içe aktarma
+  tenant-geneli bakar); **kategori-bölünmesi `OPEN_DECISIONS`'ta adaydır.** Bölünme
+  kararı verilirse **bu kural değişmez** — yalnız o kullanıcıların **kayıtları** değişir.
+
+> **İki rol neden ayrı cümlelerde:** gerekçe türleri farklı olduğu için **gelecekleri de
+> farklı.** `FİNANS`'a tanınan bölünebilirlik `YÖNETİCİ`'ye **sızmaz**; `YÖNETİCİ`'nin
+> yapısallığı `FİNANS`'ı **kilitlemez**.
+>
+> ⚠️ **`K-2.6.4`'ün *"tanımlar ve kural yönetimi"* cümlesinden kapsamsızlık
+> TÜRETİLEMEZ** — olsa olsa **ima edilir**, ve ima bu projede gerekçe sayılmaz. `ADMIN`'in
+> kapsamsızlığı bu yüzden **ayrıca** gerekçelendirildi.
+>
+> 📌 **Bölünebilirlik cümlenin DIŞINDA, veride:** `Faz 2`'nin bölünme kararı bu kuralın
+> **yeniden yazılmasını gerektirmez.** *"Tablo yazılırken gelecek satıra kapı bırakılır."*
+
+*(Düzenlemeyi açan kayıt: `Z30 H8` + `Z35 §3` — `ADMIN`'in gerekçe-yazım adımı. Karar:
+ürün sahibi, 2026-08-24.)*
+
+**K-2.6.4g** — **Rol değişimi kapsam kaydını ÖRTÜK olarak değiştirmez** — değiştirecek
+geçiş, **kaydını açıkça getirene kadar reddedilir.**
+
+`K-2.6.4f`'nin ayna cümlesi: kapsamsızlık bir **kayıt** ise, rol değişimi o kaydı
+**kendiliğinden** üretemez.
+
+> **Kapının kuralı bir GEÇİŞ LİSTESİ değil, bir ŞEKİL KARŞILAŞTIRMASIDIR** — liste bakım
+> ister ve yeni bir rol eklendiğinde **bayatlar**; şekil karşılaştırması bayatlamaz.
+>
+> | kapsam şekli | roller |
+> |---|---|
+> | joker (tek `(null, null)` satırı) | `YÖNETİCİ` · `FİNANS` · `İZLEYİCİ` |
+> | CPL+kategori çiftleri | `PLANLAMACI` |
+> | yalnız kategori | `KATEGORİ MÜDÜRÜ` |
+>
+> **Şekil değişiyorsa reddedilir; aynıysa serbest — ama kaydın gerçekten orada olduğu
+> DOĞRULANIR, varsayılmaz.**
+>
+> ⚠️ **`KATEGORİ MÜDÜRÜ` neden ayrı bir şekil:** yürürlükteki kapsamı yalnız kategori
+> boyutuna normalize ediliyor. Yani `PLANLAMACI` ile **yazılan** satırlar aynı görünse de
+> **yürürlükteki** kapsamlar farklı — *"yazılan ≠ yürürlükteki"* vakası.
+>
+> 📌 **Bu bir erteleme değil, KAYITLI BİR KAPALI YETENEKTİR.** Şekil değiştiren geçişin
+> kapsam kaydını getirecek uç bugün yok; sağlayıcısı **tanımlı** (`T-242b`) ve tetiği
+> **bu kapının varlığı**. Rol değişimi × kapsam en az **dört ayrı vaka sınıfı** taşır —
+> tam bu yüzden ayrı bir iş olarak ayrıldı ve atomik bir turun içine gömülmedi.
+
+*(Düzenlemeyi açan kayıt: `Z30 H8` `B1` — `code-reviewer` bulgusu. Karar: ürün sahibi,
+2026-08-24.)*
+
 > ⚠️ **Ama arkasındaki ihtiyaç kaydedilir:** talebin gerçek konusu genellikle **tenant-üstü
 > operasyon** — kendi destek ve kurulum erişimimiz.
 >

@@ -1657,6 +1657,35 @@ sapma doğurur.** `else` dalları yeni enum değerini kendi varsayılanına yuta
 
 > *"Bu düzeltme, düzelttiği sınıfın yeni bir vakasını üretiyor mu?"*
 
+> ### ✅ VE BU SORU BİR AJAN TARAFINDAN, DÜZELTME TURUNDA YAKALANDI (2026-08-24)
+>
+> Sınıfın bugüne kadarki vakaları **sonraki turda** bulunmuştu. Bu ilki değil ama ilk
+> **kendi turunda** yakalanan:
+>
+> ```
+> düzeltme   migration 1812'nin sayımına `deleted_at IS NULL` eklendi (evren uyuşmazlığı)
+> YENİ VAKA  soft-silinmiş joker satır UQ anahtarını HÂLÂ işgal ediyor (UQ partial DEĞİL)
+>            → migration sessizce INSERT deneyip ham 23505 alırdı
+> yapılan    ayrı bir kova: teşhis edilebilir İPTAL, ham hata DEĞİL
+> ```
+>
+> 📌 Ve genel ders: **bir filtre eklemek, filtrelenen şeyin BAŞKA BİR YERDE hâlâ etkili
+> olup olmadığını sordurmalı.** `deleted_at`'i *okuma* tarafında filtrelemek, o satırın
+> *tekillik* tarafındaki etkisini kaldırmaz.
+
+> ### ⛔ VE HAM BİR HATA, HAM BİR `23505`'TEN FARKSIZDIR (ZORUNLU)
+>
+> **Bir reddin gövdesi SEBEP ve ADRES taşımalıdır** — *"neden reddedildi"* ve *"ne zaman
+> açılacak / kimin işi"*. Sebepsiz bir `409`, sebepsiz bir `23505` kadar teşhis edilemez;
+> ikisi de çağıranı **kaynağa bakmaya** zorlar.
+>
+> Ölçülmüş çift vaka (2026-08-24): migration `1812` soft-silinmiş satır vakasında ham
+> `23505` yerine **adlandırılmış İPTAL** verdi · `K-2.6.4g` kapısı `409` gövdesinde
+> **şekil adlarını ve `T-242b`'yi** yazıyor.
+>
+> ⚠️ Ve bu bir üslup meselesi değil: adres taşımayan bir ret, **kapalı bir yeteneği bir
+> arıza gibi** gösterir — ve bir sonraki tur onu *"düzeltmeye"* kalkar.
+
 Ve özellikle bir **enum/durum genişletmesi** yapıyorsan: o değeri **karşılaştıran** her ucu
 say (`§7.1`), ve `else`/`default` dallarının onu ne yaptığına bak. Yeni değer bir `else`'e
 düşüyorsa, düzeltme oraya bir kusur taşımıştır.
@@ -2084,6 +2113,42 @@ denetleyerek değil.
 
 ⚠️ **Bir totoloji, olmayan kapıdan KÖTÜDÜR** — yeşil olduğu için **çalıştığı sanılır**.
 Yerine konan kontroller **kırılabilir** olmalı, ve **kırıldıkları gösterilmeli**.
+
+### KANIT RENGİN KENDİSİ DEĞİL, RENGİN SEBEBİDİR (ZORUNLU)
+
+> **Yeşil ayırt etmeyebilir — ve KIRMIZI da doğru şeyi ayırt etmiyor olabilir.**
+> **Bir mutasyon kırmızı ürettiğinde sor: bu kırmızı, ölçmek istediğim DAVRANIŞTAN mı
+> geliyor, yoksa başka bir şeyden mi?**
+
+`§2.7` ailesinin tamamı *"yeşil ama hiçbir şey kanıtlamıyor"* vakalarını topluyor. Bu onun
+**simetriği**, ve aynı oturumda iki farklı biçimde ölçüldü:
+
+| vaka | kırmızı geldi | ama sebebi |
+|---|---|---|
+| `T-121` | mutasyon `TS2488` verdi | **derleme hatası** — testler hiç koşmadı |
+| `N1` (2026-08-24) | mutasyon testi kırdı | **`toHaveBeenCalledWith` argüman kontrolü** — davranışsal fark değil |
+
+İkincisi öğretici: `code-reviewer` *"fixture iki tarafta aynı değeri taşıyor, test ayırt
+etmiyor"* dedi. Doğruydu. Ama `qa-engineer` mutasyonu koşturunca test **kırmızıya döndü** —
+çünkü sorgunun `where` argümanını ayrıca assert ediyordu. Yani **tespit doğru, sonuç
+yanlıştı**: test kör değildi, ama **davranışsal olarak** ayırt etmiyordu.
+
+⚠️ **Ve fark bir gün önemli olur:** argüman kontrolü, üretim kodu aynı davranışı **başka
+bir şekille** elde ettiği gün (ör. filtreyi `where` yerine `find` sonrası uygulamak)
+kırmızıya döner ve **yanlış alarm** verir; ya da tersine, `where` doğru görünürken davranış
+bozuksa **sessiz kalır**.
+
+**Pratik — mutasyon kırmızısını kabul ederken:**
+
+```
+1  Testler GERÇEKTEN koştu mu?          (derleme/çalıştırma hatası DEĞİL)
+2  Kırmızı bir ASSERTION'dan mı geliyor? (hangi assertion — bas)
+3  O assertion DAVRANIŞI mı ölçüyor, ÇAĞRI ŞEKLİNİ mi?
+```
+
+📌 Ve `qa-engineer`'ın bunu **kendiliğinden yazması** doğru refleks: *"bugünkü test de
+aslında yakalıyordu, ama reviewer'ın işaret ettiği kusur gerçekti."* Bir düzeltmeyi
+savunmak ile bir teşhisi düzeltmek ayrı işlerdir.
 
 ### EN İYİ KONTROL, BAĞIMSIZ BİR KAYITLA ÇAKIŞTIRMADIR (ZORUNLU)
 

@@ -24,10 +24,19 @@ göründü. Bulan şey bir mekanizma değil, bir ajanın **brief taramasıydı**
 | `Z21` seçenek 2 (`cpl_id` zarfa) | CPL-bazlı bütçe **gerçek müşteri ihtiyacı** olarak kanıtlanırsa | danışman turu / ilk müşteri | ⏳ bekliyor |
 | `Z22` paylaşılan-eksen filtresi | kanal/kategori bazlı zarf **talebi** doğarsa | — | ⏳ bekliyor · ⚠️ maliyet **revize**: tüketici tarafı zaten kurulu (`T-272`) |
 | **`Z32` `SUMMARY_READ ∧ A1 = 0`** | özet-şekilli kapsamsız `10` rota **kapsam alınca** | **kapsam-kalanları hattı** (`B3`'ün DEĞİL) | ⏳ **KOŞUL** — ✅ **ilk kayıt 2026-08-24: `10`** (ölçüldü, `B3b-0` sonrası). Sıfırlandığı gün kural **KAPIYA TERFİ EDER**: *"yeni bir `SUMMARY_READ` rotası kapsamsız DOĞAMAZ"* |
-| **`FINANCE` kapsam ayrışması** (aday karar) | `H8` terfisi (`UNRESTRICTED` → joker-satır modeli) **origin'e indiğinde** | `H8` | ⏳ **KOŞUL** — `H8`'den ÖNCE **temsil edilemez**. Ayrıntı: [§ FINANCE kapsam ayrışması](#-aday-karar--finance-kapsam-ayrışması-2026-08-24) |
+| **`FINANCE` kapsam ayrışması** (aday karar) | `H8` terfisi (`UNRESTRICTED` → joker-satır modeli) **origin'e indiğinde** | `H8` | ✅ **TETİK ATEŞLEDİ (2026-08-24) — KARAR GÖRÜŞÜLEBİLİR.** `H8` origin'e indi (`K-2.6.4f` + migration `1812000000000` + `UNRESTRICTED_ROLES` kaldırıldı). `FINANCE` artık kapsamını **satırdan** kazanıyor, yani kategori-bölünmesi **temsil edilebilir**. Karar `Faz 2` planlamasıyla birlikte verilir. Ayrıntı: [§ FINANCE kapsam ayrışması](#-aday-karar--finance-kapsam-ayrışması-2026-08-24) |
 | `Z27` `/approvals/pending` yüklemi | `approval_levels` **dolduğunda** → yüklem şablon-çözümlemeli hâline göç eder | şablon motoru (`Faz 2`) | ⏳ **KOŞUL** — aktif izlenir |
 | `T-235` `T-028c` bayrağı | prod/UAT'de backfill doğrulanana kadar | prod/UAT ortamı | ⛔ **KİLİT** — sağlayıcı bugün YOK |
+
+> 📌 **`KİLİT` ile `KOŞUL` ayrımı — `T-242b` vakası (2026-08-24).**
+> `§ BİR ŞARTIN SAĞLAYICISI YOKSA, ŞART BİR ERTELEME DEĞİL BİR KİLİTTİR` kuralı
+> sağlayıcısı **var olmayan** şartlar içindi (`prod/UAT`, `deploy edilmiş ortam`).
+> `T-242b` **o sınıfta değil**: sağlayıcısı **tanımlı ve üretilebilir** — yalnız
+> üretilmemiş. Bu yüzden `⛔ KİLİT` değil, `⛔ KAPALI` diye işaretlenir ve **tetiği
+> vardır** (`K-2.6.4g` kapısının varlığı). Fark pratik: bir kilit **beklenir**, kapalı
+> bir yetenek **planlanır**.
 | `0073` `report-only` envanteri | fiili trafikte doğrulanır | deploy edilmiş ortam | ⛔ **KİLİT** — sağlayıcı bugün YOK |
+| **Rol-geçişi (ŞEKİL-DEĞİŞTİREN)** | `T-242b` iner — şekil değiştiren geçişin kapsam kaydını getirecek uç doğar | **`T-242b`** (sağlayıcı **TANIMLI**; tetiği **bu kapının varlığı**) | ⛔ **KAPALI — ve bu bir ERTELEME DEĞİL, KAYITLI BİR KAPALI YETENEK.** `K-2.6.4g` kapısı `409` veriyor (`user.service.ts` `assertRoleChangeScopeConsistent`). Serbest olanlar: joker↔joker (`ADMIN`↔`FINANCE`↔`READONLY`). Kapalı: `PLANNER↔FINANCE` · `PLANNER↔CM` · joker↔çift her yön. Bugünkü yol: hedef rolde **yeni kullanıcı yaratmak** |
 | **`SYSTEM_INVARIANTS` uzlaşı turu** | tüm `Status:` satırlarının bugünkü gerçekle çakıştırılması · yetki/kapsam invariant ailesinin eklenmesi (boş kapsam=erişim yok · `SUMMARY_READ` kapsamsız doğamaz · negatif-kullanılabilirlik) · `INV-C` ↔ ilk-deploy ön koşulları çapraz referansı · `§12` Adoption koşullarının yeniden değerlendirilmesi | **`ADIM 5` (RLS) planlamasının açılışı** | ⏳ **KOŞUL** — ✅ karantina damgası indi (2026-08-24, `F12`: içerik değişmedi). Belge uzlaşı turu kapanana kadar **yalnız envanter değeri** taşır; **statü okuması için kullanılmaz** |
 
 ⚠️ **İki satır `⛔ KİLİT`** — sağlayıcısı **var olmayan** bir ortama adresli. `§`'nin
@@ -62,6 +71,23 @@ sessiz bekledi) **tekrarlanabilir**.
 `Z`'den başkası sorumlu olabilir."*
 **Statü:** **aday karar**, verilmiş karar DEĞİL — `04_KARAR_KAYDI`'na girmez.
 **Tetik:** `H8` terfisi origin'e indiğinde **görüşülebilir** olur; öncesinde temsil edilemez.
+
+> ## ✅ TETİK ATEŞLEDİ — 2026-08-24
+>
+> `H8` indi: `K-2.6.4f` yazıldı (`FİNANS` **işlevsel olarak bugün** tenant-geneldir,
+> **kategori-bölünmesi aday**), migration `1812000000000` joker satırları emniyete aldı,
+> `UNRESTRICTED_ROLES` kod sabiti **kaldırıldı**.
+>
+> ⇒ **`FINANCE`'ın kapsamı artık `user_scopes` satırlarında temsil ediliyor** — yani
+> bölünme bir **veri değişikliğidir**, bir kural değişikliği değil. `K-2.6.4f` bu kararın
+> verilmesi hâlinde **yeniden yazılmayacak** şekilde kuruldu.
+>
+> ⚠️ **Aşağıdaki `ÜÇ ZİNCİRLEME KALEM` hâlâ geçerli** — kalem `1`'in (`K-2.6.4` revizyonu)
+> yükü `K-2.6.4f` sayesinde **düştü**, ama kalem `2` (onay/bildirim yüklemi) ve kalem `3`
+> (import/mutabakat ayrımı, `Z35` koruması) **aynen duruyor.** Karar hâlâ *"daha azı
+> YARIMDIR"*.
+>
+> **Sonraki adım:** karar `Faz 2` planlamasıyla birlikte verilir (ürün sahibi).
 
 ### Bugünkü durum — ÖLÇÜLDÜ 2026-08-24
 

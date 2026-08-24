@@ -196,7 +196,29 @@ RATCHET        kalan-@Roles LİSTESİ düşer (SAYI DEĞİL — Z29: "biri düş
                gerilemesini yalnız liste görür)
 CÜMLE BORCU    Z18 §4 cümle şartını karşılamayan satırlar DOKUNULAN DALGAYLA cümlelenir
 DOSYA BEYANI   touches: + kapsam hattıyla kesişim beyanı
+LINT KAPISI    ajan, RAPOR ETMEDEN ÖNCE lint-ratchet --ratchet koşar    ← ÖLÇÜLDÜ
 ```
+
+> ### ⛔ `LINT KAPISI` BRIEF ŞARTI — iki vaka bir desendir (2026-08-24, `H8` turu)
+>
+> `H8`'de `lint-ratchet` **iki kez** blokladı, iki farklı ajanın işinde:
+>
+> ```
+> 1  user-scope.seed.ts + access-scope.service.spec.ts   prettier
+> 2  user.service.spec.ts   @typescript-eslint/no-explicit-any   32 -> 39
+> ```
+>
+> Kural (*"dokunulan kod lint-temiz DOĞMALI"*) **zaten vardı** ve ajanlar `npm test`'i
+> koşturuyordu — ama `lint-ratchet`'i **koşturmuyorlardı**. Yani eksik olan bilgi değil,
+> **adımın brief'te yazılı olmaması**.
+>
+> 📌 `§ E6` ailesinin bir üyesi: *"kural bir refleks üretmiyor, bir kontrol üretiyor"* —
+> ve kontrolün **koştuğundan** emin olmak gerekiyor. **Her dalga brief'ine bu satır
+> yazılır**, yoksa aynı gecikme sekiz dalgada sekiz kez tekrarlanır.
+>
+> ⚠️ Ve ikincisi yalnız bir lint borcu değildi: eklenen `any`'ler **mock'un taklit ettiği
+> tipten kopmasına** izin veriyor (`§2.7`: mock ile assertion aynı yanlışı paylaşabilir) —
+> yani **pinin ayırt ediciliği** meselesi.
 
 ⛔ **Ratchet sıfır-güvenli olmalı** (`Z29`): kalan liste **boşaldığı gün** bu bir
 **BAŞARI OLAYIDIR**, setup hatası değil — ve `72`'de duracak, `0`'da değil.
@@ -227,6 +249,26 @@ varsayımla değil, bu ölçümle.
 
 **Oran yorumu `W2`–`W3` birikimine bırakılır.** Küçük örneklemden oran türetmek,
 *"sayı değil liste"* kuralının **istatistik hâlidir**.
+
+### 📊 ERKEN VERİ — `H8` turundan (`W1` öncesi, mutlak sayı + sınıf)
+
+`H8` bir modül dalgası değil, ama model eşlemesi hakkında **ölçülmüş** veri üretti:
+
+| gözlem | sınıf |
+|---|---|
+| `data-engineer` (**sonnet**) `deleted_at` düzeltmesinin **kendi ürettiği yeni vakayı** yakaladı (`UQ` partial değil → ham `23505` riski) ve ayrı bir kova açtı | ✅ **sınıf-refleksi**, istenmeden |
+| `qa-engineer` (**sonnet**) kendi düzeltmesini savunmak yerine **teşhisi düzeltti** (*"kırmızıydı ama argüman kontrolünden, davranıştan değil"*) | ✅ **dürüstlük düzeltmesi** |
+| `qa-engineer` (**sonnet**) kendi ilk taslağının `§2.7 #6` ihlalini **tur içinde** yakaladı (statik mock `where`'i hiç görmüyordu → süzen mock'la değiştirdi) | ✅ **öz-düzeltme**, dışarıdan uyarı olmadan |
+| `qa-engineer` (**sonnet**) kapsam dışı bir kusuru **raporladı, DÜZELTMEDİ** (bayat e2e pini) ve *"üretim doğru, test bayat"* teşhisini gerekçesiyle yazdı | ✅ **sınır disiplini** |
+| `code-reviewer` (**opus**) iki turda iki **gerçek blocker** buldu (`ADIM 0` fail-open sentinel · `H8` `B1` sessiz regresyon) | ✅ iddia turunda muhakeme |
+| Team Lead'in çürüyen iddiası | **2** — `ADIM 0`'da sentinel yorumu (ölçmeden yazıldı) · `H8`'de *"iki sabit de veriye insin"* şartının ayrıştırılması |
+
+📌 **Brief'in gerekçesini destekliyor:** *"yakalama mekanizması nerede ZAYIFSA, güçlü model
+oraya."* Artefakt turlarında (`sonnet`) yakalamayı **guard'lar + ölçüm disiplini** yaptı, ve
+iki ajan **kendiliğinden** sınıf düşündü. İddia turlarında (`opus`) yakalamayı **muhakeme**
+yaptı — ve iki blocker'ın ikisi de bir guard'ın **göremeyeceği** türdendi.
+
+⚠️ **Bu bir oran değil, dört gözlem.** `W1`–`W3` birikmeden yorum yapılmaz.
 
 ---
 

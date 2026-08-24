@@ -32,7 +32,7 @@ kural EKLEMESİ**, ve sayının artması `Z8`'de önceden bildirilmişti)
 
 | | |
 |---|---|
-| `L2` kural tanımı | **380** |
+| `L2` kural tanımı | **382** |
 | Açık (⛔) kural | **0** ✅ — `L2`'de dayanaksız yürürlükte madde kalmadı<br>⏸️ `K-2.9.0`: saklama bölümü **askıda** (hukuki mütalaa) — açık değil, **dondurulmuş**<br>⚠️ `K-2.13.14h6a` · `K-2.1.19a`: **ön karar**, [[T-209]] ölçümüne bağlı — açık değil; karar verildi, yalnız beslendiği kaynak ölçüm bekliyor |
 | Açık karar (kural dışı) | veri ayrımı modeli · iade temsili<br>(`ADR 0002` 2026-08-13'te kapandı → **`0002-R`**, `K-2.5.12`)<br>📌 Sayı **bilerek yok** — `Z10`: guard bu satırı denetlemiyor, ve liste zaten kendini gösteriyor |
 
