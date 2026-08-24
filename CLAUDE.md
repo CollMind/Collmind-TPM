@@ -2056,6 +2056,34 @@ Bir sözleşmenin (transformer, guard, invariant) geçerliliği **çağıranın 
 olamaz.** "Bugün ulaşılamaz" bir kapsam gerekçesi olabilir, ama asla bir **koruma kaldırma**
 gerekçesi değildir.
 
+### Bir Z-KAYDINI kapatan tur, TÜREV BELGELERİ de yazar (ZORUNLU)
+
+> **Bir `Z`-kaydını kapatan tur, kaydın *"etkilenen türev belgeler"* satırını yazar —
+> `[belge: güncellendi | etkilenmedi]`.**
+> **Statü taşıyan bir belgeyi hiçbir turun yükümlülüğü yapmamak, onu bayatlamaya
+> mahkûm etmektir.**
+
+Bu, `§4.2`'nin *"`improved` satırını KİM düşürecek"* dersinin **belge tarafıdır**: orada
+`11` iyileşme birikmişti çünkü kural *"sonra gelir"* diyordu ama **hangi turun işi olduğu
+yazılı değildi**. Aynı boşluk statü belgelerinde daha sessizdir — bir ratchet bayatlayınca
+kırmızıya döner, bir **statü satırı hiçbir zaman dönmez**.
+
+Ölçülmüş vaka (2026-08-24): `docs/contracts/SYSTEM_INVARIANTS.md`'nin `Status:` satırları
+`2026-08-10` fotoğrafıydı; aradaki `Z21`/`Z24`/`K-2.2.3`/`ADR 0012` kararlarının **hiçbiri**
+işlenmemişti. Kararlar doğru verilmişti, kayıtlar doğru yazılmıştı — **türev belge kimsenin
+işi değildi.**
+
+**Pratik — kapanış satırına üçüncü alan:**
+
+```
+KAPATTIKLARI       Z21-3 koşulu karşılandı
+TÜREV BELGELER     SYSTEM_INVARIANTS.md: güncellendi
+                   EK_E: etkilenmedi                    ← "etkilenmedi" de BİR CEVAPTIR
+```
+
+⚠️ *"Etkilenmedi"* yazmak bir formalite değil, bir **ölçüm beyanıdır** — boş bırakmak ise
+sorunun sorulmadığını gösterir, ve bu ikisi bir sonraki okuyucu için **aynı görünmemelidir**.
+
 ### Dokümanda sayı yazma — niteliksel ayırt edici yaz (ZORUNLU)
 
 Üç ayrı vakada bir yoruma/rapora yazılmış sayı yanlış çıktı ("34 e2e gövdesi" → 38; "eleven

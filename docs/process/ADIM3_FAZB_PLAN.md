@@ -582,6 +582,27 @@ TAKSONOMİK  PLANNER cümlesi YAZILAMIYOR — "hacim girişi" PLAN hacmidir
 {ADMIN,PLANNER}   n=12
 ```
 
+> ### ⛔ REVİZE (2026-08-24) — bu enumerasyon HÜCRENİN TAMAMINI KAPSAMIYORDU
+>
+> `F12` izi: yukarıdaki `6 + 12 = 18` **silinmedi**, ama ölçüldü ki `MODES_WRITE`
+> hücresinde o gün **`22`** rota vardı. Fark **dört**, ve ikisi bir **kapsam
+> kararına** girmişti (`B3B_RATCHET_TABANI §8 A`: *"19'u MODES_WRITE"* — üçüncü
+> bir sayı).
+>
+> | rota | `@Roles` | nereye |
+> |---|---|---|
+> | `POST /agreement-transactions/batch` | `ADMIN,FINANCE` | **`{A,F}`** — mekanik, `T-277` pinleri üstünde |
+> | `POST /agreement-transactions/validate-and-import` | `ADMIN,FINANCE` | **`{A,F}`** — aynı |
+> | `POST /plans/:id/review` | `ADMIN,CATEGORY_MANAGER,FINANCE` | ⛔ **hücreden ÇIKTI → `MODES_APPROVE`** |
+> | `POST /plans/:id/escalate-to-finance` | `ADMIN,CATEGORY_MANAGER` | ⛔ **hücreden ÇIKTI → `MODES_APPROVE`** |
+>
+> ⇒ **`{A,F}` `n=8` · `{A,P}` `n=12` · toplam `20`**, ve bölünme hücreyi **tam
+> örtüyor**. Son ikisi ürün sahibi kararıyla onay-akışına gitti — gerekçe ve teyit
+> ölçümü: `B3B_RATCHET_TABANI §3`.
+>
+> ⚠️ **Ve bu sayı da bir daha elle yazılmaz.** Üyelik için:
+> `python3 scripts/analysis/route-cell-map.py` (hücre sütunu).
+
 > ⛔ **VE BU HARİTAYA HENÜZ İNMEDİ.** `capabilities.ts`'te `MODES_WRITE` bugün hâlâ
 > `{ADMIN, PLANNER, FINANCE}` — bölünmemiş. `B3b-0` saf düzeltme turuydu ve `H1`'in
 > `DUR`'una uydu; `Z35` o `DUR`'u **sonradan** çözdü.

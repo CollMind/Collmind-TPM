@@ -27,6 +27,7 @@ göründü. Bulan şey bir mekanizma değil, bir ajanın **brief taramasıydı**
 | `Z27` `/approvals/pending` yüklemi | `approval_levels` **dolduğunda** → yüklem şablon-çözümlemeli hâline göç eder | şablon motoru (`Faz 2`) | ⏳ **KOŞUL** — aktif izlenir |
 | `T-235` `T-028c` bayrağı | prod/UAT'de backfill doğrulanana kadar | prod/UAT ortamı | ⛔ **KİLİT** — sağlayıcı bugün YOK |
 | `0073` `report-only` envanteri | fiili trafikte doğrulanır | deploy edilmiş ortam | ⛔ **KİLİT** — sağlayıcı bugün YOK |
+| **`SYSTEM_INVARIANTS` uzlaşı turu** | tüm `Status:` satırlarının bugünkü gerçekle çakıştırılması · yetki/kapsam invariant ailesinin eklenmesi (boş kapsam=erişim yok · `SUMMARY_READ` kapsamsız doğamaz · negatif-kullanılabilirlik) · `INV-C` ↔ ilk-deploy ön koşulları çapraz referansı · `§12` Adoption koşullarının yeniden değerlendirilmesi | **`ADIM 5` (RLS) planlamasının açılışı** | ⏳ **KOŞUL** — ✅ karantina damgası indi (2026-08-24, `F12`: içerik değişmedi). Belge uzlaşı turu kapanana kadar **yalnız envanter değeri** taşır; **statü okuması için kullanılmaz** |
 
 ⚠️ **İki satır `⛔ KİLİT`** — sağlayıcısı **var olmayan** bir ortama adresli. `§`'nin
 kuralı: *"sağlayıcısı olmayan şart bir erteleme değil bir kilittir."*

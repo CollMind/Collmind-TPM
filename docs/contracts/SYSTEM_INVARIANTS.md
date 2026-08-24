@@ -1,5 +1,37 @@
 # SYSTEM_INVARIANTS.md — v0.4 (DRAFT)
 
+> ## ⚠️ KARANTİNA DAMGASI (2026-08-24 · Fable, ürün sahibi onayıyla · F12: içerik değişmedi)
+>
+> **Bu belgedeki `Status:` satırları 2026-08-10 fotoğrafıdır ve KANONİK DEĞİLDİR.**
+> O tarihten sonraki hiçbir gelişme işlenmemiştir. Kanonik durum üç yerdedir:
+> guard çıktıları (`npm run guards`) · karar defteri (`docs/brd-v2/04_KARAR_KAYDI.md`,
+> Z-kayıtları dahil) · L2 kural gövdesi.
+>
+> **Bilinen bayat satırlar (örnekleme, tam liste değil — ölçüldü 2026-08-24):**
+> - `INV-L-006` kapsamındaki `budget_transaction_logs` tablosu **silindi** (Z24)
+> - `INV-N-002` "Guard: NONE" diyor — **money-float ratchet'i doğdu ve işliyor**
+> - `INV-B-007` "BLOCKED → D-09" diyor — **K-2.2.3 bunu L2'de kararlaştırdı**,
+>   ihlalci kod (`findMatchingAllocation` / `budget_allocations`) Z21/Z24'te öldü
+> - `D-04` ekseni **ADR 0012** ile kısmen kararlaştı (finansal tabloda fiziksel silme yasağı)
+> - `D-01` üç varyant sayıyor — **K43-R (clamp)** kararı verildi
+> - `INV-T` ailesi ADIM-3 yetki katmanını (K-2.6.13 DB rolleri · kapsam zorlaması ·
+>   capability modeli) **hiç taşımıyor**
+> - §12 registry notu bayat: karar defteri artık **bu repoda**, TTM'de değil
+>
+> **Yol (ürün sahibi onaylı, 2026-08-24):**
+> 1. ✅ Bu damga (bugün)
+> 2. ⏳ **Uzlaşı turu — KOŞUL, tetikleyici: ADIM 5 (RLS) planlamasının açılışı.**
+>    Kapsam: tüm statülerin bugünkü gerçekle çakıştırılması · yetki/kapsam invariant
+>    ailesinin eklenmesi (boş kapsam=erişim yok · SUMMARY_READ kapsamsız doğamaz ·
+>    negatif-kullanılabilirlik) · INV-C'nin ilk-deploy ön koşulları listesine çapraz
+>    referansı · §12 Adoption koşullarının yeniden değerlendirilmesi
+> 3. ⏳ Kalıcı mekanizma (uzlaşı turunda kararlaştırılır): GUARD SCRIPT'li statülerin
+>    guard çıktısından türetilmesi; elle kalanların Z-kaydı "etkilenen türev belgeler"
+>    alanına bağlanması
+>
+> Bu belge, uzlaşı turu kapanana kadar **yalnız envanter değeri** taşır (guard-eşleme ·
+> bilinçli-ihlal · "kazara sağlanan" sınıfı); statü okuması için kullanılmaz.
+
 > **Status:** Draft for review. Not yet normative.
 > **Subject:** Collmind-TPM (`collmind.backend`) @ `876010f` + guards Phase 2 + uncommitted T-057 delta
 > **Count:** 38 invariants — **20 HOLDS · 10 VIOLATED · 8 BLOCKED** · 14 open decisions

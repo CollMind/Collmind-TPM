@@ -6,6 +6,28 @@
 > karara bağlandı; bu belge artık **ölçüm kaydı**, açık soru listesi değil.
 > `B3b`'nin şekli `Z30`'un sonundadır.
 
+> ## ⛔ BAYATLIK DAMGASI (2026-08-24 · `F12`: içerik değişmedi)
+>
+> **Bu belgenin HÜCRE SAYILARI ölçüldüğü günündür ve BUGÜN GEÇERLİ DEĞİLDİR.**
+> Belge `§1` okuma sırasında duruyor — o yüzden bayatlığı **sessiz değil, damgalı**.
+>
+> | burada yazan | bugün ölçülen | neden |
+> |---|---|---|
+> | `MODES_READ 37` | **34** | `−3` → `SUMMARY_READ` (`Z31/Z32`) |
+> | `SHARED_READ 32` | **20** | `−9` → `SUMMARY_READ` · `−3` **hâlâ açıklanmadı** |
+> | `MODES_APPROVE 11` | **6** + `MODES_SUBMIT 5` = **11** ✅ | `Z35` böldü; onay-akışı sınıf düzeltmesi `review`/`escalate`'i geri getirdi ve **muhasebe kapandı** |
+> | `MODES_WRITE` `12`+`7` | **20** | `Z35` bölünmesi + `T-277` düzeltmesi |
+>
+> Ayrıca `T-253`/`Z24` **beş rota sildi** ve bu belge o silmelerden **önce** ölçüldü.
+>
+> **Bugünün üyeliği için tek kanonik kaynak:**
+> `collmind.backend/scripts/analysis/route-cell-map.py` (+ `MUTABAKAT` çıktısı) ve
+> [`B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv`](B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv).
+> Fark listesi ve gerekçeleri: [`B3A_EK3_ROTA_HUCRE_ESLEMESI.md`](B3A_EK3_ROTA_HUCRE_ESLEMESI.md) `§3`.
+>
+> ⚠️ **`:307`'nin *"tablo ajanın raporundadır"* cümlesi de kapandı** (`T-283`) — tablo
+> artık repoda ve **yeniden türetilebilir**.
+
 ## Kapsam ve nasıl sınırlandığı
 
 ```

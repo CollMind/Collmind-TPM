@@ -9,9 +9,25 @@ hükmü verilmiş, `T-277` iki repoda kapanmış)
 > [`B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv`](B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv).
 > Eski sayı aşağıda **iziyle** duruyor (`F12` deseni).
 >
+> ⛔ **YENİDEN REVİZE EDİLDİ 2026-08-24 (onay-akışı sınıf düzeltmesi): `70` → `72`.**
+> Ürün sahibi kararı: `POST /plans/:id/review` ve `POST /plans/:id/escalate-to-finance`
+> **`MODES_APPROVE`**'a gider, `MODES_WRITE`'a değil — yani **bloke** listesine.
+> Sınıflandırıcının `YARGI` istisnası bir **yol deseniydi** (`approve|reject`) ve bu
+> ikisini kaçırıyordu; **üye listesine** çevrildi
+> (`collmind.backend/scripts/analysis/route-cell-map.py`).
+>
+> **Teyit ölçümü (kapı, ölçüldü 2026-08-24):** iki rotanın yazdığı **her** kolon
+> onay-durumudur (`updateStatusCas` → `status`/`approved*`/`rejected*`/`escalated*`/
+> `pendingFinanceReview`); **plan-içerik kolonu `0`**. POZ.KONTROL
+> `plan.service.updateSkuVolume`: `baseVolume`/`plannedVolume` **yazar**, `status`'ü
+> yalnız **okur** (DRAFT guard) — ayırt edici **ters yönlü**.
+>
+> ⚠️ **Ve `75`/`70` bir daha elle yazılmaz.** Hücre/kaynak dağılımının kanonik kaynağı
+> üreticinin **MUTABAKAT çıktısıdır** (stderr); bu belge yalnız **tabanı** taşır.
+>
 > ⛔ **BU TABAN BAĞLI, KESİN DEĞİL.** `Z35`'in `MODES_WRITE` bölünmesi **karar olarak var,
 > kod olarak yok**. `Z30`'un kaydı yürürlükte: *"gerçek taban HARİTA DÜZELTMESİ SONRASI
-> ÖLÇÜLÜR."* Aşağıdaki `75`, haritanın düzeltilmesiyle **değişmeyecek** bir alt sınırdır;
+> ÖLÇÜLÜR."* Aşağıdaki `72`, haritanın düzeltilmesiyle **değişmeyecek** bir alt sınırdır;
 > ama `B3b-1`'in **hangi rotayı hangi rolle** göçüreceği düzeltmeden **önce** bilinemez.
 
 ---
@@ -53,20 +69,24 @@ hücre 21 · atanmış 17 · BLOKE 4
 
 ---
 
-## 2 · TABAN — `75`
+## 2 · TABAN — `72`
 
-**İki türetim, bağımsız yollardan, aynı sayı:**
-
-| türetim | hesap |
-|---|---|
-| `B3a`'nın `80` kilidinden | `MODES_READ 37 + SHARED_READ 32 + MODES_APPROVE 11 = 80` · `Z35` beşini `MODES_SUBMIT`'e taşıdı → **`80 − 5 = 75`** |
-| bugünkü hücre ölçümünden | `MODES_APPROVE 6 + (MODES_READ ∪ SHARED_READ ∪ SUMMARY_READ) 69` = **`75`** |
+**Taban bir SAYIMDIR, bir çıkarma değil** — kaynak: üreticinin `MUTABAKAT` çıktısı
+(`python3 scripts/analysis/route-cell-map.py`, stderr). Bloke dört hücrenin üye
+toplamı:
 
 ```
 bugün          211  @Roles
-B3b-1..n sonra  75  @Roles          ← mekanik turların ulaşabileceği TABAN
-75'in altı          BİR KARAR        ← mekanik tur DEĞİL
+B3b-1..n sonra  72  @Roles          ← mekanik turların ulaşabileceği TABAN
+72'nin altı         BİR KARAR        ← mekanik tur DEĞİL
 ```
+
+*(eski okuma — `F12` izi: `75`, `B3a`'nın `80` kilidinden çıkarmayla türetilmişti ve
+girdisi bayattı; sonra `70`, onay-akışı sınıf düzeltmesinden önceki sayım.)*
+
+⚠️ **Hücre kırılımı bu belgede TEKRARLANMAZ.** Elle yazılmış her üye-sayısı, bir
+sonraki rota eklendiğinde yalan söyler — `MODES_WRITE` vakası bunu üç yerde birden
+gösterdi (bkz. `§8 A`). Kırılım için üreticiyi koştur.
 
 📌 **`B3a`'nın `107`'si artık geçerli değil.** `107 = 80 kilit + 26 karar + 1 Z20`;
 `Z30`'un dokuz hükmü `26`'yı, `Z20` `1`'i, `Z35` kilidin `5`'ini çözdü. Kalan **yalnız
@@ -86,8 +106,26 @@ rol kümeleri hâlâ `DUR`'da, ve yeni bir `READ`-ailesi hücresi onlardan **ön
 ```
 KARAR (Z35)   MODES_WRITE bölünür:  {A,F} gerçekleşme-yazımı  ·  {A,P} plan/anlaşma-yazımı
 KOD           MODES_WRITE = {ADMIN, PLANNER, FINANCE}          ← BÖLÜNMEMİŞ
-ÖLÇÜM         "Z35'in bölünmesi haritaya uygulandı mı" → 0
+ÖLÇÜM         "Z35'in bölünmesi haritaya uygulandı mı" → 0     (poz.kontrol: MODES_WRITE 15 geçiş)
 ```
+
+⛔ **VE `Z35`'in ENUMERASYONU HÜCRENİN TAMAMINI KAPSAMIYORDU** (ölçüldü 2026-08-24).
+`Z35` `{A,F} 6 + {A,P} 12 = 18` sayıyordu; hücrede **`22`** rota vardı. Fark **dört**:
+
+| rota | `@Roles` | sonuç |
+|---|---|---|
+| `POST /plans/:id/review` | `ADMIN,CATEGORY_MANAGER,FINANCE` | → **`MODES_APPROVE`** (ürün sahibi kararı; iki native kümenin ikisinde de yok) |
+| `POST /plans/:id/escalate-to-finance` | `ADMIN,CATEGORY_MANAGER` | → **`MODES_APPROVE`** (aynı) |
+| `POST /agreement-transactions/batch` | `ADMIN,FINANCE` | → `{A,F}` tarafı (mekanik; `T-277` pinleri üstünde) |
+| `POST /agreement-transactions/validate-and-import` | `ADMIN,FINANCE` | → `{A,F}` tarafı (aynı) |
+
+📌 **İlk ikisi neden `MODES_WRITE`'a KONULAMAZDI — fail-safe asimetri:** iki native
+kümenin **ikisi de `CATEGORY_MANAGER` taşımıyor**. `MODES_WRITE`'a konsalardı `CM`,
+`escalate`'in fiilî sahibi iken **sessizce düşerdi**. Bloke listesinde ise rotalar
+`@Roles`'ta kalır ve `APPROVE` karar paketi çözülünce göçerler — **davranış korunur**.
+Belirsizlikte davranış-koruyan taraf kazanır.
+
+⇒ **`MODES_WRITE` bugün `20` rota**, ve bölünme `{A,F}` + `{A,P}` ile **tam örtüşür**.
 
 **Neden böyle:** `B3b-0` **saf düzeltme turuydu** ve `MODES_WRITE`'a bilerek dokunmadı
 (`H1` `DUR`'u); `Z35` o `DUR`'u **sonradan** çözdü. Yani bu bir kusur değil, **sıranın
@@ -123,19 +161,31 @@ alması ile pini gevşetmesi **aynı sonucu** verir, ve ikincisi daha az görün
 
 ---
 
-## 4 · RATCHET'İN KÖR NOKTASI — bloke `75`'in `41`'i KAPSAMSIZ
+## 4 · RATCHET'İN KÖR NOKTASI — bloke `72`'nin `47`'si KAPSAMSIZ
 
-| hücre | `A1` | `A2` | `B` (kapsam VAR) | `C` |
-|---|---|---|---|---|
-| `MODES_READ` (37) | **22** | 0 | 10 | 5 |
-| `SHARED_READ` (32) | **19** | 9 | 4 | 0 |
-| `MODES_APPROVE` (11→6) | 0 | 0 | **11** | 0 |
+> ⛔ **BU TABLO DÜZELTİLMEDİ, YENİDEN TÜRETİLDİ** (2026-08-24). Eski hâli `B3a`'nın
+> **bayat** hücre sayılarından (`37`/`32`/`11`) türetilmişti ve `41` o girdiden
+> çıkmıştı. Aşağıdaki sayılar **bugünkü kovaların** taze birleştirmesidir —
+> `75→70` dersinin aynısı: **çıkarma değil sayım**.
 
-`MODES_APPROVE`'un tamamı **kapsamlı** — onay yolunda kapsam katmanı çalışıyor. İki `READ`
-hücresinin **`41`'i kapsamsız**: o hücrelere `5/5` rol yazmak, `41` rotada *"herkes her
-şeyi görür"* demektir. `Z19`'un *"katman KISMİ"* hükmü **ölçülü**.
+**Türetim:** `route-cell-map.py` çıktısı ⋈ `scope-{a1,a2,b,c}` baseline'ları, anahtar
+`<dosya>|<YÖNTEM>|<yol>`. **POZ.KONTROL:** birleşen anahtar `211/211`, eşleşmeyen `0`;
+kapsam anahtarı toplamı `223` = toplam rota.
 
-⇒ **`75`'i düşürmek bir rol atama işi değil, bir KAPSAM işi.** İki ratchet'in anahtarı
+| hücre | `A1` | `A2` | `B` (kapsam VAR) | `C` | TOP | **KAPSAMSIZ** |
+|---|---|---|---|---|---|---|
+| `MODES_READ` | **20** | 0 | 9 | 5 | 34 | **20** |
+| `SHARED_READ` | **11** | 6 | 3 | 0 | 20 | **17** |
+| `SUMMARY_READ` | **10** | 0 | 2 | 0 | 12 | **10** |
+| `MODES_APPROVE` | 0 | 0 | **6** | 0 | 6 | **0** |
+| **TOPLAM** | | | | | **72** | **47** |
+
+`MODES_APPROVE`'un tamamı **kapsamlı** — onay yolunda kapsam katmanı çalışıyor, ve bu
+**yeni iki üyeyle birlikte** hâlâ doğru (`review`/`escalate` ikisi de `B` kovasında).
+Üç `READ` hücresinin **`47`'si kapsamsız**: o hücrelere `5/5` rol yazmak, `47` rotada
+*"herkes her şeyi görür"* demektir. `Z19`'un *"katman KISMİ"* hükmü **ölçülü**.
+
+⇒ **`72`'yi düşürmek bir rol atama işi değil, bir KAPSAM işi.** İki ratchet'in anahtarı
 aynı (`<dosya>|<YÖNTEM>|<yol>`, `223/223` eşleşti) — yani iki liste **birbirine
 bağlanabilir**, ve bağlanmalı.
 
@@ -188,44 +238,62 @@ KARAR     dört bloke hücrenin rol kümeleri — mekanik tur DEĞİL
 **hücre seviyesinde** ölçüldü; **rota seviyesinde ölçülmedi** ve bugün ölçülemez — sebebi
 `§9`.
 
-### A · GÖÇEBİLİR — `136`
+### A · GÖÇEBİLİR — `139`
 
 ```
-211 (@Roles)  −  75 (bloke)  =  136
+211 (@Roles)  −  72 (bloke)  =  139
 ```
 
-**Kümenin sınırı:** `136` bir **çıkarma**dır, bir sayım değil. Hangi `136` rota olduğu
-hücre-seviyesinde bilinir (atanmış `17` hücrenin rotaları), **rota-seviyesinde
-listelenmemiştir**.
+**Kümenin sınırı:** `139` bir **çıkarma**dır, bir sayım değil — ama iki ucu da **aynı
+üreticiden** gelir (`route-cell-map.py`), yani `§8 A` ile `§8 B` artık **tek taban**
+kullanır. *(eski okuma — `F12` izi: `136`, bayat `75` tabanından.)*
 
-⚠️ Ve `19`'u (`MODES_WRITE`) bugün göçerse **yanlış rol taşır** — `§3`.
+Hangi `139` rota olduğu **rota-seviyesinde bilinir**: `EK 3`'ün TSV'sinde bloke dört
+hücre dışındaki her satır. Filtre:
 
-### B · KARAR-BEKLER — `75`
+```bash
+awk -F'\t' '$5!~/^(MODES_READ|SHARED_READ|SUMMARY_READ|MODES_APPROVE)$/' \
+    docs/process/B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv
+```
+
+⚠️ Ve `MODES_WRITE` üyeleri bugün göçerse **yanlış rol taşır** — `§3`.
+
+> ⛔ **ÜYE SAYISI BURAYA YAZILMAZ.** `MODES_WRITE`'ın büyüklüğü bu oturumda **üç yerde
+> üç farklı** sayıyla yazılıydı: bu belge `19` · `Z35` enumerasyonu `18` ·
+> `capabilities.ts:215` yorumu `18` — ölçülen **`22`** (düzeltme sonrası `20`). Sınıf
+> sayı düzeltmesiyle kapanmaz: **liste, sayı değil.** Üye listesi
+> `capabilities.ts`'in harita yorumunda ve `EK 3`'ün TSV'sindedir.
+
+### B · KARAR-BEKLER — `72`
 
 **Bu liste hücre-seviyesinde TAM:**
 
 | hücre | rota (ÖLÇÜLEN) | KİMİN KARARI | ne bekliyor |
 |---|---|---|---|
-| `MODES_APPROVE` | **4** | **ürün sahibi** | rol kümesi — `K-2.5.12` onay yetkisi |
+| `MODES_APPROVE` | **6** | **ürün sahibi** | rol kümesi — `K-2.5.12` onay yetkisi |
 | `MODES_READ` | **34** | **ürün sahibi** | rol kümesi |
 | `SHARED_READ` | **20** | **ürün sahibi** | rol kümesi |
 | `SUMMARY_READ` | **12** | **ürün sahibi** | rol kümesi (`Z31` tanımı hazır) |
-| **TOPLAM** | **70** | | |
-| *(çapraz)* | **41** | **KAPSAM HATTI** | kapsamsız `READ`'lerin önceliklendirmesi |
+| **TOPLAM** | **72** | | |
+| *(çapraz)* | **47** | **KAPSAM HATTI** | kapsamsız `READ`'lerin önceliklendirmesi |
 
-> ⛔ **İKİ ADRES, TEK PAKETTE KARIŞTIRILMADAN.** `70`'i açan şey rol kümeleridir
-> (**ürün sahibi**); ama `41`'i **kapsam borcuyla** açar — o borç **kapsam hattının**,
+> 📌 **`MODES_APPROVE` `4` → `6`:** `POST /plans/:id/review` ve
+> `POST /plans/:id/escalate-to-finance` onay-akışı sınıf düzeltmesiyle buraya taşındı
+> (`§3`). İkisi de `B` kovasında — yani `47`'ye **katkı vermiyorlar**.
+
+> ⛔ **İKİ ADRES, TEK PAKETTE KARIŞTIRILMADAN.** `72`'yi açan şey rol kümeleridir
+> (**ürün sahibi**); ama `47`'yi **kapsam borcuyla** açar — o borç **kapsam hattının**,
 > `B3`'ün değil. İki-sütun ilkesi gereği göçebilirler; ama `SUMMARY_READ ∧ A1` deseninin
 > **genişlemiş hâli** burada: özet-şekilli **olmayan** kapsamsız `READ`'ler de artık sayılı.
 >
 > ⇒ Karar paketi ürün sahibine **iki ayrı adresle** gider: rol kümeleri (ona) ·
-> `41`'in kapsam önceliklendirmesi (kapsam hattına).
+> `47`'nin kapsam önceliklendirmesi (kapsam hattına).
 
 *(eski okuma — `F12` izi: `MODES_APPROVE 6 · MODES_READ 37 · SHARED_READ 32 · TOPLAM 75`,
 `B3a`'nın bayat sayılarından türetilmişti.)*
 
-> ⛔ **Bu `75` bir mekanik turun konusu DEĞİL.** Dört hücrenin rol kümesi **karar
-> bekliyor**, ve `41` kapsamsız rota yüzünden karar *"hangi roller"*den önce *"kapsam
+> ⛔ **Bu `72` bir mekanik turun konusu DEĞİL.** Dört hücrenin rol kümesi **karar
+> bekliyor**, ve `47` kapsamsız rota yüzünden karar *"hangi roller"*den önce *"kapsam
 > nerede"* sorusuna bağlı.
 
 ### C · İSTİSNA-KAYITLI — `2`
@@ -253,7 +321,18 @@ user 9 · tenant 8 · admin 2 · notification 1              = 211 ✓
 
 ---
 
-## 9 · ⛔ DEVİR ENGELİ — `211` satırlık tablo REPODA YOK (`T-283`)
+## 9 · ✅ KAPANDI (`T-283`, 2026-08-24) — tablo REPODA
+
+> **Bu bölüm bir DEVİR ENGELİNİ anlatıyordu ve engel kalktı.** `EK 3`
+> ([`B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv`](B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv), `211` satır)
+> ve üreticisi (`collmind.backend/scripts/analysis/route-cell-map.py`) origin'de.
+> `B3B1_DEVIR_BRIEF §2`'nin *"repodan yeniden türet"* adımı **uygulandı** ve taban
+> bağımsız olarak doğrulandı (2026-08-24, yeni thread).
+>
+> Aşağıdaki metin `F12` deseniyle **iziyle** duruyor — silinmedi, çünkü *"bu kilit
+> neden vardı"*nın cevabı kayıtta kalsın.
+
+### *(iz — kapanmadan önceki hâli)* ⛔ DEVİR ENGELİ — `211` satırlık tablo REPODA YOK
 
 `B3B1_DEVIR_BRIEF.md §2` sonraki thread'e *"üç listeyi repo'dan yeniden türet, dosyayla
 karşılaştır"* diyor ve *"bu adım atlanamaz"* ekliyor.

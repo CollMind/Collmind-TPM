@@ -1,5 +1,6 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-24 · Z35 sonrası · anahtar (1-3. sütun) route-scope.awk ile AYNI
+# ölçüm: 2026-08-24 · onay-akışı sınıf düzeltmesi sonrası · anahtar (1-3. sütun) route-scope.awk ile AYNI
+# ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr), burada değil.
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	ADMIN	ADMIN_READ	MEKANIK
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log/high-risk	ADMIN	ADMIN_READ	MEKANIK
@@ -143,8 +144,8 @@ src/modules/modes/planning-first/plan/plan.controller.ts	DELETE	plans/:id/fus/:f
 src/modules/modes/planning-first/plan/plan.controller.ts	PATCH	plans/:id/fus/:fuId/skus/:skuId/volume	ADMIN,PLANNER	MODES_WRITE	MEKANIK
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/submit	ADMIN,PLANNER	MODES_SUBMIT	Z35
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/submit-for-approval	ADMIN,PLANNER	MODES_SUBMIT	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/review	ADMIN,CATEGORY_MANAGER,FINANCE	MODES_WRITE	MEKANIK
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/escalate-to-finance	ADMIN,CATEGORY_MANAGER	MODES_WRITE	MEKANIK
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/review	ADMIN,CATEGORY_MANAGER,FINANCE	MODES_APPROVE	YARGI
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/escalate-to-finance	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI
 src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id/approval-history	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/approve	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/reject	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI
