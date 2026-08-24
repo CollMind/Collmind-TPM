@@ -2795,3 +2795,146 @@ gerçek taban   HARİTA DÜZELTMESİ SONRASI ÖLÇÜLÜR      ← H1–H4 kümel
 
 `B3a`'nın sınır notu `1`: birebir-`✅` olup **`Z18 §4` cümle şartını karşılamayan**
 satırlar (`T3`/`T6`/`T8`) **`B3b` dalgalarında, DOKUNULAN DALGAYLA** cümlelenir.
+
+---
+
+## Z31 · `SUMMARY_READ`'in TANIMI keskinleşti — ve üyeliği TANIM sayar
+
+**Tarih:** 2026-08-24 · **Karar veren:** ürün sahibi · **Ölçüm:** `B3A_ESLEME_TABLOSU.md` EK
+
+### ⛔ TANIM — üç şart
+
+> **`SUMMARY_READ` = NESNE-BAĞSIZ + ÇOK-İŞLEM-MODÜLLÜ portföy özeti.**
+> **Kapsam-zorunluluğu TANIM ŞARTIDIR.**
+
+Üç keskinleştirme, üç karardan türedi:
+
+```
+1  KAYIT PARAMETRESİ taşıyan rota SUMMARY_READ OLAMAZ        (H4-1, budget-check)
+2  YÜZEY ADRESİ hücre belirlemez, VERİ SINIFI belirler       (H4-2, pending-tasks)
+3  REFERANS-VERİ join'i ÇAPRAZ-MODÜL SAYMAZ                  (H4-3, cpl-status)
+   → modül sayımı İŞLEM-VERİSİ modülleriyle yapılır
+```
+
+⛔ **Üyeliği ürün sahibi saymaz, TANIM sayar.** Sınırda kalan **tek tek** gelir.
+
+---
+
+### H4-1 · `plans/:id/budget-check` → **modül-READ**
+
+Çapraz-modüllük **gerekli ama YETERLİ DEĞİL**. Tek bir kaydın (`:id`) bağlamında yapılan
+çapraz-modül okuma, **erişim sorusunu O KAYDIN erişim sorusundan alır**:
+
+> **Planı okuyabilen, planının bütçe kontrolünü de okuyabilir.**
+
+`SUMMARY_READ`'in kapsam-zorunlu sözleşmesi **`T-253` sınıfı için** yazıldı — *tenant'a
+yayılan* yüzeyler. **Kayıt-parametreli okumalar o sınıfta değil.**
+
+### H4-2 · `dashboard/pending-tasks` → **modül-READ** (`agreements`)
+
+**`T-255`'in kendi kuralının SİMETRİK uygulaması:** `kpis/grid`'i master-data yolundan
+çıkarıp veri sınıfına göre sınıflarken kullandığımız ilke, **ters yönde de bağlar**.
+
+> **Yüzey adresi hücre belirlemez, VERİ SINIFI belirler. `/dashboard` bir URL
+> KOZMETİĞİdir.**
+
+📌 Ve `H1` yönü sayesinde karar **geleceğe dayanıklı**: yarın `pending-tasks` plan verisi
+de toplarsa, hücresi **ölçülen yeni veri sınıfıyla** `SUMMARY_READ`'e göçer —
+**harita rotayı izler.**
+
+### H4-3 · `dashboard/cpl-status` → **modül-READ**
+
+> **Referans-veri join'i çapraz-modül SAYMAZ.**
+
+Hemen her rota ad/kategori çözmek için ana-veri okur; bunlar sayılırsa **her şey
+çapraz-modül olur** ve `SUMMARY_READ` **anlamını yitirir**.
+
+### H4-4 · `plans/approval-queue` — KAYDA GEÇER, YENİDEN ADLANDIRILMAZ
+
+*"Ad `OWN` diyor, yüklem `SCOPE`"* bir **bayat-atıf** vakası — ama **route-path tel
+protokolüne komşu**; `B3b` içinde ad değişikliği **davranış-koruma kuralını deler**.
+
+📌 **Ve asıl ilginç kısım:** `T-276`'nın `(a)`-yüklemi (*"onay kademesinde ben varım"*)
+indiğinde bu rotanın **adı doğru, yüklemi eksik** çıkabilir — yani **ad bayat değil,
+YÜKLEMİNİ BEKLEYEN bir rota** olabilir.
+
+**Harita satırına ÇİFT NOT:** bugünkü gerçek (`SCOPE`) + **`T-276` adaylığı**.
+
+### H4-5 · `kpis/grid` ikizleri — AYNI HÜCRE, üç ayrık iş
+
+```
+(a) KOVA DÜZELTMESİ    ikisi de C. "Veri sınıfı aynıysa kova aynı —
+                       KAPININ VARLIĞI kova belirlemez."
+                       (T-273'ün TERSİNİN kural hâli)
+                       Z19b'nin kayıtlı sınıflandırmasına ÖLÇÜM REFERANSIYLA işlenir.
+
+(b) ROL KÜMESİ KALIR, GEREKÇESİ DEĞİŞİR
+                       5/5 meşru — ama ÇÜRÜYEN plan-verisi gerekçesiyle değil;
+                       B1'in KATALOG cümlesiyle yeniden cümlelenir.
+                       ⛔ Çürümüş gerekçeyle ayakta kalan DOĞRU SONUÇ, gerekçesiz
+                         sonuçtan TEHLİKELİDİR — çünkü kimse yeniden bakmaz.
+
+(c) KAPININ KENDİSİ    veri plan-bağımsızsa :planId kapısı NEYİ koruyor?
+                       ⛔ davranış ölçülmedi, İDDİA YAZILMAZ.
+                       İki-girdi testiyle küçük ölçüm kalemi → KUYRUĞA, B3b-0'a GİRMEZ.
+```
+
+> ### ⛔ MİKRO-KURAL — yorum GEREKÇE taşıyorsa ÇİFT TEMSİLDİR
+>
+> **Gerekçenin evi HARİTA/KURAL GÖVDESİDİR; yorum ancak oraya İŞARET EDER.**
+>
+> Vaka: `kpi.controller.ts:70` *"bu uç master-data DEĞİL, PLAN verisi döndürüyor"* ↔
+> `kpi.service.ts:94-95` *"it never returns plan content"* — **aynı repo, aynı rota, iki
+> zıt cümle**, ve ölçüm servisinkini destekliyor.
+
+---
+
+### ⛔ VE `READ_OWN` MEKANİZMASI `B3b-0`'DA İNŞA EDİLMEZ
+
+`(c) = 0`'ın **zorunlu sonucu**: tanım olarak `Z30`'da **kalır**, ama **mekanizması
+kurulmaz**.
+
+> **Sıfır üyeli mekanizma, `H3`'ün ruhuna aykırı ÖLÜ KODdur.**
+
+İlk üyesi doğduğunda (**en güçlü aday: `T-276`'nın yüzeyi**) mekanizma **onunla birlikte
+gelir**.
+
+---
+
+## ⚠️ AÇIK — EVREN DAİRESEL SEÇİLMİŞTİ, ve tanım değişince genişledi
+
+`14` aday **kapsam `B` kovasından** türetilmişti — yani *"kapsamı OLANLAR"*. Ama
+`SUMMARY_READ`'in üçüncü şartı **kapsam-zorunluluk**.
+
+> ⛔ **Evren, tanımın gerektirdiği ÖZELLİKLE seçilmişti** — o yüzden şart **tanım gereği**
+> sağlanıyor ve **ihlal edecek vakalar görünmüyordu**.
+
+**Team Lead ölçtü** — `B` kovasının **dışında**, özet-şekilli ve **nesne-bağsız** rotalar:
+
+```
+scope-a1 (kapsam GEREKLİ, UYGULANMIYOR)
+  finance-reporting/  budget-utilization · spend-trend · budget-at-risk
+                      cash-flow-projection · mechanic-effectiveness
+                      plan-performance · spend-composition · variance-analysis   [8]
+  agreement-transactions/stats/summary · actuals-first/sales-actuals/summary     [2]
+scope-b
+  finance-reporting/budget-variance                                              [1]
+```
+
+📌 **Kardeş asimetrisi:** `finance-reporting`'in **9** rotasından **8'i `A1`**, **1'i `B`**.
+Aynı controller, aynı şekil. Ve `A1` dosyasının kendi yorumu sebebini yazıyor:
+*"EKLEME (gerekçeli): finance-reporting (**`T-254` kanıtlı fail-open**)"*.
+
+### Sorulacak
+
+> **Veri sınıfıyla `SUMMARY_READ` olan ama KAPSAMI OLMAYAN bir rota hangi hücreye girer?**
+
+```
+(i)  SUMMARY_READ alır  →  tanım şartını İHLAL eder, ve kabul kriteri onu KIRMIZI yapar
+                           ⇒ hücre bir KUSUR BİLDİRİCİSİ olur
+(ii) modül-READ'de kalır →  kapsam inene kadar; SUMMARY_READ'e GÖÇER
+                           ⇒ hücre TEMİZ kalır, kusur A1 ratchet'inde izlenir
+```
+
+⚠️ `A1` zaten *"kapsam gerekli, uygulanmıyor"* demek — yani iki mekanizma **aynı şeyi**
+iki yerden söylüyor olabilir (`İlke 4`).

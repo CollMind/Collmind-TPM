@@ -682,6 +682,38 @@ yazılır.**
 İkincisi bir sonuç değil, **ölçümün sınırı**. Sınırı yazmak sonucu zayıflatmaz; **yanlış
 genellemeyi** engeller.
 
+### Bir TANIMIN evreni, tanımın ŞARTIYLA seçilemez (ZORUNLU)
+
+> **Bir tanımın üyeliğini ararken, aday evreni tanımın KENDİ ŞARTIYLA seçilmişse, şart
+> TANIM GEREĞİ sağlanır ve İHLAL EDEN VAKALAR GÖRÜNMEZ.**
+
+Ölçülmüş vaka (2026-08-24, `Z31`): `SUMMARY_READ` hücresinin üç şartından biri
+**kapsam-zorunluluk**. Aday listesi ise **kapsam `B` kovasından** türetilmişti — yani
+*"kapsamı OLANLAR"*.
+
+```
+evren        "kapsamı olan rotalar"        ← kapsam B kovası
+şart         "kapsam zorunludur"
+sonuç        14/14 şartı sağlıyor          ← ve bu bir ÖLÇÜM DEĞİL, bir TOTOLOJİ
+```
+
+Evrenin dışında ölçüldü: **`10` özet-şekilli, nesne-bağsız rota `A1`'de** (kapsam gerekli,
+**uygulanmıyor**) — yani tanımın **ihlal eden** vakaları, ve **tam da aranması gereken
+küme**.
+
+📌 `§ KAPSAM MASKELEMESİ`'nin (*"desen çalışır, EVREN eksiktir"*) **kardeşi**: orada evren
+tesadüfen eksikti; burada **tanımın kendisiyle** seçilmiş, yani eksiklik **yapısal**.
+
+**Pratik — bir üyelik ararken sor:**
+
+```
+1  Aday evrenini NE seçti?
+2  O seçici, tanımın şartlarından biriyle ÇAKIŞIYOR mu?
+   → çakışıyorsa sonuç bir ölçüm değil, bir TOTOLOJİ
+3  Şartı İHLAL EDEN bir vaka bu evrende görünebilir mi?
+   → görünemiyorsa evren YANLIŞ
+```
+
 ### Arama terimi, ARANAN YERİN DİLİYLE seçilir (ZORUNLU)
 
 Aynı kavramın iki yüzeyde iki adı olabilir:
