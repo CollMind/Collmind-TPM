@@ -306,3 +306,101 @@ ratchet kör noktası          bloke 80'in 41'i kapsam A1/A2'de; iki listenin an
 
 > **Tam `211` satırlık tablo ajanın raporundadır** (rota · hücre · `@Roles` · türeyen ·
 > sonuç · rol-çıkarma testi · kapsam kovası).
+
+---
+
+# EK · `H4` DAĞILIMI ve `H6` ÖLÇÜMÜ (2026-08-24)
+
+> `Z30 H4`/`H6`'nın istediği ölçümler. **Karar ürün sahibinin.**
+
+## `H4` — `14` adayın dağılımı
+
+**Kümenin sınırı:** `scope-b.txt` `45` satır · `15`'i `GET`; `14` = bunların
+`kpis/grid/:planId` **hariç** olanı (o `master-data` hücresinde → `H6`'nın konusu).
+`B3a` tablosuyla birebir: `MODES_READ` B=`10` + `SHARED_READ` B=`4`.
+
+```
+(b) SUMMARY_READ    4     (3 kesin + 1 sınırda)
+(c) READ_OWN        0     ← HİÇBİRİ own-yüklemi taşımıyor
+modül-READ         10     (8 kesin + 2 sınırda)
+```
+
+### `(b) SUMMARY_READ` — çapraz-modül agregasyon
+
+| rota | okuduğu | modül |
+|---|---|---|
+| `GET /actuals-first/settlements/summary` | `agreements` + `ledger_entries` (DEBIT−CREDIT) | **2** |
+| `GET /dashboard/summary` | `agreements` + `approval_requests` + `budget_envelopes`/`v_budget_summary` | **3** |
+| `GET /finance-reporting/budget-variance` | `budget_envelopes` + `v_budget_summary` (→ `budget_transactions`+`ledger_entries`) | **2-3** |
+| `GET /dashboard/cpl-status` ⚠️ | `cpls` + `agreements` | **2** — ama agregasyonun kaynağı **tek modül** |
+
+### `(c) READ_OWN = 0` — POZİTİF KONTROLLÜ
+
+`14`'ün **hiçbirinde** sahiplik yüklemi yok. Desen çalışıyor: aynı tarama
+`approval.repository.ts:129` `requestedById = :requestedById` (**gerçek own-yüklemi**) ve
+plan/agreement **yazma** yollarında `12` eşleşme veriyor. **Okuma metotlarında sıfır.**
+
+📌 **`yüklem ≠ kapsam` ayrımı ölçümle doğrulandı:** `resolveScopedCplIds` bir **kapsam
+filtresi**; `14`'ün tamamı onunla daralıyor, **hiçbiri** `req.user`'a bağlı bir sahiplik
+yüklemi taşımıyor.
+
+### ⚠️ ÜRÜN SAHİBİNE GİDEN DÖRT SINIRDA VAKA
+
+| rota | soru |
+|---|---|
+| `plans/:id/budget-check` | Çapraz-modül (plan+bütçe) **ama tek plan için KAPI CEVABI**. `SUMMARY_READ` *"çapraz-modül"* mü, *"portföy özeti"* mi? |
+| `dashboard/pending-tasks` | ⛔ **`Z30 H4`'ün *"dashboard sınıfı"* ifadesi bu rotada ÖLÇÜMLE TUTMUYOR** — **tek modül** okuyor (Team Lead doğruladı: `getPendingTasks` gövdesinde yalnız `this.agreementRepo`). Hücreye **modül sayısıyla** mı, **yaşadığı yüzeyle** mi girecek? |
+| `dashboard/cpl-status` | İki modül, ama agregasyonun **kaynağı tek**; `cpls` **gruplama boyutu**. Yanıt **hiçbir satırda durmayan** türetilmiş sayaçlar |
+| `plans/approval-queue` | Adı *"for current user"*, yüklemi **KAPSAM**. Kayda ***"ad `OWN` diyor, yüklem `SCOPE`"*** diye geçmeli |
+
+📌 **`dashboard`'un üç rotası ÜÇ AYRI davranıyor** (3 modül · 1 modül · 2 modül). Modül
+yüzeyine bakarak toptan `SUMMARY_READ` verilseydi, `pending-tasks` **ölçümsüz atanmış**
+olurdu — `Z30 H4`'ün *"tek tek, toptan atama yok"* şartının ödediği yer.
+
+---
+
+## `H6` — `GET /master-data/kpis/grid` veri sınıfı
+
+```
+okuduğu tablo     main.kpis  —  TEK tablo, başka hiçbir tablo yok
+plan-bağlı satır  YOK
+şekil             Kpi[]  —  KPI TANIMLARI (formula_text · rag_* · column_order
+                            · show_in_grid). HESAPLANMIŞ DEĞER TAŞIMIYOR
+```
+
+Poz.kontrol: `kpi.service.ts`'te `InjectRepository(Plan…)` → **0**; `this.kpiRepository.`
+→ **16**. `main.kpis` şemasında plan referansı olan **tek kolon yok**.
+
+### ⛔ İKİ KARDEŞ AYNI VERİYİ DÖNDÜRÜYOR — fark KAPININ varlığı
+
+```
+findGridKpis(tenantId)        find({ where:{tenantId,isActive,showInGrid}, order:{…} })
+getGridKpisForPlan(planId,…)  await planService.findById(planId, tenantId, actor)   ← KAPI
+                              find({ AYNI where, AYNI order })
+```
+
+> **`planId` bir FİLTRE değil, bir KAPSAM KAPISIDIR.** Yanıt gövdesi ikisinde de
+> **bit-bit aynı** `Kpi[]`.
+
+📌 `B` ↔ `C` kova ayrımı **veri sınıfından değil, KAPININ varlığından** doğuyor —
+`T-273`'ün *"aynı dekoratör, farklı davranış"* vakasının **tersi**: **farklı kova, aynı
+veri**.
+
+### ⛔ VE KOD KENDİ KENDİSİYLE ÇELİŞİYOR — Team Lead doğruladı
+
+```
+kpi.controller.ts:70    "bu uç master-data DEĞİL, PLAN verisi döndürüyor"
+kpi.service.ts:94-95    "it never returns plan content (grid KPI defs only)"
+```
+
+**Aynı repo, aynı rota, iki zıt cümle** — ve **ölçüm servisinkini destekliyor**.
+
+⚠️ Controller'ın cümlesi (`T-267`/`B1 §2d`) **iki rotanın `5`-rollü `@Roles`'unun YAZILI
+GEREKÇESİ**, ve `:97-98` onu `planId`'siz kardeşe de genişletiyor — **oysa o kardeşte kapı
+bile yok**.
+
+📌 `§`'nin *"kod yorumunda bir iddia varsa ÖLÇÜLMELİ"* sınıfı: bir **kapsam gerekçesi**
+ölçülmemiş bir iddiaya dayanıyor, ve **bedeli yapılmayan işte değil, YANLIŞ SINIFLAMADA**.
+
+⛔ **Bu bir kusur iddiası DEĞİL** — davranış ölçülmedi, yalnız **veri sınıfı**. Ama `H6`
+*"ölçümsüz hücre atanmaz"* diyor, ve **hücre ataması bu gerekçe cümlesine yaslanamaz.**
