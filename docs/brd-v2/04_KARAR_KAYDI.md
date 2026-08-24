@@ -2575,3 +2575,209 @@ B · C                 sınıflandırma kovaları    →  boşalması BEKLENMEZ,
 ```
 
 Kontrol **tek biçimde** (biçim sağlığı); **çıktı metni** kovaya göre farklılaşabilir.
+
+---
+
+## Z30 · `B3a` karar paketi — DOKUZ HÜKÜM, eksen değişikliği ve istisnalar
+
+**Tarih:** 2026-08-24 · **Karar veren:** ürün sahibi · **Ölçüm:** `docs/process/B3A_ESLEME_TABLOSU.md`
+
+---
+
+### H1 · ⛔ UNION GENİŞLEMELERİ REDDEDİLİR — **yön ters çevrilir**
+
+> **Harita ROTALARDAN türetilir, rotalar HARİTADAN değil.**
+
+`Faz A`'nın union kararı (`capabilities.ts:111`, **2026-08-17**) `Z18 §4`'ten (**2026-08-21**)
+**önceydi**; `Z18` onu **fiilen geçersiz kıldı**, harita güncellenmedi.
+
+> ⇒ **`26` rota *"genişleyecek"* değil — HARİTA YANLIŞ.**
+
+**Ve iki genişleme satırı yalnız `Z18`'e değil, KAYITLI KARARLARA da çarpıyor** — ikisi de
+ölçüldü:
+
+```
+FINANCE → Plan CRUD          K-2.6.4 (L2_03:408): "FİNANS — Eşik üstü onay/bildirim,
+                             transfer, mutabakat, içe aktarma"
+                             ⛔ PLAN YAZIMI YOK. DELETE /plans/:id dahil olması TEK BAŞINA yeter.
+
+PLANNER → upload·validate    K-2.6.14 (L2_03:511-518) — YÜRÜRLÜKTEKİ faz:
+        ·process             | Bugün                  | yalnız finans + yönetici |
+                             | Eşleştirme geldiğinde  | + planlamacı             |
+                             ⛔ Geçici sapma KAYITLI, ve ihlal edilir.
+```
+
+**Düzeltme:** `ROLE_CAPABILITIES`, **mevcut `@Roles` gerçeğinin + `K-2.6.4` cümle
+testinin FIXPOINT'ine** düzeltilir.
+
+⚠️ **Bir hücrede İKİ MEŞRU KÜME çıkıyorsa (ör. `MODES_WRITE`'ın `AP`/`AF` karışımı)
+HÜCRE AYRIŞIR** — küme farkı gerekçeliyse **hücrenin bölünmesi doğrudur**, rotaların
+union'a hizalanması **değil**.
+
+---
+
+### H2 · `MODES_SUBMIT` DOĞAR — şık `(ii)`, `24 → 25` hücre
+
+Beş gönderim/geri-çekme rotası **tek küme** (`AP`), ve gerekçesi **union değil ROL
+TANIMI**:
+
+```
+K-2.6.4 (L2_03:406)  "PLANLAMACI — Plan, taktik, hacim girişi, GÖNDERİM — günlük kullanıcı"
+                                                              ^^^^^^^^ kelimesiyle YAZILI
+```
+
+`dal 1` (tek küme, **mekanik**). Eksen değişikliği bu kayıtla iner.
+
+📌 **`capabilities.ts:134`'ün iki-ayrımına ÜÇÜNCÜ satır:**
+
+```
+onaylar   ≠   görür   ≠   GÖNDERİR
+```
+
+---
+
+### H3 · BEŞ BOŞ HÜCRENİN BEŞİ DE SİLİNİR — ve GENEL KURAL doğar
+
+| hücre | gerekçe |
+|---|---|
+| `SHARED_APPROVE` | `0` rota, gerekçesiz |
+| `NOTIFICATION_READ` | rotalar `@SelfScoped`'a geçti — **kalıntı** |
+| `USER_READ` | `Z20` kalıntısı |
+| `HEALTH_READ` | rota `@Public()` |
+| `MODES_MANAGE` | ⛔ **"yol olmadan verilmiş yetki" YAŞAYAMAZ** |
+
+⚠️ İleride bir `MANAGE` rotası doğarsa hücre **kararla geri gelir**.
+
+> ### ⛔ KURAL — hücreler ROTA ENVANTERİNDEN türer
+>
+> **Arkasında rota olmayan bir hücre haritada DURMAZ.**
+>
+> 📌 `K-2.3.4`'ün (*"hep boş kolon olmamalı"*) **yetenek hâli**.
+
+---
+
+### H4 · `Z18` ÜÇLEMESİNİN HÜCRE KARŞILIĞI — kilit AÇILIYOR
+
+| Z18 sınıfı | hücre karşılığı | rota |
+|---|---|---|
+| **modül-READ** | mevcut `MODES_READ` / `SHARED_READ` | **50 göçebilir** |
+| **ÖZET** | ⛔ **`SUMMARY_READ` DOĞAR** — çapraz-modül özet yüzeyler | dashboard · settlements/summary sınıfı |
+| **READ_OWN** | ⛔ **HÜCRE DEĞİL, İŞARET** — rol-kısıtlı + sahiplik-yüklemli | `my-requests` ailesi |
+
+**modül-READ:** kapsamlı olmaları **hücreyi değiştirmez** — kapsam **ayrı sütunda** kalır.
+📌 **Dördüncü-eksen reddi (`Z18`) tam burada iş görüyor.**
+
+**`SUMMARY_READ`'in tanımına KAPSAM-ZORUNLULUĞU yazılır:**
+
+> ⛔ **Kapsamsız bir `SUMMARY_READ` rotası kabul kriterini GEÇEMEZ.**
+> `T-253` dersinin **kurallaşması** (*"özet uçlarında kapsam yok"* — canlı bypass'tı).
+
+**`READ_OWN` bir işarettir:** o rotalar **capability + own-yüklemi** taşır.
+
+⚠️ **`14` adayın `(b)`/`(c)` dağılımı TABLODAN TEK TEK** — mini-liste ürün sahibine,
+**toptan atama yok**.
+
+---
+
+### H5 · `POST /notifications/:id/read` → `@SelfScoped`'a geçer
+
+Kardeşleriyle **aynı kova**; `5/5` rol kısıtı **zaten kısıt değildi**.
+
+> ### ⛔ VE `Z28` SAYACININ KÖR NOKTASI KURALA BAĞLANIR
+>
+> **Yüklemi `SELF` olan rota `@SelfScoped` TAŞIR — dekoratör, YÜKLEMİN BEYANIDIR.**
+>
+> Sayaç **dekoratör-bazlı kalır** ve bu kuralla **doğru okur**.
+
+📌 `B3a` tablosunun **yüklem-`SELF` taraması** bu kuralın **tek-seferlik envanteri**.
+
+---
+
+### H6 · `kpis/grid` ikizi — ÖLÇÜMSÜZ HÜCRE ATANMAZ
+
+`/kpis/grid`'in (planId'siz) **ne döndürdüğü ölçülür**; iki kardeş **ayrışabilir**.
+`T-273` disiplini aynen: *"statik olarak özdeş iki yapı davranışsal olarak özdeş
+sayılamaz."*
+
+---
+
+### H7 · `Z20` DARALTMASI — bilinçli, KAYITLI istisna
+
+```
+GET /users   @Roles(ADMIN, FINANCE)  →  @Roles(ADMIN)      FINANCE DÜŞER
+```
+
+*"Göç davranış değiştirmez"* kuralının **`DUR`-kaynaklı, kayıtlı istisnası**.
+`K-2.6.4` cümle testi **Finans'a kullanıcı-listesi vermiyor**.
+
+⚠️ Ve `capabilities.ts`'in **kendi kendisiyle çelişen bayat satırları** (`:154`'ün
+*"DUR (5)"* notu, `USER_READ` hücresi) **harita-düzeltme dalgasında** temizlenir.
+
+---
+
+### H8 · `UNRESTRICTED` TERFİSİ — şık `(c)`, ve SIRA `3 → 1 → 2`
+
+```
+3  FINANCE'ın K-2.6.4 gerekçesi YAZILIR        ← İLK
+1  ADMIN + FINANCE'a joker user_scopes satırı  (seed + migration)
+2  UNRESTRICTED_ROLES kod dalı KALDIRILIR      ← SON
+```
+
+⛔ **AYRILABİLİRLİK ŞARTI AÇIK: `1` inmeden `2` inemez.** `rows.length === 0` →
+*"hiçbir şey"* → `ADMIN`/`FINANCE` **fail-closed düşer**. Ara durum **deploy edilemez**.
+
+📌 **`T-272` dersinin TERS yönde uygulaması: burada SIRA YETMEZ, ATOMİKLİK ŞART.**
+
+**`Z18 §3`'ün bayat kümesi `0006-R` deseniyle düzeltilir:**
+
+```
+Z18 §3 dedi   "küme AYNI kalır  {ADMIN, FINANCE, READONLY}"
+kod bugün     {ADMIN, FINANCE}   — READONLY T-235 ile ÇIKARILMIŞTI (Z18'den ÖNCE)
+kayda         "Z18 YAZILDIĞI GÜN DE YANLIŞTI"
+```
+
+✅ **Pencere şerhi kabul** — `UNRESTRICTED_ROLES`'un tek okuyucusu `AccessScopeService`,
+`@RequireCapability` `RolesGuard` hattında. **Sıfır çağrı bağı → PARALEL yürür.**
+
+---
+
+### H9 · ÇAPRAZ-REPO — bedel düştü, GERÇEK kaldı
+
+`H1` reddedildiği için `canEdit` uyumsuzluğunun **somut bedeli büyük ölçüde düşüyor**
+(API genişlemeyecek → **ekran-API makası açılmayacak**).
+
+⚠️ **Ama iki-kopya gerçeği KALIYOR:**
+
+> *"Eylem kapıları tek kaynaktan türemeli"* — **`Faz` sonrası aday** olarak kaydedilir,
+> **şimdi iş açılmaz**.
+
+`UserForm.tsx:118`'in **ölü `permissions` gönderimi** → küçük frontend temizliği, kuyruğa,
+`Z26`'nın **gönderen-tarafı** referansıyla.
+
+---
+
+## `B3b`'NİN ŞEKLİ — bu dokuz hükümden türüyor
+
+```
+B3b-0   HARİTA DÜZELTME DALGASI          kod ama DAVRANIŞSIZ
+        fixpoint kümeler (H1) · MODES_SUBMIT (H2) · SUMMARY_READ (H4)
+        · beş silme (H3) · bayat yorumlar (H7)
+        ⚠️ harita henüz CANLI GUARD'DA DEĞİL — davranış değişmez
+
+B3b-1…n MODÜL DALGALARI                   ratchet'li, tek yön aşağı
+```
+
+### ⛔ RATCHET TABANI YENİDEN HESAPLANIR
+
+```
+211   OLAMAZ   (104 mekanik göçebilir)
+107   ÜST SINIR
+gerçek taban   HARİTA DÜZELTMESİ SONRASI ÖLÇÜLÜR      ← H1–H4 kümeleri değiştiriyor
+```
+
+📌 Team Lead'in *"`211` olamaz"* düzeltmesinin **ikinci yarısı budur**.
+
+### Cümle borcu — MODÜL MODÜL, toptan değil
+
+`B3a`'nın sınır notu `1`: birebir-`✅` olup **`Z18 §4` cümle şartını karşılamayan**
+satırlar (`T3`/`T6`/`T8`) **`B3b` dalgalarında, DOKUNULAN DALGAYLA** cümlelenir.

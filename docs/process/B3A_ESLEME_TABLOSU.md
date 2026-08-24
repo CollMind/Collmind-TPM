@@ -1,6 +1,10 @@
 # `B3a` — rota → hücre eşlemesi · ÖLÇÜM RAPORU (2026-08-24)
 
 > **Karar ürün sahibinin.** Bu belge ölçüm + öneridir. **Kod dokunuşu: SIFIR.**
+>
+> ✅ **KARAR VERİLDİ (2026-08-24): `Z30` — dokuz hüküm.** Aşağıdaki `DUR`'ların hepsi
+> karara bağlandı; bu belge artık **ölçüm kaydı**, açık soru listesi değil.
+> `B3b`'nin şekli `Z30`'un sonundadır.
 
 ## Kapsam ve nasıl sınırlandığı
 
