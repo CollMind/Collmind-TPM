@@ -1197,6 +1197,26 @@ AYRILABİLİRLİK  A'nın mekanizması B'den BAĞIMSIZ olmalı     ← BU EKSİK
 KANIT           A tek başına derlenir ve testleri geçer
 ```
 
+> ### ⛔ VE KURAL İKİ YÖNLÜDÜR — HAKEMİ TEK: ara durum KİME görünüyor (ZORUNLU)
+>
+> ```
+> MAKİNEYE görünen ara durum      →  AYRILABİLİRLİK ister
+>   (T-270: "A2 yarıda kalırsa dashboard yalan söylemesin" — deploy-edilebilirlik)
+>
+> KULLANICIYA görünen ara durum   →  AYRILAMAZLIK ister
+>   (T-277: API kapanıp ekran açık kalırsa 403 SÜRPRİZİ — yarım düzeltme)
+> ```
+>
+> **Aynı kural iki yönde zıt şey istiyor, ve ayrımı YALNIZCA ara durumun kime göründüğü
+> belirliyor.**
+>
+> 📌 Ve `T-277` bir üçüncü satır ekliyor: **iki repoya dokunan bir düzeltmede SIRA da bir
+> karardır** — `UI kapalı + API açık` savunulabilir bir ara durumdur (kullanıcı yolu
+> kapalı, derinlik eksik); `API kapalı + UI açık` **tam olarak engellemek istenen şeydir**.
+>
+> ⚠️ **Deploy edilmiş ortam yokken bile sıra kayda geçer** — bugün teorik olan, ortam
+> doğduğu gün şablon olur.
+
 ### Test dosyası TASK NUMARASI değil SÖZLEŞME ADI taşır (ZORUNLU)
 
 > **Task numaraları kapanır; sözleşmeler yaşar.**
