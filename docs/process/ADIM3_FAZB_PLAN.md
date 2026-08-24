@@ -489,3 +489,71 @@ default-deny'ı `@RequireCapability`'yi tanımak zorunda.
 çarpacak**.
 
 > **Yani `(b)` bir kerelik düzeltme değil, `B3b`'nin ratchet'inin ÖN KOŞULU.**
+
+
+---
+
+## `B3b-0` İNDİ (2026-08-24) — ve İKİ OKUMA
+
+```
+hücre    24  −5 (H3)  +2 (MODES_SUBMIT · SUMMARY_READ)  =  21
+kova     scope-b 38→37 · scope-c 103→104        (kpis/grid/:planId, Z31 H4-5a)
+davranış DEĞİŞMEDİ — 1127 unit · 398 e2e BİREBİR · money-float 114 · lint-ratchet 191
+```
+
+### OKUMA 1 · Bloke hücreler `5 → 4` — ama BİLEŞİM değişti
+
+```
+ÖNCE   MODES_APPROVE · MODES_READ · SHARED_READ · USER_READ · SHARED_APPROVE
+SONRA  MODES_APPROVE · MODES_READ · SHARED_READ · SUMMARY_READ
+```
+
+`USER_READ` ve `SHARED_APPROVE` **silindi** (`H3`); yerine `SUMMARY_READ` **bloke doğdu**.
+
+> ⛔ **`SUMMARY_READ`'i yaratmak `13` rotayı DOĞRU SINIFLADI, AÇMADI.**
+> Bloke rota sayısı düşmedi — **hangi hücrede bloke oldukları** değişti.
+
+📌 Ve bu, ratchet tabanı için can alıcı: `B3b-1`'in tabanını **hücre sayısı değil,
+ATANMIŞ hücreye düşen ROTA sayısı** belirler.
+
+⚠️ `SUMMARY_READ`'in bloke doğması **doğru** — `READ` üçlemesinin rol kümeleri
+(`MODES_READ`/`SHARED_READ`) hâlâ `DUR`'da, ve yeni bir `READ`-ailesi hücresi onlardan
+**önce** çözülemez.
+
+### OKUMA 2 · `SUMMARY_READ ∧ A1 = 10` — ilk kayıt
+
+```
+finance-reporting/  budget-utilization · spend-trend · budget-at-risk
+                    cash-flow-projection · mechanic-effectiveness · plan-performance
+                    spend-composition · variance-analysis                      [8]
+agreement-transactions/stats/summary · actuals-first/sales-actuals/summary     [2]
+```
+
+**`Z32`'nin öngördüğü gibi:** `T-253`'ün sessiz uçları (`plan-performance`,
+`stats/summary`) **bu listede**.
+
+⇒ **Kapsam-kalanları işinin öncelik sırası:** rastgele `41` kapsamsız rota değil,
+**özet-şekilli `10`** önce.
+
+**Çıkış ölçütü (`Z32`, kapsam hattının — `B3`'ün DEĞİL):**
+
+```
+SUMMARY_READ ∧ A1 = 0     bugün 10
+```
+
+Sıfırlandığı gün kural **kapıya terfi eder**: *"yeni bir `SUMMARY_READ` rotası kapsamsız
+DOĞAMAZ"* — **doğum kontrolü**.
+
+### ⛔ AÇIK — `H1` fixpoint, `MODES_WRITE`'ın ÜÇ NATIVE KÜMESİ
+
+```
+{ADMIN,FINANCE,PLANNER}  n=1    POST /agreement-transactions
+{ADMIN,FINANCE}          n=5
+{ADMIN,PLANNER}          n=12
+```
+
+📌 **`n=1`'in kümesi diğer ikisinin union'u — ama TÜRETİLMİŞ DEĞİL, ROTANIN KENDİ
+BEYANI.** *"Union'ı reddet"* kuralı bu satıra **uygulanamaz**; rota gerçekten üç rolle
+yazılmış.
+
+**Soru:** bağımsız üçüncü bir hücre mi, yoksa iki-hücreli bölünmenin **hangi tarafına**?

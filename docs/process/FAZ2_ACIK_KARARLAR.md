@@ -23,7 +23,7 @@ göründü. Bulan şey bir mekanizma değil, bir ajanın **brief taramasıydı**
 | `Z21` şart 3 (`POST` musluğu) | e2e zarf yoluna göçtüğünde | `T-270` | ✅ **koşul karşılandı** → `Z24` ile kapandı |
 | `Z21` seçenek 2 (`cpl_id` zarfa) | CPL-bazlı bütçe **gerçek müşteri ihtiyacı** olarak kanıtlanırsa | danışman turu / ilk müşteri | ⏳ bekliyor |
 | `Z22` paylaşılan-eksen filtresi | kanal/kategori bazlı zarf **talebi** doğarsa | — | ⏳ bekliyor · ⚠️ maliyet **revize**: tüketici tarafı zaten kurulu (`T-272`) |
-| **`Z32` `SUMMARY_READ ∧ A1 = 0`** | özet-şekilli kapsamsız `10` rota **kapsam alınca** | **kapsam-kalanları hattı** (`B3`'ün DEĞİL) | ⏳ **KOŞUL** — bugün `10`. Sıfırlandığı gün kural **KAPIYA TERFİ EDER**: *"yeni bir `SUMMARY_READ` rotası kapsamsız DOĞAMAZ"* |
+| **`Z32` `SUMMARY_READ ∧ A1 = 0`** | özet-şekilli kapsamsız `10` rota **kapsam alınca** | **kapsam-kalanları hattı** (`B3`'ün DEĞİL) | ⏳ **KOŞUL** — ✅ **ilk kayıt 2026-08-24: `10`** (ölçüldü, `B3b-0` sonrası). Sıfırlandığı gün kural **KAPIYA TERFİ EDER**: *"yeni bir `SUMMARY_READ` rotası kapsamsız DOĞAMAZ"* |
 | `Z27` `/approvals/pending` yüklemi | `approval_levels` **dolduğunda** → yüklem şablon-çözümlemeli hâline göç eder | şablon motoru (`Faz 2`) | ⏳ **KOŞUL** — aktif izlenir |
 | `T-235` `T-028c` bayrağı | prod/UAT'de backfill doğrulanana kadar | prod/UAT ortamı | ⛔ **KİLİT** — sağlayıcı bugün YOK |
 | `0073` `report-only` envanteri | fiili trafikte doğrulanır | deploy edilmiş ortam | ⛔ **KİLİT** — sağlayıcı bugün YOK |
