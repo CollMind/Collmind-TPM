@@ -1316,6 +1316,33 @@ Yani *"azaldı"* doğruydu **ve** *"yeni sapma yok"* yanlıştı. İkisi aynı �
 zorundadır. *"Öncekinden az"* bir güvence değildir; güvence **"şu sınıflardan hiçbiri yeni
 değil"**dir, ve o cümle ancak sınıflar sayıldıktan sonra yazılabilir.
 
+### Bir kuralın FAZ TABLOSU varsa, YÜRÜRLÜKTEKİ satır okunur (ZORUNLU)
+
+> **Bir kural bir faz/geçiş tablosuna işaret ediyorsa, türetim HANGİ SATIRIN BUGÜN
+> GEÇERLİ olduğunu ayrıca ölçer — kuralın SON satırı varsayılan DEĞİLDİR.**
+
+Ölçülmüş vaka (2026-08-24, `Z30 H1`): `ROLE_CAPABILITIES` haritası `PLANNER`'a içe
+aktarma yetkisi vermişti. Kaynak `K-2.6.14`, ve kuralın **faz tablosu** var:
+
+```
+| Bugün                  | yalnız finans + yönetici |   ← YÜRÜRLÜKTEKİ
+| Eşleştirme geldiğinde  | + planlamacı             |   ← HEDEF
+```
+
+Harita **hedef** satırı okumuş, **yürürlükteki** satırı okumamıştı. Yani kural doğru
+alıntılanmış, **yanlış zamandan** alıntılanmıştı.
+
+⚠️ **Ve tehlikesi ölçekte:** aynı hata bir **türetim algoritmasına** girerse (`fixpoint`,
+toplu göç) tek bir rotada değil, **tamamında** tekrarlanır.
+
+📌 Bu, `§`'nin *"bir ölçümün geçerliliği KOŞULLARINA bağlıdır"* kuralının **kaynak
+tarafındaki** hâli: orada ölçümün koşulu yazılmıyordu, burada **kaynağın** koşulu
+okunmuyor.
+
+**Pratik:** bir `L2` kuralını bir karara dayanak yaparken sor — *"bu kuralın bir faz/geçiş
+tablosu var mı, ve bugün hangi satırdayız?"* Cevap bir **tarih** ya da bir **sağlayıcı**
+ise, `§ ŞARTIN SAĞLAYICISI` kuralı da devreye girer.
+
 ### Bir SAYI, eşleşmeleri ÖRNEKLENMEDEN raporlanamaz (ZORUNLU)
 
 `§7.1` *"bir terim sayısına dayanarak karar veriyorsan en az bir geçişi bağlamıyla oku"*

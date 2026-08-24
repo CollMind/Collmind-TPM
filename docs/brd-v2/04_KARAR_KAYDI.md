@@ -2610,6 +2610,20 @@ PLANNER → upload·validate    K-2.6.14 (L2_03:511-518) — YÜRÜRLÜKTEKİ fa
 **Düzeltme:** `ROLE_CAPABILITIES`, **mevcut `@Roles` gerçeğinin + `K-2.6.4` cümle
 testinin FIXPOINT'ine** düzeltilir.
 
+> ### ⛔ FIXPOINT'İN KABUL KRİTERİNE BİR SATIR — faz tablolu kurallar
+>
+> **Faz tablosu taşıyan kurallar (`K-2.6.14` gibi) YÜRÜRLÜKTEKİ fazıyla türetilir,
+> HEDEF fazıyla değil.**
+>
+> Bu turun bulgusu tam buydu: harita `K-2.6.14`'ün *"eşleştirme geldiğinde + planlamacı"*
+> **hedef** satırını okumuş, *"bugün: yalnız finans + yönetici"* **yürürlükteki** satırını
+> **okumamıştı**.
+>
+> ⇒ **Aynı hata fixpoint türetiminde TEKRARLANABİLİR** — ve bu kez `211` rotanın tamamında.
+>
+> **Pratik:** bir kural bir tabloya işaret ediyorsa, türetim **hangi satırın bugün
+> geçerli olduğunu** ayrıca ölçer; kuralın **son** satırı varsayılan **değildir**.
+
 ⚠️ **Bir hücrede İKİ MEŞRU KÜME çıkıyorsa (ör. `MODES_WRITE`'ın `AP`/`AF` karışımı)
 HÜCRE AYRIŞIR** — küme farkı gerekçeliyse **hücrenin bölünmesi doğrudur**, rotaların
 union'a hizalanması **değil**.
