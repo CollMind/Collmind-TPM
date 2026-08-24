@@ -527,6 +527,31 @@ bağlıdır.
 >
 > Bugünkü kısıt kaynaktan **bilinçli bir sapmadır** ve geçicidir — bir **telafi kontrolü.**
 
+> ### ⛔ KAPSAM AÇIKLIĞI (`Z35`, 2026-08-24 · ürün sahibi)
+>
+> **"İçe aktarma" bir KANAL ADI DEĞİL, SINIF ADIDIR.**
+>
+> **Defter-etkili gerçekleşme girişi**, kanalından **bağımsız olarak** bu kuralın
+> konusudur:
+>
+> ```
+> dosya  ·  toplu API  ·  TEKİL API  ·  MANUEL FORM
+> ```
+>
+> **Ayırt edici, girişin YOLU değil DEFTER ETKİSİDİR.**
+>
+> **Neden yazıldı — ölçülmüş vaka (`B3A_ESLEME_TABLOSU.md` `EK 2`):**
+> `POST /agreement-transactions` (`@Roles(ADMIN, PLANNER, FINANCE)`) ile
+> `POST /agreement-transactions/batch` (`@Roles(ADMIN, FINANCE)`) **aynı `create()`
+> metodunu** çağırıyor (`service.ts:264 → :285`), ve `ledger_entries` `DEBIT` **aynı
+> çağrıda** yazılıyor (`:238`). Yani tekil uç, toplu ucun **dosyasız kapısıydı** —
+> ve bu kuralın başlığı (*"belge içe aktarma"*) onu **kapsamıyor görünüyordu**.
+>
+> 📌 **Ve ayırt edici ÖLÇÜLEBİLİR:** `modes/` içinde deftere `DEBIT` yazan **yalnız iki
+> servis** var — `agreement-transaction.service.ts:238` ve `on-invoice.service.ts:499`.
+> Bir *"manuel yüzey"* tartışması bu yüzden bir **görüş tartışması değil**, **tek grep'lik
+> bir üyelik testidir**.
+
 > Saha gerekçesi: gerçekleşmeyi kovalayan kişi planlamacıdır. Faturayı finansın yüklemesini
 > beklemek, tam da yok edilmek istenen *"paralel tablo takibi"* davranışını geri getirir.
 

@@ -2737,6 +2737,17 @@ GET /users   @Roles(ADMIN, FINANCE)  →  @Roles(ADMIN)      FINANCE DÜŞER
 2  UNRESTRICTED_ROLES kod dalı KALDIRILIR      ← SON
 ```
 
+> ### ⛔ EKLEME (`Z35`) — `ADMIN`'in gerekçesi de YAZILIR
+>
+> `ADMIN`'in **kapsamsızlığı VE her-küme üyeliği** `K-2.6.4`'te **açık cümleye** bağlanır:
+> *"tanımlar ve kural yönetimi"* cümlesi bunu **taşıyor mu**, yoksa **genişletilmeli mi**?
+>
+> **Gerekçe:** `L2_03`'te `YÖNETİCİ` **yalnız bir kez** geçiyor (`:405`) — yani `ADMIN`'in
+> her kümede bulunuşu fiilen *"tanım gereği her şeye"* varsayımına yaslanıyor, **ve o
+> varsayım `FINANCE` için REDDETTİĞİMİZ KOŞULSUZLUĞUN TA KENDİSİ.**
+>
+> ⚠️ **Yazılmazsa `ADMIN` sistemdeki SON "koşulsuz sabit" olarak kalır.**
+
 ⛔ **AYRILABİLİRLİK ŞARTI AÇIK: `1` inmeden `2` inemez.** `rows.length === 0` →
 *"hiçbir şey"* → `ADMIN`/`FINANCE` **fail-closed düşer**. Ara durum **deploy edilemez**.
 
@@ -3134,3 +3145,101 @@ kimse düşmüyor**. Aynı şey import/tüketici sorusu için de geçerli olmal�
 
 > **Üçüncü tekrar, kuralın KİŞİYE değil ALETE bağlanma anıdır** — `E6`'nın doğuş
 > hikâyesinin birebir aynısı.
+
+---
+
+## Z35 · `n=1` ÇÖZÜLDÜ — `{A,F}`'ye DÜZELTME, ve `K-2.6.14`'e KAPSAM AÇIKLIĞI
+
+**Tarih:** 2026-08-24 · **Karar veren:** ürün sahibi · **Ölçüm:** `B3A_ESLEME_TABLOSU.md` `EK 2`
+
+### 1 · İliştirme: `{A,F}` — ve bu bir DÜZELTMEdir
+
+**Üç ölçüm BAĞIMSIZ yollardan aynı yere çıktı:**
+
+```
+YAPISAL     create ≡ batchImport — aynı yazma yolu, DOSYASIZ KAPI
+NORMATİF    K-2.6.14: "görev ayrılığı VERİ GİRİŞİNİ değil, FİNANSAL KARARI korur"
+            → DEBIT aynı çağrıda (service:238), ara statü YOK
+TAKSONOMİK  PLANNER cümlesi YAZILAMIYOR — "hacim girişi" PLAN hacmidir
+```
+
+⇒ **Rota YANLIŞ DOĞMUŞ.** `{A,F}` bir **istisna değil, DÜZELTMEdir**.
+
+**Ve *"göç davranış değiştirmez"* kuralının `Z20`'den sonraki İKİNCİ KAYITLI İSTİSNASI
+olarak yazılır:** `PLANNER` bu uçtan **düşüyor**, `DUR`-kaynaklı, gerekçesi **üç ölçüm**.
+
+### ⛔ EŞZAMANLILIK ŞARTI — iki repo, TEK kapanış tanımı
+
+> **Bu daraltma `T-277`'nin FRONTEND düzeltmesiyle EŞZAMANLI inmeli.**
+>
+> API kapanıp ekran *"Manuel Giriş"*i göstermeye devam ederse, kullanıcıya **`403`
+> sürpriziyle yaşayan YARIM DÜZELTME** olur.
+
+📌 `§ AYRILABİLİRLİK` kuralının **ters yönü**: orada ara durumun **deploy edilebilir**
+olması isteniyordu; burada ara durum **kullanıcıya görünür bir kusur** üretiyor, o yüzden
+**ayrılamaz**.
+
+### 2 · `K-2.6.14` KAPSAM AÇIKLIĞI — `L2` düzenlemesi AÇILIR
+
+`Z1` gereği donmuş belgeye kayıtsız düzenleme yasak; **bu kayıt o düzenlemeyi açar.**
+
+**Yazılacak metin (ürün sahibi):**
+
+> **`K-2.6.14` kapsam açıklığı:** *"içe aktarma"* bir **kanal adı değil, SINIF ADIDIR** —
+> **defter-etkili gerçekleşme girişi**, kanalından (dosya · toplu API · tekil API · manuel
+> form) **bağımsız olarak** bu kuralın konusudur. **Ayırt edici, girişin YOLU değil DEFTER
+> ETKİSİDİR.**
+
+📌 **Ve bu formülasyonun değeri: ayırt ediciyi ÖLÇÜLEBİLİR kılıyor.** Adlandırma ölçümü
+zaten kanıtladı — `modes/` içinde deftere `DEBIT` yazan **yalnız iki servis**
+(`agreement-transaction:238` · `on-invoice:499`), **ikisi de `{A,F}` ailesinde**.
+
+⇒ Gelecekteki bir *"manuel yüzey"* tartışması bir **görüş tartışması olmaz**; **tek
+grep'lik bir ÜYELİK TESTİ** olur.
+
+### ⛔ VE BU BİR KURAL-HASTALIĞININ TEDAVİSİ — bu oturumda ÜÇÜNCÜ vaka
+
+```
+K-2.6.14              başlık "belge içe aktarma"   ↔  sınıf: DEFTER-ETKİLİ giriş
+kpis/grid yorumu      "PLAN verisi döndürüyor"      ↔  sınıf: KATALOG okuma
+approval-queue adı    "for current user" (OWN)      ↔  yüklem: SCOPE
+```
+
+> **Üçünde de AD, korunması gereken SINIFTAN DAR — ve DAR AD, sınıfın DIŞINDA KALAN ÜYEYİ
+> MEŞRU GÖSTERİR.**
+
+### 3 · Yan boşluk: `ADMIN`'in gerekçe-yükü asimetrisi
+
+`L2_03`'te `YÖNETİCİ` **yalnız bir kez** geçiyor (`:405`), yani `ADMIN`'in **her kümede**
+bulunuşu `K-2.6.4`'e **dayanmıyor**.
+
+> **Bu bir kural EKSİĞİ değil, bir GEREKÇE-YÜKÜ ASİMETRİSİ:** `ADMIN`'in her kümede
+> bulunuşu fiilen *"tanım gereği her şeye"* varsayımına yaslanıyor — **ve o varsayım,
+> `UNRESTRICTED` terfisinde `FINANCE` için REDDETTİĞİMİZ KOŞULSUZLUĞUN TA KENDİSİ.**
+
+**Tutarlılık `ADMIN` için de aynı işlemi ister** — `H8`'in gerekçe-yazım adımına **tek
+satır**:
+
+```
+ADMIN'in kapsamsızlığı ve her-küme üyeliği K-2.6.4'te AÇIK CÜMLEYE bağlanır
+  → "tanımlar ve kural yönetimi" cümlesi bunu TAŞIYOR MU, yoksa GENİŞLETİLMELİ Mİ?
+  → ürün sahibi kararı
+```
+
+⚠️ **Küçük iş, ama yazılmazsa `ADMIN` sistemdeki SON "koşulsuz sabit" olarak kalır.**
+
+### 4 · Kuyruğa — `E6` ailesi için envanter sorusu
+
+> **`CLAUDE.md`'de DESEN anlatan başka kaç kural, MEVCUT BİR ARACI adlandırmadan
+> anlatıyor?**
+
+Tek okumalık envanter; **refleks-açığı sınıfını kökten kapatır**. Aciliyeti yok.
+
+### `MODES_WRITE` bölünmesi TAMAM
+
+```
+{A,F}  gerçekleşme/alım yazımı    6 üye   (5 + n=1)
+{A,P}  plan/anlaşma yazımı        12 üye
+```
+
+⇒ **`H1`'in son `DUR`'u KAPANDI. `B3b-1`'in gerçek tabanı artık OKUNABİLİR.**

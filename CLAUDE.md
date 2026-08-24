@@ -1348,6 +1348,36 @@ Yani *"azaldı"* doğruydu **ve** *"yeni sapma yok"* yanlıştı. İkisi aynı �
 zorundadır. *"Öncekinden az"* bir güvence değildir; güvence **"şu sınıflardan hiçbiri yeni
 değil"**dir, ve o cümle ancak sınıflar sayıldıktan sonra yazılabilir.
 
+### Bir AD, koruduğu SINIFTAN dar olabilir (ZORUNLU)
+
+> **Bir kuralın/yorumun/rotanın ADI bir KANALI ya da MEKANİZMAYI adlandırıyor, gövdesi
+> bir SINIFI koruyorsa — DAR AD, sınıfın DIŞINDA KALAN ÜYEYİ MEŞRU GÖSTERİR.**
+
+Bir oturumda **üç ölçülmüş vaka** (2026-08-24):
+
+| ad ne diyor | gövde neyi koruyor | dar adın maliyeti |
+|---|---|---|
+| `K-2.6.14` başlığı: *"belge içe aktarma"* | **defter-etkili giriş** (gerekçe: *"görev ayrılığı veri girişini değil finansal kararı korur"*) | **manuel form** kuralın dışında sanıldı — ve `PLANNER`'a açık kaldı |
+| `kpi.controller.ts:70`: *"PLAN verisi döndürüyor"* | **katalog okuma** (`kpi.service.ts:94`: *"never returns plan content"*) | `5/5` rol kümesi **çürümüş bir gerekçeyle** ayakta kaldı |
+| `GET /plans/approval-queue` adı: *"for current user"* | **kapsam** yüklemi, sahiplik değil | rota `READ_OWN` sanılabilirdi |
+
+**Pratik:**
+
+```
+1  Bu adın işaret ettiği şey bir KANAL/MEKANİZMA mı, yoksa bir SINIF mı?
+2  Gövde hangisini koruyor?
+3  İkisi ayrışıyorsa → ADI DEĞİL, AYIRT EDİCİYİ yaz — ve ayırt edici ÖLÇÜLEBİLİR olsun
+```
+
+📌 **Ölçülebilirlik şart:** `K-2.6.14`'ün açıklığı *"defter etkisi"* diyor, ve o **tek
+grep'lik bir üyelik testine** iniyor (`modes/` içinde `ledgerService.` çağıran servisler:
+**iki**). Ayırt edici ölçülemezse, açıklık bir **görüş** olur ve bir sonraki tartışmayı
+çözmez.
+
+⚠️ Ve bu, `§ SESSİZ SAPMA`'nın kardeşi: orada bir **sapma** kaynağa atıf vererek
+doğrulanmış görünüyordu; burada bir **üye**, adın darlığı sayesinde **kapsam dışı**
+görünüyor.
+
 ### Bir kuralın FAZ TABLOSU varsa, YÜRÜRLÜKTEKİ satır okunur (ZORUNLU)
 
 > **Bir kural bir faz/geçiş tablosuna işaret ediyorsa, türetim HANGİ SATIRIN BUGÜN
