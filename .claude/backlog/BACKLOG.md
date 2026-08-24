@@ -38,6 +38,8 @@ Ne yapılacak.
       `--baseline > scripts/guards/money-float-baseline.txt` ile ayrı, gözden geçirilebilir
       bir commit'te güncelle (baseline asla kendini yazmaz). **Baseline commit'i, azalmayı
       üreten commit'ten SONRA gelir** — önce gelirse ratchet o aralıkta kör kalır.
+      ⛔ **VE SONRAYI KİM YAPACAĞI DA YAZILI: İYİLEŞTİREN TUR.** Bir `improved` satırı bir
+      bilgi değil, **o turun KAPANMAMIŞ İŞİdir**.
       Alan A üyelik testi: bir modül para üretiyor, para kalıcılaştırıyor veya parayı bir
       eşikle karşılaştırıyorsa Alan A'dadır — liste: `scripts/guards/money-float-domain-a.txt`
 - [ ] code-reviewer onayı

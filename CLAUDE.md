@@ -1269,6 +1269,29 @@ olduğu **bilinmiyordu**.
 📌 Ve çözüm bir **biçim alanı eklemek değil**: bir sentinel (`# ratchet: COMPLETE`)
 üçüncü bir sözleşme olur ve bayatlar. **Çıktı satırı** aynı işi yapar ve bayatlamaz.
 
+> ### ⛔ VE BU SINIFIN ZAMANLAMASI ONU EN PAHALI YAPAR (ZORUNLU)
+>
+> **Başarı anında patlayan bir hata, en pahalı hata sınıfıdır — çünkü kimse BAŞARI
+> GÜNÜNDE guard'dan şüphelenmez.**
+>
+> Aynı kusurun iki vakası, **iki farklı zamanlamayla**:
+>
+> ```
+> route-scope.sh     kusur BUGÜN göründü      — FILTRESIZ ilk kez sıfırlandı
+> scope-ratchet.sh   kusur GELECEĞE KURULMUŞ  — A1 sıfırlandığı gün, yani
+>                                               ADIM 3'ün BİTİŞ GÜNÜNDE patlayacaktı
+> ```
+>
+> İkincisi bulunmasaydı, `ADIM 3`'ün tamamlandığı gün guard **`exit 2`** verecekti ve
+> teşhis çok daha zor olurdu: *"her şey bitti, neden kırmızı?"*
+>
+> 📌 **Bu, tek-vakalık yamanın neden yetmediğinin en iyi savunması.** İki-vakalık envanter
+> (`§`: *"sınıfla düzelt, ilk vakayla değil"*) bir **tuzağı zamanından önce** boşalttı.
+>
+> ⚠️ Ve üç sorunun **birincisi kova kova farklı cevap verir**: `A1`/`A2`/`FILTRESIZ` için
+> sıfır **hedeftir**; `B`/`C` için **beklenmez ama "bozuk" da demek değildir**. Kontrol
+> tek biçimde olur, **çıktı metni** ayrışır.
+
 ### Bir TOPLAMIN azalması, bir SINIFIN girmediğinin kanıtı değildir (ZORUNLU)
 
 > **Bir toplamın azalması, bir sınıfın girmediğinin kanıtı değildir.**
@@ -2048,6 +2071,12 @@ Alt-ajana iş verirken **kaynağı referansla ver, özetini değil.**
       `--baseline > scripts/guards/money-float-baseline.txt` ile ayrı, gözden geçirilebilir
       bir commit'te güncelle (baseline asla kendini yazmaz). **Baseline commit'i, azalmayı
       üreten commit'ten SONRA gelir** — önce gelirse ratchet o aralıkta kör kalır.
+      ⛔ **VE SONRAYI KİM YAPACAĞI DA YAZILI: İYİLEŞTİREN TUR.** Bir `improved` satırı
+      bir **bilgi değil, o turun KAPANMAMIŞ İŞİdir** — baseline aynı commit setinde
+      düşürülür. Ölçülmüş vaka (2026-08-24): `lint-ratchet`'te **11** iyileşme birikmişti
+      ve ratchet o dosyalarda **kör** kalıyordu; kural *"sonra gelir"* diyordu ama
+      **sonra hiç gelmemişti**, çünkü **hangi turun işi olduğu yazılı değildi** —
+      11 turun hiçbirinin işi olmadığı için birikti. *(Kuralın ihlali değil, EKSİK YARISI.)*
       Alan A üyelik testi: bir modül para üretiyor, para kalıcılaştırıyor veya parayı bir
       eşikle karşılaştırıyorsa Alan A'dadır — liste: `scripts/guards/money-float-domain-a.txt`
 - [ ] `code-reviewer` onayı
