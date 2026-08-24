@@ -3,6 +3,12 @@
 **Ölçüm tarihi:** 2026-08-24 · **Damga:** `Z35` sonrası (`B3b-0` inmiş, `Z30`'un dokuz
 hükmü verilmiş, `T-277` iki repoda kapanmış)
 
+> ⛔ **REVİZE EDİLDİ 2026-08-24 (`EK 3`): taban `75` → `70`.** `75` `B3a`'nın
+> hücre sayılarından türetilmişti ve o sayılar **bayattı** (`T-253`/`Z24` beş rota
+> sildi). `70` bir **sayım**dır, bir çıkarma değil — kaynak:
+> [`B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv`](B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv).
+> Eski sayı aşağıda **iziyle** duruyor (`F12` deseni).
+>
 > ⛔ **BU TABAN BAĞLI, KESİN DEĞİL.** `Z35`'in `MODES_WRITE` bölünmesi **karar olarak var,
 > kod olarak yok**. `Z30`'un kaydı yürürlükte: *"gerçek taban HARİTA DÜZELTMESİ SONRASI
 > ÖLÇÜLÜR."* Aşağıdaki `75`, haritanın düzeltilmesiyle **değişmeyecek** bir alt sınırdır;
@@ -97,6 +103,24 @@ doğal sonucu** — ama `B3b-1` başlamadan **kapanmalı**.
 **`B3b-1`'in ilk adımı:** haritayı `Z35`'e göre böl, sonra taban **yeniden okunmadan** göç
 başlamaz.
 
+### ⛔ `ADIM 0`'IN KABUL KRİTERİ — *"pin DOKUNULMADAN harita koda indi"*
+
+*"`B3b-1`'in `ADIM 0`'ı"* ilan etmek **yetmez** — riskin tarifi *"mekanik tur daraltmayı
+**sessizce** geri alır"*dı, ve **sessizliği** kıran şey bir ilan değil bir **pin**dir.
+
+```
+KOŞULACAK   test/agreement-transaction-role-boundary.e2e-spec.ts
+BEKLENEN    PLANNER → 403   ·   FINANCE/ADMIN → 400   (dört pin çifti)
+KABUL       harita bölündü  ∧  pin DOSYASINA DOKUNULMADI  ∧  YEŞİL
+```
+
+⚠️ **Pin dosyası değiştirilirse kabul DÜŞER** — bir mekanik turun daraltmayı geri
+alması ile pini gevşetmesi **aynı sonucu** verir, ve ikincisi daha az görünür.
+
+📌 Pin `T-277` turunda **mutasyonla ayırt ediciliği kanıtlanmıştı**
+(`@Roles(ADMIN, PLANNER, FINANCE)` → `(a)` kırmızı, `/batch` yeşil kaldı). Yani bu kriter
+**ölçülmüş bir dedektöre** dayanıyor, bir umuda değil.
+
 ---
 
 ## 4 · RATCHET'İN KÖR NOKTASI — bloke `75`'in `41`'i KAPSAMSIZ
@@ -180,13 +204,25 @@ listelenmemiştir**.
 
 **Bu liste hücre-seviyesinde TAM:**
 
-| hücre | rota | kapsam durumu |
-|---|---|---|
-| `MODES_APPROVE` | **6** | `6/6` kapsamlı (`B`) — onay yolunda katman çalışıyor |
-| `MODES_READ` | 37 → | `22` kapsamsız (`A1`) · `10` `B` · `5` `C` |
-| `SHARED_READ` | 32 → | `19` `A1` · `9` `A2` · `4` `B` |
-| `SUMMARY_READ` | *(13'ü iki `READ` hücresinden geldi)* | `10`'u `A1` — `Z32`'nin izlediği |
-| **TOPLAM** | **75** | **`41`'i kapsamsız** |
+| hücre | rota (ÖLÇÜLEN) | KİMİN KARARI | ne bekliyor |
+|---|---|---|---|
+| `MODES_APPROVE` | **4** | **ürün sahibi** | rol kümesi — `K-2.5.12` onay yetkisi |
+| `MODES_READ` | **34** | **ürün sahibi** | rol kümesi |
+| `SHARED_READ` | **20** | **ürün sahibi** | rol kümesi |
+| `SUMMARY_READ` | **12** | **ürün sahibi** | rol kümesi (`Z31` tanımı hazır) |
+| **TOPLAM** | **70** | | |
+| *(çapraz)* | **41** | **KAPSAM HATTI** | kapsamsız `READ`'lerin önceliklendirmesi |
+
+> ⛔ **İKİ ADRES, TEK PAKETTE KARIŞTIRILMADAN.** `70`'i açan şey rol kümeleridir
+> (**ürün sahibi**); ama `41`'i **kapsam borcuyla** açar — o borç **kapsam hattının**,
+> `B3`'ün değil. İki-sütun ilkesi gereği göçebilirler; ama `SUMMARY_READ ∧ A1` deseninin
+> **genişlemiş hâli** burada: özet-şekilli **olmayan** kapsamsız `READ`'ler de artık sayılı.
+>
+> ⇒ Karar paketi ürün sahibine **iki ayrı adresle** gider: rol kümeleri (ona) ·
+> `41`'in kapsam önceliklendirmesi (kapsam hattına).
+
+*(eski okuma — `F12` izi: `MODES_APPROVE 6 · MODES_READ 37 · SHARED_READ 32 · TOPLAM 75`,
+`B3a`'nın bayat sayılarından türetilmişti.)*
 
 > ⛔ **Bu `75` bir mekanik turun konusu DEĞİL.** Dört hücrenin rol kümesi **karar
 > bekliyor**, ve `41` kapsamsız rota yüzünden karar *"hangi roller"*den önce *"kapsam

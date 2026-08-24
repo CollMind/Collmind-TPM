@@ -9,13 +9,45 @@
 
 ## 0 · Geçerlilik ön koşulu (DUR)
 
-Bu brief ancak devir paketinin üç parçası origin'de ise geçerlidir — `git log origin` ile
+Bu brief ancak devir paketinin **dört** parçası origin'de ise geçerlidir — `git log origin` ile
 kanıtla, biri yoksa DUR ve ürün sahibine dön:
 
 1. `docs/process/B3B_RATCHET_TABANI.md` — taban okuması dosyası (B3A'nın kardeşi;
    üstünde **"Z35-sonrası ölçüldü"** damgası OLMALI — yoksa bayat, DUR)
 2. `ADIM3_FAZB_PLAN.md` H1 bölümü **KAPANDI (Z35)** işaretli (F12 deseni)
 3. `.claude/agents/*.md` frontmatter'larında `model:` eşlemesi
+
+   ```
+   opus     architect · code-reviewer · debugger · planner        → İDDİA üretenler
+   sonnet   backend · frontend · data-engineer · qa · data-analyst → ARTEFAKT üretenler
+   ```
+
+   > ⛔ **GEREKÇE DÜZELTİLDİ (ürün sahibi, 2026-08-24) — eşleme aynı, DAYANAĞI değil.**
+   >
+   > Ölçüm şunu söyledi: yakalama kalitesini **model katmanı öngörmüyor** — bu oturumun
+   > en pahalı iki yakalayışı `sonnet`'ten geldi (`data-engineer`: `Capability` entity ·
+   > alt-ajan: `/finance-reporting` enjeksiyon), ve **ikisi de ölçüm anında** geldi.
+   >
+   > Doğru okuma *"opus daha iyi yakalar"* **değil**:
+   > **"yakalama mekanizması nerede ZAYIFSA, güçlü model oraya."**
+   > İddia turlarının hata sınıfı farklıdır (yanlış çerçeve · kaçan kesişim) ve bunlar
+   > **ölçümle değil muhakemeyle** yakalanır. Artefakt turlarının hatalarını ise zaten
+   > guard'lar + pinler + doğrulama yakalıyor — **model değil**.
+   >
+   > ⇒ Bir sonraki adım: yakalamayı **modele değil TURA gömmek** (`T-282`'nin araç
+   > sorusu). `§5` metrikleri yanılıyorsak gösterecek.
+4. ⛔ **`docs/process/B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv`** — `211` satırlık rota→hücre
+   eşlemesi. **Eşleme eki origin'de yoksa DEVİR GEÇERSİZ.**
+
+   > Gerekçe (`T-283`, ürün sahibi): `§2`'nin *"üç listeyi repodan yeniden türet"* adımı
+   > bir **şarttı ve sağlayıcısı yoktu** — eşleme `B3A:307`'ye göre *"ajanın
+   > raporunda"*ydı, ve **transcript'ler kanonik yüzey değildir**. `Z25`'in kilit
+   > tanımının bir **brief'e** uygulandığı ilk vaka: *"bir şartın sağlayıcısı yoksa şart
+   > erteleme değil KİLİTTİR."*
+   >
+   > ⚠️ Ve ek yazılırken `B3a`'nın sayılarının **bayat** olduğu ölçüldü — taban
+   > `75` → **`70`** revize edildi (`EK 3 §3`). Yani ön koşul yalnız bir dosya değil,
+   > bir **düzeltme** de getirdi.
 
 ## 1 · Okuma sırası (kanonik girdiler — sayıları YENİDEN SAYMA, atıf ver)
 
