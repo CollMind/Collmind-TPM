@@ -2938,3 +2938,90 @@ Aynı controller, aynı şekil. Ve `A1` dosyasının kendi yorumu sebebini yazı
 
 ⚠️ `A1` zaten *"kapsam gerekli, uygulanmıyor"* demek — yani iki mekanizma **aynı şeyi**
 iki yerden söylüyor olabilir (`İlke 4`).
+
+---
+
+## Z32 · `SUMMARY_READ` tanımı DÜZELTİLDİ — kapsam bir ŞART değil, bir SÖZLEŞME
+
+**Tarih:** 2026-08-24 · **Karar veren:** ürün sahibi · **Tetikleyen:** `Z31`'in dairesel-evren bulgusu
+
+### ⛔ İKİ ŞIKKIN ORTAK ÖNCÜLÜ REDDEDİLDİ
+
+`Z31`'in açık sorusu iki şık sunuyordu — ve **ikisi de aynı varsayımı taşıyordu**:
+*kapsam durumu hücre atamasına GİRDİ'dir*.
+
+> **HÜCRE İLE KAPSAM AYNI EKSENDE YARIŞMAZ.**
+
+Ve o öncül, **`B2`'de kurulan iki-sütun mimarisini geri sarar** (`Z19b`: *"`B2`'nin yeşili
+YALNIZ `@Roles` sütununu kapatır"*).
+
+### Düzeltilmiş tanım
+
+```
+ÜYELİK ŞARTI (2)   nesne-bağsız  ∧  çok-işlem-modüllü portföy özeti
+SÖZLEŞME (1)       kapsam yükümlülüğü  —  üyeliğin SONUCU, FİLTRESİ DEĞİL
+```
+
+> **`SUMMARY_READ` hücresine giren rota, kapsam yükümlülüğünü ALIR.** Taşımıyorsa
+> **tanım-dışı değil**, **YÜKÜMLÜLÜK-İHLALİNDE** bir rotadır — ve ihlalin adresi **zaten
+> var: `A1` ratchet'i.**
+
+⇒ **`10` rota `SUMMARY_READ`'e GİRER.**
+
+### Neden iki şık da düştü — aynı ilkeden
+
+**`(i)` `SUMMARY_READ` alır + kabul kriterini kırmızı yapar:**
+
+`İlke 4`'ü deler (`A1` zaten *"kapsam gerekli, uygulanmıyor"* diyor; hücrenin kırmızısı
+**ikinci bir söyleyiş**). **Ama daha kötüsü:**
+
+> **`B3b`'nin kabulünü, `B3`'ün SAHİBİ OLMADIĞI kusurlara REHİN VERİR** — göç dalgası
+> kapsam işini bekler, **bilerek ayırdığımız iki hat yeniden kenetlenir**.
+
+**`(ii)` modül-READ'de kalır:**
+
+> **HARİTAYI YALANCI YAPAR.** *"Modül-READ"* etiketi bu `10` rota için **veri sınıfı
+> olarak YANLIŞ** — kusuru başka yerde görünür tutmak için haritaya **yanlış beyan**
+> yazmak, `kpis/grid` controller-yorumunun işlediği günahın **kurumsal hâli** olur.
+
+⛔ **Ve asıl tehlikesi: ŞEKİL, RİSKİN SİNYALİDİR.** `T-253`'ün `10` rotası tehlikeli
+**çünkü özet-şekilli ve kapsamsız**; onları modül-READ'e dosyalamak **şekli gizler**, ve
+*"kimse bakmıyordu"*yu **yapısallaştırır**.
+
+---
+
+### ✅ `T-253` ENDİŞESİNİN GERÇEK CEVABI: `SUMMARY_READ ∧ A1`
+
+**İki mevcut sütunun JOIN'i — yeni mekanizma DEĞİL.**
+
+```
+İlke 4 temiz:  tek gerçek İKİ SÜTUNDA, kesişim TÜRETİLMİŞ GÖRÜNÜM
+```
+
+**Ve bu liste BUGÜN BİLE ödüyor:** `10`'un içinde `T-253`'ün **sessiz uçları zaten
+duruyor** (`plan-performance`, `agreement-transactions/stats/summary`).
+
+⇒ **Kesişim, kapsam-kalanları işinin ÖNCELİK SIRASI oluyor:** rastgele `41` kapsamsız rota
+değil, **"özet-şekilli kapsamsız `10`"** önce.
+
+### Kabul kriterinin EVİ netleşti
+
+```
+SUMMARY_READ ∧ A1 = 0     ←  KAPSAM HATTININ çıkış ölçütü   (B3'ün DEĞİL)
+```
+
+**Sıfırlandığı gün kural KAPIYA TERFİ EDER:**
+
+> **Yeni bir `SUMMARY_READ` rotası KAPSAMSIZ DOĞAMAZ — doğum kontrolü.**
+
+📌 **`T-253`'ün KALICI cevabı, hücrenin bugün kırmızı olması değil — sınıfın YARIN
+KAPSAMSIZ DOĞAMAMASI.**
+
+---
+
+### Dairesel-evren bulgusunun MEKANİK karşılığı
+
+> **`B3b-0`'ın brief'ine açıkça yazılır: üyelik türetiminin evreni = TÜM `READ` ROTALARI
+> (`223` evreninden), KAPSAM KOVASI FİLTRESİZ.**
+
+Team Lead'in `10`'luk dış-evren taraması **o türetimin ilk girdisi**.
