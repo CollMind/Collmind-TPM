@@ -128,6 +128,26 @@ açılır.
 
 ---
 
+## ⚠️ İSTİSNA KAYDI — `code-reviewer` atlandı (2026-08-24, düzeltme turu)
+
+> **`code-reviewer` atlandı — davranışsız tur, ikinci doğrulama katmanı mutasyonlu
+> kapılar + çapraz-araç mutabakatıyla sağlandı; davranış değiştiren turlarda
+> (`ADIM 0` dahil) zorunluluk aynen sürüyor.**
+
+**Karar veren:** ürün sahibi · **Kapsam:** yalnız `8f9e2f5` + `59bd49a` (sayı-düzeltme
+ve üretici-bağlama turu).
+
+`Done` tanımının aradığı şey bir **ad** ya da bir **ritüel** değil, **bağımsız ikinci
+doğrulama**. O turda katman fazlasıyla vardı: dört mutasyonla-kırılmış kapı ·
+çapraz-araç mutabakatı (`G4`) · pin dosyası dokunulmazlığı (`shasum`) · bağımsız teyit
+ölçümü (kolon-sınıfı taraması + **ters yönlü** poz.kontrol).
+
+⛔ **Bu bir İSTİSNA KAYDIDIR, sessiz bir standart-gevşemesi DEĞİL.** `ADIM 0` davranış
+değiştiren sınıfa komşu olduğu için (haritanın koda inişi) `code-reviewer` o turda
+**geri devrede**.
+
+---
+
 ## Nereden geldi
 
 `0075` (hakediş senaryoları, **kör sınav**) `18` boşluk iddia etti. `0076` onları

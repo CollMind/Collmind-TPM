@@ -2056,6 +2056,83 @@ Bir sözleşmenin (transformer, guard, invariant) geçerliliği **çağıranın 
 olamaz.** "Bugün ulaşılamaz" bir kapsam gerekçesi olabilir, ama asla bir **koruma kaldırma**
 gerekçesi değildir.
 
+### DÖRDÜNCÜ SORU — kontrolün girdisi, kontrol ettiği şeyden mi türüyor? (ZORUNLU)
+
+> **Bir doğrulama, doğruladığı şeyden türetiliyorsa doğrulama değildir.**
+> **Guard yazarken sor: *bu kontrol HANGİ GİRDİDE kırmızıya döner?*
+> Cevap yazılamıyorsa kontrol bir TOTOLOJİDİR.**
+
+`§ BİR KAPI, ÖLÇÜMÜN BAŞARISINI HATA SAYAMAZ` (`Z29`) üç soru soruyor. Bu **dördüncüsü**,
+ve `§ BİR TANIMIN EVRENİ, TANIMIN ŞARTIYLA SEÇİLEMEZ` kuralının **guard tarafındaki** hâli
+— orada bir *aday evreni* tanımın şartıyla seçiliyordu; burada bir *kontrolün girdisi*
+kontrol ettiği şeyden türüyor.
+
+Ölçülmüş vaka (2026-08-24, ürün sahibi şartı olarak istendi ve **elenmesi memnuniyetle
+kaydedildi**): `route-cell-map.py`'a *"kategori toplamları == satır sayısı"* iç-mutabakatı
+istendi. Yazıldı, sonra mutasyonla sınandı:
+
+```
+MUT-B   çıktıya sahte bir satır eklendi
+sonuç   212 = 212 = 212      ← kapı ATEŞLEMEDİ
+sebep   Counter SATIRLARIN KENDİSİNDEN türetiliyor; eşitlik TANIM GEREĞİ sağlanıyor
+```
+
+📌 **Ve ayrım kalıcı:** o tutarsızlık **belgedeydi**, çıktıda değil — **bir script belgenin
+aritmetiğini denetleyemez.** Script'in işi, belgeyi **sayı yazmak zorunda bırakmamaktır**.
+Yani çözüm bir kontrol değil, bir **tek-üretici kuralıdır**; yapısal olarak yapar,
+denetleyerek değil.
+
+⚠️ **Bir totoloji, olmayan kapıdan KÖTÜDÜR** — yeşil olduğu için **çalıştığı sanılır**.
+Yerine konan kontroller **kırılabilir** olmalı, ve **kırıldıkları gösterilmeli**.
+
+### EN İYİ KONTROL, BAĞIMSIZ BİR KAYITLA ÇAKIŞTIRMADIR (ZORUNLU)
+
+> **İki bağımsız yolun aynı sayıya çıkması, tek bir yolun doğru görünmesinden
+> KATBEKAT güçlü bir kanıttır** — çünkü ikisinin **aynı yönde** yanılması için ortak bir
+> sebep gerekir, ve çoğu zaman yoktur.
+
+Kanonik vaka (2026-08-24, onay-akışı sınıf düzeltmesi): `review` ve `escalate-to-finance`
+rotaları **davranış sınıflamasıyla** `MODES_APPROVE`'a taşındı (kolon-sınıfı ölçümü:
+yazdıkları her kolon onay-durumu, plan-içerik `0`). Karar verildikten **sonra** ikinci,
+tümüyle bağımsız bir yol ölçüldü:
+
+```
+MODES_APPROVE 6  +  MODES_SUBMIT 5  =  11  =  B3a'nın ÜÇ TUR ÖNCEKİ kaydı
+```
+
+`EK 3 §3`'ün **açıklanamayan `−2`**'si tam olarak bu iki rotaydı — ve **karar verilirken
+bu hesap bilinmiyordu.** Yani sınıflandırma, öngörmediği bir muhasebe açığını kapattı.
+
+**Pratik — bir sınıflandırma/atama kararı verirken sor:**
+
+```
+Bu kararın DOĞRU olması, BAŞKA hangi sayının tutmasını gerektirir?
+  → o sayıyı AYRICA ölç, ve kararı verdikten SONRA ölç (önce ölçmek hipoteze çeker)
+```
+
+⚠️ Ve çakıştırma bir **tanım** değil bir **kontrol** olmalı: `§ DÖRDÜNCÜ SORU` gereği,
+ikinci yol birincisinden türetiliyorsa çakışma **kaçınılmazdır** ve hiçbir şey kanıtlamaz.
+`ADIM 0`'ın `G5` kapısı bu yüzden üyeliği **alt-modülden** (davranış) alıp `@Roles` ile
+çakıştırır — üyeliği `@Roles`'tan alsaydı kontrol totoloji olurdu.
+
+### Elle yazılmış üye-sayısı: ölçülmüş oran DOKUZDA DOKUZ (ZORUNLU)
+
+*"Elle yazılmış sayı bayatlar"* bu dosyada bir **ilke** olarak duruyordu. 2026-08-24'te
+**oran ölçüldü** — `capabilities.ts`'in harita yorumlarındaki dokuz `(N route)` başlığı:
+
+```
+7 / 9   bugünkü ölçümle BAYAT      (ör. MODES_READ 37↔34 · SHARED_READ 36↔20)
+2 / 9   VAR OLMAYAN hücreye atıf   (USER_READ Z20'de silindi · SHARED_APPROVE 0 rota)
+─────
+9 / 9   kusurlu
+```
+
+> **Yani *"bir gün bayatlar"* değil — *"bugün zaten bayat"*.** Bir üye-sayısı yazmak,
+> gelecekteki bir riski değil **bugünkü bir kusuru** kaydetmektir.
+
+Kayıt niteliğindeki bloklar `F12` gereği **düzeltilmez, damgalanır**; yeni yorumlar sayı
+**yazmaz**, üye listesine ya da üreticiye **atıf verir**.
+
 ### Bir Z-KAYDINI kapatan tur, TÜREV BELGELERİ de yazar (ZORUNLU)
 
 > **Bir `Z`-kaydını kapatan tur, kaydın *"etkilenen türev belgeler"* satırını yazar —

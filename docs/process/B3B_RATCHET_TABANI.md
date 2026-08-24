@@ -101,7 +101,55 @@ rol kümeleri hâlâ `DUR`'da, ve yeni bir `READ`-ailesi hücresi onlardan **ön
 
 ---
 
-## 3 · ⛔ ÖN KOŞUL — `Z35`'in bölünmesi KODA İNMEDİ
+## 3 · ✅ KAPANDI (`B3b-1 ADIM 0`, 2026-08-24) — `Z35`'in bölünmesi KODA İNDİ
+
+```
+CAPABILITIES   MODES_ACTUALS_WRITE = 'modes:actuals-write'   8 üye
+               MODES_PLAN_WRITE    = 'modes:plan-write'     12 üye
+ROLE_CAPS      ADMIN    → her ikisi
+               FINANCE  → ACTUALS   (Plan CRUD DÜŞTÜ)
+               PLANNER  → PLAN      (gerçekleşme yazımı DÜŞTÜ)
+```
+
+**ÜYELİK DAVRANIŞTAN TANIMLANDI, `@Roles`'TAN DEĞİL** — aksi hâlde harita yönettiği
+şeyden türetilirdi (`§ DÖRDÜNCÜ SORU`). Ayırt edici **alt-modül**:
+`agreement-transaction · on-invoice · sales-actuals` → gerçekleşme ·
+`agreement · plan` → plan/anlaşma. `Z35`'in defter teyidi doğrulandı: `modes/` içinde
+`ledgerService` çağıranlar `agreement-transaction` ve `on-invoice` — **ikisi de
+gerçekleşme tarafında**, plan/anlaşma tarafında **sıfır** defter çağrısı.
+
+### Kabul kriteri — üç bacak, hepsi commit ÖNCESİ
+
+| bacak | sonuç |
+|---|---|
+| harita bölündü | ✅ `8 + 12 = 20`, hücre **tam örtülü** |
+| pin dosyasına **dokunulmadı** | ✅ `shasum -a 256 -c` **OK** · `git status` boş |
+| pin **koşuldu ve yeşil** | ✅ `5/5`, `EXIT=0` — ve **değişiklikten önce de** koşuldu (taban) |
+
+### ⚠️ AMA PİNİN NE KANITLADIĞINI DOĞRU YAZMAK GEREK
+
+**Ölçüldü:** `find-importers.sh capabilities` → **`0` tüketici**; `@RequireCapability`
+**yalnız yorumlarda** geçiyor. Yani `capabilities.ts` bugün **tümüyle atıl**, ve pin
+`ADIM 0` **doğru mu yanlış mı** ayrımını **yapamaz** — bölünme ters yazılsaydı da yeşil
+kalırdı (`§2.7 #6`: *"bu testin şekli iki alternatifi ayırt edebiliyor mu?"* → **hayır**).
+
+```
+PİNİN İŞİ        regresyon nöbeti — göç turunda daraltmanın geri alınmasını yakalar
+AYIRT EDİCİ İŞ   G5 kapısı — üyelik ALT-MODÜLDEN, @Roles ile ÇAKIŞTIRILIYOR
+```
+
+> ⚠️ **`Z35` KAYDININ SAYISI BAYAT — ve sonraki tur ona "mutabık kılmaya" KALKMAMALI.**
+> `04_KARAR_KAYDI.md:3238` `{A,F}` için **`6 üye`** yazıyor; üretici **`8`** ölçüyor.
+> Sayılmayan ikisi `POST /agreement-transactions/batch` ve
+> `POST /actuals-first/sales-actuals/upload` — **ikisi de `@Roles=ADMIN,FINANCE`**, yani
+> **bölünmenin YÖNÜ doğru**, yalnız kayıttaki sayı elle yazılmış ve eksik.
+> Kayıt `F12` gereği düzeltilmez; **hücre `6`'ya indirilmez.** Kanonik kaynak üretici.
+
+**`G5`: `20` üye · `0` uyuşmazlık**, ve **kırılabilirliği mutasyonla kanıtlandı**
+(`MUT-E`: `plan` alt-modülü `ACTUALS`'a taşındı → **9 uyuşmazlık, `exit 2`**).
+İki bağımsız yol (davranış · `@Roles`) aynı yere çıktı.
+
+*(iz — kapanmadan önceki hâli)* ⛔ ÖN KOŞUL — `Z35`'in bölünmesi KODA İNMEDİ
 
 ```
 KARAR (Z35)   MODES_WRITE bölünür:  {A,F} gerçekleşme-yazımı  ·  {A,P} plan/anlaşma-yazımı
