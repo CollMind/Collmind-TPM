@@ -30,6 +30,11 @@ brief §3 "Dalga-0"     MEKANİZMA dalgası            ⛔ KURULMADI
 ⇒ **Yetenek katmanı bugün ATIL.** Hiçbir modül dalgası mekanizma kurulmadan koşamaz.
 Bu planda o dalgaya **`Dalga-M`** denir — `B3b-0` ile karıştırılmasın.
 
+📌 **Sınıf: `F2` (bir ad, iki anlam) — plan seviyesinde.** *"Dalga-0"* bir **sıra
+numarasıydı** ve iki farklı içeriğe yapıştı. Ders: **aşama adları İÇERİK taşımalı, sıra
+numarası değil.** `Dalga-M(ekanizma)` bunu yapıyor; bundan sonraki aşama adları da
+öyle kurulur.
+
 ---
 
 ## 1 · TABAN (ölçüldü, `ADIM 0` sonrası)
@@ -125,10 +130,15 @@ dosyası** → **kesişim `0`** (poz.kontrol: `comm` bilerek ortak satırla sın
 ⚠️ **Ama bunlar KAPSAM HATTININ dosyaları** — kapsam hattında eşzamanlı tur varsa
 `H8` **sıralanır**, paralel koşmaz.
 
-📌 **Bitişiklik notu:** aynı fonksiyonda `T-028c` bayrak dalı yaşıyor
-(`access-scope.service.ts:175`, `PLANNER` flag-gated `UNRESTRICTED`) ve o kalem `Z25`
-tablosunda **⛔ KİLİT** (sağlayıcı: prod/UAT — bugün yok). `H8` ona **dokunmaz**, ama aynı
-dosyada olduğu için brief'te adı geçmeli.
+### ⛔ DOKUNULMAZ-KOMŞU (brief'e AYNEN girer)
+
+| komşu | nerede | statü | bu tur |
+|---|---|---|---|
+| **`T-028c` bayrak dalı** | `access-scope.service.ts:175` — `PLANNER` flag-gated `UNRESTRICTED`, **`H8`'in düzenlediği fonksiyonun İÇİNDE** | `Z25` tablosunda **⛔ KİLİT** (sağlayıcı: prod/UAT — bugün YOK) | ⛔ **DOKUNULMAZ** |
+
+> **Sessiz komşuluk, üç ay sonraki *"madem oradayız şunu da düzeltelim"* turunun
+> davetiyesidir.** Adlandırılmış komşuluk o kapıyı kapatır — bu yüzden komşu **adıyla**
+> anılır, *"dikkatli ol"* denmez.
 
 ---
 
@@ -142,10 +152,25 @@ Kurulacak: `@RequireCapability` dekoratörü + `CapabilityGuard` çözümlemesi.
 - **Pin:** iki-girdi-iki-çıktı — doğru capability → `200` · yanlış → `403`
 - **Kapsam:** `0` rota göçürülür. Mekanizma iner, kullanılmaz.
 
-⚠️ **`G5`'in şerhi burada devreye giriyor:** `route-cell-map.py`'nin `EXPECT` sabiti
-`ROLE_CAPABILITIES`'ten **bağımsız** yazılı ve script o dosyayı **okumuyor**. `Dalga-M`
-ile yetenek katmanı canlı kod olunca **çapraz kontrol gerekir** — aksi hâlde harita ile
-yetenek tablosu `G5` yeşilken ayrışabilir.
+### ⛔ KABUL KRİTERİ — `G5` çapraz-kontrolü ŞARTTIR (gelecek-uyarısı DEĞİL)
+
+`route-cell-map.py`'nin `EXPECT` sabiti `ROLE_CAPABILITIES`'ten **bağımsız** yazılı ve
+script o dosyayı **okumuyor**. **Harita ATIL olduğu sürece sorun yok** — guard atıl bir
+haritayı denetliyor. **Ama harita canlıya döndüğü an iki bağımsız temsil
+(`G5` sabiti ↔ çalışan harita) bir `İlke 4` çiftine dönüşür.**
+
+- [ ] `Dalga-M` kapanırken **ya `G5` `EXPECT`'i üreticiden/`ROLE_CAPABILITIES`'ten okur**,
+      **ya da** mutabakat kapısı ikisini **çakıştırır**
+- [ ] Mekanizma pini — **iki-girdi-iki-çıktı, mekanizmanın KENDİSİNDE** (test rotası ya da
+      fixture ile):
+
+```
+doğru capability   → 200
+yanlış capability  → 403
+haritasız rota     → MEVCUT DAVRANIŞ DEĞİŞMEDİ
+```
+
+- [ ] `0` rota göçer — mekanizma iner, kullanılmaz
 
 ---
 
@@ -188,6 +213,20 @@ pin kırmızıları        beklenmeyen kırmızı = davranış değişti = DALGA
 
 Sonnet'e inen ajanlarda bu üçü bozulursa model eşlemesi **ürün sahibiyle revize edilir** —
 varsayımla değil, bu ölçümle.
+
+### ⛔ `W1`'DE ORAN RAPORLANMAZ — MUTLAK SAYI + SINIF
+
+`W1` **`3` rota** — küçük örneklem. *"Çürüyen-iddia oranı"* gibi bir oran `3` rotada
+**anlamlı çıkmaz**; bir düşen iddia `%33` görünür ve karar bozar.
+
+```
+❌  "çürüyen-iddia oranı %33"
+✅  "1 iddia düştü — sınıf: enjeksiyon↔çağrı ayrımı"
+✅  "DUR 2 kez — biri kapsam-sütunu sınırı, biri numara tahsisi"
+```
+
+**Oran yorumu `W2`–`W3` birikimine bırakılır.** Küçük örneklemden oran türetmek,
+*"sayı değil liste"* kuralının **istatistik hâlidir**.
 
 ---
 
