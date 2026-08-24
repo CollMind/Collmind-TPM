@@ -24,6 +24,7 @@ göründü. Bulan şey bir mekanizma değil, bir ajanın **brief taramasıydı**
 | `Z21` seçenek 2 (`cpl_id` zarfa) | CPL-bazlı bütçe **gerçek müşteri ihtiyacı** olarak kanıtlanırsa | danışman turu / ilk müşteri | ⏳ bekliyor |
 | `Z22` paylaşılan-eksen filtresi | kanal/kategori bazlı zarf **talebi** doğarsa | — | ⏳ bekliyor · ⚠️ maliyet **revize**: tüketici tarafı zaten kurulu (`T-272`) |
 | **`Z32` `SUMMARY_READ ∧ A1 = 0`** | özet-şekilli kapsamsız `10` rota **kapsam alınca** | **kapsam-kalanları hattı** (`B3`'ün DEĞİL) | ⏳ **KOŞUL** — ✅ **ilk kayıt 2026-08-24: `10`** (ölçüldü, `B3b-0` sonrası). Sıfırlandığı gün kural **KAPIYA TERFİ EDER**: *"yeni bir `SUMMARY_READ` rotası kapsamsız DOĞAMAZ"* |
+| **`FINANCE` kapsam ayrışması** (aday karar) | `H8` terfisi (`UNRESTRICTED` → joker-satır modeli) **origin'e indiğinde** | `H8` | ⏳ **KOŞUL** — `H8`'den ÖNCE **temsil edilemez**. Ayrıntı: [§ FINANCE kapsam ayrışması](#-aday-karar--finance-kapsam-ayrışması-2026-08-24) |
 | `Z27` `/approvals/pending` yüklemi | `approval_levels` **dolduğunda** → yüklem şablon-çözümlemeli hâline göç eder | şablon motoru (`Faz 2`) | ⏳ **KOŞUL** — aktif izlenir |
 | `T-235` `T-028c` bayrağı | prod/UAT'de backfill doğrulanana kadar | prod/UAT ortamı | ⛔ **KİLİT** — sağlayıcı bugün YOK |
 | `0073` `report-only` envanteri | fiili trafikte doğrulanır | deploy edilmiş ortam | ⛔ **KİLİT** — sağlayıcı bugün YOK |
@@ -52,6 +53,78 @@ Bu tablonun `DURUM` kolonu bir etiket değil, bir **bakım talimatıdır**:
 **doğrudur**. Bir **koşul** için aynı cümle, tetikleyici geldiyse **yalandır** — ve
 ikisi tabloda aynı görünür. Rejim yazılmadan, `Z25`'in vakası (`Z21` şart 3, üç tur
 sessiz bekledi) **tekrarlanabilir**.
+
+---
+
+## ⏳ ADAY KARAR — `FINANCE` kapsam ayrışması (2026-08-24)
+
+**Kaynak:** ürün sahibi saha senaryosu — *"X,Y kategorilerinden bir `FINANCE` sorumluyken
+`Z`'den başkası sorumlu olabilir."*
+**Statü:** **aday karar**, verilmiş karar DEĞİL — `04_KARAR_KAYDI`'na girmez.
+**Tetik:** `H8` terfisi origin'e indiğinde **görüşülebilir** olur; öncesinde temsil edilemez.
+
+### Bugünkü durum — ÖLÇÜLDÜ 2026-08-24
+
+```
+user-scope.entity.ts:26   WILDCARD_SCOPE_ROLES = { ADMIN, FINANCE, READONLY }
+user.service.ts:240       if (WILDCARD_SCOPE_ROLES.has(dto.role)) → gönderilen kapsam YOK SAYILIR
+create-user.dto.ts:116    "ADMIN/FINANCE/READONLY için yok sayılır — otomatik joker"
+```
+
+⇒ **`FINANCE` için temsil yolu YOK.** Kapsam gönderilse bile sessizce düşer — bu bir
+eksiklik değil, `T-241`'in **bilinçli** tasarımı. Planner/CM için çift-tabanlı kapsam
+(`cplId`, `categoryId`) tam destekli.
+
+### Karar açılırsa — ÜÇ ZİNCİRLEME KALEM (kapsam budur; daha azı YARIMDIR)
+
+| # | kalem | dokunduğu |
+|---|---|---|
+| **1** | `K-2.6.4` revizyonu — *"Finans tenant-geneli"* cümlesi **kategori-bölünebilir** hâle gelir | `L2` değişikliği, **kayıtla** (`Z1` donma rejimi) |
+| **2** | **Onay + bildirim yüklemi** — eşik-üstü `FINANCE` kademesi ve `%90` bildirimi *"kapsamı KESİŞEN `FINANCE` kullanıcıları"*na iner | `T-276` (a)-yüklemi altyapıyı kuruyor · `K-2.5.12` şablon modeli · `PLAN_BUTCE_NETLESTIRME` bildirim pini — **aynı yüklemi alır** |
+| **3** | **Import/mutabakat ayrımı** — `{A,F}` **tür-düzeyi** yetki BÖLÜNMEZ; **satır-düzeyi** görünürlük kapsama iner | `Z35`/`K-2.6.14` — açıkça yazılır |
+
+⚠️ **Üçüncüsü `Z35`'i korur:** `K-2.6.14`'ün ayırt edicisi *"defter etkisi"*dir, kapsam
+değil. Kapsam **kimin göreceğini** daraltır, **kimin yazabileceğini** değil — ikisi
+karıştırılırsa `Z35`'in daraltması kapsam katmanına devredilmiş olur ve **tür-düzeyi
+kapı gevşer**.
+
+### Uygulama maliyeti (karar SONRASI) — düşük
+
+```
+WILDCARD_SCOPE_ROLES'tan FINANCE çıkar  +  yaratma akışına çift kabulü
+model tabanı HAZIR (cplId/categoryId satır modeli zaten çalışıyor)
+```
+
+### ⇒ İLİŞTİRİLEN ÖLÇÜM — `CM` normalizasyonu (istendi, YAPILDI 2026-08-24)
+
+> *"`CM` normalizasyonunun (`buildScope`) içeriği, CM-ayrışması fiilen kullanılmadan önce
+> ölçülür — tek bakışlık iş."*
+
+**`access-scope.service.ts:212-220` — çalışan kod (yorum değil):**
+
+```ts
+const pairs = rows.map((r) => {
+  if (role === UserRole.CATEGORY_MANAGER) {
+    return { cplId: null, categoryId: r.categoryId ?? null };   // ← cplId DÜŞÜRÜLÜYOR
+  }
+  return { cplId: r.cplId ?? null, categoryId: r.categoryId ?? null };  // PLANNER: R-1, düzleştirme YOK
+});
+```
+
+**İki şekil var, ve `FINANCE` hangisini alacağı BİR KARARDIR:**
+
+| şekil | davranış | senaryoya uygunluk |
+|---|---|---|
+| **`CM` şekli** | yalnız `categoryId`; `cplId` **satırda dolu olsa bile null'lanır** | ✅ *"X,Y kategorilerinden sorumlu"* — kanal-bağımsız |
+| **`PLANNER` şekli** | satır-bazlı `(cpl, category)` çifti, düzleştirme yok (`R-1`) | kanal × kategori gerekiyorsa |
+
+⛔ **Ve `CM` şeklinin sessiz bir yan etkisi var:** `cplId` **bilgi kaybıyla** düşürülüyor.
+Bir `FINANCE` kullanıcısına `(cpl, category)` satırı verilirse `CM` dalı `cpl`'i **sessizce
+atar**. Bu davranış `FINANCE`'a **miras alınmamalı**, *seçilmeli* — ve seçim yazılmalı.
+
+📌 Ayrıca `hasUnrestrictedRow` dalı (`:205`) **`H8`'in joker-satır modelidir** — yani tetik
+ile mekanizma **aynı fonksiyonda**. `H8` indiğinde bu kalemin temsil yolu kendiliğinden
+açılır.
 
 ---
 

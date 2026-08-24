@@ -558,6 +558,28 @@ yazılmış.
 
 **Soru:** bağımsız üçüncü bir hücre mi, yoksa iki-hücreli bölünmenin **hangi tarafına**?
 
+### ⚠️ `H8` ADIM 3'E UYARI — yazılacak cümlenin BİR ADAYI VAR
+
+`H8`'in ilk adımı *"`FINANCE`'ın `K-2.6.4` gerekçesi YAZILIR"*. **O cümleyi revize etmek
+isteyen bir aday karar `OPEN_DECISIONS`'ta bekliyor** — `FINANCE` kapsam ayrışması
+(`FAZ2_ACIK_KARARLAR.md § ADAY KARAR`), ve tetikleyicisi **`H8`'in kendisi**.
+
+```
+H8 adım 3    FINANCE'ın TENANT-GENELİ oluşunun gerekçesini yazar
+aday karar   o cümlenin KATEGORİ-BÖLÜNEBİLİR hale gelmesini ister
+```
+
+⛔ **Bu bir çelişki değil, bir SIRA — ama gerekçe *"kalıcı"* diye yazılırsa çelişkiye
+DÖNER.** `H8` adım 3'ü yazan tur, cümleyi **bölünebilirliğe kapalı** kurmamalı:
+*"Finans tenant-genelidir"* yerine *"Finans bugün tenant-genelidir; kategori-bölünmesi
+`OPEN_DECISIONS`'ta aday"*. Aksi hâlde aday karar bir **geri alma** gibi görünür, oysa
+**planlı bir evrim**.
+
+📌 `§ BİR KURALIN FAZ TABLOSU VARSA, YÜRÜRLÜKTEKİ SATIR OKUNUR` — bu, o kuralın
+**yazma tarafındaki** hâli: faz tablosu **yazılırken** açık bırakılmalı.
+
+---
+
 ### ⇒ CEVAP (`Z35`) — **İKİ-HÜCRELİ BÖLÜNMENİN `{A,F}` TARAFINA**, ve bir DÜZELTME olarak
 
 Üçüncü hücre **reddedildi**. Ürün sahibinin gerekçesi bir küme değil, bir **yöntem
