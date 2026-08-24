@@ -1227,6 +1227,48 @@ kataloğu) bir **şema tanımı değildir**. `L2`'nin her yerinde kavramlar Tür
 (`TAHAKKUK`, `GÖZLENEN`) ve **hiçbiri enum değeri olsun diye yazılmadı**. Bu, `K-2.2.7`'nin
 renk/davranış ayrımının aynısı: **görüntü katmanı davranışa sızmaz.**
 
+### Bir KAPI, ölçümün BAŞARISINI hata sayamaz (ZORUNLU)
+
+> **Bir kontrol İKİ İDDİAYI tek sinyalde birleştiriyorsa, ikisinden biri bir gün
+> diğerini YALANLAR.**
+> **"Mekanizma sağlıklı mı" ile "ölçüm sonucu ne" AYRI önermelerdir.**
+
+Ölçülmüş vaka (2026-08-24, `Z29`): iki ratchet guard'ı boş bir baseline'ı **her zaman**
+setup hatası sayıyordu:
+
+```bash
+route-scope.sh:343     if [ ! -s "$BASE_KEYS" ]  →  "SETUP HATASI" · exit 2
+scope-ratchet.sh:128   DÖRT kovaya (A1·A2·B·C) aynı kontrol
+```
+
+Niyet doğruydu — **bozuk bir baseline** yakalamak. Ama kanıt olarak **satır sayısı**
+seçilmişti:
+
+```
+"ayrıştırma çalıştı"  →  MEKANİZMA SAĞLIĞI
+"satır sayısı > 0"     →  ÖLÇÜM SONUCU
+```
+
+⇒ **Kontrol, ratchet'in BAŞARISINI yapısal olarak "hata" diye tanımlamıştı.** Ve
+`scope-ratchet`'te daha keskin: `A1` **tam olarak sıfıra indirilmeye çalışılan listeydi**.
+
+⚠️ **Dal hiç koşmamıştı** — `§`'nin *"bir kuralın doğru olduğunu kırmızıya dönmemesinden
+çıkarma; o kuralın reddedeceği girdi ona ULAŞIYOR mu?"* sınıfı. Ulaşmıyordu, ve doğru
+olduğu **bilinmiyordu**.
+
+**Pratik — bir kapı yazarken sor:**
+
+```
+1  Bu kontrolün reddettiği durum, projenin HEDEFİ olabilir mi?
+   → olabiliyorsa, kontrol yanlış şeyi ölçüyor
+2  Sağlık kanıtı BİÇİMDEN mi geliyor, SAYIDAN mı?
+   → sayıdan geliyorsa, sayının meşru sıfırı bir gün gelir
+3  Sıfır bir BAŞARI OLAYI mı? → öyleyse GÖRÜNÜR olmalı, sessiz geçilmemeli
+```
+
+📌 Ve çözüm bir **biçim alanı eklemek değil**: bir sentinel (`# ratchet: COMPLETE`)
+üçüncü bir sözleşme olur ve bayatlar. **Çıktı satırı** aynı işi yapar ve bayatlamaz.
+
 ### Bir TOPLAMIN azalması, bir SINIFIN girmediğinin kanıtı değildir (ZORUNLU)
 
 > **Bir toplamın azalması, bir sınıfın girmediğinin kanıtı değildir.**

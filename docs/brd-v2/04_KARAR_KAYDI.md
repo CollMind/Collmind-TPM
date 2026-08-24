@@ -2500,3 +2500,78 @@ alt sınıfı: yol bugün koşmuyor, o yüzden semantiği **kod söylemiyor**.
 
 > *"`61`'le başlayan hikâye sıfırla bitiyor"* — **düzeltilmiş hâli: sıfır, ÜÇ SAYACIN
 > sıfırıdır.**
+
+---
+
+## Z29 · Ratchet'ler kendi BAŞARILARINI hata sayıyordu — `(b)` ile düzeltilir
+
+**Tarih:** 2026-08-24 · **Karar veren:** ürün sahibi · **Tetikleyen:** `SELF` turu, `FILTRESIZ`'in ilk sıfırı
+
+### Kusurun ANATOMİSİ — iki iddia, tek sinyal
+
+```bash
+route-scope.sh:343     if [ ! -s "$BASE_KEYS" ]  →  "SETUP HATASI" · exit 2
+scope-ratchet.sh:128   DÖRT kovaya (A1·A2·B·C) aynı kontrol · exit 2
+```
+
+**İki farklı önerme tek sinyalde birleştirilmiş:**
+
+```
+"ayrıştırma çalıştı"  →  MEKANİZMA SAĞLIĞI
+"F sayısı > 0"         →  ÖLÇÜM SONUCU
+```
+
+> **İkincisini birincinin KANITI yapmak, ancak sonuç HİÇ SIFIR OLAMAYACAKSA doğru
+> kalır — ve ratchet'in bütün amacı o sonucu sıfıra indirmekti.**
+>
+> ⇒ **Kontrol, ratchet'in BAŞARISINI yapısal olarak "hata" diye tanımlamıştı.**
+
+⚠️ Dal bugüne kadar **hiç koşmadı**, o yüzden kimse görmedi. `§`'nin *"bir kuralın doğru
+olduğunu kırmızıya dönmemesinden çıkarma — o kuralın reddedeceği girdi ona ULAŞIYOR
+mu?"* sınıfının kitabına uygun vakası; **cevabı hayırdı**.
+
+📌 Ve `scope-ratchet` daha keskin: **`A1` tam olarak sıfıra indirilmeye çalışılan liste**
+(kapsam eksiği kovası). `ADIM 3` başardığı gün guard onu **hata** sayacaktı.
+
+### Karar — `(b)`, üç şartla
+
+**1 · Ayrıştırma sağlığı KENDİ sinyalini alır** — *"başlık biçimi görüldü mü"*,
+`F` sayısından **bağımsız**.
+
+> **Boş-ama-geçerli ile bozuk-baseline'ı ayıran şey İÇERİK BİÇİMİDİR, satır sayısı
+> değil.**
+
+**2 · İki-girdi-iki-çıktı kanıtı zorunlu**, ve **sıfır SESSİZ geçilmez**:
+
+```
+gerçekten bozuk (başlıksız/çorba)  →  exit 2
+boş-ama-geçerli                    →  exit 0  +  "ratchet TAMAMLANDI" ÇIKTISI
+```
+
+> **Sıfır bir BAŞARI OLAYIDIR ve görünür olmalı** — `B4`'ün ön koşulu **tam o satırı
+> okuyacak**.
+
+**3 · Düzeltme SINIFA uygulanır, vakaya değil.** Envanter ölçüldü: `! -s` deseni **iki**
+guard'da (`route-scope` tek liste · `scope-ratchet` dört kova). ⚠️ Ajan bunu **genişletmekle**
+yükümlü — sayı-tabanlı baseline'lar aynı sınıfın **farklı biçimini** taşıyabilir.
+
+📌 **`B3b`'nin kalan-`@Roles` ratchet'i doğduğu gün SIFIR-GÜVENLİ doğsun** — bu düzeltme
+onun **ön koşulu**.
+
+### `(a)` reddedildi, ama YARISI `(2)`'de yaşıyor
+
+Sentinel (`# ratchet: COMPLETE`) **reddedildi**: bir **biçim alanı** üçüncü bir sözleşme
+olurdu. Ama kendini-belgeleme ihtiyacı **gerçekti** — çözümü **script çıktısına açık bir
+"tamamlandı" satırı** koymak.
+
+> **Biçim alanı üçüncü bir sözleşme olur; çıktı satırı olmaz.**
+
+### Kovaların YORUMU farklı, kontrol AYNI
+
+```
+A1 · A2 · FILTRESIZ   sıfıra inmesi HEDEF       →  "TAMAMLANDI" anlamlı
+B · C                 sınıflandırma kovaları    →  boşalması BEKLENMEZ, ama
+                                                   "bozuk" da demek DEĞİL
+```
+
+Kontrol **tek biçimde** (biçim sağlığı); **çıktı metni** kovaya göre farklılaşabilir.
