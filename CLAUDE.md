@@ -380,6 +380,25 @@ edebiliyor mu?" diye sor. Yeşil olması, ayırt ettiği anlamına gelmez.
 >
 > **Üç vaka bir desendir.**
 >
+> ### ⛔ VE BİR RATCHET, TAŞIDIĞINI ANLAMAZ (ZORUNLU)
+>
+> **Bir hatayı SAYMAK, onu ANLAMAK değildir.** Baseline'a giren bir bulgu **bilinir**
+> hâle gelir, **anlaşılmış** hâle gelmez — ve ratchet yeşil kaldığı sürece kimse
+> *"bu neden burada?"* diye sormaz.
+>
+> Ölçülmüş vaka (2026-08-24, `T-279`): `lint-ratchet-baseline:112`
+> `agreement-transaction.controller.ts @typescript-eslint/no-unused-vars 1` satırını
+> **taşıyordu**. O `1`, `@Query('status')`'ün **hiç kullanılmamasıydı** — ve frontend o
+> parametreyi **gönderiyordu**. Yani ratchet, **canlı bir sessiz-yoksaymayı** sayıyor ama
+> **adlandırmıyordu**.
+>
+> ⚠️ Ve görünme sebebi bir refleks değil, bir **kapsam kazası**: `T-277` o dosyaya
+> dokununca dosya `npm run lint` kapsamına girdi (`§ T-100`: *"kapının kapsamı
+> dinamik"*). **Dokunulmasaydı görünmeyecekti.**
+>
+> **Pratik:** bir baseline satırı eklerken ya da bir `improved` satırını kapatırken sor —
+> *"bu sayının ARKASINDA ne var?"* Sayı bir **envanterdir**, bir **teşhis değil**.
+>
 > 📌 Ve bu `§`'nin *"bir kusur başka bir kusur tarafından örtülebilir"* ailesinin
 > **zaman eksenli** üyesi: örten şey ikinci bir kusur değil, **verinin yokluğu** — ve
 > veri geldiği gün kusur **kendiliğinden** ortaya çıkar, bir düzeltme turu olmadan.
