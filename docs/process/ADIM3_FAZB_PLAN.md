@@ -443,6 +443,43 @@ kuralın reddedeceği girdi ona ULAŞIYOR mu?"* **Ulaşmıyordu.**
 | **b** | kontrolün **NİYETİNİ** düzelt — *"ayrıştırma çalıştı mı"* sorusu `F` sayısıyla değil **başlık biçimiyle** cevaplanır | ✅ **Team Lead önerisi** — kontrol zaten **yanlış soruyu** soruyordu |
 | **c** | üç bayat `F` satırı kalsın | ⛔ ratchet **yalan söyler**, `İYİLEŞTİ` gürültüsü kalıcılaşır |
 
+### ✅ KAPANDI (2026-08-24, `Z29` → `6cc6a91` + `1adeb14`)
+
+Karar **`(b)`**, üç şartla. Ve `(a)`'nın yarısı `(2)`'de yaşadı:
+*"biçim alanı üçüncü bir sözleşme olur; **çıktı satırı olmaz**."*
+
+**Team Lead bağımsız ölçtü** (gerçek baseline kopyalanıp `shasum -a 256 -c` ile geri
+yüklendi):
+
+```
+boş-ama-geçerli       →  EXIT=0  + "RATCHET TAMAMLANDI: baseline biçimi SAĞLIKLI,
+                                    SIFIR 'F ' satırı"
+başlıksız (çorba)     →  EXIT=2    "başlık biçimi TANINMADI"
+başlıklı+bozuk satır  →  EXIT=2    "TANINMAYAN satır(lar) içeriyor"
+```
+
+**Envanter:** `! -s` deseni **iki** guard'da; `money-float`/`lint-ratchet`/`mode-split`
+satır-satır `while read` ile işliyor, aggregate *"sıfır = hata"* kontrolü **yok**.
+Üçüncü vaka **bulunmadı**.
+
+---
+
+## 🏁 `Z28`'İN ÜÇ SAYACI — HEPSİ SIFIR
+
+```
+1  FILTRESIZ = 0                              ✅  1adeb14
+2  @Roles taşıyan SELF uçları = 0              ✅  80aa843
+3  guard dördüncü kovayı TANIYOR               ✅  80aa843 (case 1h/1i/5)
+```
+
+> **`B4`'ün (default-deny) ÖN KOŞULU SAĞLANDI.**
+
+📌 Ve `route-scope` bu reponun **ilk tamamlanmış ratchet'i**: `T-252`'de `59` ile
+kuruldu, `B2` ile `3`'e indi, `SELF` ile **`0`**.
+
+⚠️ Kalan yol `B3` (kur + türet + göçür) — `B4` onun **ardından**, çünkü `B4`'ün
+default-deny'ı `@RequireCapability`'yi tanımak zorunda.
+
 ⚠️ **`(b)` seçilirse `§`'nin kuralı geçerli:** gerçekten bozuk bir baseline hâlâ
 `exit 2` vermeli, boş-ama-geçerli `exit 0` — **iki farklı girdi, iki farklı çıktı**.
 
