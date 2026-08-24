@@ -3243,3 +3243,22 @@ Tek okumalık envanter; **refleks-açığı sınıfını kökten kapatır**. Aci
 ```
 
 ⇒ **`H1`'in son `DUR`'u KAPANDI. `B3b-1`'in gerçek tabanı artık OKUNABİLİR.**
+
+> ### `F12` EKİ (2026-08-24, `B3b-1 ADIM 0`) — SAYININ STATÜSÜ DÜŞÜRÜLDÜ
+>
+> **Yukarıdaki `6` ve `12` o günün FOTOĞRAFIDIR; üye listesi ÜRETİCİDEN okunur:**
+> `collmind.backend/scripts/analysis/route-cell-map.py`.
+>
+> Sayı **düzeltilmedi** — `{A,F}` bugün `8` ölçülüyor (sayılmayan ikisi
+> `POST /agreement-transactions/batch` · `POST /actuals-first/sales-actuals/upload`,
+> **ikisi de `@Roles=ADMIN,FINANCE`**, yani **bölünmenin YÖNÜ doğru**, yalnız
+> enumerasyon elle yazılmış ve eksikti).
+>
+> ⛔ **Sonraki tur hücreyi `6`'ya MUTABIK KILMAYA KALKMAMALI.** Kanonik kaynak
+> üreticidir; bu blok bir **karar kaydıdır**, bir üye listesi değil.
+>
+> **KODA İNİŞ:** bölünme `B3b-1 ADIM 0`'da indi —
+> `MODES_ACTUALS_WRITE` (`modes:actuals-write`) · `MODES_PLAN_WRITE` (`modes:plan-write`).
+> Ayrıntı ve kabul kriteri: `docs/process/B3B_RATCHET_TABANI.md §3`.
+>
+> 📌 *Türev-belge kuralının (`CLAUDE.md`) ilk rutin uygulaması.*
