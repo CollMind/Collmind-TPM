@@ -172,6 +172,28 @@ doğrulama**. O turda katman fazlasıyla vardı: dört mutasyonla-kırılmış k
 değiştiren sınıfa komşu olduğu için (haritanın koda inişi) `code-reviewer` o turda
 **geri devrede**.
 
+> ### ⛔ MUAFİYETİN SINIRI DARALTILDI (ürün sahibi, 2026-08-24)
+>
+> **`"davranışsız tur"` muafiyeti, KURAL METNİ ÜRETEN turları KAPSAMAZ.**
+>
+> Gerekçe bir **ölçülmüş oran**: *"bir kuralı yazdığın tur, o kuralı en çok ihlal
+> ettiğin turdur"* maddesinin bu oturumda **üç** vakası oldu, ve **üçünde de yazan
+> yakalamadı, ikinci göz yakaladı**:
+>
+> ```
+> ADIM 0   sentinel yorumu "G1 kapısına düşer" — ölçülmemişti, FAIL-OPEN'dı
+> H8/S3    "ADMIN is always UNRESTRICTED" — H8'in yalanladığı geniş-zaman cümleler
+> H8/N1    yetim JSDoc sınıfı AYNI TURDA düzeltildi ve AYNI TURDA yeniden üretildi
+> ```
+>
+> 📌 **Çıkarım *"dikkat et"* değil, YAPISAL:** kural yazımı, yazarın o kuralın
+> ihlal-desenine **en yüklü** olduğu andır — deseni taze kurduğu için **her yerde**
+> onu görür, **kendi metninde göremez**. Bir refleks bu körlüğü kapatmıyor; **ikinci
+> bir göz** kapatıyor.
+>
+> ⇒ Kural metni · `JSDoc` · guard yorumu · `L2` maddesi üreten her tur:
+> **`code-reviewer` ZORUNLU**, davranış değişmese bile.
+
 ---
 
 ## Nereden geldi

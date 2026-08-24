@@ -172,6 +172,38 @@ haritasız rota     → MEVCUT DAVRANIŞ DEĞİŞMEDİ
 
 - [ ] `0` rota göçer — mekanizma iner, kullanılmaz
 
+> ### ⛔ VE BU YÜZDEN `Dalga-M` `done` DEĞİL — `blocked-unreachable`
+>
+> `§4.2` **ZORUNLU**: *"Üretim çağrı yolu var mı? … Yol yoksa status `done` DEĞİL."*
+> Ölçüldü (2026-08-25): `@RequireCapability` üretim atfı **`0`** · `CapabilityGuard`
+> üretim atfı **`0`** (tek geçiş bir **yorumda**) · `route-scope.awk` col9 **223/223
+> sıfır**. POZ.KONTROL: `RolesGuard` **31** controller.
+>
+> **Tüketici ADIYLA kayıtlı: [[T-284]]** — `W1` pilotu. Bu bağ bir `TODO`'da değil,
+> bir **task**ta yaşar (*"bilinen eksiklik TODO ile değil, TASK ile kaydedilir"*).
+>
+> 📌 Bu bir kusur değil, **kapsamın kendisi** — ama statü kuralı yine de geçerli, ve
+> `T-052/T-062` ailesinin sekiz vakası tam olarak *"mekanizma var, yol yok"*un
+> `done` yazılmasından doğdu.
+- [ ] **Kural metni üretiliyorsa (dekoratör `JSDoc`'u, guard yorumları) →
+      `code-reviewer` ZORUNLU** — muafiyetin daraltılmış hâlinin ilk uygulaması
+
+### ⛔ KAPSAM SINIRI — `CapabilityGuard`, `RolesGuard`'ın YANINA kurulur, YERİNE DEĞİL
+
+```
+Dalga-M      CapabilityGuard DOĞAR            RolesGuard AYNEN yaşar
+W1…W8        ikisi BİRLİKTE yaşar             rota-başına TEK mekanizma kuralıyla
+B4           RolesGuard'ın ÖLÜMÜ              ← Dalga-M'in işi DEĞİL
+```
+
+> **Bu sınır brief'te ADIYLA durur** ki mekanizma turu *"madem kurduk, eskisini de
+> kaldıralım"* çekimine kapılmasın. `223` rotanın `211`'i bugün `@Roles` taşıyor;
+> `RolesGuard` **W1–W8 boyunca** taşıyıcı mekanizmadır.
+>
+> 📌 Geçiş dönemi **repo-genelinde ratchet'li**: kalan-`@Roles` listesi her dalgada
+> düşer, ve `RolesGuard` o liste **boşalmadan** kaldırılamaz. Kaldırma anı bir
+> **karar** değil, bir **ölçüm sonucudur**.
+
 ---
 
 ## 4 · MODÜL DALGALARI — `139`, sekiz dalga
