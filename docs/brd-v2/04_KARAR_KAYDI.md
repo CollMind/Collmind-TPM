@@ -3025,3 +3025,112 @@ KAPSAMSIZ DOĞAMAMASI.**
 > (`223` evreninden), KAPSAM KOVASI FİLTRESİZ.**
 
 Team Lead'in `10`'luk dış-evren taraması **o türetimin ilk girdisi**.
+
+---
+
+## Z33 · `MODES_WRITE`'ın ÜÇÜNCÜ hücresi REDDEDİLDİ — ve adlandırma VERİ SINIFINDAN
+
+**Tarih:** 2026-08-24 · **Karar veren:** ürün sahibi · **Tetikleyen:** `B3b-0`'ın `H1` `DUR`'u
+
+### Karar — üçüncü hücre YOK
+
+> **Bir hücre ayrı olmayı, AYRI BİR ROL-KÜME SINIFI temsil ediyorsa hak eder.**
+> **TEK ROTA SINIF DEĞİL, VAKAdır.**
+
+📌 **Sözlük ölçütünün hücre hâli:** bir olay ayrı tür olmayı *"denetimin cevaplayamayacağı
+soru varsa"* hak ediyordu (`Madde 1`); bir hücre de aynı eşiği geçmeli.
+
+⚠️ **Aksi hâlde:** `n=1` hücre kabul edilirse, bir sonraki tuhaf rota da hücresini ister ve
+**harita, rotaların AYNASI olmaktan çıkıp KOPYASI olur** — `H3`'ün sildiği enflasyonun
+**doğum yönünden** geri gelişi.
+
+**`MODES_SUBMIT` emsali bunu ÇELMEZ** — o **üç** şartla doğdu, ve burada **üçü de yok**:
+
+```
+MODES_SUBMIT   n=5  ∧  TEK küme  ∧  katalogda YAZILI cümle ("gönderim", K-2.6.4)
+n=1 rotası     n=1  ∧  —         ∧  —
+```
+
+### ⛔ AMA İLİŞTİRME YÖNÜ BUGÜN VERİLEMEZ — her iki yön de bir GÜNAH işliyor
+
+```
+{A,F}'ye iliştir  →  PLANNER DÜŞER = davranış DARALTMASI
+                     ancak Z20 gibi KAYITLI GEREKÇEYLE yapılabilir
+{A,P}'ye iliştir  →  o tarafa FINANCE eklenir = H1'in REDDETTİĞİ şekle döner
+```
+
+⇒ **Her iki iliştirme de ya bir İSTİSNA KAYDI ya bir UNION üretiyor.** Hakem: **üç
+ölçülmemiş soru** (`ÖLÇÜM 1` veri sınıfı + tetiklenme · `ÖLÇÜM 2` `K-2.6.14` testi ·
+`ÖLÇÜM 3` `PLANNER` cümlesi).
+
+### 📌 BEYAN ≠ GEREKÇE — ve bu, `B3a` sınır-notu `#1`'in İLK ZORUNLU UYGULAMASI
+
+Rotanın kümeyi **kendi beyanıyla** taşıması (`T9 ✅`) **doğru okuma** — union türetimi
+**yok**. Ama `B3a`'nın kendi sınır notu bunu söylüyordu:
+
+> *"Birebir-`✅` satırlar bile cümle şartını HENÜZ KARŞILAMIYOR."*
+
+Bu rota, o notun **ilk zorunlu uygulaması** oldu.
+
+### Geçici durum
+
+Rota **`H1`-`DUR` listesinde kalır** (zaten orada — **yeni blokaj değil**). **Bölünmenin
+diğer `17`'si onu BEKLEMEZ:**
+
+> `n=1`'i bekletmek ratchet'i **anlamlı geciktirmez**; `17`'yi bekletmek **geciktirir**.
+
+### ⛔ ADLANDIRMA İLKESİ — hücre adları VERİ SINIFINDAN gelir
+
+```
+{A,F} tarafı   →   gerçekleşme/alım YAZIMI
+{A,P} tarafı   →   plan/anlaşma YAZIMI
+```
+
+> ⛔ **`AF_WRITE` gibi bir KÜME-ADI, kümenin GEREKÇESİNİ ADIN İÇİNE GÖMER — ve küme
+> değişince AD YALAN SÖYLER.**
+
+📌 Ve bu adlandırmayla `n=1` sorusu **doğru formuna iner**:
+
+> ***"Bir GERÇEKLEŞME-YAZIM yüzeyinde `PLANNER` ne arıyor?"***
+
+Cevabı `ÖLÇÜM 2` verir — ve cevabı **iliştirmenin TÜRÜNÜ** de belirliyor:
+
+```
+K-2.6.14 testi EVET  →  {A,F}'ye iliştirme bir DÜZELTMEdir, İSTİSNA DEĞİL
+                        ⇒ rota YANLIŞ DOĞMUŞ (budget_allocations deseninin küçüğü)
+K-2.6.14 testi HAYIR →  ÖLÇÜM 3: üç rolün ÜÇÜ DE cümle ister (soru SİMETRİK)
+```
+
+---
+
+## Z34 · Ham `grep` HÜKÜM üretmez — kanonik ayrıştırıcı zorunlu
+
+**Tarih:** 2026-08-24 · **Karar veren:** ürün sahibi
+
+### Ölçülmüş vaka — ve teşhis DEĞİŞTİ
+
+Bir oturumda **üç kez** aynı sınıf hata: `stderr` kapsamayan tarama · satır sonunu aşamayan
+desen · **yorum kirliliği**. Üçü de **yanlış-negatif** yönünde, ve **kural yazılıyken**
+tekrarladı.
+
+> **Kural yazılıyken üç kez tekrarlıyorsa, bu bir DİSİPLİN açığı değil — bir ARAÇ açığıdır.**
+
+⚠️ **Ama ölçüm teşhisi bir adım öteye taşıdı:** araç **zaten vardı**
+(`scripts/guards/find-importers.sh`, `T-212`), ve aynı soruya **doğru cevabı** veriyordu
+(`capabilities` → `0` tüketici). **`CLAUDE.md`'nin import kuralı onu ADLANDIRMIYORDU.**
+
+⇒ **Bir ARAÇ-YÖNLENDİRME açığı.**
+
+### Kural
+
+```
+ham grep                →  ÖN-TARAMA üretir
+"tüketici yok/import yok" HÜKMÜ  →  KANONİK AYRIŞTIRICIDAN gelir
+```
+
+📌 **Emsal `route-scope.awk`:** rota sorusunun kanonik ayrıştırıcısı var, ve **ham `grep`'e
+kimse düşmüyor**. Aynı şey import/tüketici sorusu için de geçerli olmalıydı — araç vardı,
+**kural işaret etmiyordu**.
+
+> **Üçüncü tekrar, kuralın KİŞİYE değil ALETE bağlanma anıdır** — `E6`'nın doğuş
+> hikâyesinin birebir aynısı.

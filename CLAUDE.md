@@ -2439,6 +2439,35 @@ hâli.
 
 > **Doğru desen: DİZİN ADIYLA ara, göreli önekle değil.**
 
+> ### ⛔ VE BU DESEN BİR ARACA BAĞLIDIR — HAM GREP HÜKÜM ÜRETMEZ (ZORUNLU)
+>
+> ```bash
+> bash scripts/guards/find-importers.sh <dizin-adı> [arama-kökü ...]
+> ```
+>
+> **`"tüketici yok"` / `"import yok"` HÜKMÜ KANONİK AYRIŞTIRICIDAN gelir.**
+> **Ham `grep` yalnız bir ÖN-TARAMA üretir.**
+>
+> Araç üç şeyi birden yapar ve **ham `grep` üçünü de kaçırır**:
+> göreli yolun **her yazımını** kapsar (`./x` · `../x` · `../../x` · barrel `…/index`) ·
+> `import … from '…'` **şeklini** şart koşar, yani **yorumdaki bir yol atfı EŞLEŞMEZ** ·
+> **tam listeyi** basar (`§7.1`: *"bir sayı, eşleşmeleri örneklenmeden raporlanamaz"* —
+> liste **zaten örnektir**).
+>
+> ⚠️ **Ölçülmüş vaka (2026-08-24):** Team Lead *"`capabilities.ts`'in tüketicisi var mı"*
+> sorusunu ham `grep` ile sordu, bir **JSDoc satırına** düştü ve *"import ediyor"* sandı.
+> Araç aynı soruya **`0` tüketici** diyor — ve ayrımı bir **fixture'lı self-test** ile
+> kanıtlıyor.
+>
+> 📌 **Ve bu bir DİSİPLİN açığı değil, bir ARAÇ-YÖNLENDİRME açığıydı:** araç **zaten
+> vardı**, kural onu **adlandırmıyordu**. Aynı sınıf bir oturumda **üç kez** tekrarladı
+> (`stderr` kapsamayan tarama · satır sonunu aşamayan desen · yorum kirliliği) ve
+> **üçü de yanlış-negatif** yönündeydi.
+>
+> > **Üçüncü tekrar, kuralın KİŞİYE değil ALETE bağlanma anıdır** — `route-scope.awk`'ın
+> > doğuş hikâyesinin aynısı: rota sorusunun kanonik ayrıştırıcısı var, ve **ham `grep`'e
+> > kimse düşmüyor.**
+
 Ölçülmüş vaka (2026-08-14, iki farklı turda): `entities/index.ts`'in tüketicisi arandı.
 
 | tur | desen | bulunan | gerçek |
