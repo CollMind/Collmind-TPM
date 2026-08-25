@@ -1,9 +1,9 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-25 · W1 + T-285 sonrası (göçen rotalar HARİTADA KALIR)
-# ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr), burada değil.
+# ölçüm: 2026-08-25 · W3 sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
+# ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
-src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	?	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
-src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log/high-risk	?	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
+src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
+src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log/high-risk	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
 src/modules/customer/customer.controller.ts	POST	customers	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
 src/modules/customer/customer.controller.ts	POST	customers/bulk	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
 src/modules/customer/customer.controller.ts	GET	customers	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
@@ -153,7 +153,7 @@ src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/return-t
 src/modules/modes/planning-first/plan/plan.controller.ts	DELETE	plans/:id	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/calculate-kpis	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/recalculate	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
-src/modules/notification/notification.controller.ts	POST	notifications/:id/read	?	NOTIFICATION_WRITE	MEKANIK	CAP	NOTIFICATION_WRITE
+src/modules/notification/notification.controller.ts	POST	notifications/:id/read	-	NOTIFICATION_WRITE	MEKANIK	CAP	NOTIFICATION_WRITE
 src/modules/shared/approval/approval-policy.controller.ts	PATCH	approval-policies/:id	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
 src/modules/shared/approval/approval.controller.ts	GET	approvals	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
 src/modules/shared/approval/approval.controller.ts	GET	approvals/pending	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
@@ -196,20 +196,20 @@ src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-c
 src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-combinations/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
 src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-budget/:planId	ADMIN,CATEGORY_MANAGER,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
 src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-before-submission/:planId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/tenant/tenant.controller.ts	POST	tenants	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
-src/modules/tenant/tenant.controller.ts	GET	tenants	ADMIN	TENANT_READ	MEKANIK	ROLES	-
-src/modules/tenant/tenant.controller.ts	GET	tenants/:id	ADMIN	TENANT_READ	MEKANIK	ROLES	-
-src/modules/tenant/tenant.controller.ts	PATCH	tenants/:id	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
-src/modules/tenant/tenant.controller.ts	DELETE	tenants/:id	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
-src/modules/tenant/tenant.controller.ts	POST	tenants/:id/activate	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
-src/modules/tenant/tenant.controller.ts	POST	tenants/:id/suspend	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
-src/modules/tenant/tenant.controller.ts	GET	tenants/:id/stats	ADMIN	TENANT_READ	MEKANIK	ROLES	-
-src/modules/user/user.controller.ts	POST	users	ADMIN	USER_WRITE	MEKANIK	ROLES	-
+src/modules/tenant/tenant.controller.ts	POST	tenants	-	TENANT_WRITE	MEKANIK	CAP	TENANT_WRITE
+src/modules/tenant/tenant.controller.ts	GET	tenants	-	TENANT_READ	MEKANIK	CAP	TENANT_READ
+src/modules/tenant/tenant.controller.ts	GET	tenants/:id	-	TENANT_READ	MEKANIK	CAP	TENANT_READ
+src/modules/tenant/tenant.controller.ts	PATCH	tenants/:id	-	TENANT_WRITE	MEKANIK	CAP	TENANT_WRITE
+src/modules/tenant/tenant.controller.ts	DELETE	tenants/:id	-	TENANT_WRITE	MEKANIK	CAP	TENANT_WRITE
+src/modules/tenant/tenant.controller.ts	POST	tenants/:id/activate	-	TENANT_WRITE	MEKANIK	CAP	TENANT_WRITE
+src/modules/tenant/tenant.controller.ts	POST	tenants/:id/suspend	-	TENANT_WRITE	MEKANIK	CAP	TENANT_WRITE
+src/modules/tenant/tenant.controller.ts	GET	tenants/:id/stats	-	TENANT_READ	MEKANIK	CAP	TENANT_READ
+src/modules/user/user.controller.ts	POST	users	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
 src/modules/user/user.controller.ts	GET	users	ADMIN,FINANCE	USER_MANAGE	Z20	ROLES	-
-src/modules/user/user.controller.ts	GET	users/:id	ADMIN	USER_MANAGE	Z20	ROLES	-
-src/modules/user/user.controller.ts	PATCH	users/:id	ADMIN	USER_WRITE	MEKANIK	ROLES	-
-src/modules/user/user.controller.ts	PATCH	users/:id/scope	ADMIN	USER_WRITE	MEKANIK	ROLES	-
-src/modules/user/user.controller.ts	PATCH	users/:id/password	ADMIN	USER_WRITE	MEKANIK	ROLES	-
-src/modules/user/user.controller.ts	POST	users/:id/activate	ADMIN	USER_WRITE	MEKANIK	ROLES	-
-src/modules/user/user.controller.ts	POST	users/:id/deactivate	ADMIN	USER_WRITE	MEKANIK	ROLES	-
-src/modules/user/user.controller.ts	DELETE	users/:id	ADMIN	USER_WRITE	MEKANIK	ROLES	-
+src/modules/user/user.controller.ts	GET	users/:id	-	USER_MANAGE	Z20	CAP	USER_MANAGE
+src/modules/user/user.controller.ts	PATCH	users/:id	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
+src/modules/user/user.controller.ts	PATCH	users/:id/scope	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
+src/modules/user/user.controller.ts	PATCH	users/:id/password	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
+src/modules/user/user.controller.ts	POST	users/:id/activate	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
+src/modules/user/user.controller.ts	POST	users/:id/deactivate	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
+src/modules/user/user.controller.ts	DELETE	users/:id	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
