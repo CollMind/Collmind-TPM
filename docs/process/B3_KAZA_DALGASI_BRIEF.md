@@ -11,67 +11,51 @@ istisnalar sessizce modül dalgasına KARIŞMAZ."*
 
 ---
 
-## 0 · ⛔ ÖNCE: bir hükmün DAYANAĞI ölçümle değişti — `LTA`
+## 0 · ✅ `LTA` HÜKMÜ — **(b)**, ve önceki hükmün AÇIK GERİ ÇEKİLİŞİ
 
-Ürün sahibi `LTA` dörtlüsü için hizalamayı (`{ADMIN}` → `{ADMIN,PLANNER}`) **bir ölçüm
-şartına** bağladı:
+> **Ürün sahibi, 2026-08-26:** *"`(a)` benim hükmümdü **ama dayanağı öldü**."*
 
-> *"UI `PLANNER`'a LTA formu sunuyorsa hizalama `T-277`'nin ters yönlü kapanışıdır
-> (API ekrana yetişir); sunmuyorsa genişleme ekransız iner."*
-
-**Ölçüm iki dalın hiçbirini vermedi — üçüncü bir durum çıktı.**
+`(a)`'nın gerekçesi *"kardeş emsal"*di. Ölçüm o emsalin **kimlik değiştirdiğini**
+gösterdi: `POST /agreements` bir emsal değil, **LTA'nın canlı yazma yolu**. Ve ölçüm
+şartının **iki dalı da tetiklenmedi** — üçüncü bir durum çıktı:
 
 ```
-LTA FORMU VAR ve PLANNER'A AÇIK        LTAAgreementForm.tsx
-                                       AgreementsPage.tsx:280 (montaj)
-                                       /agreements ekranı: ADMIN,PLANNER,CM,…
-
-AMA FORM BU ROTALARA GİTMİYOR          onSubmit → handleCreate → useCreateAgreement
-                                       → agreements.endpoints.ts:23
-                                       → POST /agreements     ← lta-agreements DEĞİL
-
-FRONTEND'İN lta-agreements ATFI        SIFIR
-POZ.KONTROL                            aynı grep spend-calculation'ı buluyor (8 atıf)
+form VAR ve PLANNER'a AÇIK   ama  POST /agreements'e gidiyor
+frontend'in lta-agreements atfı   SIFIR   (poz.kontrol: aynı grep spend-calculation'ı buluyor)
 ```
 
-### Ve altından ikinci bir şey çıktı: **İKİ AYRI LTA YAZMA YOLU, İKİ AYRI TABLO**
+⇒ Hizalama artık *"API'yi ekrana yetiştirmek"* değil, **tüketicisiz bir paralel yolu
+genişletmek** olurdu — `Z21`-musluğu deseninin **rol hâli**. Ve geri-alma maliyeti:
+**genişleme tek yönlü kapıdır, askı değil.**
 
-| yol | küme | yazdığı | frontend |
-|---|---|---|---|
-| `POST /agreements` | `{ADMIN,PLANNER}` | `agreements` (`agreementType: LTA`, *"LTA > 30 gün"* doğrulaması) | **CANLI** |
-| `POST /lta-agreements` | `{ADMIN}` | `lta_agreements` + `lta_rates` | **atıf yok** |
-
-📌 `CLAUDE.md §7`'nin adıyla saydığı desen: *"bu projede aynı yetenek birden çok kez
-yazıldı: **iki submit yolu**, iki lumpsum dağıtım implementasyonu, iki CSV parser…"*
-
-⚠️ **Ama bu `T-289` ile AYNI SINIF DEĞİL** — ve fark önemli:
+### Şart 1 — meşruiyet sorusu ROTADAN BÜYÜK: bu bir ÇİFT-MODEL sorusudur
 
 ```
-T-289          paralel yazma yolu,  CANLI ekrandan tetiklenebilir,  denetimsiz musluk
-LTA dörtlüsü   yazma yolu,          hiçbir ekrandan tetiklenmiyor,  "mekanizma var, yol yok"
+agreements(agreementType:LTA)        ↔   lta_agreements + lta_rates
+                                          ve W4a/Z36'nın OKUMA rotaları İKİNCİ tabloyu okuyor
 ```
 
-Ve `lta_agreements` **ölü değil**: `W4a`'da göçen üç `GET` ve `Z36 §5`'in üç
-hesap-okuma rotası o tabloyu **okuyor**.
+Yazma yolu sıfır tüketiciliyse **o tablo neyle doluyor?** Cevap *"seed-only"* ise bu bir
+**`İlke 3` ihlali adayıdır** (*"verisi düzenlenemeyen kural fiilen koddur"* — mekanik-alanları
+dersinin LTA hâli) ve `budget_allocations` deseninin **büyüğü** olabilir: **yarı-ölü paralel
+model**.
 
-### ⇒ Ürün sahibine giden soru (bu dalga başlamadan)
+⇒ Ölçüm turu yalnız *"yazma meşru mu"* değil, **"hangi model KANONİK"** sorusunu cevaplar
+(`K-2.2.3` ailesi: aynı kavram, iki çözümleme). Üç kapıdan birine çıkar:
 
-Hizalama hükmünün gerekçesi *"kardeş emsal + `K-2.6.4`'ün anlaşma-girişi okuması"*ydı —
-ve kardeş emsal (`POST /agreements` `{A,P}`) artık **yalnız bir emsal değil, LTA'nın
-CANLI yazma yolu** olarak ölçüldü. Üç seçenek:
+| kapı | ne |
+|---|---|
+| **kaldırma** | `T-289` deseni |
+| **hizalama + kanonikleştirme** | yeni kayıtla |
+| **bilinçli çift-model** | ⚠️ bunu seçmek **çok güçlü gerekçe** ister |
 
-| | ne | sonuç |
-|---|---|---|
-| **(a)** | hizalama **aynen** iner (`{A,P}`), ekransız | dörtlü genişler; ikinci yol **yaşamaya devam eder** ve genişlemiş olur |
-| **(b)** | hizalama **askıya alınır**, önce *"`lta_agreements` yazma tarafı meşru mu?"* sorusu | `T-289`'un disiplinini bu dörtlüye de uygular (İlke 1: *"gerçek ihtiyaçsa kanıtıyla gelir"*) |
-| **(c)** | `{ADMIN}` **korunur**, ama `Z18` gereği cümlesi yazılır | ölçüm cümlenin yazılamadığını söylüyordu (*"ticari sözleşme ≠ sistem tanımı"*) — bu yol **kapalı** görünüyor |
+### Şart 2 — `K5` DALGADAN ÇIKAR
 
-**Team Lead önerisi: (b).** Gerekçe — hizalama bir **genişlemedir**, ve tüketicisi
-olmayan bir yazma yolunu genişletmek `§4.2`'nin *"üretim çağrı yolu var mı?"* maddesine
-ters yönde bir hareket. `(a)` yanlış değil ama **geri alması `(b)`'den pahalı**: bir
-kez `{A,P}` olduktan sonra daraltma davranış-değiştiren yeni bir kayıt ister.
+*"Sonda bekletmek"* yerine **çıkarılır**: kaza-dalgası **beş kalemle** kapanır, LTA ölçüm
+turu **ayrı** akar.
 
----
+> **Bir dalganın kapanışı, ürün-sahibi-bekleyen bir kalemle REHİN kalmaz** — `B3`'ün kendi
+> ilkesi.
 
 ## 1 · Dalganın kapsamı (ürün sahibi hükmü)
 
@@ -80,9 +64,19 @@ kez `{A,P}` olduktan sonra daraltma davranış-değiştiren yeni bir kayıt iste
 | K1 | `Z20` daraltması (`GET /users`) | kayıtlı istisna | hazır |
 | K2 | ledger-üçlüsü hizalaması | normalizasyon | hazır |
 | K3 | `T-287` — iki ekranda rol-kapısı ↔ rota-kümesi ayrışması (**canlı `403`**) | canlı kusur | hazır |
-| K4 | `SHARED_READ`'in **dört istisnası** — çözüm | karar-bekler kalıntısı | ⏸️ küme kararı ister |
-| K5 | `LTA` dörtlüsü hizalaması | genişleme | ⛔ **§0'a bağlı** |
+| K4 | `SHARED_READ`'in dört istisnası — **ÜÇ PARÇAYA ayrıldı** | aşağı bkz. | ✅ hükümlü |
+| ~~K5~~ | ~~`LTA` dörtlüsü~~ | — | ⛔ **DALGADAN ÇIKTI** (`§0` Şart 2) |
 | K6 | `T-289` — `POST /budget/reserve` **kaldırılması** | uç kaldırma | hazır |
+
+---
+
+## 1.5 · `K4` HÜKMÜ — dört istisna ÜÇ PARÇA, hepsi bu dalgada DEĞİL
+
+| istisna | hüküm |
+|---|---|
+| `approvals` · `approvals/pending` | **`APPROVAL_QUEUE_READ`** hücresine göçer (`'approval-queue:read'`, ad Team Lead tahsisi — sınıf-adı). Küme `{A,CM,F,RO}` **birebir** ⇒ davranış-koruyucu. `PLANNER`'sızlık artık **cümleli**: onaycı yüzeyi. `W4a-S3`'ün pini **zaten üstünde** ve hücrenin **negatif yarısı var** |
+| `spend-calculation/validate-budget/:planId` | **tabana hizalama (`+FINANCE`)**, kayıtlı istisna olarak **bu dalgada**. `FINANCE`-eksikliği bir **kaza** (spend-calculation kardeşlerinin **tamamı** `5/5`), ve cümle **yazılabiliyor**: eşik-üstü onaycının gönderim-öncesi bütçe kontrolünü okuması `K-2.6.4`'ün **kendi işi**. **Repro-pin:** `FINANCE` bugün `403` → sonra `200`, **kardeşler değişmedi** |
+| `finance-reporting/budget-variance` | **`SUMMARY_READ` paketine DEVREDİLİR.** `finance-reporting` ailesinin küme-gerekçe taraması hâlâ açıkken tek aile-üyesini ayrı çözmek **yarım muamele** (`İlke 4`). Bu satıra **devir notu** düşülür |
 
 ---
 
@@ -103,6 +97,38 @@ kez `{A,P}` olduktan sonra daraltma davranış-değiştiren yeni bir kayıt iste
 ⚠️ `(b)` bir **kapıdır**, bir adım değil: satır bulunursa `(c)`'ye geçilmez, ürün
 sahibine dönülür.
 
+### ✅ `K6(b)` KAPISI KOŞTU — sonuç: **SIFIR** (2026-08-26)
+
+> Ürün sahibi güçlendirmesi **(i)**: *"sonuç sıfırsa da rapora yazılır — **'satır yok'
+> bir ÖLÇÜMDÜR**, sessiz geçilmez."*
+
+```
+budget_transactions             6 satır
+tx_type=RESERVE                 4     ·  hepsi source_type=AGREEMENT  ·  YETİM: 0
+   poz.kontrol: agreements 5 satır (LEFT JOIN+IS NULL bir YOKLUK testi DEĞİLDİR)
+
+08-19 ×2   4-segment anahtar · 75000 · "…for STA-2026-0002"  → SEED (birebir)
+08-24 ×2   3-segment anahtar                                 → reserveForAgreement
+           ve o yol KANONİK: agreement.service.ts:750, anlaşma ONAYINDAN çağrılıyor
+```
+
+⇒ **`POST /budget/reserve` ile doğmuş satır: SIFIR.** `ADR-0012` devreye girmiyor,
+`(c)`'ye geçilir.
+
+📌 **Ve kapı bir şey daha ölçtü:** kanonik motor **canlı ve sağlıklı** — `K-2.2.4`'ün
+tetikleyicisi çalışıyor. Bu, *"paralel ikinci yol"* teşhisini **doğruluyor**.
+
+⛔ **Ve bir ZAAF kaydı:** `reserveBudget`'ın `idempotency_key` şekli **seed'inkiyle
+BİREBİR AYNI** (`RESERVE|AGREEMENT|{agreementId}|{envelopeId}`). Yani uç kullanılsaydı
+satırları **seed satırlarından ayırt edilemezdi**; bu turda ayrım `amount` +
+`description` eşleşmesinden geldi, anahtardan değil. Köken imzası **tasarım gereği
+ayırt edici olmalı** — kaldırma bu zaafı da kapatıyor.
+
+⚠️ **Ölçüm hatası kaydı:** ilk sorgu `left(idempotency_key,60)` kullanıyordu ve
+anahtarları **kesiyordu** — *"seed dört, uç üç segment"* diye **ters bir ayrım** üretti.
+Kesmeden ölçünce ayrım **tersine döndü**. `DISIPLIN`: kanıt kurulumunun kendisi
+ölçtüğün şeyi bozabilir.
+
 ---
 
 ## 3 · Dalganın sözleşmesi
@@ -112,20 +138,31 @@ sahibine dönülür.
 - **Tek review yüzeyi** — altı kalem tek `code-reviewer` turunda.
 - ⛔ **`W4a`'nın dersi burada da geçerli:** pin'in ayırt etme gücü hücrenin **negatif
   yarısı** olmasına bağlı. `5/5` kalemlerde dedektör `route-scope.sh` `FILTRESIZ`.
+- ⛔ **PİNLER YÖN-AÇIK** (güçlendirme **ii**): bu dalgada **iki ZIT YÖNLÜ** istisna var,
+  pinler karışmasın —
+  ```
+  K1  Z20 daraltması        FINANCE → 403     (DARALTMA görülür)
+  K2  ledger-üçlüsü         PLANNER → 200     (GENİŞLEME görülür)
+  K4  validate-budget       FINANCE → 200     (GENİŞLEME görülür; kardeşler DEĞİŞMEDİ)
+  ```
 - **Sabitlik satırı** her kalemde ayrı — bu dalga rota **sayısını da değiştirir**
   (`K6` bir ucu siler), yani `211` sabiti **kırılır** ve yeni sabit **gerekçesiyle**
-  yazılır.
+  doğar (güçlendirme **iii**).
+
+  📌 `211`'in tarihçesi rota-envanteri değişimlerinin kaydı olarak **zaten üç kez**
+  işledi (`238 → 223 → 211`); dördüncüsü de **aynı biçimde**.
 
 ---
 
 ## 4 · Önerilen sıra
 
 ```
-1  K6(a) repro-pin + K6(b) defter taraması   ← KAPI: satır varsa ürün sahibine
-2  K3 (canlı 403 — kullanıcı bugün etkileniyor)
-3  K1 · K2 (kayıtlı istisna + normalizasyon)
-4  K6(c)(d) kaldırma + tek-yol pini
-5  K4 · K5   ← ikisi de ürün sahibi kararı bekliyor, dalganın SONUNDA
+1  K6(b) defter taraması   ✅ KOŞTU — SIFIR, kapı AÇIK
+2  K6(a) repro-pin
+3  K3 (canlı 403 — kullanıcı bugün etkileniyor)
+4  K1 · K2 (kayıtlı istisna + normalizasyon)
+5  K6(c)(d) kaldırma + tek-yol pini
+6  K4 (üç parça: göç · hizalama · devir)
 ```
 
 `K3` öne alındı çünkü **bugün kullanıcı etkileniyor**; `K6(a)(b)` en başta çünkü

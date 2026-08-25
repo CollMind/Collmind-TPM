@@ -3445,3 +3445,70 @@ MEKANİK GÖÇEBİLİR (8)   A(1) + B(2) + C(2) + calculate-üçlüsü(3)   heps
 KAZA/İSTİSNA DALGASI    LTA dörtlüsü · T-289 kaldırması
 KARAR-BEKLER KALINTISI  MASTER_DATA dörtlüsü · plans/:id/budget-check (Z33)
 ```
+
+
+---
+
+## Z37 · `LTA` hizalaması GERİ ÇEKİLDİ · `K4` üçe ayrıldı · kaza-dalgası ONAYLI
+
+> **Tarih:** 2026-08-26 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+
+### 1 · `LTA` — önceki hüküm AÇIKÇA GERİ ÇEKİLDİ
+
+`Z36` turunda hüküm *"kardeş emsale hizalanır (`{A,P}`), kaza-dalgasında, frontend
+ölçümü şartıyla"*ydı. **Ölçüm şartı karşılandı ve hükmü ÇÜRÜTTÜ.**
+
+```
+şartın iki dalı        "UI form sunuyorsa … sunmuyorsa …"
+ölçümün verdiği        ÜÇÜNCÜ DURUM — form VAR, PLANNER'a AÇIK,
+                       ama POST /agreements'e gidiyor
+lta-agreements atfı    SIFIR (poz.kontrol: aynı grep spend-calculation'ı buluyor)
+```
+
+⇒ *"Kardeş emsal"* bir emsal değil, **LTA'nın canlı yazma yolu** çıktı. Hizalama artık
+*"API'yi ekrana yetiştirmek"* değil, **tüketicisiz bir paralel yolu genişletmek**
+olurdu — `Z21`-musluğu deseninin **rol hâli**.
+
+> **Ürün sahibinin kaydı:** *"`(a)` benim hükmümdü ama **dayanağı öldü**."*
+>
+> 📌 Ve geri-alma-maliyeti argümanı kabul edildi: **genişleme tek yönlü kapıdır,
+> askı değil.**
+
+**HÜKÜM: `(b)`** — hizalama askıya alınır, önce **meşruiyet ölçümü**.
+
+### 2 · Ve soru ROTADAN BÜYÜK: bu bir **ÇİFT-MODEL** sorusudur
+
+```
+agreements(agreementType:LTA)   ↔   lta_agreements + lta_rates
+                                     ve W4a/Z36'nın OKUMA rotaları İKİNCİ tabloyu okuyor
+```
+
+Yazma yolu sıfır tüketiciliyse **o tablo neyle doluyor?** Cevap *"seed-only"* ise
+**`İlke 3` ihlali adayı** (*"verisi düzenlenemeyen kural fiilen koddur"*) ve
+`budget_allocations` deseninin **büyüğü**: **yarı-ölü paralel model**.
+
+⇒ Ölçüm turu *"hangi model KANONİK"* sorusunu cevaplar (`K-2.2.3` ailesi: **aynı
+kavram, iki çözümleme**). Üç kapı: **kaldırma** · **hizalama+kanonikleştirme** ·
+**bilinçli çift-model** (⚠️ çok güçlü gerekçe ister).
+
+### 3 · `K4` — dört istisna ÜÇ PARÇA
+
+| istisna | hüküm |
+|---|---|
+| `approvals` · `approvals/pending` | **`APPROVAL_QUEUE_READ`** (`'approval-queue:read'`, ad Team Lead tahsisi — **sınıf-adı**). `{A,CM,F,RO}` **birebir**; `PLANNER`'sızlık artık **cümleli**: onaycı yüzeyi |
+| `validate-budget/:planId` | **taban + `FINANCE`**, kayıtlı istisna. Eksiklik bir **kaza** (kardeşlerin tamamı `5/5`) ve cümle yazılabiliyor: eşik-üstü onaycının gönderim-öncesi bütçe kontrolünü okuması `K-2.6.4`'ün **kendi işi** |
+| `budget-variance` | **`SUMMARY_READ` paketine DEVİR** — `finance-reporting` ailesinin taraması açıkken tek üyeyi ayrı çözmek **yarım muamele** (`İlke 4`) |
+
+### 4 · Dalga sözleşmesine üç güçlendirme
+
+1. **`K6(b)`'nin sonucu sıfırsa da RAPORA YAZILIR** — *"satır yok"* bir **ölçümdür**.
+2. **Pinler yön-açık**: `Z20` = `FINANCE→403` (daraltma) · ledger-üçlüsü =
+   `PLANNER→200` (genişleme). **İki zıt yönlü istisna aynı dalgada, pinler karışmasın.**
+3. **Sabitlik kırılması**: `K6` ucu sildiğinde yeni sabit **gerekçe satırıyla doğar**.
+   `211`'in tarihçesi zaten **üç kez** işledi (`238 → 223 → 211`).
+
+### 5 · Ve `K5` DALGADAN ÇIKTI
+
+> **Bir dalganın kapanışı, ürün-sahibi-bekleyen bir kalemle REHİN kalmaz.**
+
+Kaza-dalgası **beş kalemle** kapanır; LTA ölçüm turu **ayrı** akar.
