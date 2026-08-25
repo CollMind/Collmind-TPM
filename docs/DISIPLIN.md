@@ -1203,6 +1203,62 @@ Test edilmeyen dosya kusur biriktirir; ve biriktirdiği kusurlar birbirine benze
 
 ## AİLE — ŞART · SINIR · KAYIT
 
+### KARAR VERİLDİ ≠ KARAR KODA İNDİ (ZORUNLU)
+
+> **Rol-küme kararı veren her `Z`-kaydı, HARİTAYA İNİŞ task'ını TETİKLEYİCİSİYLE
+> taşır.** Karar defterinde bir hüküm, koda inmedikçe **yürürlükte değildir** —
+> ve arada geçen her tur onu **yürürlükte sanar**.
+
+`Z25`'in koşul rejimi (`KOŞUL · TETİKLEYEN · DURUM`) **karar defteri için de**
+geçerli; türev-belge kuralının **harita** hâli.
+
+**Üç ölçülmüş vaka (2026-08-24/25):**
+
+| kayıt | karar | koda iniş |
+|---|---|---|
+| `Z35` `MODES_WRITE` bölünmesi | 2026-08-24 | **`B3b-1 ADIM 0`** — bir tur sonra |
+| `Z30 H8` `UNRESTRICTED` terfisi | kayıtlı | `B1` kapısı **eksik** çıktı (`code-reviewer`) |
+| `SHARED_READ` kısmi kararı | 2026-08-25 | **`W4a ADIM 0`** — göç DURDU, harita boştu |
+
+⚠️ Üçüncüsünün bedeli ölçüldü: karar *"16 rota açılır"* diyordu,
+`ROLE_CAPABILITIES`'te hücre **hiçbir rolde** değildi. Göç yapılsaydı 16 rota
+**hiçbir rol tarafından alınmaz**, `403` verirdi — **tam kilitlenme**.
+
+**Pratik:** hüküm yazılırken üçüncü satır:
+```
+KARAR       hücre X = {roller}
+HARİTA      ROLE_CAPABILITIES'e YAZILDI MI?        ← BU SATIR
+TETİKLEYİCİ hangi tur yazacak
+```
+
+### HÜCRE KÜMESİ ile ROTA KÜMELERİ BİREBİR DEĞİLSE DALGA DUR'A DÜŞER (ZORUNLU)
+
+> **Mekanik göç, `hücre verir` sütununun sessizce kazanmasına izin veremez.**
+
+`Faz A` haritasının **`union` kararlarından türeyen HER hücre**, göç anında ya
+**genişleme** ya **daraltma** üretiyor — ölçülmüş genelleme:
+
+```
+MODES_WRITE    → H1 reddetti, Z35 BÖLDÜ
+SHARED_WRITE   → 13/13 rotada davranış değişir (3'ünde DARALTMA)
+kalan READ hücreleri → muhtemelen aynı
+```
+
+**Kural:** bir dalga başlamadan **rota-düzeyi** karşılaştırma yapılır:
+
+```
+her rota için:   mevcut @Roles  ==  hücrenin verdiği küme  ?
+                 EVET → göçebilir
+                 HAYIR → DUR, mekanik devam YASAK
+```
+
+📌 Bu **zaten fiilî davranış** (`W3`'te `GET /users`, `W4`'te `SHARED_WRITE`
+böyle durdu) — ama **yazılı kural** olarak durur ki sekiz dalganın hiçbirinde
+*"hücre verir"* sütunu **sessizce kazanmasın**.
+
+⚠️ Ve fark **yönsüz**: genişleme de daraltma da `DUR` sebebidir. Daraltma
+ayrıca `Z20` sınıfındandır — **istisna dalgasının işi**, mekanik dalganın değil.
+
 ### İÇERİK TAŞINIR, STATÜ ÇEVREDEN GELİR (ZORUNLU — belge taşıma)
 
 > **Bir belge taşıması İÇERİĞİ taşır; STATÜ içeriğin İÇİNDE değil ÇEVRESİNDE

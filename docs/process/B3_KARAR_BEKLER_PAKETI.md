@@ -438,6 +438,98 @@ Sabitlik `W4a` sonrası: **`176 + 35 = 211`**.
 
 ---
 
+---
+
+# `W4b` ÖLÇÜM TURU SONUÇLARI (2026-08-25)
+
+## (1) ÜÇ ROTA — hüküm **DOĞRULANDI**, ve sınıf **hipotezden GENİŞ**
+
+Yazma yüzeyi **dört yüzey + cascade**, tam çağrı grafiği izlenerek: **`0`**.
+Cascade *"yapısal olarak imkânsız"* — `.save()` grafikte **hiç yok**.
+
+⛔ **Ama sınıf `3` rota değil, `7` — ve İKİ hücrede:**
+
+| rota | mevcut hücre | yazma |
+|---|---|---|
+| `POST lta-agreements/context/rates` · `calculate/base-spend` · `calculate/planned-spend` | `SHARED_WRITE` | **0** |
+| `POST master-data/mechanics/applicable` · `check-combination` · `validate-formula` | `MASTER_DATA_WRITE` | **0** |
+| `POST master-data/kpis/validate-formula` | `MASTER_DATA_WRITE` | **0** (`async` bile değil) |
+
+⚠️ **Ve `5/5` proxy'si SON İKİSİNİ KAÇIRIRDI** — `validate-formula` uçları
+`ADMIN`-only. ⇒ Ayırt edici **rol kümesi değil, YAZMA YÜZEYİ**.
+📌 **Ad da ayırt edici değil:** `plans/:id/recalculate` · `on-invoice/:batchId/validate` ·
+`agreement-transactions/validate-and-import` aynı ad-şeklini taşıyor ve
+**gerçekten yazıyorlar**.
+
+**Önerilen ev `SHARED_READ` DEĞİL:** oraya koymak `MASTER_DATA_WRITE`'taki dört
+kardeşi **yerinde bırakır** ⇒ aynı sınıf iki farklı muamele (`İlke 4`).
+Üreticide `SUMMARY`/`APPROVE` ile **aynı şekilde** açık bir hesap-okuma istisna
+kümesi — üyelik **yazma-yüzeyi ölçümüyle**, `fam` ile birleşince her rota kendi
+ailesinin okuma tarafına düşer.
+
+📌 **`K-2.6.6` etiketi bu çıkarmayı gerekçelendiremez** — ölçüldü: `K-2.6.6`
+*"kural yoksa reddet"* diyor, bir **fail-closed ilkesi**, bir **veri sınıfı**
+kuralı değil. Ürün sahibinin *"etiketle değil ölçümle"* şartı **yerinde çıktı**.
+
+## (2) ON ROTA — hipotezin `2/3`'ü doğrulandı, `1/3`'ü ÇÜRÜDÜ
+
+⛔ **`Z35`'in *defter etkisi* ayırt edicisi bu bölünmeyi ÜRETMİYOR** — defter
+etkisi grupların **içinden** geçiyor: `split`(`{A,F}`) ve `reserve`(`{A,P}`)
+defter yazıyor; `createEnvelope`(`{A,F}`) ve iki `spend-calc`(`{A,P}`) yazmıyor.
+**Bölünmeyi üreten eksen: yazılan nesnenin SAHİPLİĞİ.**
+
+| sınıf | n | rota | cümle |
+|---|---|---|---|
+| **A** yönetişim/kural yazımı | 1 | `PATCH approval-policies/:id` `{A}` | ✅ `K-2.6.4` *tanımlar, kural yönetimi* + `K-2.6.4a/b`: **şablonun ÖZNESİ olan rol, şablonu DÜZENLEYEMEZ — görev ayrılığı** |
+| **B** zarf yapısı / bütçe sahipliği | 2 | `POST budget/envelopes` · `/:id/split` `{A,F}` | ✅ `K-2.2.9c` *"finans zarfı büyütür … kararı PARANIN SAHİBİNE taşır"* ⚠️ **ÇATIŞMA, aşağı** |
+| **C** plan tüketimi / ızgara yazımı | 2 | `spend-calculation/distribute` · `recalculate-on-volume-change` `{A,P}` | ✅ `K-2.6.4` *plan, taktik, hacim girişi* + emsal `T-249` · **canlı frontend tüketici var** |
+
+### ⚠️ SINIF B'de bir ÇATIŞMA — ve bir SAĞLAYICIYA bağlı
+
+`K-2.6.4` rol kataloğu (`L2_03:401`) **yazılı olarak** diyor ki:
+> `KATEGORİ MÜDÜRÜ` | Kategori bütçe sahibi: onay + **ZARF YÖNETİMİ**
+
+Aynı cümle yazma tarafına uygulanırsa `CM` bu iki rotaya **girer**.
+⛔ **Ama girerse FAIL-OPEN:** `BudgetService`'te `AccessScope` atfı **`0`**
+(poz.kontrol: **7** servis kullanıyor). `CM` **kategori-kapsamlı** bir roldür;
+kapsam katmanı olmadan eklenirse *"kendi kategorisinin zarfı"* değil **tenant'ın
+HER zarfı** yazılabilir olur.
+⇒ `§ ŞARTIN SAĞLAYICISI` vakası — sağlayıcı **`T-266`**.
+**Küme AÇIK: `{A,F}` mı, `{A,CM,F}` (kapsam indikten sonra) mı — ürün sahibi.**
+
+## (3) EŞLENEMEYEN — `5` rota, iki ayrı sebep
+
+### (3a) LTA sözleşme yaşam döngüsü — `4` rota, `{ADMIN}` bir KARAR DEĞİL
+
+```
+POST lta-agreements · PATCH :id · POST :id/activate · POST :id/terminate
+```
+
+| ölçüm | bulgu |
+|---|---|
+| `L2`'de sahiplik kuralı | **YOK** — `LTA` `L2`'de **tek** yerde (`K-2.1.15`) ve orada *"`STA`/`LTA` etiketi davranış kaynağı DEĞİLDİR"* |
+| kardeş emsal | `agreement.controller.ts` `POST`/`PATCH`/`submit`/`DELETE` = **`{ADMIN, PLANNER}`** — aynı domain fiili, **iki farklı küme** |
+| `{ADMIN}`'in kaynağı | `git log -S`: **tek commit** `d40ca16` *"Add Dockerfile and pipeline config"* — **toplu ilk commit**, dört dekoratörün hiçbirinde **gerekçe yorumu yok** |
+
+⇒ `K-2.6.4`'ün *"tanımlar, kural yönetimi"* cümlesi bu dördü için **YAZILAMAZ**:
+bir LTA anlaşması müşteriyle yapılan **ticari sözleşmedir**, bir sistem tanımı değil.
+
+⛔ **Hüküm verilmeden `SHARED_WRITE`'a ALINMAMALI** — hücreye girerse
+`{ADMIN}`-only'den **dört role genişler**, yani *"`H1`'in söktüğü şeklin en ağır
+hâli"*.
+
+### (3b) `POST budget/reserve` → **[[T-289]]**, ve bir rol sorusundan BÜYÜK
+
+Ayrıntı task'ta. Özet: `/budget` ekranı **rol kapısız** · `agreementId` **serbest
+metin** · servis **doğrulamıyor** · `txStatus: POSTED` · `AccessScope` **0**.
+⇒ Bir `PLANNER`, **var olmayan bir anlaşma kimliğiyle herhangi bir zarfa
+kesinleşmiş defter satırı** üretebilir. **Team Lead dört yüzeyde doğruladı.**
+
+⚠️ Ve `K-2.2.4` gerilimi: kural *"bir anlaşma ONAYLANDIĞINDA"* diyor; bu uç
+tetikleyiciyi **atlayan ikinci bir yol**.
+
+---
+
 ## 4 · ⛔ DUR — bu pakette OLMAYANLAR
 
 - **Hüküm yok.** Cümle adayları **öneri**; hiçbiri karara bağlanmadı.
