@@ -2114,6 +2114,78 @@ denetleyerek değil.
 ⚠️ **Bir totoloji, olmayan kapıdan KÖTÜDÜR** — yeşil olduğu için **çalıştığı sanılır**.
 Yerine konan kontroller **kırılabilir** olmalı, ve **kırıldıkları gösterilmeli**.
 
+### BİLEŞİMSEL FAIL-OPEN — her parça masum, boşluk BİLEŞİMDE (ZORUNLU)
+
+> **Her adımı yerel olarak DOĞRU olan bir dizi, bileşiminde AÇIK üretebilir.**
+> **Hiçbir bileşen "hatalı" davranmaz; boşluk yalnız BİRLİKTE bakınca görünür.**
+
+Ölçülmüş vaka (2026-08-25, `Dalga-M` `S2`) — üç masum adım:
+
+```
+1  @RequireCapability eklendi        ✅ doğru iş
+2  @Roles kaldırıldı                 ✅ doğru iş (rota başına tek mekanizma)
+3  @UseGuards'a CapabilityGuard      ⛔ UNUTULDU  ← tek eksik
+─────────────────────────────────────────────────────────────
+   CapabilityGuard  hiç koşmaz    → yetenek metadata'sı YOK SAYILIR
+   RolesGuard       requiredRoles yok → `return true`
+   ⇒ rota HER kimliği doğrulanmış kullanıcıya AÇIK
+```
+
+⚠️ **Ve iki guard da kendi açısından DOĞRU davranıyor.** `RolesGuard`'ın
+*"`@Roles` yoksa geç"* dalı yıllardır doğru; `CapabilityGuard`'ın *"yetenek yoksa
+geç"* dalı bilinçli. Kusur **hiçbirinde değil, aralarında.**
+
+**Aile:** `T-273` (cascade — grep'e görünmeyen yazma yolu) · `T-254` (boş kapsam →
+`[]`) aynı sınıftan. `S2`'nin farkı: **henüz hiç yaşanmadan** yakalandı — `W1`'de
+gerçekleşecekti, review onu bir **kapıya** çevirdi.
+
+### ⇒ VE ÖLÇÜM TARAFINDA AYNI ŞEKİL: eşitlik, VARLIĞIN kanıtı değildir (ZORUNLU)
+
+> **Eşitlik-tabanlı her doğrulama, girdilerin BOŞ OLMADIĞINI önce AYRICA kanıtlar.**
+
+Aynı turda, ikinci katmanda **aynı şekil**:
+
+```
+1  iki çıktı üretildi          ✅ doğru niyet
+2  diff ile karşılaştırıldı    ✅ doğru araç
+3  çıktıların DOLU olduğu      ⛔ SORULMADI  ← tek eksik
+─────────────────────────────────────────────
+   iki BOŞ dosyanın diff'i → rc=0 → "EKLEME-ONLY doğrulandı"
+```
+
+İki kez oldu (`$F` tırnaksız · `xargs -a` BSD'de yok) ve ikisinde de *"doğrulandı"*
+denecekti. Üçüncüde poz.kontrol **`diff`'ten ÖNCE** kondu: `223/223` satır teyit
+edildikten **sonra** fark ölçüldü.
+
+**Pratik — sıra bağlayıcı:**
+
+```
+❌  diff <(a) <(b) && echo "aynı"
+✅  [ "$(wc -l < a)" -eq N ] && [ "$(wc -l < b)" -eq N ] && diff a b
+```
+
+📌 `§2.7`'nin *"kanıt kurulumu ölçtüğün durumu değiştirmesin"* ailesine komşu ama
+farklı: orada kurulum durumu **değiştiriyordu**, burada kurulum durumu **hiç
+üretmedi** ve eşitlik testi bunu **başarı** diye okudu.
+
+### DOSYA SINIRI, STATE SIFIRLAMA NOKTASIDIR (ZORUNLU — guard yazımı)
+
+> **Satır-tabanlı her ayrıştırıcıda (awk/sed/streaming parser) dosya sınırı bir
+> SIFIRLAMA noktasıdır — ve unutulan her bayrak SONRAKİ dosyaya sızar.**
+
+Ölçülmüş vaka (2026-08-25, `Dalga-M` `S1`): `route-scope.awk`'a class-seviyesi
+`@Roles` takibi eklendi, ama bayrak `FNR==1` blokunda sıfırlanmadı — bir
+controller'ın class `@Roles`'ü **sonraki dosyanın TÜM rotalarına** sızardı.
+
+⚠️ **Ve yön dikkate değer: bu kapıyı yanlış-YEŞİL değil yanlış-KIRMIZI yapardı** —
+sızan bayrak **temiz bir rotayı kirli gösterir**. Bir kapının iki yönde de
+bozulabileceğinin hatırlatıcısı.
+
+**Pratik:** bir ayrıştırıcıya yeni bir durum bayrağı eklerken, onu `ctrl_base` gibi
+**aynı yaşam döngüsüne sahip** mevcut bir değişkenin yanına koy — ve **sıfırlamasını
+o değişkenin sıfırlandığı her yere** ekle. Sonra **iki dosyalı bir fixture** ile
+sınadığını göster (tek dosyalı fixture sızıntıyı **göremez**).
+
 ### KANIT RENGİN KENDİSİ DEĞİL, RENGİN SEBEBİDİR (ZORUNLU)
 
 > **Yeşil ayırt etmeyebilir — ve KIRMIZI da doğru şeyi ayırt etmiyor olabilir.**

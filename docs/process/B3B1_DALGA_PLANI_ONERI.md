@@ -185,6 +185,19 @@ haritasız rota     → MEVCUT DAVRANIŞ DEĞİŞMEDİ
 > 📌 Bu bir kusur değil, **kapsamın kendisi** — ama statü kuralı yine de geçerli, ve
 > `T-052/T-062` ailesinin sekiz vakası tam olarak *"mekanizma var, yol yok"*un
 > `done` yazılmasından doğdu.
+>
+> ### ⛔ VE ÇERÇEVENİN KENDİSİ DÜZELTİLDİ (ürün sahibi, 2026-08-25)
+>
+> *"`Dalga-M` kapanır"* denirken kapanış **kabul şartlarının yeşili** olarak
+> tanımlanmıştı. `§4.2`'nin sekiz-vakalık ailesi daha derin bir soru soruyor:
+>
+> > **ERİŞİLEMEYEN MEKANİZMA, VAR OLAN MEKANİZMA DEĞİLDİR.**
+> > Dört şart yeşil olsa bile, üretim atfı `0` olan bir guard *"kuruldu"* değil
+> > **"kurulmayı bekliyor"**dur.
+>
+> ⇒ `Dalga-M`'in **gerçek kapanışı `W1`'in ilk göçen rotasındadır.** Bu,
+> *"indi ≠ kapandı"* ayrımının **mekanizma seviyesindeki** hâli — ve dalga
+> planındaki her *"kuruldu"* cümlesi bu ölçüye tabi.
 - [ ] **Kural metni üretiliyorsa (dekoratör `JSDoc`'u, guard yorumları) →
       `code-reviewer` ZORUNLU** — muafiyetin daraltılmış hâlinin ilk uygulaması
 
@@ -294,6 +307,22 @@ varsayımla değil, bu ölçümle.
 | `qa-engineer` (**sonnet**) kapsam dışı bir kusuru **raporladı, DÜZELTMEDİ** (bayat e2e pini) ve *"üretim doğru, test bayat"* teşhisini gerekçesiyle yazdı | ✅ **sınır disiplini** |
 | `code-reviewer` (**opus**) iki turda iki **gerçek blocker** buldu (`ADIM 0` fail-open sentinel · `H8` `B1` sessiz regresyon) | ✅ iddia turunda muhakeme |
 | Team Lead'in çürüyen iddiası | **2** — `ADIM 0`'da sentinel yorumu (ölçmeden yazıldı) · `H8`'de *"iki sabit de veriye insin"* şartının ayrıştırılması |
+
+### 🛡️ REVIEW'IN ÖNLEDİĞİ SINIF (yeni metrik satırı)
+
+> **`§5`'in üç metriği *"ne kadar yanlış yaptık"*ı sayıyor. Bu dördüncüsü *"ne
+> olmadı"*yı sayıyor — ve önlenen bir açık, düzeltilen bir açıktan ölçülmesi daha
+> zordur, o yüzden AYRICA yazılır.**
+
+| tur | review'ın önlediği | sınıf | gerçekleşeceği yer |
+|---|---|---|---|
+| `ADIM 0` | fail-open sentinel (`G1` ateşlemiyordu) | doğrulama maskeleme | bir dizin yeniden adlandırıldığı gün |
+| `H8` | `PLANNER→ADMIN` sessiz kilitlenme (`B1`) | *"kodun kendi öngörüsü"* | ilk rol değişiminde |
+| **`Dalga-M`** | **`@UseGuards` unutulunca rota HERKESE açık (`S2`)** | **bileşimsel fail-open** | **`W1`'de** |
+
+⚠️ **Sonuncusu en somut temettü:** kural-metni muafiyet-daraltması **ilk
+uygulamasında** bir **canlı-açık adayını** önledi — ve o açık `W1`'de, yani **bir
+sonraki turda** gerçekleşecekti.
 
 📌 **Brief'in gerekçesini destekliyor:** *"yakalama mekanizması nerede ZAYIFSA, güçlü model
 oraya."* Artefakt turlarında (`sonnet`) yakalamayı **guard'lar + ölçüm disiplini** yaptı, ve
