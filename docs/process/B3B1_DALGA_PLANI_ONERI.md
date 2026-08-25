@@ -272,6 +272,44 @@ PİN ZORUNLU    pin YAZILMADAN göç edilmez — rol kümesi koruması BAŞKA
 > tarafından ölçülmez.** `W2` bunu doğru yaptı; `W3`–`W8` brief'lerinde bu satır
 > **şart** olarak durur.
 
+> ### ⛔ VE `W4a` KURALI DARALTTI — pin'in gücü NEGATİF YARIYA bağlı
+>
+> **`W4a` brief'i şunu varsayıyordu:** *"`@RequireCapability`'yi kaldır → pin
+> kırmızıya döner."* **ÖLÇÜLDÜ: pin YEŞİL KALDI.**
+>
+> Sebep **yapısal** — iki guard da metadata yokken `true` döner (bilinçli):
+> ```
+> capability.guard.ts   if (!required)      return true;   ← geçiş dönemi tasarımı
+> roles.guard.ts        if (!requiredRoles) return true;   ← yıllardır
+> ```
+>
+> Dekoratör kalkınca rota **herkese açılır**; ama hücre `5/5` olduğu için pin'in
+> beklentisi (*"beş rol de `403` DEĞİL"*) **hâlâ sağlanır**.
+>
+> | dalga | hücre | mutasyon sonucu | sebep |
+> |---|---|---|---|
+> | `W2` tenant | `{ADMIN}` | **4 FAIL** ✅ | pin'in **negatif yarısı** var (`ADMIN` dışı `403` bekliyor) |
+> | `W4a` shared | **`5/5`** | **YEŞİL** ⛔ | negatif yarı **YOK** |
+>
+> > **PİNİN AYIRT ETME GÜCÜ, HÜCRENİN NEGATİF YARISI OLMASINA BAĞLIDIR.**
+> > `5/5` hücrelerde pin, *"guard takılı"* ile *"guard yok"*u **AYIRT EDEMEZ**.
+>
+> Göçen `35` rotanın **`17`'si** bu sınıfta (`SHARED_READ` 16 + `NOTIFICATION_WRITE` 1).
+>
+> **⇒ DALGA BRIEF'İNE: hangi dedektör hangi ÖZELLİĞİ kapsıyor, ADIYLA yazılır.**
+>
+> ```
+> etkin rol kümesi   → pin        (YALNIZ hücrenin negatif yarısı varsa)
+> hücre doğruluğu    → G6         (beyan ↔ mekanik türetim)
+> mekanizma TAKILI   → route-scope.sh  FILTRESIZ  ← 5/5 hücrelerde TEK dedektör
+> iki mekanizma      → single-mechanism
+> artefakt tazeliği  → G7
+> ```
+>
+> 📌 `W4a`'da gerçek ayırt edici `route-scope.sh` oldu: mutasyonda
+> **`FILTRESIZ 0→1`, `exit 1`** (ölçüldü). Yani `T-284`'ün ön koşulu olarak
+> eklenen `CAPABILITY` kovası, **beklenmedik bir ikinci iş** yapıyor.
+
 > ### ⛔ `LINT KAPISI` BRIEF ŞARTI — iki vaka bir desendir (2026-08-24, `H8` turu)
 >
 > `H8`'de `lint-ratchet` **iki kez** blokladı, iki farklı ajanın işinde:

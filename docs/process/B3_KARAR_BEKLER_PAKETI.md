@@ -538,3 +538,32 @@ tetikleyiciyi **atlayan ikinci bir yol**.
 - **`MODES_READ` bölünmesi bir HİPOTEZ** — `{A,F}` grubunun defter-okuması olduğu
   **ölçülmedi**. Karar öncesi ön koşul.
 - Numara/hücre tahsisi yapılmadı.
+
+
+---
+
+## ⚠️ `W4a` yan bulgusu — `lta` üçlüsünün hücresi MEKANİK türedi (code-reviewer E)
+
+`W4a` `SHARED_READ`'in 16 rotasını göçürdü. Aynı controller'ın **üç `POST`'u**
+(`context/rates` · `calculate/*`) aynı `5/5` kümeyi taşıyor ama **göçmedi** —
+çünkü `SHARED_WRITE` hücresinde, ve o hücre karar-bekler.
+
+**Bu turda dokunmamak doğru.** Ama tutarsızlık ölçüldü ve **kayda geçmeli**:
+
+```
+TSV        hucre=SHARED_WRITE  kaynak=MEKANIK      ← hücre HTTP METODUNDAN türedi
+dosyanın   lta-agreement.controller.ts:195-198, 220-223
+kendi      "T-267 Ölçüm 1: YAZMA:0 · Ölçüm 3: 0 tüketici
+yorumu      — hesaplama, yazma DEĞİL"
+```
+
+`DISIPLIN` — *"mekanik olarak türetilmiş bir değer GEREKÇE değildir."* `POST` olmak
+bir yazma **kanıtı** değil, bir **yöntem adı**.
+
+⛔ **Yazılmasaydı riski somuttu:** bir sonraki dalga `SHARED_WRITE`'ı toplu
+göçürürken bu üçünü *"yazma"* sanarak taşırdı — ve `W4b` ölçümü bunların
+`calculate` sınıfının üyesi olduğunu **zaten bulmuştu** (yazma yüzeyi `0`,
+cascade yapısal olarak imkânsız).
+
+⇒ **Karar anında bu üç rota `SHARED_WRITE`'ın değil, `calculate` sınıfının
+üyesi olarak değerlendirilir.**

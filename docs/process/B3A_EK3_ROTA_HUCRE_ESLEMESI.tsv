@@ -1,5 +1,5 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-25 · W3 sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
+# ölçüm: 2026-08-25 · W4a sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
@@ -157,18 +157,18 @@ src/modules/notification/notification.controller.ts	POST	notifications/:id/read	
 src/modules/shared/approval/approval-policy.controller.ts	PATCH	approval-policies/:id	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
 src/modules/shared/approval/approval.controller.ts	GET	approvals	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
 src/modules/shared/approval/approval.controller.ts	GET	approvals/pending	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/approval/approval.controller.ts	GET	approvals/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/approval/approval.controller.ts	GET	approvals/:id	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes	ADMIN,FINANCE	SHARED_WRITE	MEKANIK	ROLES	-
-src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
+src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/budget/budget.controller.ts	POST	budget/reserve	ADMIN,PLANNER	SHARED_WRITE	MEKANIK	ROLES	-
-src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/reserved	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/reserved	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes/:id/split	ADMIN,FINANCE	SHARED_WRITE	MEKANIK	ROLES	-
-src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/transactions	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/budget/budget.controller.ts	GET	budget/status	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/transactions	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
+src/modules/shared/budget/budget.controller.ts	GET	budget/status	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
-src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/pending-tasks	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/cpl-status	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/pending-tasks	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
+src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/cpl-status	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-utilization	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/spend-trend	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/spend-composition	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
@@ -179,23 +179,23 @@ src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-variance	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/cash-flow-projection	ADMIN,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
 src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
-src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
+src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements/:id	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/lta/lta-agreement.controller.ts	PATCH	lta-agreements/:id	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
 src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/:id/activate	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
 src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/:id/terminate	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
-src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements/cpl/:cplId/active	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements/cpl/:cplId/active	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/context/rates	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_WRITE	MEKANIK	ROLES	-
 src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/calculate/base-spend	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_WRITE	MEKANIK	ROLES	-
 src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/calculate/planned-spend	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_WRITE	MEKANIK	ROLES	-
 src/modules/shared/spend-calculation/spend-calculation.controller.ts	POST	spend-calculation/distribute/:planFuId/:mechanicId	ADMIN,PLANNER	SHARED_WRITE	MEKANIK	ROLES	-
 src/modules/shared/spend-calculation/spend-calculation.controller.ts	POST	spend-calculation/recalculate-on-volume-change/:skuId	ADMIN,PLANNER	SHARED_WRITE	MEKANIK	ROLES	-
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/breakdown/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-distribution/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-inputs/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-combinations/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/breakdown/:planFuId	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-distribution/:planFuId	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-inputs/:planFuId	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-combinations/:planFuId	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-budget/:planId	ADMIN,CATEGORY_MANAGER,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-before-submission/:planId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-before-submission/:planId	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/tenant/tenant.controller.ts	POST	tenants	-	TENANT_WRITE	MEKANIK	CAP	TENANT_WRITE
 src/modules/tenant/tenant.controller.ts	GET	tenants	-	TENANT_READ	MEKANIK	CAP	TENANT_READ
 src/modules/tenant/tenant.controller.ts	GET	tenants/:id	-	TENANT_READ	MEKANIK	CAP	TENANT_READ
