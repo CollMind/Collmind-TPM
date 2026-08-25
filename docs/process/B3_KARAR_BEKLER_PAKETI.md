@@ -232,6 +232,86 @@ karara bağlanmaz: `{A,F}` grubunun **hepsi** gerçekten defter/mutabakat okuyor
 
 ---
 
+---
+
+# ✅ KARARLAR (ürün sahibi, 2026-08-25)
+
+## `MODES_APPROVE` — **HÜCRE İKİYE AYRILIR**, tek-hücre `{A,CM,F}` REDDEDİLDİ
+
+**Gerekçe paketin kendi tablosundaydı:** `plans/approve·reject·escalate` bugün
+`{A,CM}`. Tek hücre `{A,CM,F}` yazılsaydı **`FINANCE` üç plan-onay rotasına
+GENİŞLERDİ** — `H1`'in `DUR-3`'te söktüğü şekil.
+
+```
+{A,CM}      plans/:id/approve · plans/:id/reject · plans/:id/escalate-to-finance
+{A,CM,F}    agreements/:id/approve · agreements/:id/reject · plans/:id/review
+```
+
+📌 **Ayrım plan/anlaşma DEĞİL** (ölçüldü): `plans/:id/review` `{A,CM,F}`'de.
+Anlamlı — eskalasyon **sonrası** incelemeyi finans da yapabiliyor; `escalate` ise
+`{A,CM}`, çünkü eskale **eden** taraf `CM`.
+
+> **İki küme iki AYRI CÜMLEYE oturuyor** — `Z18` şartı sağlanıyor:
+> *kategori-kademe onayı* · *finans-dahil onay*.
+> `Z35`/`MODES_READ`-hipoteziyle **aynı desen**: tek işlem-türü, iki sorumluluk
+> sınıfı.
+
+### Ad tahsisi (Team Lead) — **sınıf adı, küme adı DEĞİL**
+
+| hücre | sınıf |
+|---|---|
+| `MODES_APPROVE_CATEGORY` | onay kararı **kategori kademesinde kalır** |
+| `MODES_APPROVE_JOINT` | onay yüzeyine **finans da TARAFTIR** |
+
+⚠️ Adlar **kümeyi** anlatmıyor (`_CM`, `_ACMF` gibi) — çünkü küme değişebilir,
+sınıf değişmez. Üyelik testi ölçülebilir: *"bu onay eylemini finans da
+yapabilir mi?"*
+
+⇒ **6 rota göçebilir, davranış birebir.**
+
+### ⛔ `T-276` — DÜZELTME: *"birlikte çözülür"* ≠ aynı dalgada
+
+**Katman ayrımı kayda geçer:**
+
+```
+HÜCRE    "onay YÜZEYİNE kim dokunur"    → TÜR       (bu karar)
+YÜKLEM   "bu ONAYI kim verir"           → KADEME    (K-2.5.12-R, T-276)
+```
+
+> **Ayrışmaları TASARIMDIR, kusur değil.**
+
+**`T-276`'nın kabul pinine:** hücre-kapısı **+** yüklem **birlikte** test edilir.
+
+## `SHARED_READ` — **KISMİ KARAR: 16 rota bugün açılır**
+
+`{A,CM,F,P,RO}` = `5/5` **union DEĞİL, TABAN** — `K-2.6.5b` cümleyi **kümeden
+önce** yazmış (*"her rolün okuma tabanı zaten var"*).
+
+### ⛔ DÖRT İSTİSNA ROTA GÖÇ-DIŞI — her biri için TEK SORU
+
+> **Eksik rolün YOKLUĞU cümlelenebiliyor mu?**
+
+| rota | mevcut küme | eksik | ürün sahibi sezgisi |
+|---|---|---|---|
+| `GET approvals` | `{A,CM,F,RO}` | **`PLANNER`** | *"muhtemelen cümlelenir"* |
+| `GET approvals/pending` | `{A,CM,F,RO}` | **`PLANNER`** | *"muhtemelen cümlelenir"* |
+| `GET finance-reporting/budget-variance` | `{A,CM,F,RO}` | **`PLANNER`** | ⚠️ **sezgide anılmadı** — ayrıca sorulmalı |
+| `GET spend-calculation/validate-budget/:planId` | `{A,CM,P,RO}` | **`FINANCE`** | *"kaza kokuyor"* |
+
+```
+cümlelenen      → kayıtlı ALT-İSTİSNA
+cümlelenemeyen  → tabana hizalama = kayıtlı DAVRANIŞ-İSTİSNASI dalgası
+```
+
+📌 **Üçü `PLANNER`, biri `FINANCE` eksik** — yani soru tek tip değil: `PLANNER`
+grubu bir **görünürlük** sorusu, `FINANCE` grubu bir **kaza adayı**.
+
+## `SUMMARY_READ` + `MODES_READ` — KARAR DEĞİL, **ORTAK ÖLÇÜM TURU**
+
+Tek `architect` turu, üç soru — ayrıntı: `§5`.
+
+---
+
 ## 4 · ⛔ DUR — bu pakette OLMAYANLAR
 
 - **Hüküm yok.** Cümle adayları **öneri**; hiçbiri karara bağlanmadı.
