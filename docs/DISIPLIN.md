@@ -2317,3 +2317,67 @@ giremeyeceği için hata **her deploy'da** tekrarlanırdı.
 ⚠️ Ve dalların **en az ikisi ampirik doğrulanmalı** (`run` → `revert` → `run` döngüsü);
 yazılmış bir dal, çalıştığı anlamına gelmez.
 
+
+
+### ⏸️ ASKIDA — Bir rolün TABİ OLDUĞU kuralı yazma yetkisi (ürün sahibi kararı bekler)
+
+> ⛔ **BU MADDE BAĞLAYICI DEĞİLDİR.** `DISIPLIN.md`'nin geri kalanı bağlayıcıdır;
+> bu madde **askıdadır** ve ürün sahibi kararı olmadan bir kümeyi eleyemez.
+>
+> **İlk yazımında iki kusuru vardı, ikisi de ölçüldü (code-reviewer, 2026-08-26):**
+>
+> **1 · Var olmayan bir alıntıya dayanıyordu.** `K-2.6.4a/b`'ye atfen *"şablonun
+> öznesi olan rol, şablonu düzenleyemez"* yazıyordu. **O cümle o kuralda yok:**
+> ```
+> aranan     "düzenleyemez"  →  L2_03'te SIFIR eşleşme
+> poz.kontrol "onay"          →  109 eşleşme    (grep ve evren çalışıyor)
+> gerçek     K-2.6.4a  "rol … görev ayrılığının ve onay şablonlarının ADRES DEFTERİDİR"
+>            K-2.6.4b  "onaycı jenerik değildir, bütçenin sahibidir"
+> ```
+> Cümle ürün sahibinin **kendi ifadesiydi**; onu bir kural **alıntısına** çeviren
+> Team Lead'di. `§2.1.2`: bağlayıcı kaynak bir **girdidir** — ve ona **atıf** vermek,
+> onun **metnini uydurmak** değildir.
+>
+> **2 · Yürürlükteki bir `L2` kuralıyla GERİLİMDE.** `K-2.6.5c` (`L2_03:538`):
+> ***"Görev ayrılığı ROL bazlı değil, KİŞİ bazlı işler … invariantların öznesi
+> kullanıcıdır, rol değil."*** `L2`'deki üç SoD kuralının üçü de (`K-2.5.11` ·
+> `K-2.13.12a` · `K-2.6.5c`) **kişi+işlem** eksenli. Aşağıdaki formülasyon **rol**
+> eksenli.
+>
+> **3 · Ve yazıldığı turda ihlal edildi.** Gerekçe olarak *"`ADMIN` şablonun öznesi
+> değil"* yazılmıştı; ölçüm `ADMIN`'i onay rotalarının **beşinde** buldu — yani
+> `ADMIN` **hem özne hem yazar**. (`CLAUDE.md`: *"bir kuralı yazdığın tur, o kuralı
+> en çok ihlal ettiğin turdur."*)
+>
+> ⇒ **Ürün sahibine giden soru:** SoD'un **rol katmanında** formüle edilmesi
+> `K-2.6.5c`'yi **tamamlıyor mu, revize mi ediyor**? Revizyonsa `Z1` dondurma kuralı
+> gereği kendi kaydıyla iner. Ve `ADMIN`'in muafiyeti ayrıca karara bağlanır.
+>
+> ⚠️ **Davranış tarafı bundan ETKİLENMİYOR:** `SHARED_POLICY_WRITE = {ADMIN}` göç
+> öncesi `@Roles(ADMIN)`'in **birebir korunmuş** hâlidir. Askıda olan **gerekçe**,
+> küme değil.
+
+**Görevler ayrılığının (SoD) yetenek-katmanı hâli** — önerilen formülasyon:
+
+```
+onay ŞABLONUNU yazan      ≠     o şablona TABİ olan
+eşik KURALINI yazan       ≠     o eşiğin altında onay veren
+politikayı DÜZENLEYEN     ≠     politikanın ÖZNESİ
+```
+
+⛔ **Bir küme kurarken sor:** *"bu role verdiğim yazma yetkisi, onu kendi
+kısıtını gevşetebilir hâle getiriyor mu?"* Cevap evetse rol o kümeye **giremez** —
+kural metni onu ayrıca yasaklamasa bile.
+
+📌 Ölçülmüş vaka (2026-08-26, `Z36` `SINIF A`): onay politikası yazımı yalnız
+`{ADMIN}`'de kaldı. `FINANCE` ve `CATEGORY_MANAGER` o politikanın **öznesi** —
+kendi onay eşiklerini yazabilselerdi eşik bir kısıt olmaktan çıkardı.
+
+⚠️ Ama bu vaka kuralı **kanıtlamıyor**: küme zaten `@Roles(ADMIN)` idi, yani
+`FINANCE` hiç içeride değildi. SoD **eledi** değil, **zaten yoktu** — ve bir kural,
+hiçbir şeyi elemediği bir vakayla gerekçelendirilemez (`§7.1`: *"ayırt edici
+ölçüm"*).
+
+⚠️ Ve bu, *"kim en çok bilir"* sorusundan **bağımsızdır**: `FINANCE` eşik
+politikasını en iyi anlayan taraf olabilir; SoD bir yetkinlik değil bir **konum**
+kuralıdır.

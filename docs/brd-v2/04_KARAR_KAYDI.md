@@ -3262,3 +3262,143 @@ Tek okumalık envanter; **refleks-açığı sınıfını kökten kapatır**. Aci
 > Ayrıntı ve kabul kriteri: `docs/process/B3B_RATCHET_TABANI.md §3`.
 >
 > 📌 *Türev-belge kuralının (`CLAUDE.md`) ilk rutin uygulaması.*
+
+
+---
+
+## Z36 · `SHARED_WRITE` ÜÇE BÖLÜNDÜ — ekseni SAHİPLİK, defter-etkisi DEĞİL
+
+> **Tarih:** 2026-08-26 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Kapsam:** `SHARED_WRITE` (13 rota) + `MASTER_DATA_WRITE`'ın dört hesap-okuma rotası
+
+### 1 · Bölünmeyi üreten eksen ÖLÇÜLDÜ — ve ilk hipotez ÇÜRÜDÜ
+
+`Z35`'in ayırt edicisi **defter etkisiydi**. Bu hücrede **çalışmadı**: defter etkisi
+grupların **içinden** geçiyor.
+
+```
+split{A,F} yazıyor          createEnvelope{A,F} yazmıyor
+reserve{A,P} yazıyor        iki spend-calc{A,P} yazmıyor
+```
+
+⇒ Gerçek eksen: **yazılan nesnenin SAHİPLİĞİ.**
+
+> ⚠️ Ve ürün sahibinin kaydı: *"aynı ayırt edici her hücrede geçerli olsaydı
+> şüphelenirdim."* Bir ayırt edicinin **evrensel olmaması**, onun ölçülmüş olduğunun
+> işaretidir — evrensel görünen ayırt edici genellikle **ölçülmemiş** olandır.
+
+### 2 · Üç sınıf
+
+| sınıf | ne | küme | rota |
+|---|---|---|---|
+| **A** | yönetişim / kural yazımı | `{ADMIN}` | `1` |
+| **B** | zarf yapısı / bütçe sahipliği | `{ADMIN,FINANCE}` | `2` |
+| **C** | plan tüketimi / ızgara yazımı | `{ADMIN,PLANNER}` | `2` |
+
+**Adlar (Team Lead tahsisi, `Z35`'in `MODES_*_WRITE` emsali):**
+
+```
+SINIF A   SHARED_POLICY_WRITE     'shared:policy-write'
+SINIF B   SHARED_ENVELOPE_WRITE   'shared:envelope-write'
+SINIF C   SHARED_SPEND_WRITE      'shared:spend-write'
+```
+
+Adlar **sınıf-adıdır, küme-adı değil** — `{A,F}` bir kümedir, `envelope` bir sınıftır.
+`shared:` öneki korunur ki hücre soyağacı okunabilir kalsın.
+
+### 3 · `SINIF A` — dayanak DÜZELTİLDİ, SoD genellemesi ASKIDA
+
+⚠️ **REVİZE EDİLDİ 2026-08-26 (`F12`; code-reviewer `B1`).** İlk yazımı şöyleydi ve
+**iki kusuru vardı**:
+
+> ~~`K-2.6.4a/b`: *"şablonun öznesi olan rol, şablonu düzenleyemez."* … `DISIPLIN.md`'ye
+> **sınıf kuralı** olarak geçti.~~
+
+**Kusur 1 — alıntı yok.** `düzenleyemez` `L2_03`'te **sıfır** eşleşme (poz.kontrol:
+`onay` **109**). Gerçek metinler: `K-2.6.4a` *"rol … adres defteridir"*, `K-2.6.4b`
+*"onaycı jenerik değildir, bütçenin sahibidir"*. Cümle **ürün sahibinin kendi
+ifadesiydi**; onu bir kural **alıntısına** çeviren Team Lead'di.
+
+**Kusur 2 — `K-2.6.5c` ile gerilim.** *"Görev ayrılığı **rol** bazlı değil, **kişi**
+bazlı işler."* `L2`'deki üç SoD kuralı da kişi+işlem eksenli.
+
+**YÜRÜRLÜKTEKİ DAYANAK** — pozitif ve birebir: `K-2.6.4` rol kataloğu,
+`YÖNETİCİ | Tanımlar, kural yönetimi` (`L2_03:405`).
+
+> ⚠️ Ve `L2_03:465`'in şerhi okundu: *"`K-2.6.4`'ün cümlesinden **kapsamsızlık**
+> türetilemez — olsa olsa ima edilir."* O şerh **kapsamsızlık** içindir; burada
+> türetilen şey kapsamsızlık değil, **bir yazma yetkisinin sahibi**.
+
+**DAVRANIŞ ETKİLENMEDİ:** `SHARED_POLICY_WRITE = {ADMIN}`, göç öncesi `@Roles(ADMIN)`'in
+**birebir** hâli. Askıda olan **gerekçe**, küme değil.
+
+⛔ **Ürün sahibine giden soru:** SoD'un rol katmanında formüle edilmesi `K-2.6.5c`'yi
+**tamamlıyor mu, revize mi ediyor**? Revizyonsa `Z1` gereği kendi kaydıyla iner.
+Ve `ADMIN`'in muafiyeti ayrıca karara bağlanır — çünkü ölçüm `ADMIN`'i onay
+rotalarının **beşinde** buldu: `ADMIN` hem özne hem yazar.
+
+### 4 · `SINIF B` = `{A,F}` — ve çatışma, çatışma DEĞİLDİ
+
+`K-2.2.9c` ile `K-2.6.4` **çelişmiyor, iş bölümü tarif ediyor**:
+
+```
+K-2.2.9c   "finans zarfı büyütür … kararı paranın sahibine taşır"
+           ⇒ YAZAN Finans · ONAYLAYAN sahip (CM)
+K-2.6.4    CM'nin "zarf yönetimi" cümlesi ONAY + İZLEME tarafında
+           zaten karşılanmış (MODES_APPROVE_CATEGORY + zarf görünürlüğü)
+```
+
+⇒ **Fiziksel yazım, cümlenin zorunlu sonucu değildir.** `{A,F}` yalnız bugünkü
+fail-open zorunluluğu (`AccessScope=0`) değil, **kuralların tutarlı okumasıdır**.
+
+**CM-girişi kapısı açık — ama ÇİFT KOŞULLA** (`Z25` satırı):
+`T-266` (kapsam sağlayıcısı) **∧** ürün kararı (`K-2.2.9c` okumasının **revizyonu**).
+Sessiz genişleme yasak.
+
+### 5 · Hesap-okuma yedilisi — çıkarma KESİN, varış KÜME-BİREBİRLİĞE bağlı
+
+`W4b` ölçümü: yedi rotanın yazma yüzeyi **`0`**, cascade **yapısal olarak imkânsız**.
+
+| grup | hüküm |
+|---|---|
+| üç `SHARED` rotası (`context/rates` · `calculate/base-spend` · `calculate/planned-spend`) | → `SHARED_READ` (`5/5→5/5` **birebir**, göçebilir). `W4a` yan-bulgusunun kaydettiği tutarsızlık **kapanır** |
+| dört `MASTER_DATA` rotası | WRITE'tan **çıkarma kesin**; varış **küme-birebirliğe** bağlı → aşağı bkz. |
+
+⚠️ **DÜZELTME 2026-08-26 (`F12`; code-reviewer `S7`) — dörtlü TEK PARÇA DEĞİL.**
+İlk yazımı *"bu dörtlünün `{A}`-only'si"* diyordu; **ölçüm ikiye ayırdı**:
+
+```
+mechanics/applicable          5/5  ┐
+mechanics/check-combination   5/5  ┘ MASTER_DATA_READ kümesi de 5/5 → BİREBİR
+mechanics/validate-formula    {A}  ┐
+kpis/validate-formula         {A}  ┘ birebir DEĞİL → karar-bekler
+```
+
+⇒ `Z36`'nın **kendi ölçütü** uygulandığında dörtlünün **yarısı mekanik göçebilir**;
+yanlış niteleme `W7`/`W8`'in kapsamını **gereksiz daraltıyordu**.
+
+📌 Ve kalan ikisi için `Z36`'nın açık bıraktığı ihtimal hâlâ geçerli: formül-doğrulama
+*"kural-yönetiminin okuma aynası"* ise evi `SINIF A` komşuluğudur, katalog-READ değil.
+
+⛔ **Ayrı `CALC_READ` hücresi AÇILMAZ.** Yedi rota **iki ailede**; tek hücre **aile
+eksenini düzleştirir**. Üyelik **yazma-yüzeyi ölçümüyle**, ev **ailesinin okuma tarafı**.
+
+📌 Ve formül-doğrulamanın *"kural-yönetiminin okuma aynası"* olma ihtimali açık — o
+zaman evi `SINIF A` komşuluğudur, katalog-READ değil.
+
+### 6 · `K-2.6.6` DÜZELTMESİ — fail-closed bir VERİ-SINIFI kuralı değildir
+
+Bu turda `K-2.6.6` *"kural yoksa reddet"* diye ölçüldü: bir **fail-closed ilkesi**.
+Hesap-okuma sınıfını gerekçelendirmek için kullanılamaz.
+
+> ⚠️ Ürün sahibinin kendi kaydı: *"'etiketle değil ölçümle' şartının kendi üstümdeki
+> uygulaması — çünkü o etiketi ilk ben önermiştim."* Bir şartı **koyan tarafın kendi
+> önerisini o şartla elemesi**, şartın işlediğinin kanıtıdır.
+
+### 7 · Göç tablosu
+
+```
+MEKANİK GÖÇEBİLİR (8)   A(1) + B(2) + C(2) + calculate-üçlüsü(3)   hepsi küme-birebir
+KAZA/İSTİSNA DALGASI    LTA dörtlüsü · T-289 kaldırması
+KARAR-BEKLER KALINTISI  MASTER_DATA dörtlüsü · plans/:id/budget-check (Z33)
+```
