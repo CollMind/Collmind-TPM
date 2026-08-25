@@ -306,9 +306,73 @@ cümlelenemeyen  → tabana hizalama = kayıtlı DAVRANIŞ-İSTİSNASI dalgası
 📌 **Üçü `PLANNER`, biri `FINANCE` eksik** — yani soru tek tip değil: `PLANNER`
 grubu bir **görünürlük** sorusu, `FINANCE` grubu bir **kaza adayı**.
 
-## `SUMMARY_READ` + `MODES_READ` — KARAR DEĞİL, **ORTAK ÖLÇÜM TURU**
+## `SUMMARY_READ` + `MODES_READ` — ÖLÇÜM TURU KOŞTU (2026-08-25)
 
-Tek `architect` turu, üç soru — ayrıntı: `§5`.
+### ⛔ HİPOTEZ (a) ÇÜRÜDÜ — üç bağımsız yüzeyde
+
+Team Lead'in hipotezi (*"`{A,F}` yedilisi = defter okuması, `Z35`'in okuma
+tarafı"*) **çürüdü**:
+
+| # | çürütme | ölçüm |
+|---|---|---|
+| 1 | yedinin **dördü hiçbir tabloya dokunmuyor** | `template/csv\|excel` ×4 → statik üreteç; `Repository\|dataSource\|getRepository` = **0**. POZ.KONTROL `ledger.service.ts` = **2** |
+| 2 | veri okuyan üçünün **aynı tabloyu aynı yüklemle okuyan `{A,F,P}` kardeşi var** | `ledger.repository.ts:49` ↔ `:76` aynı yüklem · `agreement-transaction.repository.ts:56` ↔ `:88` (**geniş rota DAHA ÇOK veri**) |
+| 3 | defter okuyan rotalar **`5/5`'te, ve KAYITLI kararla** | `settlements/summary` (`T-267 B1 §1f`) · `budget/envelopes*` → `budget-summary.view-entity` `FROM main.ledger_entries` (**4. yüzey: VIEW**) |
+
+⇒ **`{A,F}` kısıtı bugün HİÇBİR ŞEY UYGULAMIYOR** — `PLANNER` aynı veriyi
+(birinde **fazlasını**) `{A,F,P}` rotasından alıyor.
+
+📌 **Ve hipotez, KENDİ YAZDIĞIM bir notla çelişiyordu:** `capabilities.ts:562-567`
+*"`Z35`'in ayırt edicisi bir DİSJONKSİYON, tek grep'lik bir test DEĞİL"* —
+`Z35` bir **alt-modül** ayrımıdır, okumaya uygulandığında `{A,F}` üretmiyor
+(gerçekleşme alt-modülleri bugün **dört farklı küme** taşıyor).
+
+**`{A,F}` yedilisi GERÇEKTE ne:** `K-2.6.14`'ün *"Bugün: yalnız finans +
+yönetici"* satırının, içe-aktarma boru hattının **okuma-şekilli** üyelerine
+**taşması** — ve taşma **tutarsız**:
+```
+GET on-invoice/batch/:batchId              {A,F,P,RO}
+GET agreement-transactions/batch/:batchId  {A,F}
+    yapısal olarak ÖZDEŞ rota · aynı boru hattı · İKİ FARKLI KÜME
+```
+
+### (b) İKİ SINIF YETMİYOR — ölçülen **DÖRT**
+
+```
+1  plan/anlaşma TANIMI okuması      5/5 taban
+2  gerçekleşme VERİSİ okuması       5/5 taban
+3  ONAY KUYRUĞU okuması             APPROVE aynası     ← YENİ SINIF
+4  İÇE AKTARMA boru hattı           {A,F} K-2.6.14
+```
+
+**Sınıf 3 zaten KARARLI ve iki repoda birden doğrulandı:**
+
+| rota | backend | frontend ekran kapısı | eşleşme |
+|---|---|---|---|
+| `GET plans/pending-approvals` | `{A,CM,RO}` | `['ADMIN','CATEGORY_MANAGER','READONLY']` | ✅ **BİREBİR** |
+| `GET agreements/pending-approvals` | `{A,CM,F,RO}` | `['ADMIN','CATEGORY_MANAGER','FINANCE','READONLY']` | ✅ **BİREBİR** |
+
+⇒ `MODES_APPROVE_CATEGORY`/`_JOINT`'in **okuma aynası**. Cümle zaten yazılı.
+
+**Eşlenemeyen tek kalan:** `GET plans/:id/budget-check` `{A,CM,P,RO}`.
+
+### (c) DÖRT KÜME DÖRT KARAR DEĞİL — mekanizma bir COMMIT
+
+`f3b9f82` (2026-03-05, *"add READONLY role"*) `READONLY`'yi **ayrım yapmadan**
+beş controller'a ekledi, ikisine **hiç dokunmadı**. ⇒ Bugünkü `READONLY`
+dağılımı büyük ölçüde **o commit'in kapsamının fonksiyonu**.
+
+⛔ **VE İKİ CANLI KUSUR ÇIKTI** → **[[T-287]]** (Team Lead bağımsız doğruladı):
+`/finance`'te `CATEGORY_MANAGER` üç widget'ta `403` · `/off-invoice/transactions`'ta
+`READONLY` için `Promise.all` yüzünden **sayfanın tamamı** düşüyor.
+
+### ⛔ ÜRÜN SAHİBİNE — hüküm gereken ÜÇ nokta
+1. **`{A,F}` yedilisi bölünmeye gerekçe OLAMAZ.** İki seçenek: (i) şablonlar +
+   `agreement-transactions/batch/:batchId` **içe-aktarma hücresine** · (ii)
+   `ledger/envelope/*` `{A,F,P}`'ye **hizalansın** (zaten bypass ediliyor).
+2. **Üçüncü sınıf (`onay kuyruğu okuması`) tanınsın mı?**
+3. **Kaza satırları** — tek dalga mı, ayrı ayrı kayıtlı istisna mı?
+   ⚠️ `K2`/`K3` bir taksonomi tartışması değil, **çalışan kusur**.
 
 ---
 
