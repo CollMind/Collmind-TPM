@@ -567,3 +567,42 @@ cascade yapısal olarak imkânsız).
 
 ⇒ **Karar anında bu üç rota `SHARED_WRITE`'ın değil, `calculate` sınıfının
 üyesi olarak değerlendirilir.**
+
+
+---
+
+## ✅ `SUMMARY` / `MODES_READ` ölçüm-kök paketi — TAM LİSTE (2026-08-26)
+
+> **Ürün sahibi:** *"tek `architect` turu, tek karar dönüşü."*
+
+Tüm kalan karar-bekler **tek bir ölçüm-kök ailede**: **küme-gerekçe taraması**.
+
+| # | kalem | kaynak |
+|---|---|---|
+| 1 | `SUMMARY_READ` hücresi | `Z31`/`Z32` |
+| 2 | `MODES_READ` hücresi | `Z30` `DUR` |
+| 3 | `finance-reporting/budget-variance` | `K4` **devri** — aile taraması açıkken tek üyeyi ayrı çözmek yarım muamele (`İlke 4`) |
+| 4 | `validate-formula` çifti (`mechanics` · `kpis`, `{A}`) | `Z36 §5` |
+| 5 | `plans/:id/budget-check` | `Z33` |
+| 6 | `/finance`'in üç widget'ına `CATEGORY_MANAGER`? | `T-287` `K3` |
+| 7 | `/off-invoice/transactions`'a `READONLY`? | `T-287` `K3` |
+| 8 | `/budget/ledger`'a `READONLY`? | `T-287` `K3` |
+| 9 | `PLANNER` `plan-performance`'ta **var**, `/finance`'e **giremiyor** | `T-287` |
+
+### ⛔ `9` PAKETİ GÜÇLENDİRİYOR — ve aradığımız kanıt türü TAM BUDUR
+
+> **Ürün sahibi:** *"UI'dan ulaşılamaz üyelik, o üyeliğin bir KARAR değil KAZA
+> olduğunun DAVRANIŞSAL işaretidir."*
+
+```
+kimse kullanamıyorsa           →  kimse istememiş OLABİLİR   (üyelik kaza)
+ya da ekran kapısı kaza,          üyelik KASIT
+İKİSİNİ TARAMA AYIRIR
+```
+
+📌 Küme-gerekçe taraması bugüne kadar **kayıt yokluğunu** arıyordu (*"`d40ca16`,
+gerekçe yorumu yok"*). `9` ikinci bir kanıt türü ekliyor: **davranışsal ulaşılamazlık**.
+Bir üyelik hiçbir yüzeyden kullanılamıyorsa, o üyeliğin **gerekçesi de yoktur** —
+ve bu, kayıt aramaktan **daha ucuz** bir sinyaldir.
+
+⇒ `6`–`9` de `1`–`5` ile **aynı turda** çözülür.

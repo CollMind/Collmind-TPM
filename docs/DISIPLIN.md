@@ -2486,3 +2486,49 @@ provenance **kaybolmuştu**.
 
 > **Bir yazma yolunun anahtarına KÖKEN SEGMENTİ koy.** Tekrarı engellemek için
 > gerekmez; **hesap sorulabilirlik** için gerekir.
+
+
+### Bir pin, ÜRETİMİN OKUDUĞU kaynağı ölçmüyorsa pin değildir (ZORUNLU)
+
+**`T-289`'un dersiyle SİMETRİK.** Orada **iddia** yanlış cinstendi (durağan yüzey,
+çağrı değil); burada **kanıt** yanlış kaynaktan.
+
+```
+T-289    iddia   yanlış CİNS      durağan yüzeyler ≠ çağrı
+K3/B1    kanıt   yanlış KAYNAK    testin beslediği ≠ üretimin okuduğu
+```
+
+📌 Ölçülmüş vaka (2026-08-26, `K3` `B1`) — üç halka, üçü de masum görünüyor:
+
+```
+üretim   FinanceDashboard   rolü useMe()'den okur
+test     rolü YALNIZ redux'a koyar
+mock     MSW /users/me      KOŞULSUZ 'ADMIN' döner
+sonuç    canSeeRestrictedWidgets HER ROL için true
+```
+
+**Mutasyon kanıtı:** kapatılmak istenen rol izinli listeye **geri eklendiğinde** — yani
+testin önlemek için var olduğu **tam regresyon** — suite **yeşil** kaldı.
+
+> **Bir pin yazmadan önce sor: ÜRETİM bu değeri NEREDEN okuyor?** Cevap testin
+> beslediği yer değilse, pin **hiçbir şey ölçmüyor** — ve **yeşil olduğu için**
+> ölçtüğü sanılıyor.
+
+⚠️ Ve `§2.7 #6`'dan farkı: orada test **doğru kaynağı** ölçüyor ama **ayırt edemiyor**;
+burada test **yanlış kaynağı** ölçüyor. İkisi de yeşil, ikisi de boş.
+
+#### ⛔ VE İKİNCİ YARISI: doğru desen REPODA VARKEN yanlışını yazmak
+
+Aynı turda, **kardeş test dosyasında**, doğru şekil **zaten duruyordu**
+(`vi.mock` ile `useMe`'yi role göre döndürmek). **Aynı tur, iki şekil.**
+
+📌 Bu, `S-3`/`T-111` **port-dersi ailesinin test hâli**:
+
+> **Doğru desen repoda varken yanlışını yazmak, desenin ADRESLENMEMİŞ olmasındandır.**
+
+Bir desen *"var"* olması yetmez — **bulunabilir** olmalı. Adreslenmemiş bir desen,
+her yazarın **yeniden icat ettiği** bir desendir, ve icatların yarısı yanlış çıkar.
+
+**Pratik:** bir tur içinde aynı problemi ikinci kez çözüyorsan, birincisinin **adını**
+ara. Bulamıyorsan **sorun sende değil, adreslenmede** — ve o adres bir yoruma, bir
+yardımcıya ya da bu dosyaya yazılır.
