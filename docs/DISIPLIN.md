@@ -1203,6 +1203,53 @@ Test edilmeyen dosya kusur biriktirir; ve biriktirdiği kusurlar birbirine benze
 
 ## AİLE — ŞART · SINIR · KAYIT
 
+### İÇERİK TAŞINIR, STATÜ ÇEVREDEN GELİR (ZORUNLU — belge taşıma)
+
+> **Bir belge taşıması İÇERİĞİ taşır; STATÜ içeriğin İÇİNDE değil ÇEVRESİNDE
+> yaşar — ve taşınmazsa SESSİZCE DÜŞER.**
+> **Taşıma, statü beyanını da taşımak ZORUNDADIR.**
+
+Ölçülmüş vaka (2026-08-25, `CLAUDE.md` bölmesi): `63` `(ZORUNLU)` kural
+`docs/DISIPLIN.md`'ye taşındı. Üç kayıpsızlık ölçütü de **geçti** — içerik
+(satır çoklu-kümesi: kayıp `0`) · yapı (başlık: kayıp `0`) · atıf (`63/63`
+çözülüyor). Ve yine de:
+
+```
+CLAUDE.md:6   "Bu dosya tüm oturumlarda yüklenir. Talimatlar ZORUNLUDUR."
+              → 3169 satırın 950'sini kapsıyor
+§2.1 kaynak tablosu  →  DISIPLIN.md YOK
+§0 oturum başı        →  DISIPLIN.md'den söz etmiyor
+```
+
+⇒ `63` bağlayıcı kural, onları **bağlayıcı kılan cümlenin** kapsamından çıktı —
+çünkü o cümle kuralların **içinde değil, çevresinde** yaşıyordu.
+
+📌 **Sınıf:** *"mekanizma var, ona giden üretim yolu yok"* — bu reponun sekiz
+vakalık ailesi, belge tarafında.
+
+### ⇒ DÖRDÜNCÜ ÖLÇÜT: SOĞUK BAŞLANGIÇ
+
+Bir belge taşımasının kayıpsızlık ölçütleri **dörttür**:
+
+```
+1 İÇERİK   satır çoklu-kümesi — kaybolan içerik satırı 0
+2 YAPI     başlık listesi birebir; yeni başlıklar YALNIZ yapısal
+3 ATIF     her atıf hedefine varıyor          ← SICAK başlangıç testi
+4 STATÜ    "soğuk başlayan bir ajan bu belgenin BAĞLAYICI olduğunu bilir mi?"
+```
+
+⚠️ **`3` ile `4` farklı okuyucuyu simüle eder ve biri diğerini KAPSAMAZ.**
+Atıf-çözünürlüğü, belgeyi **zaten arayan** bir okuyucuyu varsayar; statü sorusu
+**hiç duymamış** olanı. `CLAUDE.md` bölmesinde `1-3` geçti, `4` düştü — ve
+`4`'ü soran bir ölçüt olmasaydı `63` kural **sessizce tavsiyeye** dönerdi.
+
+**Pratik — taşıma turunun kabul satırı:**
+
+```
+STATÜ BEYANI  hedef belgenin bağlayıcılığı NEREDE yazılı        (kaynak tablosu?)
+GİRİŞ NOKTASI hiç duymamış bir okuyucu oraya NASIL varır        (indeks? §0?)
+```
+
 ### Bir SIRA şartı, AYRILABİLİRLİK şartı İÇERMEZ (ZORUNLU)
 
 > **Bir sıra şartı (*"önce A, sonra B"*) bir ayrılabilirlik şartı İÇERMEZ.**
