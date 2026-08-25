@@ -242,7 +242,35 @@ RATCHET        kalan-@Roles LİSTESİ düşer (SAYI DEĞİL — Z29: "biri düş
 CÜMLE BORCU    Z18 §4 cümle şartını karşılamayan satırlar DOKUNULAN DALGAYLA cümlelenir
 DOSYA BEYANI   touches: + kapsam hattıyla kesişim beyanı
 LINT KAPISI    ajan, RAPOR ETMEDEN ÖNCE lint-ratchet --ratchet koşar    ← ÖLÇÜLDÜ
+PİN ZORUNLU    pin YAZILMADAN göç edilmez — rol kümesi koruması BAŞKA
+               hiçbir kapı tarafından ölçülmez                        ← W2 ÖLÇÜMÜ
 ```
+
+> ### ⛔ `PİN ZORUNLU` — ve gerekçesi bir TAMAMLAYICILIK ölçümü (`W2` review)
+>
+> Göçen rotanın `route-cell-map` çıktısındaki **rol sütunu `?` olur** (`@Roles`
+> yok). Yani:
+>
+> ```
+> G6   HÜCRE mutabakatını doğrular        (beyan ↔ mekanik türetim)
+> G6   ETKİN ROL KÜMESİNİ doğrulamaZ      ← boşluk
+> pin  ETKİN ROL KÜMESİNİ doğrular        (200 / 403)
+> pin  HÜCREYİ doğrulamaZ                 ← boşluk
+> ```
+>
+> **Üç mutasyonla ölçüldü (`W2`):**
+>
+> | mutasyon | pin | statik kapı |
+> |---|---|---|
+> | `@RequireCapability` düşür | **4 FAIL** — rota tamamen açık | `route-scope` `FILTRESIZ 1`, `exit 1` |
+> | `CapabilityGuard`'ı `@UseGuards`'tan düşür | **32 FAIL** | `single-mechanism` `exit 3` |
+> | **yanlış hücre** (`TENANT_WRITE`→`TENANT_READ`) | **YAKALAYAMAZ** (iki hücre de `{ADMIN}`) | `route-cell-map` `exit 2`, `G6` |
+>
+> ⇒ **Hiçbiri tek başına yetmiyor; ikisi birlikte yetiyor.**
+>
+> ⛔ **Pin yazılmadan göç edilirse rol-kümesi koruması HİÇBİR otomatik kapı
+> tarafından ölçülmez.** `W2` bunu doğru yaptı; `W3`–`W8` brief'lerinde bu satır
+> **şart** olarak durur.
 
 > ### ⛔ `LINT KAPISI` BRIEF ŞARTI — iki vaka bir desendir (2026-08-24, `H8` turu)
 >
