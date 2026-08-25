@@ -2406,3 +2406,48 @@ değildi**. SoD **elemedi**; **zaten yoktu**.
 ⚠️ Ve bu, `§2.7 #6`'nın (*"kapsam var, ayırt etme gücü yok"*) **gerekçe tarafındaki**
 kardeşi: bir test yeşil olduğu için ayırt etmez, bir gerekçe **tutarlı** olduğu için
 kanıtlamaz.
+
+
+### DURAĞAN yüzeyler bir HİPOTEZ oluşturur, bir BULGU değil (ZORUNLU)
+
+**`§7.1`'in ölçüm tarafındaki kardeşi — ve `T-289` ile ölçülmüş en pahalı vakası.**
+
+`T-289` **dört yüzeyde** ölçülerek yazıldı ve **dördü de DOĞRUYDU**:
+
+```
+ekranda requiredRole YOK        ✅ doğru   (poz.kontrol: 40 rotada var)
+agreementId SERBEST METİN       ✅ doğru   (useState('') + .trim())
+servis anlaşmayı DOĞRULAMIYOR   ✅ doğru
+AccessScope atfı SIFIR          ✅ doğru   (poz.kontrol: 7 serviste var)
+```
+
+**Sonuç yine de YANLIŞTI.** Repro-pin ucu çağırdı: `500`, her seferinde —
+`reserveBudget`, `findEnvelopeWithLock`'ı **transaction'sız** çağırıyor ve
+`setLock('pessimistic_write')` bunu **her zaman** reddediyor. Uç, iddia edilen satırı
+**hiç üretemiyor**.
+
+> ⛔ **DÖRT DOĞRU DURAĞAN OLGU, YANLIŞ BİR DAVRANIŞSAL SONUCA BİLEŞTİ.**
+
+📌 **Yüzey SAYISI durağanı davranışsala çevirmez.** Dördü de *"kod ne diyor"*du;
+hiçbiri *"çağırınca ne oluyor"* değildi. Beşincisi, altıncısı da eklenseydi sonuç
+değişmezdi — çünkü eksik olan **sayı değil, CİNS**.
+
+⚠️ Ve bu, `BİLEŞİMSEL FAIL-OPEN`'ın **aynadaki görüntüsü**: orada her parça masumdu,
+boşluk bileşimdeydi. Burada her parça **doğruydu**, **hata** bileşimdeydi.
+
+> **Pratik:** durağan yüzeylerden kurulan bir kusur iddiası `VARSAYIM` etiketiyle
+> yazılır, `ÖLÇÜLDÜ` ile değil — ve **`ÖLÇÜLDÜ`ye ancak çağrılınca terfi eder.**
+
+### ⛔ VE REPRODÜKSİYON ŞARTININ İKİNCİ VAKASI — sayaç artık iki
+
+`§2.7`'nin *"reprodüksiyon şartı YÖNSÜZDÜR"* maddesi `T-273` ile yazılmıştı. `T-289`
+**ikinci** vakadır ve bir şeyi keskinleştirir:
+
+| | `T-273` | `T-289` |
+|---|---|---|
+| iddia | *"ilk gerçek satırda `500` verecek"* | *"uydurma id ile `POSTED` satır üretilebilir"* |
+| ölçüm | `500` **hiç görülmedi** | `500` **her zaman** görüldü |
+| iddiayı yazan | ölçmemişti | **dört yüzeyde ölçmüştü** |
+
+📌 İkincisi daha öğretici: **ölçüm eksikliği değil, ölçümün YANLIŞ CİNSTEN olması.**
+Ve iki vakada da yakalayan şey aynı: **kusuru önce GÖRME şartı.**
