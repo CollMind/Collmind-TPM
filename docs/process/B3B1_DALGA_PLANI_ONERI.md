@@ -324,6 +324,27 @@ varsayımla değil, bu ölçümle.
 uygulamasında** bir **canlı-açık adayını** önledi — ve o açık `W1`'de, yani **bir
 sonraki turda** gerçekleşecekti.
 
+### ⛔ `§5` RAPORLARININ KALICI YORUMU (ürün sahibi, 2026-08-25)
+
+`W1`'in en ilginç satırı **sayılar değil, DAĞILIM**:
+
+```
+çürüyen iddia 3   →  2 Team Lead (opus)  ·  1 ajan (sonnet, ve HAKLI çıktı)
+yanılan taraf     →  GÜÇLÜ MODEL
+yakalayan taraf   →  SONNET AJANLAR
+                     qa-engineer  :123/:89 düzeltmesi
+                     backend-engineer  ön-koşul boşluğu (INFRA_GUARDS)
+```
+
+> **Doğrulama ağı ÇİFT YÖNLÜ: sen ajanları ölçüyorsun, ajanlar seni çürütüyor.**
+> **Kalite MODELDE değil, ÇÜRÜTME HAKKININ SİMETRİSİNDE.**
+
+⇒ Eşleme gerekçesi (*"yakalama mekanizması nerede zayıfsa güçlü model oraya"*) **ters
+yönde de** çalışıyor. Model eşlemesi **KALIR**; `W2`–`W8` `sonnet` ile akar.
+
+📌 Ve *"review'ın önlediği"* tablosu **muafiyet-daraltma kararının bilançosudur**: dört
+tur, dört sınıf, dördü de **canlı-açık adayı** — daraltma **bir tur bile boşa çıkmadı**.
+
 📌 **Brief'in gerekçesini destekliyor:** *"yakalama mekanizması nerede ZAYIFSA, güçlü model
 oraya."* Artefakt turlarında (`sonnet`) yakalamayı **guard'lar + ölçüm disiplini** yaptı, ve
 iki ajan **kendiliğinden** sınıf düşündü. İddia turlarında (`opus`) yakalamayı **muhakeme**

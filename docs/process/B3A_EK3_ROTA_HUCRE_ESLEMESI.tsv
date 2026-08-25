@@ -1,215 +1,215 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-24 · B3b-1 ADIM 0 (Z35 bölünmesi koda indi) sonrası
+# ölçüm: 2026-08-25 · W1 + T-285 sonrası (göçen rotalar HARİTADA KALIR)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr), burada değil.
-#dosya	YÖNTEM	yol	@Roles	hücre	kaynak
-src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	ADMIN	ADMIN_READ	MEKANIK
-src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log/high-risk	ADMIN	ADMIN_READ	MEKANIK
-src/modules/customer/customer.controller.ts	POST	customers	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK
-src/modules/customer/customer.controller.ts	POST	customers/bulk	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers/search	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers/channel/:channel	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers/channel-id/:channelId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers/city/:city	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers/vip	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers/code/:code	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	PATCH	customers/:id	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK
-src/modules/customer/customer.controller.ts	DELETE	customers/:id	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK
-src/modules/customer/customer.controller.ts	POST	customers/:id/activate	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK
-src/modules/customer/customer.controller.ts	POST	customers/:id/deactivate	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers/:id/stats	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	GET	customers/cpl/list	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK
-src/modules/customer/customer.controller.ts	POST	customers/import	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK
-src/modules/master-data/brand/brand.controller.ts	POST	master-data/brands	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/brand/brand.controller.ts	GET	master-data/brands	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/brand/brand.controller.ts	GET	master-data/brands/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/brand/brand.controller.ts	PATCH	master-data/brands/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/brand/brand.controller.ts	DELETE	master-data/brands/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/category/category.controller.ts	POST	master-data/categories	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/category/category.controller.ts	GET	master-data/categories	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/category/category.controller.ts	GET	master-data/categories/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/category/category.controller.ts	PATCH	master-data/categories/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/category/category.controller.ts	DELETE	master-data/categories/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/channel/channel.controller.ts	POST	master-data/channels	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/channel/channel.controller.ts	GET	master-data/channels	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/channel/channel.controller.ts	GET	master-data/channels/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/channel/channel.controller.ts	PATCH	master-data/channels/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/channel/channel.controller.ts	DELETE	master-data/channels/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/cpl/cpl.controller.ts	POST	master-data/cpls	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/cpl/cpl.controller.ts	GET	master-data/cpls	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/cpl/cpl.controller.ts	GET	master-data/cpls/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/cpl/cpl.controller.ts	PATCH	master-data/cpls/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/cpl/cpl.controller.ts	DELETE	master-data/cpls/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/forecasting-unit/fu.controller.ts	POST	master-data/forecasting-units	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/forecasting-unit/fu.controller.ts	GET	master-data/forecasting-units	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/forecasting-unit/fu.controller.ts	GET	master-data/forecasting-units/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/forecasting-unit/fu.controller.ts	PATCH	master-data/forecasting-units/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/forecasting-unit/fu.controller.ts	DELETE	master-data/forecasting-units/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/generic-unit/gu.controller.ts	POST	master-data/generic-units	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/generic-unit/gu.controller.ts	GET	master-data/generic-units	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/generic-unit/gu.controller.ts	GET	master-data/generic-units/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/generic-unit/gu.controller.ts	PATCH	master-data/generic-units/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/generic-unit/gu.controller.ts	DELETE	master-data/generic-units/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/grid/:planId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/grid	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/calculable	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	PATCH	master-data/kpis/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	DELETE	master-data/kpis/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis/validate-formula	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis/seed-defaults	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/mechanic/mechanic.controller.ts	GET	master-data/mechanics	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/mechanic/mechanic.controller.ts	GET	master-data/mechanics/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/mechanic/mechanic.controller.ts	PATCH	master-data/mechanics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/mechanic/mechanic.controller.ts	DELETE	master-data/mechanics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/validate-formula	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/applicable	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/check-combination	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/:id/clone	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/region/region.controller.ts	POST	master-data/regions	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/region/region.controller.ts	GET	master-data/regions	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/region/region.controller.ts	GET	master-data/regions/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/region/region.controller.ts	PATCH	master-data/regions/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/region/region.controller.ts	DELETE	master-data/regions/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/sku/sku.controller.ts	POST	master-data/skus	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/sku/sku.controller.ts	GET	master-data/skus	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/sku/sku.controller.ts	GET	master-data/skus/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/sku/sku.controller.ts	PATCH	master-data/skus/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/sku/sku.controller.ts	DELETE	master-data/skus/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/tactic/tactic.controller.ts	POST	master-data/tactics	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/tactic/tactic.controller.ts	GET	master-data/tactics	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/tactic/tactic.controller.ts	GET	master-data/tactics/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK
-src/modules/master-data/tactic/tactic.controller.ts	PATCH	master-data/tactics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/master-data/tactic/tactic.controller.ts	DELETE	master-data/tactics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions/batch	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/agreement/:agreementId	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/agreement/:agreementId/total	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/batch/:batchId	ADMIN,FINANCE	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/budget-impact/:agreementId	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/count	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/stats/summary	ADMIN,FINANCE,PLANNER	SUMMARY_READ	Z31/Z32
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/:id	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions/upload	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions/validate-and-import	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/template/excel	ADMIN,FINANCE	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/template/csv	ADMIN,FINANCE	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	GET	agreements	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	GET	agreements/pending-approvals	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	GET	agreements/tactics/available	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	GET	agreements/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	PATCH	agreements/:id	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements/:id/submit	ADMIN,PLANNER	MODES_SUBMIT	Z35
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements/:id/approve	ADMIN,CATEGORY_MANAGER,FINANCE	MODES_APPROVE	YARGI
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements/:id/reject	ADMIN,CATEGORY_MANAGER,FINANCE	MODES_APPROVE	YARGI
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements/:id/cancel	ADMIN,PLANNER	MODES_SUBMIT	Z35
-src/modules/modes/actuals-first/agreement/agreement.controller.ts	DELETE	agreements/:id	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/agreement/:agreementId	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/agreement/:agreementId/consumed	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/envelope/:envelopeId	ADMIN,FINANCE	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/envelope/:envelopeId/consumed	ADMIN,FINANCE	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/:id	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	POST	on-invoice/upload	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35
-src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/count	ADMIN,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/entries	ADMIN,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/template/excel	ADMIN,FINANCE	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/template/csv	ADMIN,FINANCE	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	POST	on-invoice/:batchId/validate	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35
-src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	POST	on-invoice/:batchId/process	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35
-src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/batch/:batchId	ADMIN,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	POST	actuals-first/sales-actuals/upload	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35
-src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/batches	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/batches/:batchId/rows	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/batches/:batchId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/modes/actuals-first/settlement/settlement.controller.ts	GET	actuals-first/settlements/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/pending-approvals	ADMIN,CATEGORY_MANAGER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/approval-queue	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	MODES_READ	MEKANIK
-src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id/budget-check	ADMIN,CATEGORY_MANAGER,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id/analysis	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/planning-first/plan/plan.controller.ts	PATCH	plans/:id	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/fus	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	PATCH	plans/:id/fus/:fuId/tactics	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	DELETE	plans/:id/fus/:fuId	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	PATCH	plans/:id/fus/:fuId/skus/:skuId/volume	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/submit	ADMIN,PLANNER	MODES_SUBMIT	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/submit-for-approval	ADMIN,PLANNER	MODES_SUBMIT	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/review	ADMIN,CATEGORY_MANAGER,FINANCE	MODES_APPROVE	YARGI
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/escalate-to-finance	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI
-src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id/approval-history	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/approve	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/reject	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/return-to-draft	ADMIN,PLANNER	MODES_SUBMIT	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	DELETE	plans/:id	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/calculate-kpis	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/recalculate	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35
-src/modules/notification/notification.controller.ts	POST	notifications/:id/read	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	NOTIFICATION_WRITE	MEKANIK
-src/modules/shared/approval/approval-policy.controller.ts	PATCH	approval-policies/:id	ADMIN	SHARED_WRITE	MEKANIK
-src/modules/shared/approval/approval.controller.ts	GET	approvals	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/approval/approval.controller.ts	GET	approvals/pending	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/approval/approval.controller.ts	GET	approvals/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes	ADMIN,FINANCE	SHARED_WRITE	MEKANIK
-src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/budget/budget.controller.ts	POST	budget/reserve	ADMIN,PLANNER	SHARED_WRITE	MEKANIK
-src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/reserved	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes/:id/split	ADMIN,FINANCE	SHARED_WRITE	MEKANIK
-src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/transactions	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/budget/budget.controller.ts	GET	budget/status	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/pending-tasks	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/cpl-status	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-utilization	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/spend-trend	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/spend-composition	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/plan-performance	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-at-risk	ADMIN,FINANCE,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/mechanic-effectiveness	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/variance-analysis	ADMIN,FINANCE,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-variance	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/cash-flow-projection	ADMIN,FINANCE,READONLY	SUMMARY_READ	Z31/Z32
-src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements	ADMIN	SHARED_WRITE	MEKANIK
-src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/lta/lta-agreement.controller.ts	PATCH	lta-agreements/:id	ADMIN	SHARED_WRITE	MEKANIK
-src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/:id/activate	ADMIN	SHARED_WRITE	MEKANIK
-src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/:id/terminate	ADMIN	SHARED_WRITE	MEKANIK
-src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements/cpl/:cplId/active	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/context/rates	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_WRITE	MEKANIK
-src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/calculate/base-spend	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_WRITE	MEKANIK
-src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/calculate/planned-spend	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_WRITE	MEKANIK
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	POST	spend-calculation/distribute/:planFuId/:mechanicId	ADMIN,PLANNER	SHARED_WRITE	MEKANIK
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	POST	spend-calculation/recalculate-on-volume-change/:skuId	ADMIN,PLANNER	SHARED_WRITE	MEKANIK
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/breakdown/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-distribution/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-inputs/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-combinations/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-budget/:planId	ADMIN,CATEGORY_MANAGER,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-before-submission/:planId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK
-src/modules/tenant/tenant.controller.ts	POST	tenants	ADMIN	TENANT_WRITE	MEKANIK
-src/modules/tenant/tenant.controller.ts	GET	tenants	ADMIN	TENANT_READ	MEKANIK
-src/modules/tenant/tenant.controller.ts	GET	tenants/:id	ADMIN	TENANT_READ	MEKANIK
-src/modules/tenant/tenant.controller.ts	PATCH	tenants/:id	ADMIN	TENANT_WRITE	MEKANIK
-src/modules/tenant/tenant.controller.ts	DELETE	tenants/:id	ADMIN	TENANT_WRITE	MEKANIK
-src/modules/tenant/tenant.controller.ts	POST	tenants/:id/activate	ADMIN	TENANT_WRITE	MEKANIK
-src/modules/tenant/tenant.controller.ts	POST	tenants/:id/suspend	ADMIN	TENANT_WRITE	MEKANIK
-src/modules/tenant/tenant.controller.ts	GET	tenants/:id/stats	ADMIN	TENANT_READ	MEKANIK
-src/modules/user/user.controller.ts	POST	users	ADMIN	USER_WRITE	MEKANIK
-src/modules/user/user.controller.ts	GET	users	ADMIN,FINANCE	USER_MANAGE	Z20
-src/modules/user/user.controller.ts	GET	users/:id	ADMIN	USER_MANAGE	Z20
-src/modules/user/user.controller.ts	PATCH	users/:id	ADMIN	USER_WRITE	MEKANIK
-src/modules/user/user.controller.ts	PATCH	users/:id/scope	ADMIN	USER_WRITE	MEKANIK
-src/modules/user/user.controller.ts	PATCH	users/:id/password	ADMIN	USER_WRITE	MEKANIK
-src/modules/user/user.controller.ts	POST	users/:id/activate	ADMIN	USER_WRITE	MEKANIK
-src/modules/user/user.controller.ts	POST	users/:id/deactivate	ADMIN	USER_WRITE	MEKANIK
-src/modules/user/user.controller.ts	DELETE	users/:id	ADMIN	USER_WRITE	MEKANIK
+#dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
+src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	?	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
+src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log/high-risk	?	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
+src/modules/customer/customer.controller.ts	POST	customers	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	POST	customers/bulk	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers/search	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers/channel/:channel	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers/channel-id/:channelId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers/city/:city	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers/vip	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers/code/:code	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	PATCH	customers/:id	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	DELETE	customers/:id	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	POST	customers/:id/activate	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	POST	customers/:id/deactivate	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers/:id/stats	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	GET	customers/cpl/list	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	POST	customers/import	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/brand/brand.controller.ts	POST	master-data/brands	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/brand/brand.controller.ts	GET	master-data/brands	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/brand/brand.controller.ts	GET	master-data/brands/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/brand/brand.controller.ts	PATCH	master-data/brands/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/brand/brand.controller.ts	DELETE	master-data/brands/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/category/category.controller.ts	POST	master-data/categories	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/category/category.controller.ts	GET	master-data/categories	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/category/category.controller.ts	GET	master-data/categories/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/category/category.controller.ts	PATCH	master-data/categories/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/category/category.controller.ts	DELETE	master-data/categories/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/channel/channel.controller.ts	POST	master-data/channels	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/channel/channel.controller.ts	GET	master-data/channels	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/channel/channel.controller.ts	GET	master-data/channels/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/channel/channel.controller.ts	PATCH	master-data/channels/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/channel/channel.controller.ts	DELETE	master-data/channels/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/cpl/cpl.controller.ts	POST	master-data/cpls	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/cpl/cpl.controller.ts	GET	master-data/cpls	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/cpl/cpl.controller.ts	GET	master-data/cpls/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/cpl/cpl.controller.ts	PATCH	master-data/cpls/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/cpl/cpl.controller.ts	DELETE	master-data/cpls/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/forecasting-unit/fu.controller.ts	POST	master-data/forecasting-units	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/forecasting-unit/fu.controller.ts	GET	master-data/forecasting-units	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/forecasting-unit/fu.controller.ts	GET	master-data/forecasting-units/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/forecasting-unit/fu.controller.ts	PATCH	master-data/forecasting-units/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/forecasting-unit/fu.controller.ts	DELETE	master-data/forecasting-units/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/generic-unit/gu.controller.ts	POST	master-data/generic-units	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/generic-unit/gu.controller.ts	GET	master-data/generic-units	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/generic-unit/gu.controller.ts	GET	master-data/generic-units/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/generic-unit/gu.controller.ts	PATCH	master-data/generic-units/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/generic-unit/gu.controller.ts	DELETE	master-data/generic-units/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/grid/:planId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/grid	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/calculable	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	PATCH	master-data/kpis/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	DELETE	master-data/kpis/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis/validate-formula	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis/seed-defaults	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	GET	master-data/mechanics	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	GET	master-data/mechanics/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	PATCH	master-data/mechanics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	DELETE	master-data/mechanics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/validate-formula	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/applicable	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/check-combination	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/:id/clone	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/region/region.controller.ts	POST	master-data/regions	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/region/region.controller.ts	GET	master-data/regions	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/region/region.controller.ts	GET	master-data/regions/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/region/region.controller.ts	PATCH	master-data/regions/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/region/region.controller.ts	DELETE	master-data/regions/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/sku/sku.controller.ts	POST	master-data/skus	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/sku/sku.controller.ts	GET	master-data/skus	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/sku/sku.controller.ts	GET	master-data/skus/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/sku/sku.controller.ts	PATCH	master-data/skus/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/sku/sku.controller.ts	DELETE	master-data/skus/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/tactic/tactic.controller.ts	POST	master-data/tactics	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/tactic/tactic.controller.ts	GET	master-data/tactics	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/tactic/tactic.controller.ts	GET	master-data/tactics/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
+src/modules/master-data/tactic/tactic.controller.ts	PATCH	master-data/tactics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/tactic/tactic.controller.ts	DELETE	master-data/tactics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions/batch	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/agreement/:agreementId	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/agreement/:agreementId/total	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/batch/:batchId	ADMIN,FINANCE	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/budget-impact/:agreementId	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/count	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/stats/summary	ADMIN,FINANCE,PLANNER	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/:id	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions/upload	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions/validate-and-import	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/template/excel	ADMIN,FINANCE	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/template/csv	ADMIN,FINANCE	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	GET	agreements	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	GET	agreements/pending-approvals	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	GET	agreements/tactics/available	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	GET	agreements/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	PATCH	agreements/:id	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements/:id/submit	ADMIN,PLANNER	MODES_SUBMIT	Z35	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements/:id/approve	ADMIN,CATEGORY_MANAGER,FINANCE	MODES_APPROVE	YARGI	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements/:id/reject	ADMIN,CATEGORY_MANAGER,FINANCE	MODES_APPROVE	YARGI	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	POST	agreements/:id/cancel	ADMIN,PLANNER	MODES_SUBMIT	Z35	ROLES	-
+src/modules/modes/actuals-first/agreement/agreement.controller.ts	DELETE	agreements/:id	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/agreement/:agreementId	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/agreement/:agreementId/consumed	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/envelope/:envelopeId	ADMIN,FINANCE	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/envelope/:envelopeId/consumed	ADMIN,FINANCE	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/:id	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	POST	on-invoice/upload	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/count	ADMIN,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/entries	ADMIN,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/template/excel	ADMIN,FINANCE	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/template/csv	ADMIN,FINANCE	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	POST	on-invoice/:batchId/validate	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	POST	on-invoice/:batchId/process	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/batch/:batchId	ADMIN,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	POST	actuals-first/sales-actuals/upload	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35	ROLES	-
+src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/batches	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/batches/:batchId/rows	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/batches/:batchId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/modes/actuals-first/settlement/settlement.controller.ts	GET	actuals-first/settlements/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/pending-approvals	ADMIN,CATEGORY_MANAGER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/approval-queue	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id/budget-check	ADMIN,CATEGORY_MANAGER,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id/analysis	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	PATCH	plans/:id	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/fus	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	PATCH	plans/:id/fus/:fuId/tactics	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	DELETE	plans/:id/fus/:fuId	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	PATCH	plans/:id/fus/:fuId/skus/:skuId/volume	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/submit	ADMIN,PLANNER	MODES_SUBMIT	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/submit-for-approval	ADMIN,PLANNER	MODES_SUBMIT	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/review	ADMIN,CATEGORY_MANAGER,FINANCE	MODES_APPROVE	YARGI	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/escalate-to-finance	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id/approval-history	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/approve	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/reject	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/return-to-draft	ADMIN,PLANNER	MODES_SUBMIT	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	DELETE	plans/:id	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/calculate-kpis	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/recalculate	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
+src/modules/notification/notification.controller.ts	POST	notifications/:id/read	?	NOTIFICATION_WRITE	MEKANIK	CAP	NOTIFICATION_WRITE
+src/modules/shared/approval/approval-policy.controller.ts	PATCH	approval-policies/:id	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/approval/approval.controller.ts	GET	approvals	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/approval/approval.controller.ts	GET	approvals/pending	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/approval/approval.controller.ts	GET	approvals/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes	ADMIN,FINANCE	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	POST	budget/reserve	ADMIN,PLANNER	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/reserved	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes/:id/split	ADMIN,FINANCE	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/transactions	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/budget/budget.controller.ts	GET	budget/status	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/pending-tasks	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/cpl-status	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-utilization	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/spend-trend	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/spend-composition	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/plan-performance	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-at-risk	ADMIN,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/mechanic-effectiveness	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/variance-analysis	ADMIN,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-variance	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/cash-flow-projection	ADMIN,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	PATCH	lta-agreements/:id	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/:id/activate	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/:id/terminate	ADMIN	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	GET	lta-agreements/cpl/:cplId/active	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/context/rates	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/calculate/base-spend	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/lta/lta-agreement.controller.ts	POST	lta-agreements/calculate/planned-spend	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	POST	spend-calculation/distribute/:planFuId/:mechanicId	ADMIN,PLANNER	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	POST	spend-calculation/recalculate-on-volume-change/:skuId	ADMIN,PLANNER	SHARED_WRITE	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/breakdown/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-distribution/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-inputs/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-combinations/:planFuId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-budget/:planId	ADMIN,CATEGORY_MANAGER,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/spend-calculation/spend-calculation.controller.ts	GET	spend-calculation/validate-before-submission/:planId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/tenant/tenant.controller.ts	POST	tenants	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
+src/modules/tenant/tenant.controller.ts	GET	tenants	ADMIN	TENANT_READ	MEKANIK	ROLES	-
+src/modules/tenant/tenant.controller.ts	GET	tenants/:id	ADMIN	TENANT_READ	MEKANIK	ROLES	-
+src/modules/tenant/tenant.controller.ts	PATCH	tenants/:id	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
+src/modules/tenant/tenant.controller.ts	DELETE	tenants/:id	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
+src/modules/tenant/tenant.controller.ts	POST	tenants/:id/activate	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
+src/modules/tenant/tenant.controller.ts	POST	tenants/:id/suspend	ADMIN	TENANT_WRITE	MEKANIK	ROLES	-
+src/modules/tenant/tenant.controller.ts	GET	tenants/:id/stats	ADMIN	TENANT_READ	MEKANIK	ROLES	-
+src/modules/user/user.controller.ts	POST	users	ADMIN	USER_WRITE	MEKANIK	ROLES	-
+src/modules/user/user.controller.ts	GET	users	ADMIN,FINANCE	USER_MANAGE	Z20	ROLES	-
+src/modules/user/user.controller.ts	GET	users/:id	ADMIN	USER_MANAGE	Z20	ROLES	-
+src/modules/user/user.controller.ts	PATCH	users/:id	ADMIN	USER_WRITE	MEKANIK	ROLES	-
+src/modules/user/user.controller.ts	PATCH	users/:id/scope	ADMIN	USER_WRITE	MEKANIK	ROLES	-
+src/modules/user/user.controller.ts	PATCH	users/:id/password	ADMIN	USER_WRITE	MEKANIK	ROLES	-
+src/modules/user/user.controller.ts	POST	users/:id/activate	ADMIN	USER_WRITE	MEKANIK	ROLES	-
+src/modules/user/user.controller.ts	POST	users/:id/deactivate	ADMIN	USER_WRITE	MEKANIK	ROLES	-
+src/modules/user/user.controller.ts	DELETE	users/:id	ADMIN	USER_WRITE	MEKANIK	ROLES	-
