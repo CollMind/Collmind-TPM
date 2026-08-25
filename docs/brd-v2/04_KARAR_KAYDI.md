@@ -3512,3 +3512,132 @@ kavram, iki çözümleme**). Üç kapı: **kaldırma** · **hizalama+kanonikleş
 > **Bir dalganın kapanışı, ürün-sahibi-bekleyen bir kalemle REHİN kalmaz.**
 
 Kaza-dalgası **beş kalemle** kapanır; LTA ölçüm turu **ayrı** akar.
+
+
+---
+
+## Z38 · `T-289` gerekçesi DÜŞÜRÜLDÜ · `T-293`'ün SORUSU yeniden kuruldu
+
+> **Tarih:** 2026-08-26 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+
+### 0 · Ürün sahibinin kendi payı — ve bir HÜKÜM PRATİĞİ kuralı
+
+> *"`T-289` hükmüm **doğru sonuca yanlış bir öncülle** varmıştı. İddiayı `ÖLÇÜLDÜ`
+> sanıyordum, cinsi `VARSAYIM`mış."*
+
+⇒ **Yeni kural — hüküm pratiğine:** *"Kusur-iddialı bir kararın gerekçesinde **iddianın
+CİNSİ** açıkça yazılır."* Bu vaka `F12` iziyle **emsal**.
+
+📌 `DISIPLIN`'in *"durağan yüzeyler bir hipotez oluşturur"* maddesinin **karar
+tarafındaki** hâli: kural yalnız ölçeni değil, **ölçüme dayanarak hüküm vereni** de
+bağlar.
+
+### 1 · `T-289` — KALDIRMA DEVAM, gerekçe DÜŞÜRÜLDÜ
+
+Sonuç ayakta çünkü **taşıyıcı argüman hiç tehdit-modeli değildi**:
+
+```
+ÜÇ BAĞIMSIZ KALDIRMA SEBEBİ
+  1  K-2.2.4'ün savunması — onay tetikleyicisini ATLAYAN ikinci yol   (yapısal)
+  2  paralel yol — kanonik motor CANLI (davranışsal olarak ölçüldü)   (yapısal)
+  3  uç KIRIK ve ÖLÜ — her çağrıda 500                               (YENİ, davranışsal)
+```
+
+**İkisi de GÜÇLENDİ**, üçüncüsü **eklendi**.
+
+**Üç güncelleme:**
+
+| # | ne |
+|---|---|
+| **i** | **Tehdit cümlesi DÜŞÜRÜLDÜ**: *"denetimsiz musluk"* → *"yapısal olarak tamamlanamayan **ölü paralel yol**"*. Eski iddia **silinmez** — `VARSAYIM`-düşürme iziyle kalır |
+| **ii** | **`K6(a)`'nın pini ŞEKİL DEĞİŞTİRİR**: reprodüklenen şey artık kusur-iddiası değil **KIRIKLIK**. *"Uç `500` veriyor"* ölçümü **pin olur** — ve o da bir *kusur-önce-görüldü* kaydıdır: **kullanıcıya `500` gösteren canlı dialog** |
+| **iii** | Kaldırma zinciri **aynen**: `(c)` iki-repo-tek-kapanış (dialog `PLANNER`'a bugün `500` gösteriyor ⇒ kaldırma bir **UX düzeltmesi de**) + `(d)` tek-yol pini |
+
+### 2 · İdempotency zaafı — genelleme
+
+> **Köken imzası taşımayan bir idempotency anahtarı, PROVENANCE sorusunu cevapsız
+> bırakır.**
+
+`K6(b)`'de ölçüldü: `reserveBudget`'ın anahtarı **seed'inkiyle birebir aynı** şekilde.
+Ayrım `amount`+`description` eşleşmesinden geldi, **anahtardan değil**.
+
+⇒ Kanonik motorun anahtarına **köken segmenti** eklenmesi — küçük bir **`Faz 2`** kalemi.
+
+### 3 · `T-293` — İKİ SEÇENEK DE REDDEDİLDİ: soru YANLIŞ KURULMUŞTU
+
+Sunulan seçenekler *"devir"* ve *"otomatik besleme"*ydi. **İkisi de reddedilir.**
+
+> **Doğru cevap devir değil: BAĞ + EKSİK YÜZEY.**
+
+**Ölçümün kendisi söylüyor** — iki tablo aynı şeyin iki kopyası değil, **iki farklı
+katmanın temsili**:
+
+```
+agreements              ticari YAŞAM DÖNGÜSÜ    onay · audit · SoD · defter bağı
+lta_agreements+lta_rates ORAN ŞARTLARI          kanal×kategori kademe
+                                                (agreements'ın temsil EDEMEDİĞİ yapı)
+```
+
+| seçenek | neden kapalı |
+|---|---|
+| **1 · devir** | onay/audit akışını **koparır** — kayıtlı karar ailesinin **ihlali** |
+| **2 · otomatik besleme** | **YARIM**: başlık satırını üretir, **oranları üretemez**. Oran verisinin hâlâ **hiçbir giriş yüzeyi yok** |
+
+⛔ **Ve asıl kök neden bu:** **eksik birleşme + EKSİK YÖNETİM YÜZEYİ** —
+**mekanik-alanları sınıfının LTA hâli** (`EK_E` ailesi, `🔒` işareti: *"yetenek var,
+arayüzü yok"*).
+
+#### HÜKÜM — üç parça
+
+**(a) Mimari çerçeve kayda:**
+```
+agreements    = YAŞAM DÖNGÜSÜNÜN kanonik yeri
+lta_rates     = ORAN ŞARTLARININ kanonik yeri
+bağ           AÇIK — agreements-LTA kaydı EBEVEYN, oran kademesi ona BAĞLI doğar
+oran girişi   KENDİ YÜZEYİNİ alır
+```
+
+**(b) İnşası `Faz 2` GİRİŞ KOŞULUDUR, bugünün kod işi değil.** Motor `Faz 2`'nin
+motoru, deploy yok, **ölü KPI bugün kimseyi yanıltmıyor**. `T-293` → `Faz-2` giriş
+listesi + **`EK_E` şema-uyum turu** (oran yüzeyi satırı).
+
+**(c) TEK BUGÜNLÜK İŞ — `FEATURE_COMPLETION`'a DÜRÜSTLÜK SATIRI:**
+
+> *"LTA indirim hesabı uçtan uca **ÇALIŞMIYOR** (`T-293`): form kaydediyor, motor
+> görmüyor."*
+
+⛔ **Yoksa checklist YALAN SÖYLER.**
+
+### 4 · `Z37` askısı → `T-293`'e bağlandı
+
+LTA dörtlüsünün kaderi **meşruiyet sorusundan çıkıp TASARIM sorusuna döndü**. `T-293`
+çerçevesi kurulduğunda o dört uç:
+
+```
+ya bağ-mekanizmasının PARÇASI olur
+ya oran-yönetim yüzeyinin API'si olur
+ya ÖLÜR
+```
+
+**Üçü de `T-293` kararının türevi.**
+
+**`Z25` koşul satırı:**
+```
+sağlayıcı     T-293 mimari kararı (Faz-2 planlama)
+tetikleyici   Faz-2 giriş koşulları derlemesi
+```
+
+> 📌 **Ve geri çekiliş iyi ki yapıldı:** `(a)` inseydi, **ölü bir yolu genişletmekle
+> kalmayıp `T-293`'ün TASARIM UZAYINI da daraltmış** olacaktık.
+
+### 5 · Dalga kapandığında elde kalan tablo
+
+```
+karar-bekler = SUMMARY_READ ailesi (+ devredilen budget-variance)
+             + MODES_READ
+             + validate-formula çifti
+             + plans/:id/budget-check
+```
+
+**Hepsi TEK ölçüm-kök ailede** (küme-gerekçe taraması) ve `W5`–`W8` ile **paralel**
+çözülebilir.

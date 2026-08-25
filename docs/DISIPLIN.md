@@ -2438,6 +2438,19 @@ boşluk bileşimdeydi. Burada her parça **doğruydu**, **hata** bileşimdeydi.
 > **Pratik:** durağan yüzeylerden kurulan bir kusur iddiası `VARSAYIM` etiketiyle
 > yazılır, `ÖLÇÜLDÜ` ile değil — ve **`ÖLÇÜLDÜ`ye ancak çağrılınca terfi eder.**
 
+> ### ⛔ VE KURAL, ÖLÇENİ DEĞİL HÜKÜM VERENİ DE BAĞLAR (ZORUNLU)
+>
+> Ürün sahibinin kendi kaydı (2026-08-26): *"`T-289` hükmüm **doğru sonuca yanlış bir
+> öncülle** varmıştı. İddiayı `ÖLÇÜLDÜ` sanıyordum, cinsi `VARSAYIM`mış."*
+>
+> ⇒ **Kusur-iddialı bir kararın gerekçesinde İDDİANIN CİNSİ açıkça yazılır.**
+>
+> Bir hüküm, dayandığı iddianın **cinsini** devralır: `VARSAYIM`'a dayanan bir karar
+> `VARSAYIM`'dır — sonucu doğru çıksa bile. `T-289` bunu gösterdi: **sonuç ayakta
+> kaldı** (üç bağımsız sebep), ama **ayakta tutan şey hükmün gerekçesi değildi**.
+>
+> 📌 `F12` iziyle **emsal**: gerekçe düşürüldü, eski iddia silinmedi.
+
 ### ⛔ VE REPRODÜKSİYON ŞARTININ İKİNCİ VAKASI — sayaç artık iki
 
 `§2.7`'nin *"reprodüksiyon şartı YÖNSÜZDÜR"* maddesi `T-273` ile yazılmıştı. `T-289`
@@ -2451,3 +2464,25 @@ boşluk bileşimdeydi. Burada her parça **doğruydu**, **hata** bileşimdeydi.
 
 📌 İkincisi daha öğretici: **ölçüm eksikliği değil, ölçümün YANLIŞ CİNSTEN olması.**
 Ve iki vakada da yakalayan şey aynı: **kusuru önce GÖRME şartı.**
+
+
+### Köken imzası taşımayan bir idempotency anahtarı, PROVENANCE'ı cevapsız bırakır (ZORUNLU)
+
+Bir idempotency anahtarı **tekrarı** engellemek için yazılır. Ama aynı zamanda bir
+satırın **nereden geldiğinin** tek kalıcı izidir — ve bu ikinci iş çoğu zaman
+düşünülmez.
+
+📌 Ölçülmüş vaka (2026-08-26, `K6(b)`): `reserveBudget` ile **seed** aynı şekli
+üretiyor —
+```
+RESERVE|AGREEMENT|{agreementId}|{envelopeId}     ← İKİSİ DE
+```
+Bir denetim turu *"bu satırlar hangi yoldan doğdu?"* diye sorduğunda **anahtar cevap
+veremedi**; ayrım `amount` + `description` eşleşmesinden geldi — yani **tesadüfen**,
+çünkü seed'in tutarı sabitti.
+
+⚠️ Ve tesadüf olmasaydı soru **cevapsız kalırdı**: iki yol aynı tutarı yazsaydı
+provenance **kaybolmuştu**.
+
+> **Bir yazma yolunun anahtarına KÖKEN SEGMENTİ koy.** Tekrarı engellemek için
+> gerekmez; **hesap sorulabilirlik** için gerekir.

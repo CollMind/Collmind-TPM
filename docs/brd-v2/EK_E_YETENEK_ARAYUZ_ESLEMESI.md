@@ -227,6 +227,49 @@ null → iş yargısı çöküşü (SINIF)       → T-220, semptom değil sın�
 Beş rapor menüde, tıklanamıyor         → yanlış beklenti
 ```
 
+### ⛔ VE BİR VAKA BU BÖLÜMÜN BAŞLIĞINI ÇÜRÜTÜYOR — SESSİZ kırıklık
+
+> **Düzenlemeyi açan kayıt: `Z38 §3(c)` — ürün sahibi, 2026-08-26.**
+> *"Yoksa checklist YALAN SÖYLER."*
+
+```
+LTA indirim hesabı UÇTAN UCA ÇALIŞMIYOR   → [[T-293]]
+  form kaydediyor · motor GÖRMÜYOR
+```
+
+**Ölçüldü (2026-08-26):**
+```
+KULLANICI  LTAAgreementForm → POST /agreements → agreements(agreementType:LTA)
+MOTOR      SpendCalculationService → getLTAForPlanContext → lta_agreements + lta_rates
+BAĞLANTI   YOK        (poz.kontrol: aynı grep shared/lta'da dört dosya buluyor)
+TABLOLAR   lta_agreements 0 · lta_rates 0 · lta_plan_overrides 0
+SONUÇ      PLANNED_LTA_ON/OFF · BASE_LTA_ON/OFF KPI'ları hiçbir CPL için
+           indirim üretmiyor — yapısal, HER PLAN için
+```
+
+⚠️ **Ve bu vaka `EK_E`'nin taksonomisinde bir VARSAYIMI ortaya çıkardı.** Bu bölümün
+başlığı *"kullanıcıya **görünür**"* diyor — yani `⚠️` durumunun **fark edilebilir**
+olduğunu varsayıyor. Yukarıdaki yedi vakanın yedisi de öyle: `400` görürsün, hata
+ekranı görürsün, tıklayamazsın.
+
+**`T-293` görünmüyor.** Form kaydediyor, başarı dönüyor, kayıt listede beliriyor —
+ve indirim **hiçbir zaman** hesaplanmıyor.
+
+```
+🔒   GÖRÜNÜR yokluk      kullanıcı yol olmadığını BİLİR      → israf
+⚠️   GÖRÜNÜR kırıklık    kullanıcı bozuk olduğunu GÖRÜR      → hata
+     SESSİZ kırıklık     kullanıcı ÇALIŞTIĞINI SANIR         → YANILTMA
+```
+
+> **`EK_E`'nin kendi cümlesi:** *"Bir `❌` dürüsttür; bir `🔒` israftır."*
+> **Eksik olan üçüncü:** sessiz kırıklık **yanıltıcıdır** — ve bu üçünün **en
+> pahalısıdır**, çünkü diğer ikisinde kullanıcı bir şey yapmaz; burada **yanlış
+> veriye dayanarak karar verir**.
+
+⛔ **İşaret kararı ürün sahibinde:** `⚠️` bu vakayı **taşıyabilir** ama *"görünür"*
+başlığı altında **yanlış yerde durur**. Beşinci bir işaret mi, alt-tür mü — karar
+verilmedi, ve bu satır o karara kadar burada **işaretiyle birlikte** duruyor.
+
 ## Boşluğun şekli
 
 `❌` sayısı yüksek ama **dağılımı düzensiz değil:**
