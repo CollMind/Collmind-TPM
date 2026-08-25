@@ -74,8 +74,14 @@ Turnusol (ürün sahibi): *"Bu satırı okumayan bir ajan, **ilk mesajında** ya
 davranır mı?"* → Evet: çekirdek · Hayır: disiplin. **Sınırdakiler disipline.**
 
 ```
-ÇEKİRDEK   19 başlık      DİSİPLİN   69 başlık
+ÇEKİRDEK   26 başlık      DİSİPLİN   63 başlık
 ```
+
+> ⛔ **PLANDAKİ `19/69` YANLIŞTI — gerçek `26/63`** (`F12` izi).
+> Sebep: plan *"numaralı başlık = atıf iskeleti = çekirdek"* kuralını yürütmede
+> netleştirdi; `§2.1.1` · `§2.1.2` · `§2.2` · `§2.6` · `§2.7` · `§7.1` çekirdeğe
+> döndü. İlk denemede taşınmışlardı ve **planın birinci şartını ihlal
+> ediyorlardı** — `§2.6` tek başına `54` dış atıf taşıyor.
 
 Tam liste ekte: [`CLAUDE_MD_BOLME_SINIFLANDIRMA.md`](CLAUDE_MD_BOLME_SINIFLANDIRMA.md)
 
