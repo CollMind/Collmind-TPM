@@ -376,6 +376,68 @@ dağılımı büyük ölçüde **o commit'in kapsamının fonksiyonu**.
 
 ---
 
+---
+
+# ⛔ YENİ DUR — `W4` BRİEFTEKİ HÂLİYLE KOŞAMAZ (ölçüldü 2026-08-25)
+
+## DUR-1 · `SHARED_READ` haritada **BLOKE** — kısmi karar KODA İNMEDİ
+
+```
+ürün sahibi kararı   "16 rota bugün açılır"  (5/5 union DEĞİL TABAN, K-2.6.5b)
+ROLE_CAPABILITIES    SHARED_READ → HİÇBİR ROLDE     ← ölçüldü
+```
+
+⇒ `W4`'ün bir **`ADIM 0`**'ı var (`Z35`'in `MODES_WRITE` bölünmesiyle **aynı
+şekil**): karar önce **haritaya** yazılır, sonra rota göçer. Aksi hâlde 16 rota
+`SHARED_READ`'e göçer ve **hiçbir rol** onu almaz ⇒ **`403`, tam kilitlenme**.
+
+## DUR-2 · ⛔ `SHARED_WRITE` göçü **ON ÜÇ ROTANIN ON ÜÇÜNDE** davranış değiştirir
+
+| mevcut `@Roles` | ×N | hücre verir | değişim |
+|---|---|---|---|
+| `{ADMIN}` | 5 | `{A,P,CM,F}` | **+PLANNER +CM +FINANCE** — genişleme |
+| `{A,CM,F,P,RO}` | 3 | `{A,P,CM,F}` | **−READONLY** — **daraltma** |
+| `{A,FINANCE}` | 2 | `{A,P,CM,F}` | **+PLANNER +CM** — genişleme |
+| `{A,PLANNER}` | 3 | `{A,P,CM,F}` | **+CM +FINANCE** — genişleme |
+
+⇒ *"Göç davranış değiştirmez"* kuralı **hiçbir grupta** sağlanmıyor.
+
+### Ve hücrenin KAYDI da bayat — iki ayrı sebeple
+
+```
+KAYIT (Faz A)   union 9 rotadan hesaplandı: {A,CM} 1 · {A,F} 5 · {A,P} 1 · {A} 2
+BUGÜN            13 rota: {A} 5 · {A,CM,F,P,RO} 3 · {A,F} 2 · {A,P} 3
+```
+
+1. **`budget-allocations` rotaları SİLİNDİ** (`Z24`) — kaydın `{A,F} n=5` grubu
+   `2`'ye indi.
+2. **Kaydın *"union'a GİRMEDİ"* dediği üç rota bugün hücrede:**
+   `lta-agreements/context/rates` · `calculate/base-spend` · `calculate/planned-spend`
+   — kayıt onları *"filtresiz `4`, `K-2.6.6` kapsamı"* diye **dışarıda
+   bırakmıştı**, mekanik eşleme onları **içeri aldı**. Ve bu üçü **`5/5`**, yani
+   göç onlardan **`READONLY`'yi ALIR**.
+
+📌 **Sınıf:** `MODES_WRITE`'ın `H1`/`Z35` öncesi hâliyle **birebir aynı** — bir
+`union` kararı, göç anında **erişim genişletmesine** dönüşüyor. `Z35` orada
+bölünmeyle çözdü; burada da bir **cümle ya da bölünme** gerekiyor.
+
+⚠️ **Fark ve daha ağırı:** `MODES_WRITE`'ta yalnız **genişleme** vardı; burada
+**daraltma da var** (`−READONLY`, 3 rota), ve daraltma `Z20`'nin sınıfından —
+**istisna dalgasının işi**, mekanik dalganın değil.
+
+## ⇒ `W4` ÖNERİSİ (ürün sahibi kararı bekliyor)
+
+```
+W4a   SHARED_READ 16      ADIM 0 (haritaya 5/5 yaz) + göç     ← karar VAR, kod yok
+W4b   SHARED_WRITE 13     ⛔ DUR — yeni karar gerekiyor
+      SUMMARY_READ 9      karar-bekler (bu paket)
+      4 istisna           karar-bekler (cümle testi)
+```
+
+Sabitlik `W4a` sonrası: **`176 + 35 = 211`**.
+
+---
+
 ## 4 · ⛔ DUR — bu pakette OLMAYANLAR
 
 - **Hüküm yok.** Cümle adayları **öneri**; hiçbiri karara bağlanmadı.
