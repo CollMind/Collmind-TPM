@@ -904,8 +904,18 @@ eksik olan **refleks**ti.
 | "atıfa grep'lenebilir token yaz" | seed'e yazılan satır atfı aynı turda bayatladı |
 | "dokümanda sayı yazma" | ADR E17'ye `47/18` yazıldı, iki satır aşağıdaki karar onu bayatlattı |
 | "§7.1: kusur sınıfını aynı dosyada ara" | B1 düzeltildi, **aynı fonksiyondaki iki kardeş dal** taranmadı |
+| **SoD: "tabi olduğu kuralı yazamaz"** (`Z36`) | gerekçesi *"`ADMIN` şablonun ÖZNESİ DEĞİL"* diyordu — `ADMIN` onay rotalarının **beşinde**. Kural, **yazıldığı cümlede** ihlal edildi |
 
 Sebep basit ve mazeret değil: kural yazmak dikkati **kuralın metnine** çeker, koda değil.
+
+> ### ⚠️ VE SAYACIN KENDİSİ ARTIK BİR ARGÜMAN (ürün sahibi, 2026-08-26)
+>
+> Beş vaka bir *"dikkat kayması"* değil, bir **oran**. Ve beşincisi en keskini:
+> ihlal koda değil, **kuralın kendi gerekçe cümlesine** düştü — yani *"kendi diff'ine
+> uygula"* adımı, **diff'ten önce metne** uygulanmalıymış.
+>
+> ⇒ **Bir kural yazarken, önce onu KURALIN KENDİ GEREKÇESİNE uygula.** Gerekçe
+> cümlesi kuralın ilk tüketicisidir; orada tutmuyorsa kural değil, **temenni**dir.
 
 > **Bir kural eklediğin turda, o kuralı KENDİ diff'ine uygula — ayrı bir adım olarak.**
 > "Bu kuralı ihlal eden bir şey bu diff'te var mı?" sorusu, kuralı yazdıktan sonra sorulmalı
@@ -2317,67 +2327,82 @@ giremeyeceği için hata **her deploy'da** tekrarlanırdı.
 ⚠️ Ve dalların **en az ikisi ampirik doğrulanmalı** (`run` → `revert` → `run` döngüsü);
 yazılmış bir dal, çalıştığı anlamına gelmez.
 
+### ⛔ İPTAL — SoD ROL katmanına taşınmaz (ürün sahibi hükmü, 2026-08-26)
 
+> **Bu başlık bir kural değil, bir İPTAL KAYDIDIR.** `2026-08-26`'da buraya
+> *"bir rolün tabi olduğu kuralı yazma yetkisi, o rolün kümesine giremez"*
+> diye **bağlayıcı bir sınıf kuralı** yazıldı. **İPTAL EDİLDİ.** Kayıt duruyor
+> çünkü *"bu neden yazılmıştı ve neden düştü"* sorusunun cevabı kaybolmasın.
 
-### ⏸️ ASKIDA — Bir rolün TABİ OLDUĞU kuralı yazma yetkisi (ürün sahibi kararı bekler)
+**Teşhis: ne tamamlama ne revizyon — KATMAN KARIŞIKLIĞI.**
 
-> ⛔ **BU MADDE BAĞLAYICI DEĞİLDİR.** `DISIPLIN.md`'nin geri kalanı bağlayıcıdır;
-> bu madde **askıdadır** ve ürün sahibi kararı olmadan bir kümeyi eleyemez.
->
-> **İlk yazımında iki kusuru vardı, ikisi de ölçüldü (code-reviewer, 2026-08-26):**
->
-> **1 · Var olmayan bir alıntıya dayanıyordu.** `K-2.6.4a/b`'ye atfen *"şablonun
-> öznesi olan rol, şablonu düzenleyemez"* yazıyordu. **O cümle o kuralda yok:**
-> ```
-> aranan     "düzenleyemez"  →  L2_03'te SIFIR eşleşme
-> poz.kontrol "onay"          →  109 eşleşme    (grep ve evren çalışıyor)
-> gerçek     K-2.6.4a  "rol … görev ayrılığının ve onay şablonlarının ADRES DEFTERİDİR"
->            K-2.6.4b  "onaycı jenerik değildir, bütçenin sahibidir"
-> ```
-> Cümle ürün sahibinin **kendi ifadesiydi**; onu bir kural **alıntısına** çeviren
-> Team Lead'di. `§2.1.2`: bağlayıcı kaynak bir **girdidir** — ve ona **atıf** vermek,
-> onun **metnini uydurmak** değildir.
->
-> **2 · Yürürlükteki bir `L2` kuralıyla GERİLİMDE.** `K-2.6.5c` (`L2_03:538`):
-> ***"Görev ayrılığı ROL bazlı değil, KİŞİ bazlı işler … invariantların öznesi
-> kullanıcıdır, rol değil."*** `L2`'deki üç SoD kuralının üçü de (`K-2.5.11` ·
-> `K-2.13.12a` · `K-2.6.5c`) **kişi+işlem** eksenli. Aşağıdaki formülasyon **rol**
-> eksenli.
->
-> **3 · Ve yazıldığı turda ihlal edildi.** Gerekçe olarak *"`ADMIN` şablonun öznesi
-> değil"* yazılmıştı; ölçüm `ADMIN`'i onay rotalarının **beşinde** buldu — yani
-> `ADMIN` **hem özne hem yazar**. (`CLAUDE.md`: *"bir kuralı yazdığın tur, o kuralı
-> en çok ihlal ettiğin turdur."*)
->
-> ⇒ **Ürün sahibine giden soru:** SoD'un **rol katmanında** formüle edilmesi
-> `K-2.6.5c`'yi **tamamlıyor mu, revize mi ediyor**? Revizyonsa `Z1` dondurma kuralı
-> gereği kendi kaydıyla iner. Ve `ADMIN`'in muafiyeti ayrıca karara bağlanır.
->
-> ⚠️ **Davranış tarafı bundan ETKİLENMİYOR:** `SHARED_POLICY_WRITE = {ADMIN}` göç
-> öncesi `@Roles(ADMIN)`'in **birebir korunmuş** hâlidir. Askıda olan **gerekçe**,
-> küme değil.
-
-**Görevler ayrılığının (SoD) yetenek-katmanı hâli** — önerilen formülasyon:
+`K-2.6.5c` **doğru ve dokunulmaz**: SoD bu sistemde **kişi + işlem** katmanında yaşar.
+`L2`'nin üç SoD kuralı da o eksende — *"kim gönderdiyse onaylayamaz"* bir **kimlik
+karşılaştırmasıdır**, küme cebiri değil.
 
 ```
-onay ŞABLONUNU yazan      ≠     o şablona TABİ olan
-eşik KURALINI yazan       ≠     o eşiğin altında onay veren
-politikayı DÜZENLEYEN     ≠     politikanın ÖZNESİ
+ROL  katmanı   "bu TÜRE kim dokunabilir"        → küme cebiri
+SoD  katmanı   "bu İŞLEMDE bu KİŞİ olabilir mi" → kimlik karşılaştırması
 ```
 
-⛔ **Bir küme kurarken sor:** *"bu role verdiğim yazma yetkisi, onu kendi
-kısıtını gevşetebilir hâle getiriyor mu?"* Cevap evetse rol o kümeye **giremez** —
-kural metni onu ayrıca yasaklamasa bile.
+📌 Ve bu, `T-276`'da çözülen katman ayrımının (**hücre = tür · yüklem = kademe**)
+SoD'a **uygulanmamış** hâliydi: ikisini aynı katmana yazmak, **yüklemi hücreye
+gömmekle** aynı hata.
 
-📌 Ölçülmüş vaka (2026-08-26, `Z36` `SINIF A`): onay politikası yazımı yalnız
-`{ADMIN}`'de kaldı. `FINANCE` ve `CATEGORY_MANAGER` o politikanın **öznesi** —
-kendi onay eşiklerini yazabilselerdi eşik bir kısıt olmaktan çıkardı.
+> ### ⇒ YÜRÜRLÜKTEKİ KURAL
+> **SoD rol katmanına taşınmaz. Kural-yazma yetkisi bir YÖNETİŞİM sorusudur,
+> SoD sorusu değil.**
 
-⚠️ Ama bu vaka kuralı **kanıtlamıyor**: küme zaten `@Roles(ADMIN)` idi, yani
-`FINANCE` hiç içeride değildi. SoD **eledi** değil, **zaten yoktu** — ve bir kural,
-hiçbir şeyi elemediği bir vakayla gerekçelendirilemez (`§7.1`: *"ayırt edici
-ölçüm"*).
+⚠️ **Ve kural zaten gereksizdi:** `SHARED_POLICY_WRITE = {ADMIN}`'in gerekçesi SoD'a
+**muhtaç değil** — `K-2.6.4`'ün gerçek cümlesi (*"tanımlar ve kural yönetimi"*)
+yönetişim gerekçesi olarak **yeter**. Küme o cümleden türer; görev-ayrılığı argümanı
+**hiç gerekmez**. Bir kural, kendisi olmadan da doğru olan bir sonucu gerekçelendirmek
+için yazılmıştı.
 
-⚠️ Ve bu, *"kim en çok bilir"* sorusundan **bağımsızdır**: `FINANCE` eşik
-politikasını en iyi anlayan taraf olabilir; SoD bir yetkinlik değil bir **konum**
-kuralıdır.
+#### Nasıl buraya gelindi — zincir İKİ HALKALIYDI
+
+| halka | kim | ne |
+|---|---|---|
+| 1 | karar paketi | cümleyi `K-2.6.4a/b`'nin **içeriği gibi** sundu |
+| 2 | onaylayan taraf | okuyup **ölçmeden** *"`DISIPLIN`'e tek satır"* diyerek **bağlayıcı kural statüsüne terfi** ettirdi |
+| 3 | Team Lead | terfiyi **alıntıya** çevirdi ve dört yere yazdı |
+
+**Atıf-ölçüm adımı ikinci halkada atlandı** — ve ürün sahibinin kendi kaydı:
+*"bir alıntıyı kurala çevirmeden önce kaynağını yeniden okumak, Team Lead'e
+uyguladığım disiplinin ta kendisiydi ve onu kendi çıktıma uygulamadım."*
+
+⇒ **Bir statü terfisi (öneri → bağlayıcı kural), atıfın YENİDEN ÖLÇÜLDÜĞÜ andır.**
+Terfi eden taraf kimse ölçüm de ondadır.
+
+### Bağlayıcı kaynağa ATIF vermek, METNİNİ uydurmak değildir (ZORUNLU)
+
+`§2.1.2` bir kaynağın **bağlayıcı** olduğunu söyler. Bu, ona **atıf verme** hakkıdır —
+**metnini yazma** hakkı değil.
+
+```
+✅  "K-2.6.4 rol kataloğu: YÖNETİCİ | Tanımlar, kural yönetimi"   ← okundu, satırı var
+⛔  "K-2.6.4a/b: 'şablonun öznesi olan rol, şablonu düzenleyemez'" ← O CÜMLE YOK
+```
+
+⛔ **Bir kural numarasının yanına TIRNAK koymadan önce o satırı AÇ.** Numaralar
+hatırlanır, cümleler hatırlanmaz — ve hatırlanan cümle, **hatırlayanın** cümlesidir.
+
+📌 Ölçülmüş vaka (2026-08-26, `Z36`): `düzenleyemez` `L2_03`'te **sıfır** eşleşme;
+poz.kontrol `onay` **109**. Cümle ürün sahibinin **kendi ifadesiydi**; dört yere
+`L2`'nin metni olarak yazıldı ve biri **bağlayıcı** bir belgeydi.
+
+### Hiçbir şeyi ELEMEYEN bir vaka, kural gerekçesi olamaz (ZORUNLU)
+
+**Pozitif-kontrol ilkesinin GEREKÇE tarafı.**
+
+Bir kuralı *"şu vakada işe yaradı"* diye gerekçelendirirken sor: **o vakada kural
+olmasaydı sonuç değişir miydi?** Değişmiyorsa vaka kuralı **kanıtlamıyor**, yalnız
+**onunla uyumlu**.
+
+📌 Ölçülmüş vaka (2026-08-26): SoD kuralı *"`FINANCE` politikayı yazamaz"* diye
+gerekçelendirildi. Ama küme zaten `@Roles(ADMIN)` idi — `FINANCE` **hiç içeride
+değildi**. SoD **elemedi**; **zaten yoktu**.
+
+⚠️ Ve bu, `§2.7 #6`'nın (*"kapsam var, ayırt etme gücü yok"*) **gerekçe tarafındaki**
+kardeşi: bir test yeşil olduğu için ayırt etmez, bir gerekçe **tutarlı** olduğu için
+kanıtlamaz.

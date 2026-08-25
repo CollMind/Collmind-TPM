@@ -3332,10 +3332,46 @@ bazlı işler."* `L2`'deki üç SoD kuralı da kişi+işlem eksenli.
 **DAVRANIŞ ETKİLENMEDİ:** `SHARED_POLICY_WRITE = {ADMIN}`, göç öncesi `@Roles(ADMIN)`'in
 **birebir** hâli. Askıda olan **gerekçe**, küme değil.
 
-⛔ **Ürün sahibine giden soru:** SoD'un rol katmanında formüle edilmesi `K-2.6.5c`'yi
-**tamamlıyor mu, revize mi ediyor**? Revizyonsa `Z1` gereği kendi kaydıyla iner.
-Ve `ADMIN`'in muafiyeti ayrıca karara bağlanır — çünkü ölçüm `ADMIN`'i onay
-rotalarının **beşinde** buldu: `ADMIN` hem özne hem yazar.
+### ⛔ HÜKÜM (ürün sahibi, 2026-08-26) — ne tamamlama ne revizyon: **KATMAN KARIŞIKLIĞI**
+
+Askıdaki madde **İPTAL** edildi. `K-2.6.5c` **doğru ve dokunulmaz**.
+
+```
+ROL katmanı   "bu TÜRE kim dokunabilir"         → küme cebiri
+SoD katmanı   "bu İŞLEMDE bu KİŞİ olabilir mi"  → kimlik karşılaştırması
+```
+
+*"Kim gönderdiyse onaylayamaz"* bir **kimlik karşılaştırmasıdır**, küme cebiri değil.
+Rol-katmanı formülasyonu, `T-276`'da çözülen katman ayrımının (**hücre = tür ·
+yüklem = kademe**) SoD'a **uygulanmamış** hâliydi — ikisini aynı katmana yazmak,
+**yüklemi hücreye gömmekle** aynı hata.
+
+> **YÜRÜRLÜKTEKİ KURAL: SoD rol katmanına taşınmaz. Kural-yazma yetkisi bir
+> YÖNETİŞİM sorusudur, SoD sorusu değil.**
+
+⚠️ Ve kural **zaten gereksizdi**: `{ADMIN}` `K-2.6.4`'ün *"tanımlar ve kural
+yönetimi"* cümlesinden **türer**; görev-ayrılığı argümanı **hiç gerekmez**.
+
+### `ADMIN` *"hem özne hem yazar"* — İHLAL DEĞİL, ama gerçek bir BOŞLUK ADAYI
+
+Rol katmanında `ADMIN`'in iki kümede oluşu **yönetişim cümlesiyle meşru** —
+kişi-bazlı SoD **rol üyeliğiyle ihlal edilmez**.
+
+⛔ **Gerçek soru KİŞİ katmanında ve bugün KAYITSIZ:**
+
+> *"Bir kişi şablonu değiştirip sonra o şablon altında onay verebilir mi?"*
+
+`L2`'nin üç SoD kuralı **gönder/onayla** eksenini kapsıyor; **değiştir/onayla**
+eksenini **kapsamıyor**.
+
+Bugün karar üretmez (deploy yok, şablon motoru yok) — ama **`Faz 2` onay-motoru
+tasarımının girdi listesine** kayıtla girer:
+
+```
+1  şablon-değişikliği ↔ o şablon altındaki onay arasında
+   KİŞİ-BAZLI kısıt gerekir mi?
+2  şablon değişikliği bir DENETİM OLAYI mıdır?   (EK_C sözlük adayı)
+```
 
 ### 4 · `SINIF B` = `{A,F}` — ve çatışma, çatışma DEĞİLDİ
 
@@ -3376,6 +3412,13 @@ kpis/validate-formula         {A}  ┘ birebir DEĞİL → karar-bekler
 
 ⇒ `Z36`'nın **kendi ölçütü** uygulandığında dörtlünün **yarısı mekanik göçebilir**;
 yanlış niteleme `W7`/`W8`'in kapsamını **gereksiz daraltıyordu**.
+
+✅ **KABUL (ürün sahibi, 2026-08-26):** `applicable` + `check-combination` `W7`/`W8`'de
+**mekanik göçe açık**. `Z36`'nın formülü (*"çıkarma kesin, varış küme-birebirliğe
+bağlı"*) burada **kendi kendini uyguladı**.
+
+⇒ **Karar-bekler kalıntısı İKİYE indi:** `validate-formula` çifti · `plans/:id/budget-check`
+(`Z33`).
 
 📌 Ve kalan ikisi için `Z36`'nın açık bıraktığı ihtimal hâlâ geçerli: formül-doğrulama
 *"kural-yönetiminin okuma aynası"* ise evi `SINIF A` komşuluğudur, katalog-READ değil.
