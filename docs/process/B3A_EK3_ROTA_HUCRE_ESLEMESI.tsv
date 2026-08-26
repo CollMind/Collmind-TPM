@@ -1,5 +1,5 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-26 · W4b sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
+# ölçüm: 2026-08-26 · B3 K1/K2 sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
@@ -113,8 +113,8 @@ src/modules/modes/actuals-first/agreement/agreement.controller.ts	DELETE	agreeme
 src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
 src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/agreement/:agreementId	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
 src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/agreement/:agreementId/consumed	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
-src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/envelope/:envelopeId	ADMIN,FINANCE	MODES_READ	MEKANIK	ROLES	-
-src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/envelope/:envelopeId/consumed	ADMIN,FINANCE	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/envelope/:envelopeId	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
+src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/envelope/:envelopeId/consumed	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
 src/modules/modes/actuals-first/ledger/ledger.controller.ts	GET	ledger/:id	ADMIN,FINANCE,PLANNER	MODES_READ	MEKANIK	ROLES	-
 src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	POST	on-invoice/upload	ADMIN,FINANCE	MODES_ACTUALS_WRITE	Z35	ROLES	-
 src/modules/modes/actuals-first/on-invoice/on-invoice.controller.ts	GET	on-invoice/count	ADMIN,FINANCE,PLANNER,READONLY	MODES_READ	MEKANIK	ROLES	-
@@ -205,7 +205,7 @@ src/modules/tenant/tenant.controller.ts	POST	tenants/:id/activate	-	TENANT_WRITE
 src/modules/tenant/tenant.controller.ts	POST	tenants/:id/suspend	-	TENANT_WRITE	MEKANIK	CAP	TENANT_WRITE
 src/modules/tenant/tenant.controller.ts	GET	tenants/:id/stats	-	TENANT_READ	MEKANIK	CAP	TENANT_READ
 src/modules/user/user.controller.ts	POST	users	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
-src/modules/user/user.controller.ts	GET	users	ADMIN,FINANCE	USER_MANAGE	Z20	ROLES	-
+src/modules/user/user.controller.ts	GET	users	ADMIN	USER_MANAGE	Z20	ROLES	-
 src/modules/user/user.controller.ts	GET	users/:id	-	USER_MANAGE	Z20	CAP	USER_MANAGE
 src/modules/user/user.controller.ts	PATCH	users/:id	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
 src/modules/user/user.controller.ts	PATCH	users/:id/scope	-	USER_WRITE	MEKANIK	CAP	USER_WRITE
