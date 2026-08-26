@@ -216,3 +216,30 @@ sıfır."*
 
 📌 Fark önemli: birincisi **bitmeyen** bir taahhüt (her tarama yeni bir şey bulur),
 ikincisi **ölçülebilir** bir taahhüt.
+
+
+---
+
+## ⛔ KAPANIŞ RAPORUNUN EK ŞARTI — istisna-atıf taraması
+
+> **Ürün sahibi, 2026-08-26:** *"Bu dalganın kaldırdığı/değiştirdiği **her istisna**
+> için, ona **atıf veren** karar/brief satırlarının taraması."*
+
+**Gerekçe — üç vakalık desen:**
+
+| vaka | boşa düşen gerekçe |
+|---|---|
+| `Z21`-POST | *"e2e göçünce koşul karşılandı"* — **kimse dönüp bakmadı** |
+| `Z37`-LTA | *"kardeş emsal"* — emsal ölçümde **kimlik değiştirdi** |
+| `T-297` | *"göçürmek `FINANCE`'ı düşürürdü"* — `K1` `FINANCE`'ı **zaten düşürdü** |
+
+⇒ `OPEN_DECISIONS` mekanizmasının **ters yönü**:
+
+```
+ileri yön   koşul GERÇEKLEŞİNCE   →  bekleyen iş AÇILIR
+geri yön    istisna KALKINCA      →  istisnaya YASLANAN kararlar YENİDEN OKUNUR
+```
+
+**Tek `grep` sınıfı iş** — ve `E6`'nın **karar-katmanı** hâli. Bu dalgada kalkan
+istisnalar: `Z20` (`K1`) · ledger-üçlüsü kısıtı (`K2`) · `T-289` ucu (`K6`) ·
+`SHARED_READ` istisnaları (`K4`).

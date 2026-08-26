@@ -2676,6 +2676,21 @@ projede **mutasyonla** yakalandı:
 > **`4` için tek cümle: girdinin echo'su bir DEĞER değil, bir TEL-PROTOKOL kanıtıdır.**
 > *"Parametre ulaştı"* der; *"parametre işe yaradı"* **demez**.
 
+⛔ **VE `3` İÇİN BİR İFADE SINIRI** (ürün sahibi, 2026-08-26): bu kuralın
+*"geçersiz olduğu"* bir yer **yoktur** — yalnız **tetiklenmediği** yerler vardır.
+
+```
+hücre 5/5           →  negatif yarı YOK   →  kural TETİKLENİR, pin kör
+hücre {A} / {A,F,P} →  negatif yarı VAR   →  kural TETİKLENMEZ, pin ayırt eder
+```
+
+📌 *"Burada geçerli değil"* diye yazılan bir cümle, **altı ay sonra** *"`5/5`
+körlüğü çözüldü"* diye okunur. Doğru ifade: **"burada tetiklenmiyor, çünkü negatif
+yarı mevcut"** — yani **uygulanamaz alanının dışındayız**, kural düşmedi.
+
+⚠️ Bu, `DISIPLIN`'in kendi metnine uygulanan bir **kapsam disiplinidir**: bir kuralın
+**uygulanmadığı** vaka, o kuralın **çürüdüğü** vaka değildir.
+
 ### ⇒ VE ÇÖZÜMÜN BİÇİMİ: DEĞER-pini değil, İLİŞKİ-pini (ZORUNLU)
 
 ```
@@ -2694,3 +2709,75 @@ FARKLI `planned` üretir"* — ikisi de **sabit sayı yazmadan** ayırt ediyor.
 **varsayılan tarih aralığı** üç granülaritede de **tek** nokta veriyor (`1/1/1`) —
 ayrım fixture'ın değil, **aralığın yokluğundan** kayboluyordu. İlişki ölçen bir pin,
 ilişkinin **görünür olduğu** girdiyi de kurmalıdır.
+
+
+### Bir rota-GENİŞLEMESİ ne zaman BİLGİ-AÇILIMI sayılmaz (ZORUNLU — çift ölçüm)
+
+Bir role yeni bir rota açmak, ona **yeni bilgi** vermek anlamına gelmeyebilir. Ama bu
+bir **iddiadır** ve **iki bağımsız ölçüm** ister — biri yetmez.
+
+> **rota-genişlemesi bilgi-açılımı SAYILMAZ ⟺**
+> **(1)** genişleyen rol, **aynı bilgiyi** eşit yüklemli **başka bir rotadan** zaten
+> alabiliyor **∧**
+> **(2)** türetilmiş çıktılar (toplamlar, özetler, sayımlar) **ham erişimden
+> türetilebilir**
+
+⛔ **`(1)` TEK BAŞINA YETMEZ.** *"Aynı satırlar"* bir cevaptır ama **eksik** bir
+cevaptır: bir uç, ham satırlardan **çıkarılamayan** bir toplam ya da özet üretiyorsa,
+o uç **yeni bilgi** verir — satırlar aynı olsa bile.
+
+📌 Ölçülmüş vaka (2026-08-26, `K2` ledger-üçlüsü) — **ikisi de yapıldı**:
+
+| ölçüm | ne | sonuç |
+|---|---|---|
+| **(1) satır-eşitliği** | `GET /ledger/envelope/X` ↔ `GET /ledger?budgetEnvelopeId=X` | `json` **eşit** · tenant yüklemi aynı · alan kümesi aynı · sayfalama **hiçbirinde yok** |
+| **(2) türetilebilirlik** | `/consumed` = `sumByEnvelopeId` | ham satırlardan `DEBIT − CREDIT` = **birebir** aynı |
+
+⇒ Kısıt **fiilen bir bypass'tı**; genişleme `Z18`'in *"yazılı cümle"* şartını
+tetikleyen sınıfta **değil**.
+
+⚠️ **Ve gerekçe hiyerarşisi doğru yazılmalı:** hüküm *"bypass'tı, dolayısıyla bilgi
+açılımı değil"*dir — **iki ölçüme yaslanır**. İleride benzer bir hizalamada yalnız
+birincisi yapılırsa **hüküm yarım kalır**.
+
+### `Kayıt taraması`nın KANONİK komutu `git log -L`'dir (ZORUNLU)
+
+```
+git log -S '<dizge>'          ← İÇERİĞİ arar: dizgenin doğuşunu/ölümünü bulur
+git log -L <aralık>:<dosya>   ← SATIRIN TARİHİNİ izler
+```
+
+⛔ **`-S` bir `@Roles` satırını DEĞİŞTİREN commit'i GÖRMEZ** — çünkü aradığı dizge
+(rota yolu) o commit'te ne doğuyor ne ölüyor.
+
+📌 Ölçülmüş vaka (2026-08-26, `K2`): ajan `-S 'envelope/:envelopeId'` ile taradı ve
+*"kayıt yok"* dedi. Sonuç **doğruydu** ama **yöntem dardı**: `-L` ile bakıldığında
+kümeye dokunan **dört** commit çıktı (üçü salt yeniden adlandırma), ve asıl soru —
+*"hiçbir commit `PLANNER`'ı ÇIKARMIŞ mı?"* — ancak `-L` ile cevaplanabildi.
+
+> **Bir `DUR` şartı bir komutla yazılıysa, o komut şartı GERÇEKTEN ölçmelidir.**
+> Sonucun doğru çıkması yöntemi doğrulamaz.
+
+### ⛔ BİR İSTİSNA KALKTIĞINDA, ONA YASLANAN KARARLAR YENİDEN OKUNUR (ZORUNLU)
+
+**Üç vaka, üç ayrı tur — desen artık adlı.**
+
+| vaka | boşa düşen gerekçe |
+|---|---|
+| `Z21`-POST | *"e2e göçünce koşul karşılandı"* — **kimse dönüp bakmadı** |
+| `Z37`-LTA | *"kardeş emsal"* — emsal ölçümde **kimlik değiştirdi** |
+| `T-297` `W3`-`GET /users` | *"göçürmek `FINANCE`'ı düşürürdü"* — `K1` `FINANCE`'ı **zaten düşürdü** |
+
+**Ortak kök:** *koşullu kararlar, koşulun **ölçüm adresiyle** yaşamalı.*
+
+Bu, `OPEN_DECISIONS` mekanizmasına *"koşul gerçekleşince iş açılır"* diye önerilmişti.
+`T-297` kuralın **ters yönde de** gerektiğini gösterdi:
+
+```
+ileri yön   koşul GERÇEKLEŞİNCE   →  bekleyen iş AÇILIR
+geri yön    istisna KALKINCA      →  istisnaya YASLANAN kararlar YENİDEN OKUNUR
+```
+
+⇒ **Pratik:** bir istisnayı kaldıran ya da değiştiren her tur, o istisnaya **atıf
+veren** karar/brief/yorum satırlarını **tarar**. Tek `grep` sınıfı iş — ve `E6`'nın
+**karar-katmanı** hâli.
