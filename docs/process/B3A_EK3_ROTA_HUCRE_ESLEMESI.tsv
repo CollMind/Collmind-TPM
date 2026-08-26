@@ -1,26 +1,26 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-26 · B3 kaza-dalgası K4 Parça 1 sonrası (approvals/approvals-pending → APPROVAL_QUEUE_READ, Z37 §3) · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
+# ölçüm: 2026-08-26 · B3 W5 (customer göçü, Z39) sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log/high-risk	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
-src/modules/customer/customer.controller.ts	POST	customers	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	POST	customers/bulk	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers/search	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers/channel/:channel	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers/channel-id/:channelId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers/city/:city	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers/vip	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers/code/:code	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	PATCH	customers/:id	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	DELETE	customers/:id	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	POST	customers/:id/activate	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	POST	customers/:id/deactivate	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers/:id/stats	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	GET	customers/cpl/list	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	CUSTOMER_READ	MEKANIK	ROLES	-
-src/modules/customer/customer.controller.ts	POST	customers/import	ADMIN,PLANNER	CUSTOMER_WRITE	MEKANIK	ROLES	-
+src/modules/customer/customer.controller.ts	POST	customers	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
+src/modules/customer/customer.controller.ts	POST	customers/bulk	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
+src/modules/customer/customer.controller.ts	GET	customers	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	GET	customers/search	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	GET	customers/channel/:channel	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	GET	customers/channel-id/:channelId	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	GET	customers/city/:city	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	GET	customers/vip	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	GET	customers/:id	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	GET	customers/code/:code	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	PATCH	customers/:id	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
+src/modules/customer/customer.controller.ts	DELETE	customers/:id	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
+src/modules/customer/customer.controller.ts	POST	customers/:id/activate	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
+src/modules/customer/customer.controller.ts	POST	customers/:id/deactivate	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
+src/modules/customer/customer.controller.ts	GET	customers/:id/stats	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	GET	customers/cpl/list	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
+src/modules/customer/customer.controller.ts	POST	customers/import	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
 src/modules/master-data/brand/brand.controller.ts	POST	master-data/brands	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
 src/modules/master-data/brand/brand.controller.ts	GET	master-data/brands	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
 src/modules/master-data/brand/brand.controller.ts	GET	master-data/brands/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
