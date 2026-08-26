@@ -4266,3 +4266,199 @@ KALIR   +CM ×3 + stats/+CM   → Z25 kilidi · T-304 DİLİM-1
    YENİDEN ÜRETİLMİŞ hâli*). ⛔ **Üçlü** o task'ın önceliğini besliyor:
    **giriş ekranı + evrensel fallback + kapısız.**
 2. **`§6`'nın ölçüm sınırı** rapora aynen taşınır (bkz. `§3`).
+
+---
+
+# `Z44` — `B4` ÇERÇEVE HÜKMÜ: tek düğme değil, **`A′ → B` sıralı iki adım**
+
+**Tarih:** 2026-08-27 · **Karar:** ürün sahibi · **Statü:** ⏳ **PİN BEKLİYOR**
+
+> ⛔ **BU HÜKÜM BİLEREK PİNDEN ÖNCE VERİLDİ.**
+>
+> **Ürün sahibi:** *"Hükmün çerçevesini şimdi veriyorum ki **pin neyi doğrulayacağını
+> bilsin** — pin, hükmü **doğrular ya da DEVİRİR**; hüküm pini beklemez."*
+>
+> ⇒ Bu, `DISIPLIN`'in *"reprodüksiyon şartı YÖNSÜZDÜR"* kuralının **hüküm tarafındaki**
+> hâli: bir hüküm de bir **iddiadır** ve aynı kapıdan geçer. Hükmü önce yazmak onu
+> **çürütülebilir** kılar — sonra yazmak, ölçümü **hükme uydurma** riskini doğururdu.
+
+---
+
+## `§1` — Soru bir SEÇİM sorusu değildi
+
+`ADIM3_KAPANIS_RAPORU §3.1` iki düğmenin **zıt** sonuç verdiğini ölçtü. Ürün sahibinin
+hükmü: bu bir **seçim** değil, bir **SIRA ve ÖN-ŞART** sorusudur.
+
+| düğme | tek başına | gerekçe |
+|---|---|---|
+| **`B`** (`RolesGuard` çıkar) | ⛔ **TARTIŞMASIZ ELENİR** | `@Roles` hâlâ 15 rotada yaşarken çıkarmak = **15 rota herkese açık** — fail-open'ın **kitabi hâli** |
+| **`A`** (bugünkü hâliyle) | ⛔ **UYGULANAMAZ** | `SELF_SCOPED`/`IS_PUBLIC` **okunmuyor** (ölçüldü: 74 satırda `0`) ⇒ **`/users/me` KIRILIR** — oturum yenilemenin yolu |
+
+## `§2` — GERÇEK `B4` TANIMI
+
+```
+A′  CapabilityGuard default-deny'a döner — ÜÇ ÖN-ŞARTLA:
+
+    1  guard @Public ve @SelfScoped'ı TANIR
+       (bugün 0/74 — YAZILACAK İŞ, bir varsayım değil)
+
+    2  kalan-15 İSTİSNA-LİSTELİ: @Roles taşıyan rota default-deny'dan MUAF
+       ⛔ MUAFİYET TÜRETİLMİŞ EVRENDEN: elle liste DEĞİL,
+          "@Roles taşıyor" YÜKLEMİNİN KENDİSİ
+       her satır kalan-15 SÖZLEŞMESİNE bağlı (rapor §2)
+
+    3  kalan-@Roles RATCHET'İ AÇILIR
+       artış YASAK · düşüş yalnız SÖZLEŞME-KOŞULU açıldığında
+       (15 → 13 → … → 2'yi izler)
+
+B   RolesGuard'ın ÖLÜMÜ — tetiği TARİH değil OLAY:
+    kalan-@Roles = 2 (iki KALICI satır) olduğunda ⇒ RolesGuard tek işlevli
+    artık-guard'a iner YA DA iki satır kendi mekanizmasına devredilir
+    (O GÜNÜN kararı, bugünün değil.)
+```
+
+### ⛔ `2`'nin şekli neden **türetilmiş** olmak zorunda
+
+> **Elle liste olsaydı kabul EDİLEMEZDİ:** listeden düşen bir rota **sessizce**
+> `default-deny`'a düşer ve **hiçbir e2e görmez**.
+> **Türetilmiş evrende bu imkânsız:** bir rota ya `@Roles` taşır ya yetenek —
+> **üçüncü hâl `G8` ailesinin kapısına çarpar.**
+
+📌 Bu, `Z43` turunda doğan **evren-kaynağı hiyerarşisinin** (`türetilmiş > taranmış >
+yazılmış`) ilk **tasarım** uygulaması: ders bir kapıdan **ürünün yetkilendirmesine**
+taşındı.
+
+## `§3` — `capability.guard.ts:14-17` REVİZE EDİLİR — **silinerek değil, DOĞRULANARAK**
+
+Mevcut cümle: *"`RolesGuard`'ın kaldırılması `B4`'ün işidir ve kalan-`@Roles` listesi
+**BOŞALMADAN yapılamaz** — bir karar değil, bir **ÖLÇÜM SONUCU**."*
+
+| | hüküm |
+|---|---|
+| cümle **`B` düğmesi için** | ✅ **HÂLÂ DOĞRU** — `RolesGuard`, `@Roles` boşalmadan ölemez |
+| yanlış olan | ⛔ o cümlenin **`B4`'ün TAMAMINI tarif ettiği OKUMASI** |
+
+**Yeni metin iki-adımlı tanımı taşır:**
+> *"`default-deny` (`A′`) **istisna-listeyle** iner; `RolesGuard`'ın ölümü (`B`)
+> kalan-`@Roles`'un **iki-kalıcıya** inmesine bağlıdır."*
+
+⚠️ **Uygulama ERTELENDİ:** bu dosya şu anda **düğme pininin mutasyon hedefi**.
+Paylaşılan ağaçta aynı dosyaya dokunmak turu bozar (`CLAUDE.md`: *"`touches:`
+kesişimi gerekli ama yeterli değil — DOĞRULAMA izolasyonu"*). Pin kapanınca yazılır.
+
+## `§4` — ⛔ VE BİR GERÇEK KAYDA GEÇER: `(b)`-beklemesi **SAĞLANAMAZ BİR KOŞULDU**
+
+```
+kalan 15  =  13 KOŞULLU  +  2 KALICI
+                            ↑ pending-approvals · budget-variance
+```
+
+⇒ *"Kalan `@Roles` sıfırlanınca `B4`"* demek, **hiçbir zaman** demekti.
+**Sıfır bir TARİH değil, GELMEYECEK BİR OLAYDI.**
+
+> ⛔ **Ve bunu ortaya çıkaran şey bir ölçüm değil, bir YAZIM BİÇİMİYDİ:**
+> kalan-15'i *"adres + statü + **AÇILMA KOŞULU**"* — yani ***"kim, ne zaman, neyle
+> açar"*** — formatında yazmak.
+>
+> **Ürün sahibi:** *"`kim-ne zaman-neyle açar` formatının **ilk maaşı** bu oldu."*
+
+📌 `DISIPLIN`'e: **bir listeyi SÖZLEŞME biçiminde yazmak, listenin kendisinin
+söylemediği bir şeyi söyletir.** Düz bir *"kalan 15"* listesi *"sıfıra iner"*
+varsayımını **hiç sorgulatmazdı**; her satıra bir **açılma koşulu** yazmak, iki
+satırın koşulunun **olmadığını** görünür kıldı.
+
+## `§5` — PİNİN ŞEKLİ (üç ölçüm, tek tur)
+
+| # | pin | tür | beklenti |
+|---|---|---|---|
+| 1 | `A`-ham (mevcut guard → default-deny) | ⛔ **kusur önce görülür** | `/users/me` **`403`** · kalan-15 **`403`** (ADMIN dahil) |
+| 2 | `A′`-simülasyonu (SELF/PUBLIC tanıma + `@Roles` muafiyeti) | ✅ **kabul** | `/users/me` **`200`** · kalan-15 **birebir** · **SENTETİK** rota **`403`** |
+| 3 | `B`-ham (`RolesGuard` çıkar) | ⛔ **kusur önce görülür** | 15 rota **yetkisiz role açılır** |
+
+⛔ **`2`'nin sentetik rotası ŞARTTIR:** bugün **hiçbir gerçek rota** *"yetenek yok ∧
+`@Roles` yok ∧ `@SelfScoped` yok ∧ `@Public` yok"* sınıfında değil ⇒ `default-deny`'ın
+**kendisi** hiç koşmaz. `§2.7 #4`'ün tam vakası: **ölçülmek istenen durum mevcut
+değil**, o yüzden **üretilir**.
+
+## `§6` — Davranışsal tespit asimetrisi: **kapanmıyor, ÇERÇEVELENİYOR**
+
+```
+STATİK      15/15    route-scope "KURULUM HATASI" bloğu, rotaları ADIYLA basar
+DAVRANIŞSAL  2/15    13 rotanın 403-yolu e2e'siz
+```
+
+> **Ürün sahibinin hükmü:** bu **kabul edilebilir** — çünkü `A′`'nın muafiyet-evreni
+> **TÜRETİLMİŞ**. Elle liste olsaydı **kabul edilemezdi**.
+
+⇒ Yani asimetriyi tolere edilebilir kılan şey bir **test sayısı** değil, bir **evren
+tasarımı**. *(Kırmızıyı `e2e` değil **guard** verir — ve guard'ın kapsamı kendiliğinden
+büyür.)*
+
+---
+
+## `Z44 §7` — PİN SONUCU: **ÇERÇEVE DOĞRULANDI**, ve pinin İKİ İDDİASI ÇÜRÜDÜ
+
+**Tarih:** 2026-08-27 · üç pin koştu, hepsi mutasyon+geri-yükleme (`shasum -a 256 -c`) ile.
+
+### Üç pin — beklenti/ölçüm
+
+| pin | beklenti | ölçülen | |
+|---|---|---|---|
+| **1 · `A`-ham** | `/users/me` `403` · kalan-15 `403` **ADMIN dahil** | `200 → 403` **dördünde de** | ✅ **`A` UYGULANAMAZ** |
+| **2 · `A′`-sim** | `/users/me` `200` · kalan-15 **birebir** · **SENTETİK** rota `403` | `200` · `ADMIN 200`/`PLANNER 403` **birebir** · **sentetik `403`** | ✅ **`A′` ÇALIŞIYOR** |
+| **3 · `B`-ham** | 15 rota yetkisiz role **açılır** | `plans/:id/approve` **PLANNER2 → `200`** | ✅ **`(b)` TEK BAŞINA ELENİR** |
+
+> ⛔ **`§5`'in kendi sınırı KAPANDI:** `§3.1` artık **kod okumasından** değil,
+> **davranıştan** ölçülü.
+
+### ⛔ VE PİNİN İKİ İDDİASI ÇÜRÜDÜ — ikisi de **ölçümle**
+
+Pin, raporun `§3.2`'sindeki *"statik tespit `15/15`"* cümlesini **yanlış** ilan etti.
+Team Lead bağımsız ölçtü — **iddia fazla genellenmişti**:
+
+| pinin iddiası | ölçüm |
+|---|---|
+| *"`route-scope`'un statik tespiti `B`'yi görmüyor"* | ⛔ **ÇÜRÜDÜ.** `RolesGuard` **`@UseGuards` zincirinden ÇIKARILINCA** → `route-scope` **`exit 2`**, `budget-at-risk` ve `budget-variance`'ı **ADIYLA** basıyor |
+| *"ne guard ne e2e bunu yakalardı"* | ⛔ **ÇÜRÜDÜ.** Guard **gövdesi boşaltılınca** `role-journey` **`N5` ve `N11` DÜŞÜYOR** (`2 failed, 84 passed`) |
+
+### ⛔ KÖK NEDEN: **MUTASYON EŞDEĞERLİĞİ, ÜRÜN İÇİN ≠ KAPI İÇİN**
+
+Pin, `B` düğmesini *"`RolesGuard`'ı zincirden çıkar"* yerine *"gövdesini `return true`
+yap"* diye uyguladı ve eşdeğerliği **doğru gerekçelendirdi** — ama yalnız **bir eksende**:
+
+```
+ÜRÜN için    eşdeğer   ✅   her iki durumda da @Roles kontrolü UYGULANMAZ
+KAPI için    DEĞİL     ⛔   route-scope @UseGuards LİSTESİNE bakar, GÖVDEYE değil
+```
+
+⇒ Pin, **kapı hakkında** bir sonuç çıkarırken **kapı için eşdeğer olmayan** bir mutasyon
+kullandı. Sonuç: **doğru bir gözlemden yanlış bir hüküm.**
+
+### Ama bir GERÇEK bulgu kaldı — ve o kayda değer
+
+```
+GERÇEK düğme B (zincirden çıkarma)   →  route-scope exit 2  ✅ statik kapı GÖRÜYOR
+GUARD GÖVDESİNİN BOŞALTILMASI        →  route-scope exit 0
+                                        npm run guards exit 0
+                                        role-journey EXIT=1  ✅ E2E GÖRÜYOR
+```
+
+⇒ **İki bozulma yolu, İKİ FARKLI dedektör** — ve **hiçbiri ikisini birden görmüyor.**
+Bu bir açık değil, bir **iş bölümüdür**; ama **yazılı olmadığı için** pin onu bir açık
+sandı.
+
+📌 Rapor `§3.2`'nin *"kırmızıyı `e2e` değil **guard** verir"* cümlesi **daraltılır**:
+*"**yapısal** bozulmayı guard verir, **davranışsal** bozulmayı e2e."*
+
+### Pinin ÜÇÜNCÜ bulgusu — **gerçek ve yeni**
+
+`plans/:id/approve`'da ilk deneme **`403` kaldı**, ama sebep `RolesGuard` değil
+`plan.service.ts:1405`'in **self-approval** kontrolüydü (`submittedById === userId`).
+Farklı bir onaylayıcıyla `200` çıktı.
+
+⇒ **RBAC'tan bağımsız İKİNCİ bir savunma katmanı** — `§3.2`'nin *"`agreements/:id/*`
+`403`'ü servis katmanında"* notunun **plan tarafındaki eşi**. Envantere girer.
+
+⚠️ **Yan bulgu:** `budget-variance` `PLANNER` ile **`500`** verdi —
+`finance-reporting.service.ts:1261`, `column envelope.cplid does not exist`. RBAC'la
+ilgisiz, **önceden var**, ve guard açılınca **görünür oldu**. `T-306`.

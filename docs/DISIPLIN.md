@@ -3565,3 +3565,99 @@ yok olursa çalışır.
 📌 Üç halkanın dersi: **bir düzeltmenin iddiası da bir iddiadır** ve aynı kapıdan
 geçmelidir. *"Bir tur unutamaz"* cümlesi bir **ölçüm değil, bir umuttu** — ve o umut
 `(2)`'de yazıldığı için `(3)`'e kadar kimse ölçmedi.
+
+---
+
+## Bir listeyi **SÖZLEŞME** biçiminde yazmak, listenin söylemediğini söyletir (ZORUNLU)
+
+Bu gövde çoğu kuralı bir **ölçümden** çıkardı. Bu kural bir **yazım biçiminden** çıktı —
+ve ortaya çıkardığı şey bir ölçümün bulamayacağı türdendi.
+
+**Ölçülmüş vaka (2026-08-27, `Z44 §4`):** `B3b-1`'in kalan `15` `@Roles` rotası aylardır
+bir **liste** olarak taşınıyordu, ve o listenin üstünde yazılı olmayan bir varsayım
+duruyordu: *"bu sayı sıfıra iner, sonra `B4` gelir."*
+
+Liste **düz** yazıldığı sürece varsayım **hiç sorgulanmadı**. Ürün sahibi kapanış
+raporu için formatı değiştirdi:
+
+```
+DÜZ LİSTE       rota · hücre · @Roles kümesi
+SÖZLEŞME        rota · ADRES · STATÜ · ⛔ AÇILMA KOŞULU
+                            ↑ "KİM, NE ZAMAN, NEYLE AÇAR"
+```
+
+Format değişince **iki satırın açılma koşulu OLMADIĞI** görüldü:
+
+```
+15  =  13 KOŞULLU (Faz-2 · T-293 · T-304-D1)  +  2 KALICI (kayıtlı, gerekçeli, koşulsuz)
+```
+
+⇒ *"Sıfırlanınca `B4`"* demek, **hiçbir zaman** demekti. **Sıfır bir TARİH değil,
+GELMEYECEK BİR OLAYDI** — ve bunu bir ölçüm değil, **bir sütun** ortaya çıkardı.
+
+> **Ürün sahibinin kaydı: *"`kim-ne zaman-neyle açar` formatının İLK MAAŞI bu oldu."***
+
+### Kuralın kendisi
+
+> **Bir borç/kalan/istisna listesi yazarken her satıra bir AÇILMA KOŞULU sütunu koy.**
+> **Koşulu YAZILAMAYAN satır, bir bekleme değil bir KALICILIKTIR — ve bunu ancak
+> sütun görünür kılar.**
+
+📌 Bu, `T-304`'ün *"borç listesi düz liste değil, **kilidi açtığı karar sayısına** göre
+sıralı listedir"* kriteriyle **aynı ailedendir**: ikisi de bir listeye **ikinci bir
+eksen** ekler, ve ikisinde de ikinci eksen **listenin kendisinin söylemediğini** söyler.
+
+⚠️ Ve ailenin üçüncü üyesi `EK_E`'nin `🔒` ayrımıdır: *"yetenek yok"* (`❌`) ile
+*"yetenek var, **yolu yok**"* (`🔒`) aynı listede **farklı sütun** ister — ve `🔒`
+**bir kabul değil, bir alarmdır**.
+
+> **Ortak şekil: BİR LİSTENİN BİLGİSİ, SATIRLARINDA DEĞİL SÜTUNLARINDADIR.**
+
+---
+
+## MUTASYON EŞDEĞERLİĞİ: **ÜRÜN için eşdeğer ≠ KAPI için eşdeğer** (ZORUNLU)
+
+Bu gövde mutasyonun **mekanizmaya indiğini** doğrulamayı defalarca yazdı. `Z44 §7`
+(2026-08-27) bir üst soruyu adlandırdı: **mutasyon, hakkında sonuç çıkardığın şey için
+DOĞRU MUTASYON MU?**
+
+**Ölçülmüş vaka.** Bir pin, *"`RolesGuard`'ı zincirden çıkar"* düğmesini uygulamak yerine
+**gövdesini `return true` yaptı** ve eşdeğerliği **doğru gerekçelendirdi**:
+
+```
+ÜRÜN için    ✅ EŞDEĞER   her iki durumda da @Roles kontrolü UYGULANMAZ
+KAPI için    ⛔ DEĞİL     route-scope @UseGuards LİSTESİNE bakar, GÖVDEYE değil
+```
+
+Sonra o mutasyondan **kapı hakkında** bir sonuç çıkardı: *"statik tespit `15/15` iddiası
+yanlış."* Bağımsız ölçüm iddiayı **çürüttü**: gerçek düğme (zincirden çıkarma) uygulanınca
+kapı **`exit 2`** verdi ve rotaları **adıyla** bastı.
+
+> ⛔ **Bir mutasyonun eşdeğerliği, SORULAN SORUYA GÖRE ölçülür.**
+> **Ürün davranışı için eşdeğer olan bir mutasyon, ÖLÇÜM ALTYAPISI için eşdeğer
+> olmayabilir — ve o mutasyondan altyapı hakkında çıkarılan sonuç KAPSAM DIŞIDIR.**
+
+### Pratik — mutasyon seçerken ikinci soru
+
+```
+1  mutasyon MEKANİZMAYA indi mi?        ← eski kural
+2  mutasyon, HAKKINDA SONUÇ ÇIKARDIĞIM
+   ŞEYİN gördüğü eksende mi?            ← BU
+```
+
+📌 Ve aynı pin ikinci bir aşırı-genelleme yaptı: *"ne guard ne e2e bunu yakalardı."*
+Ölçüm: gövde boşaltılınca `role-journey`'in **iki testi düşüyor**. ⇒ *"Hiçbir şey
+görmüyor"* iddiası, **bakılmayan yerin** iddiasıdır.
+
+### ⛔ VE ORTAYA ÇIKAN GERÇEK: iki bozulma yolu, İKİ FARKLI dedektör
+
+```
+YAPISAL bozulma   guard zincirden çıkar   →  STATİK KAPI görür  (e2e görmez)
+DAVRANIŞSAL       guard gövdesi bozulur   →  E2E görür          (statik kapı görmez)
+```
+
+**Bu bir açık değil, bir İŞ BÖLÜMÜDÜR** — ama **yazılı olmadığı için** pin onu bir açık
+sandı. ⇒ Bir dedektör ağının **kim neyi görür** tablosu, ağın kendisi kadar önemlidir;
+yazılmazsa her tur onu **yeniden keşfeder ve yanlış okur**.
+
+> **Bir kapının kör noktası, KOMŞU kapının görev tanımıdır — ta ki yazılana kadar.**
