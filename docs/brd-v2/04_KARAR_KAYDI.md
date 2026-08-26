@@ -3860,3 +3860,45 @@ LTA formu kaydediyor, motor **onu asla görmüyor** — iki uç ayrı ayrı **ye
 arada **bağ yok**. Bir belge turu bunu **bulamazdı**.
 ⇒ İskelet turu **kalem sayısını** artırır, **bağ sayısını** artırmaz. `Faz 2` **bağ**
 eksikliğinden kırılıyor.
+
+
+---
+
+## Z41 · `B3b-1` KAPANDI — dokuz dalga, `149` göç, **SIFIR davranış sızıntısı**
+
+> **Tarih:** 2026-08-26 · **Statü:** ✅ **DÖNEM KAPANDI**
+> Tam bilanço: `docs/process/B3B1_KAPANIS_BILANCOSU.md`
+
+```
+dokuz dalga  ·  149 rota göçü  ·  BEKLENMEYEN pin kırmızısı: SIFIR
+```
+
+⇒ **Dokuz dalga boyunca tek bir davranış sızıntısı yok.**
+
+> **Ürün sahibinin kaydı:** *"İki hafta önce *'en riskli iş'* diye planladığımız şey,
+> **kurduğu disiplinin içinde rutinleşerek** bitti."*
+
+### ⛔ VE KAPANIŞIN KALİTESİ SAYIDA DEĞİL, STATÜDE
+
+```
+başlangıç   @Roles 211  ·  hiçbiri gerekçeli değil     BİLİNMEYEN BORÇ
+bugün       @Roles  61  ·  HEPSİ gerekçeli             ADRESLİ KARAR LİSTESİ
+```
+
+> **Sayı düşüşünden kıymetlisi STATÜ DEĞİŞİMİ.**
+
+Ve kapanış grameri:
+> ⛔ *"Bitti"* **değil** — ***"bitti, VE kalan şunlardır, ŞURADADIR."***
+> Bu, bu reponun artık **varsayılan kapanış grameridir.**
+
+### Kalan `61`'in tamamı adresli
+
+| hücre | rota | adres |
+|---|---|---|
+| `MODES_READ` | 34 | paket `#2` |
+| `SUMMARY_READ` | 12 | paket `#1` |
+| `MODES_APPROVE` | 6 | karar-bekler |
+| `SHARED_WRITE` | 4 | `T-293` (`Z39 §4` kayıtlı hayalet) |
+| `SHARED_READ` | 2 | paket `#7`/`#8` |
+| `MASTER_DATA_WRITE` | 2 | paket `#4` (`Z36 §5`) |
+| `USER_MANAGE` | 1 | `T-297` — hüküm **verildi**, uygulama bekliyor |

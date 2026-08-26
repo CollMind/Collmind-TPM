@@ -3204,3 +3204,48 @@ bunu yapısal olarak göremiyordu**.
 
 > **Artefakt KENDİNİ TARİF ETMELİDİR.** Başlık üreticiye taşındı ⇒ elle-hatırlama
 > sınıfı kapandı.
+
+
+### ⛔ KARAR-GİRDİSİ YÜZEYLERİ, KARARINDAN **ÖNCE** TARANIR (ZORUNLU — beşinci satır)
+
+`İstisna kalkınca yeniden-okuma` kuralının tarama yüzeyi **dörttü** (kod · `docs/` ·
+backlog · karar-girdisi paketleri). **Beşinci satır bir ZAMANLAMA şartıdır:**
+
+> **Bir karar oturumundan ÖNCE, o kararın okunacağı yüzeyler TAZE olmalıdır.**
+
+**Dört vaka, ve ortak özellikleri ZAMANLAMA:**
+
+| vaka | bayat cümle **nerede** duruyordu |
+|---|---|
+| `B3_KARAR_BEKLER_PAKETI` | ürün sahibinin **karar girdisi** |
+| `BACKLOG.md` | **her oturum** context'e enjekte edilen yüzey |
+| kaza-dalgası brief'i | **bir sonraki turun** girdisi |
+| `capabilities.ts` (`W8` `S2`) | **karar oturumunun okuyacağı** kanonik dosya |
+
+📌 **Dördünün ortak özelliği:** bayat cümle hep **bir sonraki kararın girdi
+yüzeyinde** duruyordu. Yani zarar *"bir belge eskidi"* değil — **karar yanlış veriyle
+verilecekti.**
+
+⇒ **Pratik:** paket masaya gelmeden **tek geçişlik bir ön-doğrulama**: paketin
+dayandığı **sayılar ve cümleler** kendi içinde güncel mi? Bu, *"`Z35`-sonrası
+damgası"* deseninin **paket hâli**.
+
+### Bir kapı ağının KENDİ SAĞLIĞINI ölçmesi (ZORUNLU — `G5`'in dersi PROAKTİF)
+
+`G5`'in ölüm-diriliş zinciri bir ders bıraktı: **bir kapının evreni boşalabilir**, ve
+boşaldığında kapı *"temiz"* ile *"ölçecek bir şey yok"*u **aynı çıktıyla** raporlar.
+
+⇒ **O ders bir sonraki kapıda PROAKTİF ölçüldü.** `W8`'de `G8`'in `BEKLEYEN` listesi
+**boşaldı** (`MASTER_DATA_MANAGE` düştü). Soru **sorulmadan** ölçüldü:
+
+```
+mutasyon   sıfır-rota bir hücre EKLE
+sonuç      G8 exit 2, hücreyi ADIYLA söylüyor
+⇒          liste BOŞALDI, kapı BOŞALMADI
+```
+
+> **Bir kapı ağı olgunlaştığında, kendi kör noktalarını da ÖLÇER** — ve bu ölçüm bir
+> **arıza raporundan** değil, bir **önceki kapının dersinden** doğar.
+
+📌 `§2.7 #9`'un *"tetiklenmedi"* ile *"geçersiz"* ayrımı burada da geçerli: kapı
+boşalmadığı **ölçülerek** söylendi, varsayılarak değil.

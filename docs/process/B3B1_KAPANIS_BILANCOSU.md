@@ -89,6 +89,38 @@ kalan (ROLES)   61
 `W4b` (`SHARED_WRITE` bölünmesi) · `W5` (`CUSTOMER_MANAGE` ayrımı → `Z39`) ·
 `K4` (`validate-budget` → `T-249` emsal çatışması) · `W8` (`validate-formula` çifti)
 
+### ⛔ VE İKİ *"TUTARSIZLIK"*IN İKİSİ DE TEAM LEAD'İN ÖLÇÜM HATASI ÇIKTI
+
+Bilanço yazılırken iki sayı tutmadı ve **ikisi de kendi hatamdı** — raporda
+**saklanmadı**, çünkü sürecin **yan kanıtı**:
+
+| *"tutarsızlık"* | gerçek |
+|---|---|
+| `@Roles` sayımı `15` görünüyordu (`2` olmalı) | grep **yorum satırlarını** da saydı — gerçek dekoratör **dosya başına 1** |
+| hücre toplamı `146 ≠ 149` | **elle toplama** hatam; programatik sayım **149** |
+
+📌 **Teşhis saniyelikti**, çünkü kural zaten yazılıydı: *"bir yorum, kodun sayımını
+**şişirir** — asla azaltmaz."* Bu, o kuralın **üçüncü** uygulanışı.
+
+Ve `147 ↔ 149` farkı **kaynağıyla** kapatıldı: `K4`'ün iki rotası, dalga
+numaralandırmasının **dışında**.
+
+> ***"Bir sayım farkı, kaynağı gösterilmeden yorumlanamaz"*** maddesi bu turda
+> **iki kez** maaşını ödedi.
+
+### ⛔ VE KAPI AĞI KENDİ SAĞLIĞINI ÖLÇTÜ
+
+`W8`'de `G8`'in `BEKLEYEN` listesi **boşaldı**. `G5`'in ölüm-diriliş dersi
+(*"evren boşalması"*) bir sonraki kapıda **proaktif** ölçüldü:
+
+```
+mutasyon  sıfır-rota bir hücre EKLE  →  G8 exit 2, hücreyi ADIYLA söylüyor
+⇒         liste BOŞALDI, kapı BOŞALMADI
+```
+
+> Kapı ağı artık **kendi kör noktalarını da ölçüyor** — ve bu ölçüm bir **arıza
+> raporundan** değil, **bir önceki kapının dersinden** doğdu.
+
 ### Pin kırmızıları — **beklenmeyen sıfır**
 
 Her dalgada **en az bir** mutasyon turu koşuldu; `W8`'de **üç**. Beklenmeyen bir
