@@ -2735,8 +2735,29 @@ projede **mutasyonla** yakalandı:
 Ölçüm: dört satırın dördü de değişiklikten **önce** doğmuştu ⇒ **iddia silmeden önce
 de doğruydu**. Pin, koruduğu değişiklikle **kesişmiyordu**.
 
-> ### **TAM-GERİ-ALMA MUTASYONU** (ZORUNLU — kaldırma turlarında)
+> ### **TAM-GERİ-ALMA MUTASYONU** (ZORUNLU — her davranış-sınıfı turunda)
 > **"Bu pin, koruduğu değişiklik TAMAMEN GERİ ALINDIĞINDA kırmızıya döner mi?"**
+
+### ⇒ VE BEKLENTİ TABLOSU — soru *"kırmızı mı"* değil, ***"HANGİ KATMANDA kırmızı"***
+
+⚠️ **Kural ilk yazımında `kaldırma turları` için kurulmuştu; `W5` onu bir GÖÇ turuna
+uygulayınca EKSİĞİ çıktı** (ürün sahibi düzeltmesi, 2026-08-26):
+
+| tur sınıfı | tam-geri-almada **kırmızı beklenen** |
+|---|---|
+| davranış-**DEĞİŞTİREN** | **davranış pini** — `BR-04` dersi: pin **hedefle kesişmeli** |
+| davranış-**KORUYUCU** | **statik kapı** (`G7` / `FILTRESIZ` / `G8`) — pin **yeşil kalır ve bu DOĞRUDUR** |
+
+📌 Ölçülmüş vaka (`W5`): `17` rota tamamen `@Roles`'a döndürüldü, pin **yeşil kaldı**
+— çünkü göç davranış-koruyucuydu ve **hiçbir HTTP cevabı değişmiyordu**. Kırmızıya
+dönen şey **doğru dedektördü**: `G7`, drift satırlarını **isim isim** basarak.
+
+> **"Pin yeşil kaldı" tek başına NE BAŞARI NE KUSURDUR.** Turun **sınıfı**,
+> mutasyonun **hangi katmanda** kırmızı üreteceğini söyler — ve **kabul kriteri o
+> katmanı ADLANDIRMALIDIR.**
+
+⇒ `W2` review'ının **tamamlayıcılık tablosunun** (*pin ↔ statik kapı, hiçbiri tek
+başına yetmez*) genellemesi: ikisi **farklı sınıflarda farklı roller** oynar.
 
 ```
 satır-mutasyonu       bir satırı bozar        →  pin DUYARLILIĞINI ölçer
@@ -2918,3 +2939,74 @@ Aynı turda: elle sayım **`48`**, kanonik araç **`45`**. Fark **açıklandı**
 
 > **Bir yorum, kodun sayımını ŞİŞİRİR — asla azaltmaz.** Bu yön bilgisi bir sayım
 > farkını teşhis ederken **ilk bakılacak yerdir**.
+
+
+### İSTİSNA LİSTELERİ DE BİRER KAPIDIR — ve kapının kendisi kadar disiplin ister (ZORUNLU)
+
+**`Z29` ailesinin istisna-listesi maddesi.**
+
+Bir kapıya *"bunlar hariç"* listesi eklemek, kapıyı **zayıflatmanın en kolay yolu**dur
+— ve fark edilmesi en zor olanı, çünkü liste **kapının içinde** yaşar ve **yeşil**
+görünür.
+
+> ⛔ **Bir istisna listesindeki HER GİRİŞ bir KARAR KAYDI adlandırmak ZORUNDADIR.**
+> Kayıtsız bir giriş **hâlâ ihlaldir** — yoksa liste bir **"sustur" düğmesine** döner.
+
+📌 Ölçülmüş vaka (2026-08-26, `G8`): hayalet-hedef yönü `SHARED_WRITE`'ı yakaladı
+(hücre düştü, rotaları henüz göçmedi). Kayıtlı istisna olarak karşılandı **ama
+şartıyla**: `'SHARED_WRITE': 'Z39 §4 / T-293'` — giriş **kararını adıyla söylüyor**.
+
+### ⇒ VE BİR İSTİSNA GİRİŞİ **TAŞIYICI OLDUĞU ÖLÇÜLEREK** YAZILIR (ZORUNLU)
+
+> **"Bu giriş kaldırılırsa kapı BUGÜN kırmızıya döner mi?"**
+> Cevap **hayırsa giriş GEREKSİZDİR** — ve gereksiz bir giriş **görünmez zarardır**:
+> bugün hiçbir şeyi susturmaz, **yarın susturur**, ve kimse fark etmez.
+
+⛔ **Ölçülmüş vaka — ve kuralın YAZILDIĞI TURDA (2026-08-26):** `G8`'in `BEKLEYEN`
+listesi **dokuz** üyeyle yazıldı; ölçüldüğünde **sekizi taşıyıcı değildi** — o hücreler
+**zaten üretiliyordu**, yani `olu` kontrolüne **hiç düşmüyorlardı**.
+
+```
+yazılan     9 üye  ("W6/W7/W8 bekliyor" sezgisiyle)
+taşıyıcı    1 üye  (MASTER_DATA_MANAGE — bildirilen ama HİÇ üretilmiyor)
+```
+
+Liste **bire indirildi** ve kalan üye **mutasyonla kanıtlandı**: çıkarıldığında kapı
+`exit 2` verip hücreyi **adıyla** söylüyor.
+
+⚠️ **Ve mutasyonun ilk denemesi bir KURULUM HATASIYDI**: girişi bir yorumla
+değiştirmek `BEKLEYEN`'i **boş dict**'e çevirdi (`{}` Python'da set değil dict) ⇒
+`TypeError`, `exit 1`. *Derlenmeyen mutasyon kanıt değildir* — sözdizimi korunarak
+tekrarlandı.
+
+⚠️ Aynı disiplin `BEKLEYEN` listesine de uygulandı: kalan üye **gerekçesiyle**
+bekliyor, ve **dalga kapanışında satırı düşer** — *"hangi turun işi"* sorusu cevapsız
+kalmıyor (`DISIPLIN`: *"11 iyileşme birikti çünkü hangi turun işi olduğu yazılı
+değildi"*).
+
+### ⇒ VE İKİ-YÖNLÜ BİREBİRLİK KAPILARININ DEĞERİ — ölçülmüş
+
+`G8` iki yön taşıyor; ikincisi (**hayalet hedef**) tasarımda *"simetri olsun"* diye
+vardı ve **ilk koşumda gerçek bir bulgu verdi**.
+
+```
+tek yönlü yazılsaydı (yalnız "bildirilen ∖ üretilen")  →  hayalet sınıfı GÖRÜNMEZ kalırdı
+```
+
+> **Bir birebirlik iddiası İKİ YÖNLÜDÜR.** `A ⊆ B` ile `B ⊆ A` **ayrı kusurları**
+> yakalar, ve yalnız birini yazmak diğerini **yapısal olarak** kör bırakır.
+
+### `Yetkiler DB'de mi, kodda mı?` — cevap İKİLİ (ZORUNLU)
+
+İki ayrı katman, iki ayrı ev — ve **çelişmezler**:
+
+```
+rol → YETENEK      KOD    capabilities.ts · kapılarla denetlenir (G5/G6/G8)
+                          `0056-K3(b)`: "yetenekler KOD, veri DEĞİL"
+                          (main.capabilities tabloları migration'la DÜŞÜRÜLDÜ)
+
+kişi → KAPSAM      VERİ   user_scopes · `H8`: "kapsamsızlık bir KAYITTIR"
+```
+
+📌 Bu cümle **açık durmalı**, çünkü altı ay sonra *"yetkiler DB'de mi kodda mı?"*
+sorusunun cevabı **tek kelime değil**: **rol→yetenek kodda, kişi→kapsam veride.**
