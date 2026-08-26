@@ -1,5 +1,5 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-26 · B3 K1/K2 sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
+# ölçüm: 2026-08-26 · B3 K6(c) sonrası (POST /budget/reserve kaldırıldı, T-289/Z38) · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
@@ -161,7 +161,6 @@ src/modules/shared/approval/approval.controller.ts	GET	approvals/:id	-	SHARED_RE
 src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes	-	SHARED_ENVELOPE_WRITE	Z36	CAP	SHARED_ENVELOPE_WRITE
 src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
-src/modules/shared/budget/budget.controller.ts	POST	budget/reserve	ADMIN,PLANNER	SHARED_WRITE	MEKANIK	ROLES	-
 src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/reserved	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes/:id/split	-	SHARED_ENVELOPE_WRITE	Z36	CAP	SHARED_ENVELOPE_WRITE
 src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/transactions	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
