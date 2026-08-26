@@ -3010,3 +3010,70 @@ kişi → KAPSAM      VERİ   user_scopes · `H8`: "kapsamsızlık bir KAYITTIR"
 
 📌 Bu cümle **açık durmalı**, çünkü altı ay sonra *"yetkiler DB'de mi kodda mı?"*
 sorusunun cevabı **tek kelime değil**: **rol→yetenek kodda, kişi→kapsam veride.**
+
+
+### ⛔ GÖSTERİP GEÇEN KAPI — kapı kör-nokta ailesinin EN SİNSİ üyesi (ZORUNLU)
+
+Bir kapının **susması** kötüdür. **Kusuru gösterip geçmesi** daha kötüdür.
+
+> **Bir kapının çıktısı EXIT KODUNA bağlanmamışsa, kapı YOKTUR.**
+> **Göstermek görmemekten TEHLİKELİDİR — çünkü GÖRÜLMÜŞ SAYILIR.**
+
+📌 Ölçülmüş vaka (2026-08-26, `W6` `B1`): `Z35`'in yasakladığı tam şey yapıldı
+(`PLANNER`'a `MODES_ACTUALS_WRITE`) ve `G5` şunu **ekrana bastı**:
+
+```
+G5 EXPECT[MODES_ACTUALS_WRITE] = ['ADMIN', 'FINANCE', 'PLANNER']
+G5 Z35 bolunmesi   uye=0  @Roles uyusmazligi=0
+→ exit 0
+```
+
+İhlal **çıktının içinde**, ve kapı **geçiyor**. Bir denetçi bu bloğa bakıp *"`G5`
+kontrol ediyor"* der — **kontrol etmiyor, yazdırıyor**.
+
+⚠️ **Log satırı denetim DEĞİLDİR.** Bir değeri basmak, onu **karşılaştırmak** değildir.
+
+### ⇒ VE KAPI YAŞAM-DÖNGÜSÜNÜN KANONİK ZİNCİRİ (`G5 → G5b`)
+
+Bu vaka bir kapının **nasıl öldüğünü ve nasıl yeniden doğduğunu** uçtan uca gösterdi:
+
+```
+1  kapı DARALTILDI          gerekçe MEŞRU (Z29: göçün BAŞARISINI hata sayıyordu)
+2  evreni BOŞALDI           §2.7 #9 — "sinyal sabitse sinyal değildir"
+3  "devir kanıtı" yazıldı   boşluğu ANLATAN bir metin
+4  kanıtın iki dalı         YAPISAL OLARAK ERİŞİLEMEZ çıktı
+                            ⇒ #9'a verilen cevap #4'ün (kanıt kurulumu ölçülen
+                              durumu üretir) YENİ BİR VAKASI oldu
+5  ve asıl kusur            kapı ihlali GÖSTERİP GEÇİYORDU
+```
+
+**Yeniden doğuş biçimi — `dördüncü soru` disiplini:**
+```
+referans   DONDURULMUŞ karar kaydından   ← kod kendi kendini doğrulamıyor
+evren      KAYNAK KOD, rota değil        ← boşalamaz
+kanıt      İKİ YÖNLÜ mutasyon            ← hem ihlal hem referans bozulması
+```
+
+> **Bir kapıyı daraltırken sor: daralttıktan sonra bu kapı HÂLÂ KIRMIZI VEREBİLİR Mİ?**
+> Cevap *"evren boşalırsa hayır"* ise, daraltma bir **düzeltme değil bir devirdir** —
+> ve devir **ölçülür**, anlatılmaz.
+
+### Kural yazan tur, kuralın KENDİ ÜSTÜNDEKİ ilk mutasyonunu da koşar (ZORUNLU)
+
+*"Kuralı yazdığın tur"* sayacı bir **tur-sınıfı** doğurdu:
+
+> **Bir kural yazıldığı turda, o kural KENDİ ÇIKTISINA uygulanır — ve uygulama bir
+> METİN değil bir MUTASYONDUR.**
+
+📌 Ölçülmüş vaka (2026-08-26): *"istisna listeleri de birer kapıdır"* kuralı yazıldı,
+**aynı turda** `G8`'in `BEKLEYEN` listesi ölçüldü — **dokuz üyeden sekizi taşıyıcı
+değildi**. Liste **bire** indirildi ve kalan üye **mutasyonla** kanıtlandı.
+
+```
+kural yazıldı        →  kendi listesine uygulandı  →  9 üyeden 8'i düştü
+                     →  kalan üye MUTASYONLA sınandı (çıkarılınca exit 2)
+```
+
+⚠️ Ve mutasyonun **ilk** denemesi bir **kurulum hatasıydı** (`BEKLEYEN`'i boş dict'e
+çevirdi ⇒ `TypeError`) — *derlenmeyen mutasyon kanıt değildir*, sözdizimi korunarak
+tekrarlandı.
