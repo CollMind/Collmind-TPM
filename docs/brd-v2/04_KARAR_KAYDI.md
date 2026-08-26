@@ -3902,3 +3902,236 @@ Ve kapanış grameri:
 | `SHARED_READ` | 2 | paket `#7`/`#8` |
 | `MASTER_DATA_WRITE` | 2 | paket `#4` (`Z36 §5`) |
 | `USER_MANAGE` | 1 | `T-297` — hüküm **verildi**, uygulama bekliyor |
+
+---
+
+# `Z42` — KARAR-BEKLER PAKETİ ÇÖZÜLDÜ: bir çerçeve, üç blok, iki emsal
+
+**Tarih:** 2026-08-26 · **Karar:** ürün sahibi · **Kayıt:** Team Lead
+**Girdi:** `B3_KARAR_BEKLER_PAKETI.md` (arşiv) + karar oturumunda **yeniden ölçülen** sayılar
+
+> ⛔ **Hükümler paketin METNİNE değil, ÖLÇÜLEN SAYILARA verildi.** Paketin iki
+> satırı bayattı (`{A,F}`=**5**, 7 değil) ve `capabilities.ts`'in `SUMMARY`
+> türetim listesi üreticiyle çelişiyordu (**12**, 13 değil). Bkz. `§0`.
+
+---
+
+## `§0` — `ADIM 0`: beş sapma, oturumdan ÖNCE düzeltildi
+
+Beşinci tarama satırı (`DISIPLIN`: *"KARAR-GİRDİSİ YÜZEYLERİ, KARARINDAN ÖNCE
+TARANIR"*) **ilk uygulamasında** dört sapma yakaladı; ölçüm turu bir beşincisini
+ekledi. Kanonik yüzeyler (TSV · üretici · `G1–G8`) **tazeydi**; bayatlık
+**anlatı** katmanındaydı.
+
+| # | yüzey | sapma |
+|---|---|---|
+| **1** | `capabilities.ts` `SHARED_POLICY_WRITE` bloğu | **İPTAL EDİLMİŞ** bir kuralı bağlayıcı diye alıntılıyordu |
+| 2 | `B3_KARAR_BEKLER_PAKETI §3` | `ledger/envelope/*` çifti bayat ⇒ *"`{A,F}` yedilisi"* bugün **beş** |
+| 3 | `capabilities.ts` `SUMMARY` türetim listesi | **13** sayıyordu, kanonik üretici **12** (`budget-variance` çelişkisi) |
+| 4 | `capabilities.ts` `SHARED_READ` `DUR` bloğu | aynı blokta *"İKİ istisna"* **ve** *"DÖRT İSTİSNA"* |
+| 5 | `BACKLOG.md` | `T-266` elle yazılmış sayım · `T-287` statüsü |
+
+> **Ürün sahibinin hükmü:** *"`#1` öncelikli: benim iptal-edilmiş alıntımın
+> kalıntısı, karar oturumunun okuyacağı dosyada iptal edilmiş kuralı **bağlayıcı
+> gösteriyor** — `Z31 H4-5` ailesi, **tek dosyada iki zıt cümle**."*
+
+📌 Ve `#1` bu oturumun kendi ihlalinin kalıntısıydı: uydurma alıntı **iptal
+edildi**, `DISIPLIN`'e vaka yazıldı, `ROLE_CAPABILITIES` tarafı düzeltildi —
+**ama aynı dosyanın hücre-yorumu düzeltilmedi.** *(`DISIPLIN`: "bir kuralı
+yazdığın tur, o kuralı en çok ihlal ettiğin turdur" — ve bu kez ihlal
+**temizliğin eksik yarısıydı**.)*
+
+---
+
+## `§1` — ⛔ EMSAL 1: **PROVENANCE KAZANIR** (`#5`'in çatışması)
+
+Bu oturuma kadar iki kanıt türü hep **aynı yöne** bakmıştı. `plans/:id/budget-check`
+ilk kez **çatıştırdı**:
+
+```
+KAYIT      34e04aa  "F9: PLANNER kendi planının budget-check'ine
+                      erişemiyordu → düzeltildi (403→200)"
+           diff: {ADMIN, MANAGER, READONLY} → +PLANNER
+           ⇒ adıyla · kusur numarasıyla · gerekçesiyle = KASIT
+
+DAVRANIŞ   tek tüketici BudgetApprovalModal → PlanApprovalsPage
+           ekran kapısı {ADMIN, CM, READONLY} — PLANNER YOK
+           kapı cc654c2'de YANLIŞ KARDEŞTEN türetilmiş = ÖLÇÜLMÜŞ KAZA
+```
+
+### Hüküm
+
+> **Çatışmada iki sinyalin de DOĞUM BELGESİ okunur; hangisi KARAR hangisi
+> KAZAysa, KARAR kazanır. İkisi de kazaysa CÜMLE-TESTİ hakemdir.**
+>
+> ⇒ `PLANNER` üyeliği **KORUNUR**. Kasıt kazaya yenilmez.
+
+⚠️ **Ve bir kuralın kapsamı daraltıldı:** *"davranışsal ulaşılamazlık ucuz
+sinyaldir"* bir **TESPİT** aracıdır, bir **HÜKÜM** aracı değil. Ürün sahibinin
+cümlesi: *"tespit aracıydı, hüküm aracı değil."*
+
+📌 **`#9` ile karşıtlığı emsalin kendisini kurar:** `#9`'da **iki sinyal de kaza
+yönünde** (kayıt yok ∧ ulaşılamaz) ⇒ `PLANNER` **düşer**. `#5`'te sinyaller
+zıt ⇒ **kasıt kazanır**. Aynı kural, iki yönde.
+
+⚠️ Ve `git log -L` kuralının **ikinci hüküm-deviren vakası**: `-S` ile
+taransaydı `F9` **görünmezdi** ve bu emsal hiç doğmazdı.
+
+### Ulaşılamazlığın adresi — ve ekran düzeltmesi NE DEĞİL
+
+> **Ürün sahibi:** *"Ekran düzeltmesi `/approvals` sayfasına `P` ekle DEĞİL —
+> o **onaycı yüzeyi**, `P`'nin yeri değil. `P`'nin gerçek tüketici yüzeyi
+> **gönderim-öncesi kontrol**."*
+
+⇒ `SENARYO-ADAY` kanalına tohum: *"planlamacı göndermeden önce bütçe kontrolünü
+görür"* (**Faz-2**). Bir yetki kararı değil, bir **yüzey** kararı.
+
+---
+
+## `§2` — ⛔ ÇERÇEVE HÜKMÜ (üç bloğun hepsini yönetir)
+
+> **GÖÇ BİREBİR YAPILIR — hiçbir normalizasyon göç dalgasına BİNMEZ.**
+
+Küme-evrimi (`RO`/`CM`/`F` eklemeleri, `P` düşüşleri) **hücrenin üstünde**,
+**kayıtla**, bir **istisna-dalgası satırı** olarak iner. Tek kaynak:
+`capabilities.ts` + `Z`-kaydı — `H3`'ün *"kararla gelir"* ilkesinin **simetriği**.
+
+### Üç şart, her genişlemeye
+
+| şart | içerik |
+|---|---|
+| **çift bilgi-açılım testi** | eşit-yüklemli alternatif rota **∧** türetilmiş çıktılar |
+| **`CM`-genişlemeleri KAPSAM-KOŞULLU** | kapsam zorlaması o rotalara inmeden `CM` **tenant-geneli görür** = açılım ⇒ `Z25` koşul satırı, sağlayıcı: kapsam-borç programı |
+| **`RO`-eklemeleri TANIMSAL kayıtla** | İZLEYİCİ *"her şeyi görür"* (`Z18`) — `f3b9f82`'nin **dosya-kapsamı kazası** (`#7`/`#8`) dahil **tek listede** kapanır |
+
+---
+
+## `§3` — BLOK 1 · `SUMMARY_READ` = `{A, CM, F, RO}`
+
+**Karar-destek dörtlüsü.** Cümleler `K-2.6.4`'ten: *yapısal* · *kategori-sahibi
+[kapsamlı]* · *tenant-genel-finans* · *tanımsal-izleyici*.
+
+### `PLANNER` portföy-özet yüzeyinden ÇIKAR
+
+İki bağımsız dayanak:
+1. **`#9` çift-olumsuz** — kayıt yok **∧** ulaşılamaz *(`#5`'in **tam tersi**:
+   iki sinyal de kaza yönünde ⇒ `§1` emsali `P`'yi **düşürür**)*
+2. `K-2.6.4`'ün planner cümlesi **özet içermiyor**
+
+### Uygulama — hepsi istisna-satırı, yön-etiketli, repro-pinli
+
+```
+4×  {A,CM,F,RO}          BİREBİR göçer
+−P ×4                    DARALTMA
++CM ×3                   GENİŞLEME · KAPSAM-KOŞULLU
+                         ⇒ T-287/K3'ün üç widget sorusunun cevabı: EVET, AMA KAPSAMLA
+stats/summary            KARMA (+CM +RO −P)
+```
+
+---
+
+## `§4` — BLOK 2 · `MODES_READ`: yedi küme → **dört ev + evrim satırları**
+
+| küme | n | hüküm |
+|---|---|---|
+| `5/5` | 10 | **`MODES_READ` tabanı** — birebir (`T-020` kayıtlı) |
+| `{A,F,P}` | 12 | **defter-okuma hücresi** birebir (`K2` gerekçeli) · `+RO` **tanımsal** satır · `+CM` **kapsam-koşullu** satır (`K-2.2.9c`: *zarf sahibi kendi zarfının defterini okur*) |
+| `{A,F}` | 5 | **içe-aktarma-okuma hücresi** birebir (`Z38`) — 4 şablon + `agreement-batch` |
+| `{A,F,P,RO}` | 3 | kendi hücresi, birebir |
+| `{A,CM,F,RO}` | 2 | `APPROVAL_QUEUE_READ`, birebir |
+| `{A,CM,RO}` | 1 | aynı hücreye **`+F` istisna-satırıyla** — ⛔ **TEK ŞARTLA**, aşağı |
+| `{A,CM,P,RO}` | 1 | → `BLOK 3` (`#5`+`#10` işlev-ailesi) |
+
+### ⛔ `plans/pending-approvals` — göçün ÖLÇÜM ŞARTI
+
+`+F` bir **genişlemedir**. Şart:
+
+> **`FINANCE`'ın o uçtaki görünümünün BOŞ KÜME olduğu ÇAĞRILARAK ölçülür.**
+> `ADR 0002` okuması bir **DURAĞAN YÜZEYdir** — `T-289` dersi.
+> **Ölçüm tutmazsa rota TEK-VAKA kalır.**
+
+### `on-invoice` ↔ `agreement-batch` asimetrisi → **istisna-aday listesi**
+
+Yön **cümle-testiyle** belirlenir: `P`/`RO`'nun satırları **`ledger`'dan
+türetebildiği** ölçülürse hizalama **açılımsızdır**.
+
+### `LIST`/`POINT` hipotezi — RESMEN ÇÜRÜDÜ, ve kapanışı kayda
+
+```
+altı GENEL LIST↔POINT çiftinin ALTISINDA da küme AYNI     → eksen hiçbir kümeyi BÖLMÜYOR
+onay-kuyruğu çiftlerinin ÜÇÜNDE DE ayrışma VAR (+K4 = 4/4) → APPROVAL_QUEUE ailesini İŞARET ETTİ
+```
+
+> **Ürün sahibinin kaydı:** *"Çürüyen hipotezin **işaret değeri** — sınama
+> disiplininin ödülü."*
+
+📌 Hipotez **doğrulanmaya çalışılmadı, sınandı** — ve sınama şekli (`LIST`↔`POINT`
+çifti kurup küme karşılaştırmak) `K4`'ün `approvals` vakasının **birebir
+tekrarıydı**. Eksen bir **yüklem** üretmedi; bir **GÖÇ ADAYI** üretti.
+
+---
+
+## `§5` — BLOK 3 · Tekiller
+
+| kalem | hüküm |
+|---|---|
+| **`#5` + `#10`** | **TEK İŞLEV-AİLESİ HÜCRESİ** `{A,CM,P,RO}` — `budget-check` + `validate-budget` **birebir**. `−F` cümlesi `T-249` kayıtlı: *eşik-üstü onaycının kontrol yüzeyi ayrıdır*. `validate-budget`'ın **sıfır-çağıranı** `EK_E`-uyuyan notuyla |
+| **`#4` `validate-formula` çifti** | `{A}` **birebir**, **yönetişim-okuma** — formül doğrulama = kural-yönetiminin **aracı** (`K-2.6.4` *"tanımlar"* cümlesi). ⛔ `MASTER_DATA_READ`-`5/5` seçeneği **REDDEDİLDİ**: *çağıransız yüzeye genişleme*, `İlke-1`'in **tam tersi** |
+| **`#7` / `#8`** | `+RO` **tanımsal listesinde** — **iki-repo-tek-kapanış**: ekran kapıları **aynı satırda** güncellenir |
+| **`#3` `budget-variance`** | hücresi `Z42 ADIM 0`'da açıldı (SAPMA-3); rota **çağıransız** ⇒ `EK_E` `🔒` |
+
+---
+
+## `§6` — TRİYAJ: yapısal bulgu KABUL, tek düzeltmeyle
+
+### Bulgu kabul edildi
+
+`Z40 §3`'ün `MEŞRU` durumu (*"kapsam gerekmiyor + cümlesi var"*) **`C` kovasının
+tanımıdır**, ve triyaj evreninin hiçbiri `C`'de değil ⇒ **`38/38` BORÇ, itirazsız.**
+
+> `İlke-4`: yeni bir sınıflandırma değil, **mevcut bir JOIN**. *(Aksi hâlde aynı
+> gerçek iki yerde yaşardı.)*
+
+### Çerçeve sabitlendi — ve bir SAYIM FARKI kaynağıyla kapandı
+
+```
+kalan-@Roles çerçevesi   61 ∩ kapsam listesi = 31 → eşik sonrası 21
+HÜCRE-GENELİ çerçevesi   20 + 18 + 10        = 48 → eşik sonrası 38   ← YÜRÜRLÜKTE
+```
+
+> **Kapsam borcu GÖÇTEN BAĞIMSIZDIR** — göç etmiş bir rota da kapsamsız olabilir.
+> Çerçeve `48`'e **sabitlenir**, ve böylece *"görüş alanından çıkma"* sınıfı
+> kapanır (`approvals` çifti `A2` borcunu `APPROVAL_QUEUE_READ`'e **taşımıştı**,
+> kapatmamıştı).
+
+### Adresleme hükmü — ⛔ `38/38` ADRESSİZDİ
+
+> **TEK ÇATI PROGRAMI.** Sahibi **Team Lead'de task olarak doğar**; eşiği
+> `Karar-1`'in kaydı: **ilk-deploy sert eşiği**, dalga-planı **RLS/kapsam
+> hattıyla** birlikte.
+
+`SUMMARY ∧ A1 = 10`'un düşmemesi **Faz-1'i bloklamıyor** (`Z32` kapı-terfisi
+**tetiklenmedi** — doğru okuma), ama o `10` **borç programının ilk dilimi**
+olarak işaretlenir.
+
+📌 Bu, `DISIPLIN`'in *"11 iyileşme birikti çünkü hangi turun işi olduğu yazılı
+değildi"* vakasının **kapanışı**: liste vardı, gerekçeler vardı, **sahibi yoktu**.
+
+---
+
+## `§7` — SIRA, ve ⛔ AÇIK KARAR KALMADI
+
+```
+ADIM 0            beş sapma                                        ✅ İNDİ
+uygulama dalgası  ~40 birebir göç + T-297  (TEK dalga, sabitlik satırıyla)
+                  ⇒ kalan @Roles ~61 → ~20
+istisna-dalgası   yön-etiketli satırlar
+                  ⚠️ kapsam-koşullular Z25'te BEKLER, dalgaya BİNMEZ
+B4                ön-koşul sayımı
+```
+
+> **Ürün sahibi:** *"Bu oturumla `ADIM 3`'te **açık karar kalmadı** — kalan her
+> satır ya **göç** ya **kayıtlı-koşullu satır**."*
+
+**Onay rejimi:** birebir dalga **onaya gelmez** (*"o artık rutin"*);
+**istisna-dalgası brief'i onaya gelir.**

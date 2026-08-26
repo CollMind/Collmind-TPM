@@ -319,3 +319,36 @@ bağ eksikliğinden kırılıyor, kalem eksikliğinden değil.
 ⚠️ Ve bu, `EK_E`'nin **sessiz kırıklık** bulgusuyla aynı aile: `🔒` *"yol yok"* der,
 `⚠️` *"kırık"* der — ama `T-293` sınıfı **hiçbir işaret vermez**, çünkü her iki uç da
 kendi başına yeşildir. **Ancak zincir ölçülünce görünür.**
+
+---
+
+### İkinci tohum — **gönderim-öncesi bütçe kontrolü** (`Z42 §1`, 2026-08-26)
+
+> **Planlamacı planını GÖNDERMEDEN ÖNCE bütçe kontrolünü GÖRÜR.**
+
+**Doğuşu bir yetki kararının artığıdır, bir özellik isteğinin değil.**
+`plans/:id/budget-check`'in `PLANNER` üyeliği `Z42 §1`'de **korundu** (`F9` kaydı =
+kasıt; ulaşılamazlık = `cc654c2`'nin ölçülmüş kazası). Ama kasıt kazandığında kaza
+**affedilmez** — bir **yüzey sorusuna** dönüşür:
+
+```
+BUGÜN     tek tüketici  BudgetApprovalModal → PlanApprovalsPage
+          o sayfanın kapısı {ADMIN, CM, READONLY}
+          ⇒ PLANNER'ın üyeliği CANLI, YÜZEYİ YOK        (EK_E'nin 🔒 sınıfı)
+
+YANLIŞ    "/approvals sayfasına PLANNER ekle"
+DÜZELTME  ⛔ o ONAYCI yüzeyidir — PLANNER'ın yeri değil
+
+DOĞRU     PLANNER'ın kendi akışında, GÖNDERİM ÖNCESİ
+YÜZEY     ⇒ bu senaryo
+```
+
+📌 **Ürün sahibinin ayrımı:** *"Bir yetki kararını doğrulamak, onu **yanlış yüzeye
+bağlamayı** meşrulaştırmaz."* Bir üyeliği kurtarmak için ona rastgele bir ekran
+açmak, `İlke-1`'in *"çağıransız yüzeye genişleme"* yasağının **ekran tarafındaki
+hâlidir**.
+
+⚠️ Ve bu tohum `T-293` ailesinden **farklı** bir körlük türünü kapatıyor: orada iki uç
+yeşil ama **bağ** yok; burada **mekanizma ve yetki hazır**, eksik olan yalnızca
+**kullanıcının o mekanizmaya değdiği an**. `EK_E` bunu `🔒` diye işaretler — ve
+`🔒` **bir kabul değil, bir alarmdır.**

@@ -1,7 +1,27 @@
 # `B3` KARAR-BEKLER PAKETİ — dört hücre, `72` rota
 
 **Tarih:** 2026-08-25 · **Hazırlayan:** Team Lead · **Karar:** ürün sahibi
-**Statü:** ⏳ **cümle adayları ÖNERİ — hüküm ürün sahibinde**
+**Statü:** ✅ **HÜKÜM VERİLDİ — `Z42` (2026-08-26). Bu belge ARTIK BİR ÖLÇÜM ARŞİVİDİR.**
+
+> ## ⛔ BU BELGEYE DAYANARAK KARAR VERİLMEZ — iki satırı BAYAT ölçüldü
+>
+> `Z42 ADIM 0` · **SAPMA-2** (2026-08-26): hükümler bu belgenin metnine değil,
+> karar oturumunda **yeniden ölçülen** sayılara verildi. Ölçülen bayatlıklar:
+>
+> | bu belge (2026-08-25) | bugün ÖLÇÜLDÜ | kaynak |
+> |---|---|---|
+> | `ledger/envelope/:envelopeId` `{A,F}` | **`{A,F,P}`** | `09480db` `K2` |
+> | `ledger/envelope/:envelopeId/consumed` `{A,F}` | **`{A,F,P}`** | `09480db` `K2` |
+> | *"`{A,F}` **YEDİLİSİ**"* (dört yerde anılıyor) | **BEŞ** | yukarıdaki ikisinin göçü |
+>
+> ⇒ Belgenin ürün sahibine sunduğu **seçenek `(ii)`** (*"`ledger/envelope/*`
+> `{A,F,P}`'ye hizalansın"*) **zaten uygulanmıştı** — ve kalan beş, seçenek
+> `(i)`'nin liste-adayının kendisidir. **Küme SAYISI hâlâ yedi; bayatlayan
+> `{A,F}`'nin ÜYELİĞİ.** *(`docs/DISIPLIN.md`: "bir kümede sayı ve DEĞER
+> birlikte bayatlar" · "elle yazılmış üye-sayısı: ölçülmüş oran DOKUZDA DOKUZ")*
+>
+> **Yürürlükteki hükümler:** `docs/brd-v2/04_KARAR_KAYDI.md` `Z42`.
+> **Kanonik rota/hücre kaynağı:** `docs/process/B3A_EK3_ROTA_HUCRE_ESLEMESI.tsv`.
 
 > **Sözleşme:** cümle adaylarını Team Lead **türetir**, hükmü **ürün sahibi verir**.
 > Bu belge bir **ölçüm + öneri** paketidir; hiçbir hücre burada çözülmez.
@@ -200,8 +220,8 @@ karara bağlanmaz: `{A,F}` grubunun **hepsi** gerçekten defter/mutabakat okuyor
 | `GET` | `actuals-first/sales-actuals/batches/:batchId/rows` | `ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY` | **A1** |
 | `GET` | `agreements/pending-approvals` | `ADMIN,CATEGORY_MANAGER,FINANCE,READONLY` | **A1** |
 | `GET` | `agreement-transactions/batch/:batchId` | `ADMIN,FINANCE` | **A1** |
-| `GET` | `ledger/envelope/:envelopeId` | `ADMIN,FINANCE` | **A1** |
-| `GET` | `ledger/envelope/:envelopeId/consumed` | `ADMIN,FINANCE` | **A1** |
+| `GET` | `ledger/envelope/:envelopeId` | ~~`ADMIN,FINANCE`~~ → **`ADMIN,FINANCE,PLANNER`** (`Z42 ADIM 0`) | **A1** |
+| `GET` | `ledger/envelope/:envelopeId/consumed` | ~~`ADMIN,FINANCE`~~ → **`ADMIN,FINANCE,PLANNER`** (`Z42 ADIM 0`) | **A1** |
 | `GET` | `agreement-transactions` | `ADMIN,FINANCE,PLANNER` | **A1** |
 | `GET` | `agreement-transactions/:id` | `ADMIN,FINANCE,PLANNER` | **A1** |
 | `GET` | `agreement-transactions/agreement/:agreementId` | `ADMIN,FINANCE,PLANNER` | **A1** |

@@ -3249,3 +3249,138 @@ sonuç      G8 exit 2, hücreyi ADIYLA söylüyor
 
 📌 `§2.7 #9`'un *"tetiklenmedi"* ile *"geçersiz"* ayrımı burada da geçerli: kapı
 boşalmadığı **ölçülerek** söylendi, varsayılarak değil.
+
+---
+
+## İki kanıt ÇATIŞTIĞINDA: **PROVENANCE KAZANIR** (ZORUNLU)
+
+Bu gövde iki kanıt türünü uzun süre **birbirini destekler** hâlde ölçtü: bir kaydın
+yokluğu ve bir yolun davranışsal ulaşılamazlığı. İkisi hep **aynı yöne** baktı, ve o
+yüzden hangisinin hakem olduğu hiç sorulmadı.
+
+**Ölçülmüş vaka (2026-08-26, `Z42 §1` — `plans/:id/budget-check`):** ilk kez **zıt**
+yöne baktılar.
+
+```
+KAYIT      34e04aa  "F9: PLANNER kendi planının budget-check'ine
+                      erişemiyordu → düzeltildi (403→200)"
+           diff: {ADMIN, MANAGER, READONLY} → +PLANNER
+           ⇒ ADIYLA · KUSUR NUMARASIYLA · GEREKÇESİYLE      =  KASIT
+
+DAVRANIŞ   tek tüketici → ekran kapısı {ADMIN, CM, READONLY}
+           PLANNER YOK · kapı cc654c2'de YANLIŞ KARDEŞTEN türetilmiş
+           ⇒ ÖLÇÜLMÜŞ                                        =  KAZA
+```
+
+### Hüküm
+
+> **Çatışmada iki sinyalin de DOĞUM BELGESİ okunur.**
+> **Hangisi KARAR, hangisi KAZAysa — KARAR kazanır.**
+> **İkisi de kazaysa CÜMLE-TESTİ hakemdir.**
+
+### ⛔ Ve bir kuralın KAPSAMI daraldı — TESPİT aracı ≠ HÜKÜM aracı
+
+*"Davranışsal ulaşılamazlık kayıt aramaktan ucuzdur"* bir **tespit** kuralıdır: nereye
+bakılacağını söyler. **Hüküm** kuralı değildir: neyin doğru olduğunu söylemez.
+
+> **Ucuz bir sinyal, tarama sırasını belirler — karar sırasını değil.**
+
+Bu ayrım olmadan kural şunu üretirdi: *"bugün UI'dan ulaşılamıyor ⇒ üyelik kazadır"* —
+ve o cümle, **kaydı bulunan** bir kararı, **kaydı bulunan** bir kazanın lehine silerdi.
+
+### Kuralın İKİ YÖNDE de çalıştığı ölçüldü
+
+| vaka | kayıt | davranış | hüküm |
+|---|---|---|---|
+| `#9` `plan-performance` `PLANNER` | ⛔ yok | ⛔ ulaşılamaz | **düşer** — iki sinyal de kaza yönünde |
+| `#5` `budget-check` `PLANNER` | ✅ `F9` | ⛔ ulaşılamaz | **korunur** — kasıt kazaya yenilmez |
+
+📌 Aynı kural, zıt iki sonuç. Bir hüküm kuralının **ayırt etme gücü** budur: her iki
+girdide **aynı** cevabı veren bir kural, kural değil bir **varsayılandır**.
+
+### ⚠️ Ve bu emsal `git log -L` kuralına İKİNCİ hüküm-deviren vakasını yazdı
+
+`F9` kaydı bir `@Roles` satırının **tarihindedir**, metninde değil. `-S` ile taransaydı
+**görünmezdi** — ve o hâlde `#5` de `#9` gibi *"kayıt yok"* diye sınıflanır, `PLANNER`
+düşer, ve **bu emsal hiç doğmazdı.**
+
+> **Bir tarama yönteminin seçimi, bir hükmün sonucunu değiştirebilir.** Yöntemi
+> ölçümle birlikte yaz.
+
+### Ve ulaşılamazlığın kendisi kaybolmaz — ADRESLENİR
+
+Kasıt kazandığında kaza **affedilmez**, bir **yüzey sorusuna** dönüşür. `#5`'te ürün
+sahibinin hükmü: düzeltme *"onaycı sayfasına `PLANNER` ekle"* **değildi** — o yüzey
+`PLANNER`'ın yeri değil; gerçek tüketici yüzeyi **gönderim-öncesi kontrol**.
+
+> **Bir yetki kararını doğrulamak, onu YANLIŞ YÜZEYE bağlamayı meşrulaştırmaz.**
+
+---
+
+## Bir kapının EVRENİ, koruduğu şeyle BİRLİKTE BÜYÜMÜYORSA kapı küçülür (ZORUNLU)
+
+Bu gövde `G5`'in **ölüm-diriliş** zincirini kaydetti: kapının evreni (`@Roles` rotaları)
+**boşaldı**, kapı kör kaldı, ve yerine `G5b` bağımsız bir **dondurulmuş referansla**
+kuruldu. O kayıt şöyle bitiyordu: *"evren asla boşalmaz (kaynak kod, rota değil)."*
+
+**O cümle doğruydu — ve YETMİYORDU.** Evren **boşalmadı**; **DONDU**.
+
+**Ölçülmüş vaka (2026-08-26, `W9` review BLOCKER 1):**
+
+```
+G5b'nin evreni     iki hücre   (Z35'in bölünmesi)
+W9 açtı            BEŞ yeni hücre
+tabloya girdi      SIFIR
+⇒ kapı bu beş hücrenin ROL KÜMESİNİ hiç görmüyordu
+```
+
+Ve **mutasyonla kanıtlandı** — `ROLE_CAPABILITIES[READONLY] += MODES_LEDGER_READ`,
+yani dalganın **tek yasağının** ihlali:
+
+```
+npm run guards      exit 0        npm test   exit 0        guard çıktısı FARK YOK
+POZ. KONTROL: aynı genişleme MODES_ACTUALS_WRITE'a → exit 1, kapı ADIYLA söylüyor
+```
+
+⇒ Mekanizma **vardı ve çalışıyordu**. Eksik olan **kapsamıydı**.
+
+### ⛔ VE "BEŞ SATIR EKLE" DÜZELTMESİ, KUSURU YENİDEN ÜRETİR
+
+Review'un önerdiği minimal düzeltme (*"`Z42_HUKUM`, aynı desen, beş satır"*) **bugünü**
+kapatırdı. Ama evren yine **elle** bakılan bir liste kalırdı ⇒ **bir sonraki dalga aynı
+deliği yeniden açardı.**
+
+> **Bir listenin bayatlaması bir BAKIM sorunuysa, çözüm bakım değildir — çözüm,
+> listenin EKSİKLİĞİNİ ölçen ikinci bir kapıdır.**
+
+Uygulanan şekil (`G5c`), ve bu repoda **kanıtlanmış bir desendir** (`G8`'in
+`bildirilen ↔ üretilen` çiftinin aynısı):
+
+```
+G5b   tablodaki her hücrenin kümesi  ==  canlı harita        → sessiz genişlemeyi yakalar
+G5c   göçmüş rota taşıyan her hücre  ∈   tablo               → EVRENİN DONMASINI yakalar
+```
+
+`G5c` mutasyonla sınandı: bir hücre tablodan **düşürüldü** → `exit 2`, hücreyi **adıyla**
+söyledi. Geri yükleme `shasum -a 256 -c` ile doğrulandı, `git checkout` **kullanılmadı**.
+
+### 📌 Ve bir kural, kendi karşı-vakasıyla birlikte okunur
+
+Bu gövdeye bir gün önce *"bir kapı ağı olgunlaştığında kendi kör noktalarını da
+ÖLÇER"* yazılmıştı — `G8`'in `BEKLEYEN` listesi boşaldığında sorunun **sorulmadan**
+ölçülmesi örnek gösterilerek.
+
+**Aynı turda `G5b`'nin evreni sessizce dondu ve kimse sormadı.**
+
+> **Bir kapı ağının olgunluğu, bir HUY değil bir ÖLÇÜMDÜR** — ve bir kapıda
+> yapılması, komşu kapıda yapıldığı anlamına gelmez. *(`§7.1`'in "kardeş yol
+> etkilenmiyor iddiası ölçülmeden yazılamaz" kuralının, KAPILAR üzerindeki hâli.)*
+
+### ⚠️ VE KAPIYI KURARKEN KAPININ GİRDİSİ DE ÖLÇÜLÜR
+
+`G5c` ilk yazımında `EXPECT`'i evren sandı ve **23 hücreyi `BOS`** gösterdi — çünkü
+`EXPECT` yalnız iki `Z35` hücresini taşıyor. Kapı **kırmızı verdi**, sebep okundu,
+girdi canlı haritaya bağlandı.
+
+> **Kapının kırmızısı bir sonuç değil, bir GİRDİDİR.** Rengi kabul etmeden **sebebini**
+> oku — bu kez sebep, kapının kendi **kapsam maskelemesiydi**.
