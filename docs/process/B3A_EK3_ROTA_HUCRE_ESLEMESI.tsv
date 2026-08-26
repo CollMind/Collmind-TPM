@@ -1,5 +1,5 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-26 · B3 K6(c) sonrası (POST /budget/reserve kaldırıldı, T-289/Z38) · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
+# ölçüm: 2026-08-26 · B3 kaza-dalgası K4 Parça 1 sonrası (approvals/approvals-pending → APPROVAL_QUEUE_READ, Z37 §3) · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
@@ -155,8 +155,8 @@ src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/calculat
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/recalculate	ADMIN,PLANNER	MODES_PLAN_WRITE	Z35	ROLES	-
 src/modules/notification/notification.controller.ts	POST	notifications/:id/read	-	NOTIFICATION_WRITE	MEKANIK	CAP	NOTIFICATION_WRITE
 src/modules/shared/approval/approval-policy.controller.ts	PATCH	approval-policies/:id	-	SHARED_POLICY_WRITE	Z36	CAP	SHARED_POLICY_WRITE
-src/modules/shared/approval/approval.controller.ts	GET	approvals	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
-src/modules/shared/approval/approval.controller.ts	GET	approvals/pending	ADMIN,CATEGORY_MANAGER,FINANCE,READONLY	SHARED_READ	MEKANIK	ROLES	-
+src/modules/shared/approval/approval.controller.ts	GET	approvals	-	APPROVAL_QUEUE_READ	Z37	CAP	APPROVAL_QUEUE_READ
+src/modules/shared/approval/approval.controller.ts	GET	approvals/pending	-	APPROVAL_QUEUE_READ	Z37	CAP	APPROVAL_QUEUE_READ
 src/modules/shared/approval/approval.controller.ts	GET	approvals/:id	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes	-	SHARED_ENVELOPE_WRITE	Z36	CAP	SHARED_ENVELOPE_WRITE
 src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
