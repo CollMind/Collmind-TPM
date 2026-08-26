@@ -2884,3 +2884,37 @@ Ve ilk düzeltme **sayıyı** (`5→4`) düzeltip **değeri** bıraktı.
 > yaslanan her gerekçe **yeniden okunur** — sayısı da, **değeri de**.
 
 ⚠️ Aynı etki `MODES_READ` kararında da çıkabilir (`T-299`: yedi ayrı rol kümesi).
+
+
+### İMKÂNSIZLIK KONTROLÜ — tuhaflık-dedektörü ailesinin EN UCUZ üyesi (ZORUNLU)
+
+Bir ölçüm çıktısına bakarken sor: **bu değer MÜMKÜN MÜ?** Kapsam, tanım ya da fizik
+gereği olamayacak bir sayı, **ölçümün kendisinin bozuk olduğunun** en hızlı işaretidir.
+
+📌 Ölçülmüş vaka (2026-08-26, `T-302`): bir yetenek envanteri `CUSTOMER_READ = 0 rota`
+gösterdi. **İmkânsız** — o hücre `5/5` ve modülün on `GET`'i ona bağlanacak. Sayıyı
+şüpheli kılan şey **bağlamı** değil, **imkânsızlığı**ydı; ölçüm yorum satırlarını da
+sayıyordu.
+
+```
+⛔ "bu sayı düşük görünüyor"      ← sezgi, tartışılır
+✅ "bu sayı OLAMAZ"               ← kapsam ihlali, TARTIŞILMAZ
+```
+
+> **Bir hipotezi çürütmek için argüman gerekir; bir ÖLÇÜMÜ çürütmek için tek bir
+> imkânsız değer yeter.**
+
+⚠️ Ve ucuzluğu buradan: imkânsızlık kontrolü **alan bilgisi istemez, karşılaştırma
+istemez, taban istemez** — yalnız *"bu değerin alabileceği aralık ne?"* sorusunu.
+
+### ⇒ VE BİR SAYIM FARKI, KAYNAĞI GÖSTERİLMEDEN YORUMLANAMAZ — ek vaka
+
+Aynı turda: elle sayım **`48`**, kanonik araç **`45`**. Fark **açıklandı**:
+`15` satır **yorum içinde** `@RequireCapability` geçiriyordu, üçü de
+`(CAPABILITIES.X)` biçiminde ve regex'e takıldı.
+
+⇒ Fark **açıklanınca** sayı `45`'e oturdu ve envanter güvenilir oldu. Açıklanmasaydı
+`3`'lük bir sapma **sessizce** taşınacaktı — ve bu envanter **bir kararın girdisiydi**.
+
+> **Bir yorum, kodun sayımını ŞİŞİRİR — asla azaltmaz.** Bu yön bilgisi bir sayım
+> farkını teşhis ederken **ilk bakılacak yerdir**.

@@ -3679,3 +3679,86 @@ karar-bekler = SUMMARY_READ ailesi (+ devredilen budget-variance)
 
 **Hepsi TEK ölçüm-kök ailede** (küme-gerekçe taraması) ve `W5`–`W8` ile **paralel**
 çözülebilir.
+
+
+---
+
+## Z39 · `T-302` — SIFIR-ROTA HÜCRELERİ **ÖLÜ** · `H3`'e TETİKLEYİCİ doğdu
+
+> **Tarih:** 2026-08-26 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Hüküm:** *"`ÖLÜ` — `H3` emsaliyle; **rezerv katman** önerisi REDDEDİLİR,
+> çünkü **rezervasyonun evi harita değil, KARAR DEFTERİDİR**."*
+
+### 1 · Bu karar ZATEN VERİLMİŞTİ — `H3`
+
+`H3` (`B3b-0`) tam bu sınıftan **beş hücre sildi**, ve silinenlerden biri
+`MODES_MANAGE`'di — gerekçesi bugünkü vakanın **birebir tarifi**:
+
+> ⛔ *"yol olmadan verilmiş yetki YAŞAYAMAZ"* · *"ileride bir `MANAGE` rotası
+> doğarsa hücre **KARARLA GERİ GELİR**"*
+
+Ve `H3` bir **genel kural** doğurmuştu: *"Arkasında rota olmayan bir hücre haritada
+DURMAZ."*
+
+### 2 · ⛔ AMA KURALIN TETİKLEYİCİSİ YOKTU — `CUSTOMER_MANAGE` TAM O YÜZDEN YAŞADI
+
+```
+H3'ün taraması    "boş" tanımını B3a ATAMALARINDAN okudu     → CUSTOMER_MANAGE kaçtı
+bugünkü ölçüm     @RequireCapability sayımı, yorumsuz         → daha KESKİN
+```
+
+> **Bir kural, tetikleyicisi olmadan bir TEMENNİDİR.** `H3` doğruydu ve **uygulanmadı**,
+> çünkü *"ne zaman bakılacağı"* yazılı değildi.
+
+### 3 · *"Rezerv katman"* neden REDDEDİLDİ — çürüğü RAPORUN KENDİSİNDE
+
+Team Lead riski ölçmüştü: *"bir gün rota bağlanırsa **sınanmamış union'ı miras
+alır**."*
+
+⇒ **Rezerv katman o riski KURUMSALLAŞTIRIR.** Haritada duran her *boş-ama-role-verili*
+satır, **hiçbir davranışla sınanmamış bir yetki vaadidir** — ve `G2b`'nin **bayat-üye**
+ailesinin doğum yeri.
+
+⚠️ **Ve `USER_MANAGE` *"ailenin niyetini"* göstermez** (Team Lead önerisinin dayanağı
+buydu) — **kararlı bir İSTİSNAYI** gösterir:
+```
+Z20 yazılı kural  +  üretici dalı (route-cell-map:234)  +  ROTASI
+⇒ H3-uyumlu TAM biçim
+```
+
+📌 **Niyetin adresi karar defteridir:** `H3`'ün *"kararla geri gelir"* cümlesi
+**rezervasyon mekanizmasının ta kendisi** — bedava, sınanmamış-union'sız, ve **zaten
+üç kez çalıştı**: `MODES_SUBMIT` · `SUMMARY_READ` · `APPROVAL_QUEUE_READ` (hücre doğumu
+**hep kararla** oldu).
+
+### 4 · Uygulama — üç parça
+
+| # | ne |
+|---|---|
+| **1** | `W5` **hemen akar**: yedi rota → `CUSTOMER_WRITE` (`{A,P}` **birebir**, davranış korunur); `CUSTOMER_MANAGE` **düşer** (`F12` izli, sıfır-rota kanıtıyla) |
+| **2** | *"Dalgası yok"* üçlüsü **aynı commit'te** düşer: `TENANT_MANAGE` · `SHARED_MANAGE` · `SHARED_WRITE` — sonuncusunun **kilit metni hücreden `T-293`'e TAŞINIR** |
+| **3** | **Genel kural — `dalga-sonu H3`** (aşağı) |
+
+> ⚠️ **`SHARED_WRITE` düşünce *"göçecek yer kalmadı"* sorunu YOK:** LTA dörtlüsü
+> `T-293` çözülmeden **zaten göçmeyecekti** — doğru hücre, **kararla ve cümlesiyle**
+> o gün doğar.
+
+### 5 · ⛔ `DALGA-SONU H3` — `H3`'ün ARADIĞI TETİKLEYİCİ
+
+> **Her dalga kapanışında, o modülün SIFIR-ROTA kalan hücreleri AYNI KAPANIŞ
+> COMMIT'İNDE düşer.**
+
+```
+dalga BEKLEYEN hücre     kusur DEĞİL — dalgası gelmemiş
+dalga SONRASI boş hücre  ⛔ YAŞAYAMAZ
+```
+
+⇒ Böylece **sessiz-genişleme sınıfı YAPISAL OLARAK ölür**: hiçbir hücre dalgasından
+sonra *boş-ve-role-verili* kalamaz.
+
+⚠️ **Ve zamanlama şart:** düşüş **dalganın kapanışında**, öncesinde **değil** —
+*dalga ortasında harita oynamaz*.
+
+📌 **Üretici tarafı zaten hizalı:** `route-cell-map` bu hücreleri **üretemiyor** ⇒
+düşüş, **harita ↔ üretici birebirliğini ARTIRIR**. `G5`/`G6` delta-kontrolü kapanış
+commit'inin **pini** olur.
