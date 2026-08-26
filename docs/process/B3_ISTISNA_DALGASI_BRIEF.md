@@ -2,7 +2,36 @@
 
 **Tarih:** 2026-08-26 · **Hazırlayan:** Team Lead · **Karar:** ürün sahibi
 **Dayanak:** `docs/brd-v2/04_KARAR_KAYDI.md` `Z42` — `§2` çerçeve hükmü, `§3`–`§5`
-**Statü:** ⏳ **ONAY BEKLER** *(birebir dalga `W9` onaysız indi; bu dalga onaya gelir)*
+**Statü:** ✅ **ONAYLANDI** (ürün sahibi, 2026-08-27) — ⛔ **İKİ-FAZLI SÖZLEŞMEYLE**
+
+> ## ⛔ SÖZLEŞME — önce TÜM ölçümler, sonra TEK uygulama
+>
+> ```
+> FAZ-A   dört ölçüm BİRDEN → tabloya işlenir → DUR çıkan satır DÜŞER
+> FAZ-B   kalan satırlar TEK commit-dizisi · satır-başına YÖN-ETİKETLİ davranış pini
+> ```
+>
+> **Ürün sahibinin gerekçesi — iki riskin arasından geçiyor:**
+>
+> | reddedilen yol | neden |
+> |---|---|
+> | ayrı bir ölçüm turu açmak | *"iki küçük çağrı-ölçümü için **tur-yükü** taşımak"* — `İlke 1`'in **süreç hâli** |
+> | ölçüm ile uygulamayı iç içe geçirmek | `T-294→296` zincirindeki **kapsam-kayması** riski |
+>
+> 📌 İki-fazlı sözleşme bu ikisinin **ortasıdır**: tek tur, ama **içinde bir bariyer**.
+> Ve bariyer `DISIPLIN`'in *"yazma ile commit arasına bir DOĞRULAMA koy"* kuralının
+> **dalga ölçeğindeki** hâli.
+>
+> ### Faz-A'nın dört ölçümü
+> ```
+> §1  tüketici sayımı (ekran-kapısı zinciriyle)
+> §5  boş-küme ÇAĞRISI    [fixture şartı: PENDING_FINANCE_REVIEW ≥ 1, yoksa T-273]
+> §6  türetilebilirlik
+> §3  karma satırın −P tüketici payı
+> ```
+>
+> ⛔ **`§5` ve `§6` ölçüm sonucuna göre ya `Faz-B`'ye biner ya KAYITLA tek-vaka kalır —
+> ikisi de bu dalganın raporunda kapanır, SARKAN KALMAZ.**
 
 > **`Z42 §2`:** *"Küme-evrimi **hücrenin üstünde**, **kayıtla**, bir **istisna-dalgası
 > satırı** olarak iner."* Bu belge o satırların **listesidir** — ve her satır bir
@@ -22,13 +51,26 @@ davranış-**değiştiren** her satır bir **davranış pini** ister; statik kap
 
 ---
 
-## 1 · DARALTMALAR — `−PLANNER` ×4 (`Z42 §3`)
+## 1 · DARALTMALAR — ~~`−PLANNER` ×4~~ → **×3** (`Z43 §0` ile GERİ ÇEKİLDİ)
+
+> ⛔ **`Z43 §0` (2026-08-27): bu bölümün hükmü İKİ UÇTA GERİ ÇEKİLDİ.**
+> `Faz-A` ölçümü, aşağıdaki *"dayanak 2"*yi çürüttü: *"tek tüketici `/finance`
+> ekranı"* cümlesi **`plan-performance` için ölçülmüş**, `dashboard/summary`'ye
+> **GENELLENMİŞTİ** — ikincisinin tüketicisi `DashboardPage`.
+> **Ürün sahibi: *"GENELLEME, ÖLÇÜM DEĞİLDİR."***
+>
+> | uç | hüküm |
+> |---|---|
+> | `sales-actuals/summary` · `settlements/summary` · `plan-performance` | ✅ **AYAKTA** — ölçüm doğruladı |
+> | `dashboard/summary` | ⛔ **GERİ ÇEKİLDİ** — `PLANNER` **KALIR**, `MODES_READ` tabanına **birebir** transfer (`Z43 §1`) |
+>
+> *(`F12`: aşağıdaki metin **silinmedi**; geri çekilme **ölçümün çürüttüğü KADARDIR**.)*
 
 | rota | bugün | sonra |
 |---|---|---|
 | `actuals-first/sales-actuals/summary` | `{A,CM,F,P,RO}` | `{A,CM,F,RO}` |
 | `actuals-first/settlements/summary` | `{A,CM,F,P,RO}` | `{A,CM,F,RO}` |
-| `dashboard/summary` | `{A,CM,F,P,RO}` | `{A,CM,F,RO}` |
+| ~~`dashboard/summary`~~ ⛔ **GERİ ÇEKİLDİ** (`Z43 §1`) | `{A,CM,F,P,RO}` | **DEĞİŞMEZ** — `MODES_READ` (5/5) transferi |
 | `finance-reporting/plan-performance` | `{A,CM,F,P,RO}` | `{A,CM,F,RO}` |
 
 **Dayanak (`Z42 §3`), iki bağımsız yarı:**
@@ -47,9 +89,31 @@ birini çağırıyorsa dalga **canlı bir sayfayı `403`'e düşürür**. `T-287
 `Promise.all → allSettled` bulgusu tam bu sınıftı: **tek bir `403` sayfanın tamamını
 öldürüyordu.**
 
-- [ ] Dört ucun **frontend tüketicileri** sayılır; `PLANNER`'ın ulaşabildiği bir çağrı
-      varsa o satır **DUR**'a düşer *(poz. kontrol zorunlu)*
+### ⛔ ARAMA YÜZEYİ — uç çağrısı YETMEZ (ürün sahibi, `K3`/`B1` dersi)
+
+> *"Arama yüzeyi yalnız `fetch`/endpoint çağrıları değil, **EKRAN-KAPISI ZİNCİRİ**:
+> hangi sayfalar bu uçları çağırıyor **∧** o sayfalara `P` girebiliyor mu."*
+
+| durum | sonuç |
+|---|---|
+| uç çağrılıyor **ama** ekran `P`'ye **kapalı** | daraltma **GÜVENLİ** |
+| uç çağrılıyor **ve** ekran `P`'ye **AÇIK** | ⛔ **DUR** |
+
+⚠️ **En riskli adaylar GENEL yüzeylerdir** — `dashboard/summary` gibi. Bir dashboard
+her role açık olabilir.
+
+- [ ] Zincir sonuna kadar izlenir: `uç → sarmalayıcı → hook → bileşen → SAYFA → kapı`
 - [ ] Davranış pini: `PLANNER` ile çağrı → **`403`**; `FINANCE` ile → **`200`**
+
+### ⛔ VE `DUR` SATIRI DÜŞÜRÜR, KARARI DÜŞÜRMEZ
+
+> **Ürün sahibi:** *"O durumda bana dönen şey **'`P`'nin o ekrandaki ihtiyacı ne'**
+> sorusudur — `#9`'un çift-olumsuzu **ekran-gerçeğiyle çelişirse**, provenance-kuralı
+> gereği **yeniden bakarız**."*
+
+📌 Yani `Z42 §1`'in emsali burada **kendi girdisini de denetliyor**: `#9`'un *"davranışsal
+ulaşılamazlık"* yarısı bir **ölçümdü** — ve ölçüm çürürse **hüküm yeniden açılır**.
+*(Bir hükmün dayanağı ölçümse, ölçümün çürümesi hükmü de çürütür.)*
 
 ---
 
@@ -115,8 +179,27 @@ f3b9f82  "add READONLY role (TPM-142)"  →  dokunmadığı TAM OLARAK İKİ dos
 `on-invoice/count`·`/entries` **`{A,F,P,RO}`** — aynı sayfa, aynı `Promise` demeti.
 
 - [ ] Backend + **ekran kapıları aynı satırda** güncellenir *(iki repo, tek kapanış)*
-- [ ] Davranış pini: `READONLY` ile `GET` → `200`, `POST`/`PATCH` → **`403`**
+- [ ] Davranış pini **(backend)**: `READONLY` ile `GET` → `200`, `POST`/`PATCH` → **`403`**
       *(izleme genişliyor, yazma genişlemiyor)*
+- [x] Davranış pini **(ekran)**, BİRİNCİ YARI: üç kapıya `READONLY` eklendi ve pin
+      **ayırt edici** — kapılar eski hâline döndürüldüğünde tam **üç yeni pin** kırıldı
+- [ ] ⛔ **İKİNCİ YARI ÖLÇÜLMEDİ** — *"`Promise.all`-sınıfı toplu düşüş yaşamıyor"*.
+      Mevcut test sayfayı `vi.mock` ile **stub**'lıyor ⇒ hiçbir veri çekilmiyor;
+      **kurulum, ölçülmek istenen koşulu ORTADAN KALDIRIYOR** (`§2.7 #4`).
+      *Bu kutu işaretlenmiyor — ölçülmedi diye yazılıyor.*
+
+> ⚠️ **Ölçülen hafifletici (`Faz-B` review `S6`):** sayfanın çağırdığı **beş ucun
+> beşi de** artık `READONLY`'ye açık (`MODES_LEDGER_READ` ×3 · `MODES_ONINVOICE_READ`
+> ×2) ve demetler **zaten `allSettled`**. ⇒ Bulgu *"ekran kırık"* **değil**,
+> *"kutu işaretlenemez"*. Gerçek risk düşük, **ama ölçüm ölçümdür.**
+
+> **Ürün sahibi:** *"`T-287`'nin öğrettiği: **API `200` olsa da ekran zinciri ayrı
+> kırılabilir**. İki-repo-tek-kapanışın kanıtı **iki repodan da** gelir."*
+
+📌 Bir `403` bir demeti öldürebiliyorsa, bir `200` de tek başına *"ekran çalışıyor"*
+demez. `#7`/`#8` **iki repoda birden** açılan bir yetki olduğundan, kapanışın kanıtı
+da **iki repodan** gelmelidir — yoksa `§2.7`'nin *"kapsam doğru, ayırt etme gücü yok"*
+sınıfına düşer.
 
 ---
 
@@ -145,6 +228,20 @@ approval-workflow.service:859  getApprovalQueue     → [PENDING_APPROVAL,
 statüsünde **en az bir** kayıt taşımalı, yoksa ölçüm `T-273` sınıfına düşer
 (*"yol bugün koşuyor mu?"*).
 
+### ⛔ ÖLÇÜM SONRASI İKİ YOL — ikisi de YAZILI (ürün sahibi şartı)
+
+| ölçüm | sonuç | ne kaydedilir |
+|---|---|---|
+| boş-küme **DOĞRULANDI** | rota **TEK-VAKA** kalır | `−F` cümlesi kayda geçer: *"`FINANCE` bu uçtan **iş göremez** — `findPendingApprovals` `PENDING_FINANCE_REVIEW` **döndürmez**"* |
+| boş-küme **ÇÜRÜDÜ** (`F`'nin görebileceği kayıt dönüyor) | `+F` **`Faz-B`'ye biner** | `APPROVAL_QUEUE_READ`'e göç **tamamlanır** |
+
+> **Ürün sahibi:** *"İki yol da tek-vaka-listesini ya da hücreyi **temiz bırakıyor** —
+> **üçüncü durum (belirsiz) YOK**, çünkü fixture şartın onu **imkânsız** kılıyor."*
+
+📌 Bu, `DISIPLIN`'in **İMKÂNSIZLIK KONTROLÜ** deseninin uygulanışı: bir ölçüm
+tasarlanırken *"belirsiz çıkarsa ne yaparım?"* sorusu **cevaplanmaz, ORTADAN
+KALDIRILIR**. Belirsiz çıkarsa **fixture eksiktir**, ölçüm değil.
+
 ---
 
 ## 6 · CÜMLE-TESTİNE GİDEN — `on-invoice` ↔ `agreement-batch` asimetrisi
@@ -158,9 +255,17 @@ GET agreement-transactions/batch/:batchId  {A,F}
 **`Z42 §4` hükmü:** yön **cümle-testiyle** belirlenir — `P`/`RO`'nun satırları
 **`ledger`'dan türetebildiği** ölçülürse hizalama **açılımsızdır**.
 
-- [ ] Ölçüm: `agreement-transactions/batch/:batchId`'nin döndürdüğü alanlar,
-      `MODES_LEDGER_READ` uçlarından **türetilebiliyor mu?** *(çift bilgi-açılım
-      testinin ikinci yarısı: "türetilmiş çıktılar")*
+- [x] Ölçüm **YAPILDI** (`Faz-A`, `Z43 §3`): `batch`'te olup `findAll`'da olmayan
+      alan **`[]`**; `findAll` **daha zengin** (`agreement`,`customer` join'li);
+      `PLANNER` `?batchId=` ile **birebir aynı** satırları alıyor ⇒ **AÇILIM YOK**
+
+> ### ⛔ ÖLÇÜMÜN SINIRI — `Z43 §5` şart-2, aynen taşınıyor
+>
+> **`on-invoice/batch/:batchId`'nin KENDİ alan kümesi ÖLÇÜLMEDİ.**
+>
+> ⇒ Dolayısıyla *"kardeşi zaten `{A,F,P,RO}`"* bir **BİÇİMSEL TUTARLILIK**
+> argümanıdır. Hizalamayı meşrulaştıran şey **o değil**, ölçülen
+> **türetilebilirliktir**. İkisi karıştırılmamalı: biri ölçüldü, diğeri **emsal**.
 
 ---
 
@@ -178,12 +283,12 @@ GET agreement-transactions/batch/:batchId  {A,F}
 
 | # | satır | yön | bu dalgada iner mi? |
 |---|---|---|---|
-| 1 | `−P` ×4 | daraltma | ✅ **evet**, tüketici sayımı + davranış pini şartıyla |
-| 2 | `+CM` ×3 | genişleme | ⛔ **hayır** — `Z25` kilidi, sağlayıcı `T-304` |
-| 3 | `stats/summary` karma | üç yön | kısmen: `−P` ✅ · `+RO` ✅ · `+CM` ⛔ |
-| 4 | `+RO` (`#7`/`#8`) | genişleme | ✅ **evet**, tanımsal (`K-2.6.4c`) + iki-repo-tek-kapanış |
-| 5 | `pending-approvals` `+F` | genişleme | ❓ **ölçüme bağlı** — boş-küme ÇAĞRILARAK kanıtlanırsa |
-| 6 | batch asimetrisi | ? | ❓ **cümle-testine bağlı** |
+| 1 | ~~`−P` ×4~~ → **×3** | daraltma | ✅ **İNDİ** — `dashboard/summary` `Z43 §1`'de geri çekildi, `MODES_READ`'e transfer |
+| 2 | `+CM` ×3 **+ `stats/+CM`** | genişleme | ⛔ **BEKLİYOR** — `Z25` kilidi · sağlayıcı `T-304` **DİLİM-1** |
+| 3 | `stats/summary` karma | üç yön | ✅ **ÇÖZÜLDÜ** (`Z43 §2`): `−P` **ÖLDÜ** (P yeni evinin üyesi) · `+RO` **§4'e katıldı** · `+CM` `Z25`'te |
+| 4 | `+RO` (`#7` · `#8` · `stats/summary`) | genişleme | ✅ **İNDİ** — hücre `+RO` + üç ekran kapısı, iki-repo-tek-kapanış |
+| 5 | `pending-approvals` `+F` | genişleme | ⛔ **TEK-VAKA** — boş-küme **ÇAĞRILARAK DOĞRULANDI** (`Z43 §3`); `−F` cümlesi kayıtlı |
+| 6 | batch asimetrisi | hizalama | ✅ **İNDİ** — türetilebilirlik **ölçüldü**, açılım yok (`Z43 §3`) ⚠️ sınırı: `§6` |
 
 > **Sorulan:** `1` · `3`'ün iki yarısı · `4` bu dalgaya binsin mi; `5` ve `6`'nın
 > ölçümleri bu dalgada mı yapılsın, yoksa ayrı bir ölçüm turuna mı bırakılsın?

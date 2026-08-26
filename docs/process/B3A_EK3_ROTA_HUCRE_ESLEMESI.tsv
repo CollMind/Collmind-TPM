@@ -1,5 +1,5 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-26 · B3b-1 W9 (Z42 karar-bekler paketi göçü, 41 rota) sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
+# ölçüm: 2026-08-27 · B3 istisna-dalgası Faz-B (Z43) sonrası · ⛔ BU SATIRA SAYI/AYRIŞTIRMA YAZMA — sayım AŞAĞIDAKİ SATIRLARDAN türer (elle yazılan ayrıştırma bu repoda dokuzda dokuz bayatladı; Faz-B review S5: "5 rota göçü" doğruydu ama parantez içi 7 kalem sayıyordu ve biri hiçbir TSV satırına karşılık gelmiyordu) · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
@@ -89,11 +89,11 @@ src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.cont
 src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions/batch	-	MODES_ACTUALS_WRITE	Z35	CAP	MODES_ACTUALS_WRITE
 src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/agreement/:agreementId	-	MODES_LEDGER_READ	Z42	CAP	MODES_LEDGER_READ
 src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/agreement/:agreementId/total	-	MODES_LEDGER_READ	Z42	CAP	MODES_LEDGER_READ
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/batch/:batchId	-	MODES_IMPORT_READ	Z42	CAP	MODES_IMPORT_READ
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/batch/:batchId	-	MODES_LEDGER_READ	Z42	CAP	MODES_LEDGER_READ
 src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions	-	MODES_LEDGER_READ	Z42	CAP	MODES_LEDGER_READ
 src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/budget-impact/:agreementId	-	MODES_LEDGER_READ	Z42	CAP	MODES_LEDGER_READ
 src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/count	-	MODES_LEDGER_READ	Z42	CAP	MODES_LEDGER_READ
-src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/stats/summary	ADMIN,FINANCE,PLANNER	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/stats/summary	-	MODES_LEDGER_READ	Z42	CAP	MODES_LEDGER_READ
 src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	GET	agreement-transactions/:id	-	MODES_LEDGER_READ	Z42	CAP	MODES_LEDGER_READ
 src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions/upload	-	MODES_ACTUALS_WRITE	Z35	CAP	MODES_ACTUALS_WRITE
 src/modules/modes/actuals-first/agreement-transaction/agreement-transaction.controller.ts	POST	agreement-transactions/validate-and-import	-	MODES_ACTUALS_WRITE	Z35	CAP	MODES_ACTUALS_WRITE
@@ -128,8 +128,8 @@ src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	POST	a
 src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/batches	-	MODES_READ	MEKANIK	CAP	MODES_READ
 src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/batches/:batchId/rows	-	MODES_READ	MEKANIK	CAP	MODES_READ
 src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/batches/:batchId	-	MODES_READ	MEKANIK	CAP	MODES_READ
-src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
-src/modules/modes/actuals-first/settlement/settlement.controller.ts	GET	actuals-first/settlements/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/modes/actuals-first/sales-actuals/sales-actuals.controller.ts	GET	actuals-first/sales-actuals/summary	-	SUMMARY_READ	Z31/Z32	CAP	SUMMARY_READ
+src/modules/modes/actuals-first/settlement/settlement.controller.ts	GET	actuals-first/settlements/summary	-	SUMMARY_READ	Z31/Z32	CAP	SUMMARY_READ
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans	-	MODES_PLAN_WRITE	Z35	CAP	MODES_PLAN_WRITE
 src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans	-	MODES_READ	MEKANIK	CAP	MODES_READ
 src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/pending-approvals	ADMIN,CATEGORY_MANAGER,READONLY	MODES_READ	MEKANIK	ROLES	-
@@ -165,13 +165,13 @@ src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/reserved
 src/modules/shared/budget/budget.controller.ts	POST	budget/envelopes/:id/split	-	SHARED_ENVELOPE_WRITE	Z36	CAP	SHARED_ENVELOPE_WRITE
 src/modules/shared/budget/budget.controller.ts	GET	budget/envelopes/:id/transactions	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/budget/budget.controller.ts	GET	budget/status	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
-src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/summary	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/summary	-	MODES_READ	Z43	CAP	MODES_READ
 src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/pending-tasks	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/dashboard/dashboard.controller.ts	GET	dashboard/cpl-status	-	SHARED_READ	MEKANIK	CAP	SHARED_READ
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-utilization	-	SUMMARY_READ	Z31/Z32	CAP	SUMMARY_READ
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/spend-trend	-	SUMMARY_READ	Z31/Z32	CAP	SUMMARY_READ
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/spend-composition	-	SUMMARY_READ	Z31/Z32	CAP	SUMMARY_READ
-src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/plan-performance	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
+src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/plan-performance	-	SUMMARY_READ	Z31/Z32	CAP	SUMMARY_READ
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/budget-at-risk	ADMIN,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/mechanic-effectiveness	-	SUMMARY_READ	Z31/Z32	CAP	SUMMARY_READ
 src/modules/shared/finance-reporting/finance-reporting.controller.ts	GET	finance-reporting/variance-analysis	ADMIN,FINANCE,READONLY	SUMMARY_READ	Z31/Z32	ROLES	-

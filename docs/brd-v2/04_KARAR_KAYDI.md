@@ -4135,3 +4135,134 @@ B4                ön-koşul sayımı
 
 **Onay rejimi:** birebir dalga **onaya gelmez** (*"o artık rutin"*);
 **istisna-dalgası brief'i onaya gelir.**
+
+---
+
+# `Z43` — `Z42 §3` KISMEN GERİ ÇEKİLDİ; iki uç yeniden dosyalandı
+
+**Tarih:** 2026-08-27 · **Karar:** ürün sahibi · **Girdi:** `B3` istisna-dalgası `Faz-A` (dört ölçüm)
+
+## `§0` — ⛔ GERİ ÇEKİLME (`F12` izi — `Z42 §3` SİLİNMEZ)
+
+`Z42 §3`'ün `−PLANNER` hükmü **iki dayanağa** yaslanıyordu; `Faz-A` **ikisini de**
+iki uçta çürüttü:
+
+| dayanak | ölçüm |
+|---|---|
+| *"`#9` çift-olumsuz"* | `dashboard/summary` **ulaşılabilir** — `/` ve `/dashboard` kapıları `requiredRole` **taşımıyor** *(poz. kontrol: 42 kapı taşıyor)* |
+| *"tek tüketici `/finance` ekranı"* | `dashboard/summary`'nin tüketicisi `DashboardPage` — `/finance` **değil** |
+
+⇒ **Hüküm `dashboard/summary` ve `agreement-transactions/stats/summary` için GERİ ÇEKİLDİ.**
+Kalan üç uç (`sales-actuals/summary` · `settlements/summary` · `plan-performance`) için
+**AYAKTA** — ve o üçünde ölçüm hükmü **doğruladı**.
+
+### ⛔ VE ÜRÜN SAHİBİNİN KENDİ TEŞHİSİ — üçüncü kayıtlı hata sınıfı
+
+> *"**'Tek tüketici' cümlem `plan-performance`'ın ölçümünden `dashboard`'a
+> GENELLENMİŞTİ. Genelleme, ölçüm değildir.**"*
+
+```
+1  spesifikasyon-"zaten"
+2  uydurulmuş-alıntı
+3  ÖLÇÜM-GENELLEMESİ        ← bu
+```
+
+**Üç geri çekilişin ortak deseni:**
+
+> **Hükmün dayanağı bir ÖLÇÜMSE, hüküm o ölçümün TAZE OLDUĞU EVRENDE yaşar.**
+
+---
+
+## `§1` — HÜKÜM 1: `dashboard/summary` → `PLANNER` **KALIR**
+
+Cümle-testi hakemliğinde **iki taraf eşit çıkmadı**:
+
+| taraf | kanıt |
+|---|---|
+| `−P` | yalnız **kayıtsız doğum** (`d40ca16`, *"Add Dockerfile and pipeline config"*) |
+| `+P` | ⛔ **ÜÇ BAĞIMSIZ TASARIM KANITI**: açık persona dalı (`// planner (default)`, üç kart) · kapsam-çözümlü servis (`resolveScopedCplIds`) · controller'ın kendi cümlesi (*"Planner: scoped to their assigned CPLs"*) |
+
+### ⛔ VE DOĞRU OKUMA: hüküm yanlış değildi, **HÜCRE ÜYELİĞİ** yanlıştı
+
+> **Ürün sahibi:** *"`Z31`/`Z32`'nin `SUMMARY` tanımı **nesne-bağsız ∧ çok-işlem-modüllü**
+> idi ve **KAPSAMSIZLIK o tanımın ÖRTÜK PARÇASIYDI**; `dashboard/summary`
+> **kapsam-çözümlü** olduğu için tanımın **dışında**."*
+
+```
+SUMMARY_READ = {A,CM,F,RO}     KALIR — dört PORTFÖY ucu için doğru
+dashboard/summary              YANLIŞ-DOSYALANMIŞ, tek-vaka DEĞİL
+                               ⇒ "kapsamlı-özet" sınıfı = MODES_READ tabanının
+                                  doğal üyesi · zaten 5/5 taşıyor ⇒ GÖÇ BİREBİR
+```
+
+> ⚠️ **Tek-vaka listesi şişmesin: BİREBİR EV VARKEN tek-vaka etiketi TEMBELLİKTİR.**
+
+---
+
+## `§2` — HÜKÜM 2: `stats/summary` → **HÜCRE TRANSFERİ**, ve `Z32`'ye dokunmuyor
+
+Team Lead'in endişesi (*"bu `Z32`'nin üyelik ölçütüne dokunur"*) **ters yöndeydi**:
+
+> **`Z32`'nin ölçütü: "DAVRANIŞ belirler, YOL/AD belirlemez."**
+> Bu ucun `SUMMARY_READ`'de durması bir **AD-BENZERLİĞİ DOSYALAMASIYDI**
+> (`stats/summary` adı özet çağrıştırıyor); **davranışı** ise `MODES_LEDGER_READ`'in
+> **tam profili**: aynı veri-ailesi, aynı sayfa, `{A,F,P}` birebir.
+>
+> ⇒ **Transfer, `Z32`'nin İHLALİ değil, DÜZELTİCİ UYGULAMASIDIR.**
+
+### Karma satır böylece çözüldü — üç yönden ikisi dağıldı, biri **öldü**
+
+```
+−P    ÖLDÜ            P zaten yeni evinin üyesi
++CM   Z25'te BEKLER   kapsam-koşul HÜCRE-BAĞIMSIZDIR
++RO   §4'e KATILDI    yeni evi (ledger-ailesi) zaten o listede (#8)
+                      ⇒ AYNI COMMIT'İN (f3b9f82) AYNI BOŞLUĞU, AYNI SATIRDA kapanır
+```
+
+---
+
+## `§3` — `Faz-A`'nın diğer iki ölçümü
+
+| | sonuç |
+|---|---|
+| **`§5` boş-küme** | ✅ **DOĞRULANDI, ÇAĞRILARAK** (`T-289` sınıfına düşmedi). `pending-approvals` → `1` kayıt `['PENDING_APPROVAL']` · `approval-queue` → `2` kayıt, iki statü. Fixture şartı sağlandı (`PENDING_FINANCE_REVIEW ≥ 1`) ⇒ **belirsiz durum imkânsızdı** |
+| **`§6` türetilebilirlik** | ✅ **AÇILIM DEĞİL.** `batch`'te olup `findAll`'da olmayan alan: **`[]`**; `findAll` **daha zengin** (`agreement`,`customer` join'li). `PLANNER` `?batchId=` ile **birebir aynı** satırları alıyor |
+
+### `pending-approvals` — **TEK-VAKA**, ve `−F` cümlesi kayda geçer
+
+> **`FINANCE` bu uçtan İŞ GÖREMEZ — işlevsel kazanç SIFIR; ihtiyacı
+> `approval-queue` karşılıyor ve `FINANCE` oraya ZATEN erişimli
+> (`APPROVAL_QUEUE_READ` = `{A,CM,F,RO}`).**
+
+Dayanak `ADR 0002` + ölçüm: `findPendingApprovals` statüyü **sabit** yazıyor
+(`plan.service.ts:401`), `getApprovalQueue` iki statüyü birden.
+
+### ⛔ `§6`'nın gerekçesi: **"yeni bilgi yok" (ÖLÇÜLDÜ)**, "emsal" DEĞİL
+
+Ajanın dürüst sınırı **rapora aynen taşınır**: `on-invoice/batch/:batchId`'nin **kendi
+alan kümesi ÖLÇÜLMEDİ**. Dolayısıyla *"kardeşi öyle"* bir **biçimsel tutarlılık**
+argümanıdır; hizalamayı meşrulaştıran şey **ölçülen türetilebilirliktir**.
+
+---
+
+## `§4` — `Faz-B`'nin son hâli
+
+```
+BİNER   −P ×2   sales-actuals/summary · settlements/summary   (yüzeysiz)
+        −P ×1   plan-performance                              (ekran kapısı zaten P'siz)
+        +RO     #7 · #8 · stats/summary — iki-repo-tek-kapanış + EKRAN PİNİ
+        §6      {A,F} → {A,F,P,RO}   (açılımsız, çift-test iki yarısıyla)
+        transfer dashboard/summary → MODES_READ tabanı      (birebir)
+        transfer stats/summary     → MODES_LEDGER_READ      (birebir)
+
+KALIR   +CM ×3 + stats/+CM   → Z25 kilidi · T-304 DİLİM-1
+        pending-approvals    → TEK-VAKA, −F cümlesi kayıtlı
+```
+
+## `§5` — İki şart
+
+1. **`T-295`'e bağlanır:** `dashboard`'un `ProtectedRoute`-kapısızlığı **ve**
+   `DashboardPage:95`'in tam-sayfa hata kapısı (*`allSettled` dersinin React-Query'de
+   YENİDEN ÜRETİLMİŞ hâli*). ⛔ **Üçlü** o task'ın önceliğini besliyor:
+   **giriş ekranı + evrensel fallback + kapısız.**
+2. **`§6`'nın ölçüm sınırı** rapora aynen taşınır (bkz. `§3`).

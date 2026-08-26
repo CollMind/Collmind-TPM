@@ -1,5 +1,25 @@
 # `DISIPLIN.md` — CollMind çalışma disiplini kuralları
 
+> # ⛔ BU DOSYANIN TEK CÜMLELİK SAVUNMASI
+>
+> ## **Mekanizma çalıştı, refleksim çalışmadı — bu yüzden kapılar var.**
+>
+> *(Ürün sahibi, 2026-08-26: "bu iki haftanın tek cümlelik savunması".)*
+>
+> Bu satır bir özdeyiş değil, bir **ölçüm özetidir**. Tek bir turda üç kez aynı
+> sınıfa düşüldü ve **üçü de yakalandı** — hiçbiri dikkatle değil, **bir kapıyla**:
+>
+> | ne | kim yakaladı |
+> |---|---|
+> | bir tarama yanlış sütun değeri aradı ve **sıfır satır işledi** (*"ihlal = 0"*) | taramanın **kendi pozitif kontrolü** |
+> | bir düzeltme, düzelttiği sınıfın **yeni bir vakasını** üretti | `code-reviewer` |
+> | bir kapının girdisi **aranandan dar** bir evrendi | **kapının kendi kırmızısı** |
+>
+> ⇒ Buradaki hiçbir kural *"daha dikkatli ol"* demez. Hepsi bir **ölçüme**, bir
+> **kapıya** ya da bir **karşı-vakaya** bağlanır — çünkü dikkat ölçeklenmez,
+> kapı ölçeklenir.
+
+
 > ## ⛔ BAĞLAYICI — `CLAUDE.md` ile AYNI DERECEDE
 >
 > Bu dosya `CLAUDE.md`'den **salt taşımayla** doğdu (2026-08-25). Taşınan
@@ -3384,3 +3404,114 @@ girdi canlı haritaya bağlandı.
 
 > **Kapının kırmızısı bir sonuç değil, bir GİRDİDİR.** Rengi kabul etmeden **sebebini**
 > oku — bu kez sebep, kapının kendi **kapsam maskelemesiydi**.
+
+---
+
+## RATCHET AİLESİNİN TAMAMLAYICI YASASI — gerileme ∧ donma (ZORUNLU)
+
+`Z29` bu repoya **ratchet** ailesini kurdu: `money-float` · `lint-ratchet` ·
+`scope-ratchet` · `route-scope`. Hepsi tek bir şeyi ölçer — **mevcudun
+gerilememesi**.
+
+`G5b`/`G5c` vakası (2026-08-26) ailenin **eksik yarısını** adlandırdı:
+
+```
+RATCHET          mevcut üyelerin GERİLEMESİNİ tutar
+TAMLIK KAPISI    EVRENİN DONMASINI tutar
+                 ⇒ ikisi birlikte TAM, tek başına hiçbiri değil
+```
+
+**Ürün sahibinin formülasyonu:**
+
+> **"Çözüm bakım değil, listenin EKSİKLİĞİNİ ölçen ikinci kapıdır."**
+
+### Neden tek başına ratchet yetmez — ölçülmüş
+
+Bir ratchet **listesindekileri** korur. Listeye **girmeyen** bir üye için ratchet
+**yeşildir ve doğru şeyi söylüyordur**: *"listemdekiler gerilemedi."* Yanlış olan
+cevabı değil, **sorusudur**.
+
+| kapı | listedeki üye bozulursa | listeye YENİ üye girmezse |
+|---|---|---|
+| ratchet | ⛔ kırmızı | ✅ **yeşil** — ve kör |
+| tamlık kapısı | — | ⛔ kırmızı |
+
+📌 Bu, `§2.7 #9`'un (*"kapının kapsamı kendini boşaltıyor"*) **kardeşidir** ama
+zıt mekanizma: orada kapsam **boşaldı**, burada kapsam **büyümedi**. İkisi de
+*"hep yeşil"* üretir — ve `§2.7`'nin kuralı geçerlidir: **sinyal sabitse, sinyal
+değildir.**
+
+### Pratik — bir ratchet ya da baseline yazarken İKİ soru
+
+```
+1  listemdeki bir üye bozulursa görür müyüm?          ← ratchet'in kendisi
+2  listeme girmesi gereken bir üye girmezse görür müyüm?  ← TAMLIK KAPISI
+```
+
+İkincisinin cevabı *"elle bakarım"* ise, kapı **yoktur** — çünkü elle bakmanın
+unutulduğu tur, tam da kapının gerektiği turdur. Bu repoda ölçülmüş oran:
+elle yazılmış üye-sayısı **dokuzda dokuz** bayatladı.
+
+---
+
+## Bir HÜKÜM, dayandığı ÖLÇÜMÜN TAZE OLDUĞU EVRENDE yaşar (ZORUNLU)
+
+Bu gövde uzun süre ölçümlerin bayatlamasını kaydetti. `Z43` (2026-08-27) bir üst
+katmanı adlandırdı: **hükümler de bayatlar** — ve bayatlamalarının yolu, dayandıkları
+ölçümün çürümesidir.
+
+**Ürün sahibinin formülasyonu:**
+
+> **Hükmün dayanağı bir ÖLÇÜMSE, hüküm o ölçümün TAZE OLDUĞU EVRENDE yaşar.**
+
+### ⛔ VE ÇÜRÜTEN ŞEY BİR GENELLEMEYDİ
+
+`Z42 §3` `−PLANNER` hükmünü iki dayanağa yasladı; biri şuydu: *"tek tüketici `/finance`
+ekranı"*. Ölçüm (`Faz-A`) gösterdi ki o cümle **`plan-performance` için ölçülmüştü** ve
+**`dashboard/summary`'ye GENELLENMİŞTİ** — ikincisinin tüketicisi `DashboardPage`.
+
+> **Ürün sahibinin kaydı: *"GENELLEME, ÖLÇÜM DEĞİLDİR."***
+
+```
+ölçülen      plan-performance  →  tek tüketici /finance      ✅ doğru
+genellenen   "bu ailenin tüketicisi /finance"                ⛔ ölçülmedi
+hüküm        −PLANNER ×4                                     ⇒ ikisinde YANLIŞ
+```
+
+📌 `§7.1`'in *"kardeş yol etkilenmiyor iddiası ÖLÇÜLMEDEN yazılamaz"* kuralının
+**hüküm katmanındaki** hâli: orada bir düzeltmenin kardeşleri, burada bir **hükmün
+kapsamı** ölçülmeden genişletildi.
+
+### Ölçülmüş hata sınıfları — üçü de aynı şekle sahip
+
+| # | sınıf | ne oldu |
+|---|---|---|
+| 1 | **spesifikasyon-"zaten"** | bir muafiyet, ölçüm yerine geçti |
+| 2 | **uydurulmuş-alıntı** | var olmayan bir kural metni bağlayıcı diye yazıldı |
+| 3 | **ölçüm-genellemesi** | bir ölçüm, ölçülmediği vakalara taşındı |
+
+> **Ortak şekil: BİR ÖLÇÜMÜN YERİNE BAŞKA BİR ŞEY KONDU** — bir muafiyet, bir alıntı,
+> bir genelleme. Üçünde de sonuç *"dayanağı var görünen"* bir hükümdü.
+
+### ⛔ VE GERİ ÇEKİLME BİR USÜLDÜR — hüküm SİLİNMEZ
+
+`F12` deseni: eski kayıt **durur**, üstüne *"geri çekildi (tarih, gerekçe, çürüten
+ölçüm)"* yazılır. `Z43 §0`'da uygulandı ve **kısmî**dir: hüküm beş ucun **üçünde
+AYAKTA**, ikisinde geri çekildi.
+
+> **Bir hükmün geri çekilmesi, onu üreten muhakemenin tamamını çürütmez.**
+> **Geri çekilme, ölçümün çürüttüğü KADARDIR** — ve o sınır **yazılır**.
+
+### ⚠️ Ve geri çekilme çoğu zaman *"hüküm yanlıştı"* DEĞİLDİR
+
+`Z43 §1`'in ölçülmüş sonucu: *"hüküm yanlış değildi, **HÜCRE ÜYELİĞİ** yanlıştı."*
+`dashboard/summary` `SUMMARY_READ`'de duruyordu, ama `SUMMARY`'nin tanımı
+**nesne-bağsız ∧ çok-işlem-modüllü** idi ve **kapsamsızlık o tanımın ÖRTÜK PARÇASIYDI**
+— bu uç ise **kapsam-çözümlü**.
+
+> **Bir hüküm yanlış görünüyorsa, önce GİRDİSİNİN doğru dosyalandığını ölç.**
+> Yanlış kutudaki bir üye, doğru kuralı **yanlış gösterir**.
+
+📌 Ve bir tembellik kapısı: `Z43 §1`, *"birebir ev varken **tek-vaka etiketi
+TEMBELLİKTİR**"* der. **Tek-vaka bir sınıf değil, bir ARTIKTIR** — ve artık listesi,
+doğru evi aramamanın maliyetiyle şişer.
