@@ -936,6 +936,33 @@ Sebep basit ve mazeret değil: kural yazmak dikkati **kuralın metnine** çeker,
 > ihlalin **ne kadar yaşadığını** ölçer. Ömür kısalıyorsa mekanizma çalışıyordur.
 > Ve bu turda ömür **sıfır commit** oldu.
 
+> ### ⇒ VE YEDİNCİ VAKA SAYACIN ÖLÇTÜĞÜ ŞEYİN EVRİLDİĞİNİ GÖSTERDİ
+>
+> ```
+> erken vakalar (1-5)   KURAL İHLALİ      kural doğru, diff onu çiğniyor
+> son ikisi     (6-7)   YÜZEY EKSİKLİĞİ   kural doğru, UYGULAMA YÜZEYİ dar
+> ```
+>
+> `7`: *"istisna kalkınca yeniden-okuma"* kuralı **doğru uygulandı** — ama tarama
+> **koda daraldı**. Kaçan yedi atfın **beşi belgedeydi**.
+>
+> ⇒ Bu, **arama uzayı** kuralının (*"negatif bir bulgunun geçerliliği ARAMA UZAYINA
+> bağlıdır"*) **karar-atıf** tarafıdır. Ve kritik olgu: **karar-atıflarının baskın
+> yüzeyi BELGEDİR, kod değil** — çıplak-`§` ölçümü bunu sayıyla göstermişti
+> (**~1130 belge-atfı**).
+
+### `İstisna kalkınca yeniden-okuma`nın TARAMA YÜZEYİ — DÖRT, varsayılan olarak
+
+```
+1  kod          (yorumlar, gerekçe blokları, guard dosyaları)
+2  docs/        (analiz, karar, süreç, eşleme tabloları)
+3  backlog      (task dosyaları VE indeks)
+4  karar-girdisi paketleri   ← EN PAHALISI: ürün sahibi bunlara BAKARAK karar verir
+```
+
+⛔ **Dördü birden, varsayılan olarak.** `4`'ü atlamak, çürütülmüş bir iddiayı
+**karar masasında** bırakır.
+
 > **Bir kural eklediğin turda, o kuralı KENDİ diff'ine uygula — ayrı bir adım olarak.**
 > "Bu kuralı ihlal eden bir şey bu diff'te var mı?" sorusu, kuralı yazdıktan sonra sorulmalı
 > ve cevabı bir **ölçüm** olmalı.
@@ -2672,6 +2699,33 @@ projede **mutasyonla** yakalandı:
 | 2 | **cins-yanlış** | iddia **durağan**, kanıt **davranışsal** olmalıydı | `T-289` — dört doğru yüzey, yanlış sonuç |
 | 3 | **negatif-yarı-yok** | hücre `5/5`; reddedilen rol **yok**, ayrım **imkânsız** | `W4a` — dekoratör kalksa da pin yeşil |
 | 4 | **echo** | test, servisin **girdiyi geri yazdığı** alanı okuyor | `T-296` `B2` — `granularity` echo'su |
+| 5 | **hedef-yanlış** | pin, koruduğu iddiayla **hiç kesişmeyen** bir yüzeyi ölçüyor | `K6c/d` `BR-04` — uç **tamamen geri geldi**, pin **yeşil kaldı** |
+
+### ⛔ `5` EN SİNSİSİDİR — ve AYIRT EDİCİ TESTİ AİLEYE STANDART
+
+`BR-04` *"fabrikasyon `agreementId` sınıfı artık yapısal olarak imkânsız"* diyordu.
+Ölçüm: dört satırın dördü de değişiklikten **önce** doğmuştu ⇒ **iddia silmeden önce
+de doğruydu**. Pin, koruduğu değişiklikle **kesişmiyordu**.
+
+> ### **TAM-GERİ-ALMA MUTASYONU** (ZORUNLU — kaldırma turlarında)
+> **"Bu pin, koruduğu değişiklik TAMAMEN GERİ ALINDIĞINDA kırmızıya döner mi?"**
+
+```
+satır-mutasyonu       bir satırı bozar        →  pin DUYARLILIĞINI ölçer
+tam-geri-alma         değişikliği GERİ ALIR   →  pin-HEDEF KESİŞİMİNİ ölçer
+```
+
+Tam-geri-alma **daha güçlüdür**: satır-mutasyonu *"pin bir şey görüyor mu"* diye
+sorar, tam-geri-alma *"pin **DOĞRU ŞEYİ** görüyor mu"* diye.
+
+📌 Ölçülmüş vaka (2026-08-26): `code-reviewer` uç + servis + DTO'yu **tamamen geri
+yükledi**. `BR-01/02/03` kırmızıya döndü, **`BR-04` yeşil kaldı** — ve tek başına
+bırakılsaydı `K6(d)` *"pinli"* sayılacaktı.
+
+⇒ **Bir kaldırma turunun pin kabulü, tam-geri-alma mutasyonunu İÇERİR.**
+
+⚠️ Ve bir ad kuralı: **bir pinin ADI, ölçmediği şeyi VAAT EDEMEZ.** `BR-04`'ün başlığı
+*"yapısal olarak imkânsız"* diyordu; **bütünlük gözlemi**ne indirildi.
 
 > **`4` için tek cümle: girdinin echo'su bir DEĞER değil, bir TEL-PROTOKOL kanıtıdır.**
 > *"Parametre ulaştı"* der; *"parametre işe yaradı"* **demez**.
@@ -2781,3 +2835,24 @@ geri yön    istisna KALKINCA      →  istisnaya YASLANAN kararlar YENİDEN OKU
 ⇒ **Pratik:** bir istisnayı kaldıran ya da değiştiren her tur, o istisnaya **atıf
 veren** karar/brief/yorum satırlarını **tarar**. Tek `grep` sınıfı iş — ve `E6`'nın
 **karar-katmanı** hâli.
+
+
+### Bir rotanın ÖLÜMÜ, komşularının UNION-GEREKÇESİNİ de öldürebilir (ZORUNLU)
+
+*"İstisna kalkınca yeniden-okuma"* kuralının **küme-cebiri** hâli.
+
+📌 Ölçülmüş vaka (2026-08-26, `K6c/d`): silinen `POST /budget/reserve`, kalıntı
+`SHARED_WRITE` union'ındaki **`PLANNER`'ın TEK KAYNAĞIYDI**.
+
+```
+ÖNCE   5 rota:  budget/reserve {ADMIN,PLANNER} + LTA×4 {ADMIN}   → union {ADMIN,PLANNER}
+SONRA  4 rota:  LTA×4 {ADMIN}                                     → union {ADMIN}
+```
+
+⇒ Bir rota silmek yalnız **envanteri** değil, komşularının **küme yapısını** değiştirdi.
+Ve ilk düzeltme **sayıyı** (`5→4`) düzeltip **değeri** bıraktı.
+
+> **Bir rota öldüğünde sor: bu rota, bir kümede TEK KAYNAK mıydı?** Öyleyse o kümeye
+> yaslanan her gerekçe **yeniden okunur** — sayısı da, **değeri de**.
+
+⚠️ Aynı etki `MODES_READ` kararında da çıkabilir (`T-299`: yedi ayrı rol kümesi).
