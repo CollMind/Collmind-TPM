@@ -2532,3 +2532,50 @@ her yazarın **yeniden icat ettiği** bir desendir, ve icatların yarısı yanl�
 **Pratik:** bir tur içinde aynı problemi ikinci kez çözüyorsan, birincisinin **adını**
 ara. Bulamıyorsan **sorun sende değil, adreslenmede** — ve o adres bir yoruma, bir
 yardımcıya ya da bu dosyaya yazılır.
+
+
+### Bir DÖNÜŞÜM boru hattı, YOKLUĞU bir DEĞERE çevirebilir (ZORUNLU)
+
+**`§2.5`'in en sinsi akrabası** — çünkü burada sessiz varsayılanı **sen yazmıyorsun**,
+çerçeve **senin varsayılanını devre dışı bırakıyor**.
+
+```
+JS varsayılanı  f(m = 12)   YALNIZ argüman `undefined` iken devreye girer
+NestJS          ValidationPipe({ transform: true })
+                çıplak @Query('x') x: number   →   Number(value)
+                parametre YOKSA                →   Number(undefined) = NaN
+                                                   ← undefined DEĞİL, bir DEĞER
+⇒ varsayılan HİÇ ÇALIŞMAZ
+```
+
+📌 Ölçülmüş vaka (2026-08-26, `T-294`):
+```
+node: f(undefined) → 12      (varsayılan girer)
+      f(NaN)       → NaN     (girmez — NaN bir DEĞERDİR)
+      setMonth(NaN) → Invalid Date → toISOString() → RangeError → 500
+```
+Uç **herkes için** kırıktı ve sebebi *"parametreyi göndermemek"*ti — yani **en masum
+kullanım**.
+
+⚠️ **Ve iki kusur AYNI KÖKTEN çıktı:** aynı çıplak bildirim hem whitelist çakışmasını
+(`400`) hem `NaN`'ı üretiyordu. İlk okuma *"üçüncü bağımsız bir kusur olabilir"*
+demişti; **ölçüm hipotezi çürüttü.**
+
+> **Pratik:** bir çerçeve değeri dönüştürüyorsa, **yokluğun** nereye düştüğünü ölç.
+> `undefined` mi kalıyor, `NaN` mı, `""` mi, `0` mı? Dil-seviyesi varsayılanların
+> **hepsi** yalnız `undefined`'a duyarlıdır.
+>
+> ⇒ **Varsayılanı dönüşümün İÇİNDE tanımla** (DTO alanı + doğrulayıcı), imza
+> parametresinde değil.
+
+### ⛔ VE BİR ÖRTÜ KALDIRILIRKEN ALTINDAKİ AYNI COMMIT'TE KAPANIR (ZORUNLU)
+
+`§2.7`'nin *"bir kusur, başka bir kusur tarafından örtülebilir"* maddesinin **düzeltme
+tarafı**.
+
+`T-294`'te en akla yatkın düzeltme — *"whitelist'e alanı ekle"* — `400`'ü kaldırırdı
+**ve altındaki sessiz yanlış değeri AÇARDI**. Yani doğru görünen tek satırlık bir
+düzeltme, görünür bir hatayı **sessiz** bir hataya çevirirdi.
+
+> **Bir örtüyü kaldırmadan önce altında ne olduğunu ÖLÇ — ve ikisini AYNI commit'te
+> kapat.** Ayrı commit'ler arasındaki pencerede ürün, öncekinden **daha kötü** olur.
