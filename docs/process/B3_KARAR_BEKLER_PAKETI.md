@@ -668,3 +668,44 @@ kardeşi: **`LIST`/`POINT` ayrımı bir hücre değil, bir YÜKLEM olabilir.**
 
 Hipotez **çürüse bile** etiket maliyetsizdir; doğru çıkarsa ve etiket **yoksa**,
 paket **yeniden toplanır**.
+
+
+---
+
+## ⛔ TRİYAJ SÜTUNU ŞARTI — kapsam eşiği kararı (`Z40`, 2026-08-26)
+
+> **Paket, bu sütun doldurulmadan karara gelmez.**
+
+### Karar
+
+```
+SUMMARY ∧ A1 = 0        + Z32 kapısı          ← kabul edilen eşik
+kalan 37                → TRİYAJ ZORUNLU
+```
+
+Her kalan kalem **iki durumdan birine** yazılır — üçüncüsü yok:
+
+| durum | ne demek | şartı |
+|---|---|---|
+| **MEŞRU** | kapsam gerekmiyor, ve **cümlesi var** | `Z18` biçiminde **yazılı cümle** |
+| **BORÇ** | kapsam gerekiyor ama yok | **adresli** olmalı: hangi task, hangi karar |
+
+⛔ ***"Bakılacak"* bir durum DEĞİLDİR.** Triyajsız kalem, `Z25`'in dilinde
+**sağlayıcısı olmayan bir şarttır** — yani bir erteleme değil, bir **kilit**.
+
+### `BORÇ` sınıfının iki bağı
+
+```
+1  İLK-DEPLOY SERT EŞİĞİ   BORÇ kalemleri deploy'dan ÖNCE kapanır
+                            (G3 · çok-müşterili yaşam — veri-bozulması sınıfı)
+2  A1 RATCHET ARTIŞ YASAĞI  BORÇ listesi BÜYÜYEMEZ
+                            yeni bir A1 kalemi ancak bir BORÇ kapanırsa girebilir
+```
+
+📌 **`2` neden şart:** `A1` ratchet'i bugün **tek yön aşağı** çalışıyor (büyümeyi
+bloklar). Ama triyaj olmadan bir kalem *"BORÇ"* etiketiyle **sessizce birikir** —
+ve `DISIPLIN`'in *"11 iyileşme birikti çünkü hangi turun işi olduğu yazılı değildi"*
+vakası tam bu şekilde doğdu.
+
+⚠️ Ve `K6c/d`'de ölçülmüş bir incelik: bir `A1` satırının **düşmesi** her zaman bir
+iyileşme değildir — rota **silinmiş** de olabilir. Triyaj sütunu bu ayrımı da taşır.

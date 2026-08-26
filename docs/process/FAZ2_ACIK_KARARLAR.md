@@ -269,3 +269,53 @@ yaşayamaz.** Kuyruk bir hücreye konurken *"union böyle dedi"* yeterli değil 
 bir ürün kararıdır.**
 
 📌 Adres: `docs/process/ADIM3_FAZB_PLAN.md`, `B1`'in girdisi.
+
+
+---
+
+# ⛔ `FAZ 2` PLANLAMA GİRDİSİ (`Z40`, 2026-08-26)
+
+> **Ürün sahibi, birebir:** *"`Faz-2` **senaryo listesiyle açılır**; her kalem bir
+> **senaryoya**, her senaryo bir **e2e zincir-testine** bağlanır."*
+
+```
+KALEM  →  SENARYO  →  E2E ZİNCİR-TESTİ
+```
+
+⛔ Bir kalem senaryosuz **plana giremez**; bir senaryo zincir-testsiz **kapanamaz**.
+
+## `SENARYO-ADAY` kanalı
+
+Açık kararların yanına ikinci bir kanal: **senaryo adayları**. Bir kalem henüz karar
+değilse bile, **hangi senaryoyu açtığı** yazılabilir — ve senaryo, kalemden **daha
+uzun ömürlüdür**.
+
+### İlk tohum
+
+> **Planlamacı `FU` girer → istediği `FU`'yu `SKU`'ya kırar → `Σ(SKU) = FU`
+> sistem tarafından KORUNUR.**
+
+📌 Bu senaryo üç yeteneği **tek zincirde** bağlıyor: `FU` seviyesinde giriş
+(`EK_E`'de bugün `❌`) · dağıtım görünürlüğü (`❌`, **`MVP` şartı** — `K-2.1.8i`) ·
+ve toplam invaryantı. Yani *"hangi kalem önce"* sorusunun cevabı **senaryodan**
+çıkıyor, kalem listesinden değil.
+
+## ⛔ İSKELET TURU AÇILMAZ — ve gerekçesi ÖLÇÜLMÜŞ
+
+> **Entegrasyon-körlüğünün evi BELGE değil, ZİNCİR-TESTİDİR.**
+
+**Kanıt `T-293`:** LTA formu kaydediyor, spend motoru **onu asla görmüyor** — iki
+uç ayrı ayrı **çalışıyor**, arada **bağ yok**. Bu kusuru hiçbir belge turu
+bulamazdı:
+
+```
+belge turu    her iki yeteneği de "var" diye sayar        → körlük SÜRER
+zincir-testi  "form kaydet → motor hesapla" AKIŞINI koşar → körlük ANINDA görünür
+```
+
+⇒ Bir iskelet/şema turu **kalem sayısını** artırır, **bağ sayısını** artırmaz. `Faz 2`
+bağ eksikliğinden kırılıyor, kalem eksikliğinden değil.
+
+⚠️ Ve bu, `EK_E`'nin **sessiz kırıklık** bulgusuyla aynı aile: `🔒` *"yol yok"* der,
+`⚠️` *"kırık"* der — ama `T-293` sınıfı **hiçbir işaret vermez**, çünkü her iki uç da
+kendi başına yeşildir. **Ancak zincir ölçülünce görünür.**

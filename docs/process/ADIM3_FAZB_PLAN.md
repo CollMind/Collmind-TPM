@@ -631,3 +631,41 @@ TAKSONOMİK  PLANNER cümlesi YAZILAMIYOR — "hacim girişi" PLAN hacmidir
 >
 > **`B3b-1`'in ADIM 0'ı budur** — ve kapanmadan göç başlarsa `Z35`'in daraltması bir
 > mekanik tur tarafından **sessizce geri alınır**. Ayrıntı: `B3B_RATCHET_TABANI.md §3`.
+
+
+---
+
+# EK · YERLEŞİM TABLOSU — ADAY KALEMLER (`Z40`, 2026-08-26)
+
+> **Süzgeç:** [`docs/HEDEFLER.md`](../HEDEFLER.md) — *"çekirdek döngünün bir adımını
+> açıyor ya da kilitlenme/veri-bozulması önlüyor → şimdiki faz; yalnız 'bir gün
+> lazım' → **kanıt gelene kadar ADAY**."*
+>
+> ⚠️ **Ve koruma cümlesi:** *"şimdiki faza iş EKLEMEK de süzgeçten geçer."*
+
+| kalem | yerleşim | gerekçe |
+|---|---|---|
+| **çok-rol** (bir kullanıcı birden çok rol) | **`Faz 3+`** | Çekirdek döngüde bir adım **açmıyor**; bugün hiçbir akış tek-rol yüzünden **kilitlenmiyor** |
+| **`EK_E` dağılımı** (`❌`/`🔒`/`⚠️` kalemlerinin fazlara serpilmesi) | **kalem kalem süzgeçten** | Tek bir blok karar değil: her `🔒` *"iş yapılmış, kullanıcıya ulaşmıyor"* demek ⇒ **kablolama**, ve kablolama çoğu zaman çekirdek döngüde bir adım **açar** |
+| **`RLS`** | **tasarım `Faz 1` · aktivasyon DEPLOY** | Tasarım bir **veri-bozulması önleme** kalemi (`G3`) ⇒ şimdiki faz. Aktivasyonun **sağlayıcısı** deploy'dur ve bugün **yok** (`Z25`: sağlayıcısı olmayan şart bir **kilittir**) |
+
+## ⚠️ `çok-rol` için ÖLÇÜLMÜŞ BİR DÜZELTME (Team Lead, 2026-08-26)
+
+Kalem *"şemadaki çok-rol `n:m`"* diye tarif edilmişti. **Ölçüm bunu düzeltti:**
+
+```
+EK_C_VERI_SOZLUGU.md:389   "bir kullanıcı BİRDEN ÇOK ROL taşıyabilir;
+                            etkin yetki rollerin BİRLEŞİMİDİR"
+users.role (DB)            TEK enum kolonu
+n:m bağ tablosu            SIFIR   (user_roles / users_roles → yok)
+user.entity.ts             @Column({type:'enum'}) — ManyToMany YOK
+```
+
+⇒ **`n:m` şemada YOK.** Sapma **şemanın içinde değil**, `EK_C`'nin **cümlesi ile kod
+arasında**. Yani kalem *"şemayı basitleştir"* değil, **`EK_C` ↔ kod ayrışması**
+sınıfında — ve `EK_C` **donmuş bir belgedir** (`Z1`), yani düzeltmesi bir **karar**
+ister.
+
+📌 Bu, `T-303`'ün savunma sorusunu da keskinleştiriyor: *"şemadaki `n:m` bir şeyi
+kırıyor mu?"* sorulamaz, çünkü **şemada `n:m` yok**. Doğru soru: **`EK_C`'nin cümlesi
+bugün bir şeyi kırıyor mu** — yani biri o cümleye dayanarak kod yazarsa ne olur?

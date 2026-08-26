@@ -3762,3 +3762,101 @@ sonra *boş-ve-role-verili* kalamaz.
 📌 **Üretici tarafı zaten hizalı:** `route-cell-map` bu hücreleri **üretemiyor** ⇒
 düşüş, **harita ↔ üretici birebirliğini ARTIRIR**. `G5`/`G6` delta-kontrolü kapanış
 commit'inin **pini** olur.
+
+
+---
+
+## Z40 · DAĞITIM PAKETİ — altı karar, tek kayıt
+
+> **Tarih:** 2026-08-26 · **Karar:** ürün sahibi + Fable · **Statü:** yürürlükte
+> **Numara/ad tahsisi:** Team Lead.
+
+### 1 · `L0` KATMANI DOĞDU — [`docs/HEDEFLER.md`](../HEDEFLER.md)
+
+Beş `G`: **çekirdek döngü · rakam güveni · çok-müşterili yaşam · karar hızı ·
+kanıtlanabilirlik**.
+
+```
+01_KONUMLANMA   NE
+HEDEFLER.md     NE İÇİN     ← yeni
+```
+
+**Faz süzgeci (birebir):**
+> *"Çekirdek döngünün bir adımını açıyor ya da kilitlenme/veri-bozulması önlüyor →
+> **şimdiki faz**. Yalnız *'bir gün lazım'* → **kanıt gelene kadar ADAY**."*
+
+⛔ **Koruma cümlesi:** ***"Şimdiki faza iş EKLEMEK de süzgeçten geçer."***
+📌 Bu cümle olmadan süzgeç **tek yönlü** çalışırdı. Ölçülmüş vaka: kaza-dalgasının
+kapsamı *"dalga temiz kapansın"* gerekçesiyle **üç kez** genişledi.
+
+⚠️ **Gövde metinleri Team Lead türetimidir ve öyle işaretlidir** — kanonik metin ürün
+sahibinde (`DISIPLIN`: *"atıf vermek, metnini uydurmak değildir"*).
+
+### 2 · YERLEŞİM — `ADIM3_FAZB_PLAN`'a ADAY eki
+
+| kalem | yerleşim |
+|---|---|
+| çok-rol | **`Faz 3+`** — çekirdek döngüde adım açmıyor, hiçbir akış kilitlenmiyor |
+| `EK_E` dağılımı | **kalem kalem süzgeçten** — her `🔒` bir **kablolama**, ve kablolama çoğu zaman adım **açar** |
+| `RLS` | **tasarım `Faz 1`** (veri-bozulması, `G3`) · **aktivasyon DEPLOY** (`Z25`: sağlayıcısı yok ⇒ **kilit**) |
+
+⛔ **VE BİR ÖLÇÜM DÜZELTMESİ (Team Lead):** kalem *"şemadaki çok-rol `n:m`"* diye
+tarif edilmişti. **`n:m` şemada YOK:**
+```
+EK_C:389        "birden çok rol … birleşimidir"
+users.role      TEK enum · n:m bağ tablosu SIFIR · ManyToMany YOK
+```
+⇒ Sapma şemanın içinde değil, **`EK_C`'nin cümlesi ile kod arasında** — ve `EK_C`
+**donmuş** (`Z1`), yani düzeltmesi bir **karar** ister.
+
+### 3 · KAPSAM EŞİĞİ + TRİYAJ SÜTUNU
+
+```
+kabul edilen eşik   SUMMARY ∧ A1 = 0  +  Z32 kapısı
+kalan 37            TRİYAJ ZORUNLU — iki durum, üçüncüsü YOK
+  MEŞRU   kapsam gerekmiyor VE cümlesi var (Z18 biçiminde)
+  BORÇ    kapsam gerekiyor, yok — ve ADRESLİ olmalı
+```
+
+**`BORÇ`'un iki bağı:** ilk-deploy **sert eşiği** · `A1` ratchet **artış yasağı**
+(*BORÇ listesi büyüyemez*).
+
+⛔ **Paket bu sütun doldurulmadan karara GELMEZ.**
+
+### 4 · `B4` KABUL KRİTERİ — `KİLİTLİ-TENANT PİNİ`
+
+> **`default-deny` altında admin UÇTAN UCA:** kullanıcı yarat → rol ata → **kapsam
+> ata** — **CANLI**, mock değil.
+
+`default-deny`'ın klasik kilitlenmesi: *kapı kapanır, admin de kapıda kalır, açacak
+kimse kalmaz.* Bu bir **kilitlenme** sınıfı ⇒ süzgeçte **şimdiki faz**.
+
+⛔ Üç adım **ayrı ayrı** yeşil olması **yetmez** — zincir **kesintisiz** olmalı
+(`§2.7 #6`). Ve **mock yasak**: `T-301`'de ölçüldü ki bir MSW handler'ı `T-289`'un
+**canlı kırıklığını** testlerden **tamamen gizlemişti**.
+⇒ **Bir kilitlenme pini mock'la yazılırsa, kilidi mock açar — ürün değil.**
+
+### 5 · `B4`-ÖNCESİ SAVUNMA TURU → [[T-303]]
+
+`EK_E`'nin iki kalemi, **üç durumlu** çıktı (`KIRIYOR` / `KIRMIYOR` / `ÖLÇÜLEMEDİ`).
+*"Kırmıyor"* çıkarsa çok-rol kalıntısına **`BİLİNÇLİ-UYUYAN`** kaydı:
+> **Davranışa bağlanması YASAK. Bağlanacaksa KARARIYLA.**
+
+📌 `Z39`'un *"rezervasyonun evi karar defteridir"* hükmünün **şema tarafındaki**
+kardeşi: uyuyan bir yetenek **kendiliğinden uyanamaz**.
+
+### 6 · `FAZ 2` — SENARYO ZİNCİRİ, ve İSKELET TURU **AÇILMAZ**
+
+```
+KALEM  →  SENARYO  →  E2E ZİNCİR-TESTİ
+```
+`SENARYO-ADAY` kanalı açıldı. **İlk tohum:** *"planlamacı `FU` girer → istediği
+`FU`'yu `SKU`'ya kırar → `Σ(SKU) = FU` sistem tarafından korunur."*
+
+⛔ **İskelet turu AÇILMAZ** — gerekçe **ölçülmüş** (`T-293`):
+> **Entegrasyon-körlüğünün evi BELGE değil, ZİNCİR-TESTİDİR.**
+
+LTA formu kaydediyor, motor **onu asla görmüyor** — iki uç ayrı ayrı **yeşil**,
+arada **bağ yok**. Bir belge turu bunu **bulamazdı**.
+⇒ İskelet turu **kalem sayısını** artırır, **bağ sayısını** artırmaz. `Faz 2` **bağ**
+eksikliğinden kırılıyor.
