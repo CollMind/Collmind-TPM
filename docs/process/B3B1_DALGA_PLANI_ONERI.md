@@ -458,3 +458,40 @@ derler. Paralel yürüyeceklerse ikisi de **izole `git worktree`'de** doğrulanm
 
 **Öneri:** `H8` **önce ve tek başına** — kazanç küçük, risk (atomiklik + fail-closed)
 büyük.
+
+
+---
+
+## ⛔ `W5`–`W8` YÜRÜYÜŞ NOTU — üçü de kayıtlı, TEK YERDE (ürün sahibi, 2026-08-26)
+
+Her dalga, istisnasız:
+
+### (i) Sabitlik satırı **+ hücre-küme birebirlik kontrolü**
+```
+@Roles X + CAPABILITY Y = TOPLAM     ← toplam DEĞİŞMEZ (göç rota eklemez/silmez)
+hücre kümesi ↔ rota kümeleri         ← BİREBİR değilse DALGA DUR'A DÜŞER
+```
+⛔ **Mekanik devam YASAK.** Ve bir hücre, birebirlik sağlanmadan *"hücre verir"*
+sütununu **kazanamaz**.
+
+### (ii) `PİN ZORUNLU` — **ve negatif yarısı olmayan hücrelerde DEDEKTÖRÜN ADI**
+```
+negatif yarı VAR   →  pin gerçek ayırt edici (iki-girdi-iki-çıktı)
+negatif yarı YOK   →  pin YAPISAL OLARAK kör; dedektör:
+                      route-scope.sh FILTRESIZ  (CAPABILITY kovası)
+```
+📌 *"Geçerli değil"* diye yazılmaz — **"tetiklenmiyor, çünkü negatif yarı mevcut."**
+
+### (iii) `W6`'nın ÖZEL YÜKÜ — bu dalgaların **EN RİSKLİSİ**
+```
+25 rota  ·  {A,F} / {A,P} BÖLÜNMÜŞ hücrelerin İLK TOPLU GÖÇÜ
+⛔ DOKUNULMAZ:  Z35 pinleri · T-277 pinleri
+```
+> **`W6` raporu diğerlerinden BİR GÖMLEK AYRINTILI gelir.**
+
+### `W7`–`W8` — `Z36 §5`'in YARI-AÇILMIŞ kapısı brief'e İŞLENİR
+```
+mechanics/applicable · check-combination   5/5 ↔ MASTER_DATA_READ 5/5  →  MEKANİK GÖÇEBİLİR
+mechanics/validate-formula · kpis/…        {A}                          →  KARAR-BEKLER
+```
+⚠️ Dörtlü **tek parça değil** — `Z36`'nın kendi ölçütü yarısını **açtı**.

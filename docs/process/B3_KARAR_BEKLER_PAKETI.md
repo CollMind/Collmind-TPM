@@ -633,3 +633,38 @@ Bir üyelik hiçbir yüzeyden kullanılamıyorsa, o üyeliğin **gerekçesi de y
 ve bu, kayıt aramaktan **daha ucuz** bir sinyaldir.
 
 ⇒ `6`–`9` de `1`–`5` ile **aynı turda** çözülür.
+
+
+---
+
+## 🔬 PAKET HAZIRLIĞINA ÇERÇEVE — `LIST`/`POINT` ETİKETİ (ürün sahibi, 2026-08-26)
+
+> ⚠️ **Bu bir HÜKÜM DEĞİL — paketin TAŞIYACAĞI SORU.**
+
+`K4` `S1` bir eksen buldu: `GET /approvals` `{A,CM,F,RO}` ama `GET /approvals/:id`
+**`5/5`** ⇒ ayırt edici *"onaycı yüzeyi"* **değil**, **enumerasyon**:
+
+```
+LIST   kuyruğu/koleksiyonu TARAMAK      →  neyin var olduğunu ÖĞRENİR
+POINT  bilinen bir kaydı AÇMAK          →  zaten bildiğini OKUR
+```
+
+### Hipotez — ve doğruysa KARARIN ŞEKLİ DEĞİŞİR
+
+Bu eksen `MODES_READ`'de **tekrar çıkarsa**, yedi küme *"hangi roller"* sorusuyla
+değil **çift soruyla** çözülür:
+
+```
+⛔ tek soru    "bu hücre hangi rollerde?"
+✅ çift soru   "hangi ERİŞİM ŞEKLİ hangi rollerle?"
+```
+
+⇒ Ve bu, **hücre sayısını değil YÜKLEM sayısını** artırır — `Z18`'in `READ_OWN`'ının
+kardeşi: **`LIST`/`POINT` ayrımı bir hücre değil, bir YÜKLEM olabilir.**
+
+### ⛔ VERİ TOPLARKEN ŞART — etiket UCUZ, karar günü PAHALI
+
+> **Tarama her rotayı `LIST` / `POINT` etiketiyle işaretler.**
+
+Hipotez **çürüse bile** etiket maliyetsizdir; doğru çıkarsa ve etiket **yoksa**,
+paket **yeniden toplanır**.

@@ -963,6 +963,34 @@ Sebep basit ve mazeret değil: kural yazmak dikkati **kuralın metnine** çeker,
 ⛔ **Dördü birden, varsayılan olarak.** `4`'ü atlamak, çürütülmüş bir iddiayı
 **karar masasında** bırakır.
 
+### ⇒ VE KABUL BİÇİMİ: *"tarandı"* beyanı YÜZEY-BAŞINA POZİTİF KONTROLSÜZ KABUL EDİLMEZ
+
+**İki tur üst üste eksik yapıldı, ikisinde de aynı yüzey atlandı:**
+```
+K6c/d   "taradım"        4 satır (üçü kodda)  →  7 satır daha vardı, BEŞİ BELGEDE
+K4      "dört yüzey"     iki yüzey            →  hiç taranmamıştı (poz.kontrolle ölçüldü)
+```
+
+⇒ Bir *"tarandı"* beyanı **yüzey-başına** kanıt ister: o yüzeyde aynı aracın
+**bilinen bir eşleşmeyi bulduğu** gösterilir. Aksi hâlde beyan, **aracın o yüzeye hiç
+uğramamasıyla** aynı çıktıyı verir.
+
+> ### **BEYAN UCUZLADIKÇA KANIT BİÇİMİ AĞIRLAŞMALIDIR.**
+
+Ve *"sıfır"*un doğru raporlanma biçimi bir **sayı** değil, **okunmuş bir listedir**:
+
+```
+⛔  "işaretsiz bayat: 0"                      ← bir SAYI, teşhis değil
+✅  "kalan atıflar tek tek okundu: hepsi ya
+     F12 silinme kaydı, ya tarihsel ölçüm,
+     ya CANLI rota"                           ← okunmuş bir LİSTE
+```
+
+📌 Ölçülmüş vaka (2026-08-26, kaza-dalgası kapanış raporu): kaba filtre **üç**
+*"işaretsiz"* satır işaretledi; okunduğunda **üçü de meşru** çıktı (ikisi tarihsel
+kayıt, biri canlı rota). **Filtre bir ön eleme, hüküm bir okuma.**
+
+
 > **Bir kural eklediğin turda, o kuralı KENDİ diff'ine uygula — ayrı bir adım olarak.**
 > "Bu kuralı ihlal eden bir şey bu diff'te var mı?" sorusu, kuralı yazdıktan sonra sorulmalı
 > ve cevabı bir **ölçüm** olmalı.
