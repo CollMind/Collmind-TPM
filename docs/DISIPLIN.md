@@ -905,6 +905,7 @@ eksik olan **refleks**ti.
 | "dokümanda sayı yazma" | ADR E17'ye `47/18` yazıldı, iki satır aşağıdaki karar onu bayatlattı |
 | "§7.1: kusur sınıfını aynı dosyada ara" | B1 düzeltildi, **aynı fonksiyondaki iki kardeş dal** taranmadı |
 | **SoD: "tabi olduğu kuralı yazamaz"** (`Z36`) | gerekçesi *"`ADMIN` şablonun ÖZNESİ DEĞİL"* diyordu — `ADMIN` onay rotalarının **beşinde**. Kural, **yazıldığı cümlede** ihlal edildi |
+| **"örtü kaldırılırken altındaki AYNI COMMIT'te kapanır"** (`T-294`) | `T-296` örtüyü kaldırdı (`400` → DTO) ve altından `forecast_vs_actual`'ın **sessiz sıfırı** çıktı — kuralın tarif ettiği şeyin **birebir kendisi** |
 
 Sebep basit ve mazeret değil: kural yazmak dikkati **kuralın metnine** çeker, koda değil.
 
@@ -916,6 +917,24 @@ Sebep basit ve mazeret değil: kural yazmak dikkati **kuralın metnine** çeker,
 >
 > ⇒ **Bir kural yazarken, önce onu KURALIN KENDİ GEREKÇESİNE uygula.** Gerekçe
 > cümlesi kuralın ilk tüketicisidir; orada tutmuyorsa kural değil, **temenni**dir.
+
+> ### ✅ VE ALTINCI VAKA SAYACIN AMACINA ULAŞTIĞI ANDIR (2026-08-26)
+>
+> Altıncısı öncekilerden **bir farkla** ayrılıyor:
+>
+> ```
+> 1-5. vaka   ihlal PUSH'A KADAR yaşadı, sonra kaydedildi
+> 6.   vaka   kural + review çifti onu COMMIT İÇİNDE ÖLDÜRDÜ
+> ```
+>
+> `T-296` örtüyü kaldırdı, altından sessiz sıfır çıktı, **ve aynı dalgada
+> yakalandı**. Yani:
+>
+> > **Kör nokta YAPISAL — ama artık MEKANİZMALI.**
+>
+> 📌 Sayaç bir suçlama listesi değil, bir **kalibrasyon aracıdır**: kaç vakada
+> ihlalin **ne kadar yaşadığını** ölçer. Ömür kısalıyorsa mekanizma çalışıyordur.
+> Ve bu turda ömür **sıfır commit** oldu.
 
 > **Bir kural eklediğin turda, o kuralı KENDİ diff'ine uygula — ayrı bir adım olarak.**
 > "Bu kuralı ihlal eden bir şey bu diff'te var mı?" sorusu, kuralı yazdıktan sonra sorulmalı
@@ -2614,8 +2633,20 @@ sorar; bu, yeşilin **içeriğini**.
 500                      →  pin KIRMIZI, ürün bozuk
 ```
 
-> **`200` dönen yanlış bir değer, `500`'den SİNSİDİR** — çünkü `500` bir alarm üretir,
-> yanlış değer **bir karar** üretir.
+> **`200` dönen yanlış bir değer, `500`'den SİNSİDİR** — çünkü `500` bir **alarm**
+> üretir, yanlış değer **bir KARAR** üretir.
+
+⛔ **Ve bu üründe asimetri KESKİN:** finansal bir sistemde **sessiz sıfırın maliyeti
+kırık ekrandan HER ZAMAN büyüktür.**
+
+```
+kırık ekran      kullanıcı DURUR, sorar, bekler          → maliyet: ZAMAN
+sessiz sıfır     kullanıcı İLERLER, plan yapar, onaylar  → maliyet: YANLIŞ KARAR
+```
+
+📌 Ölçülmüş vaka (2026-08-26, `T-296` `B1`): `forecast_vs_actual` `200` dönüp
+**planlanan bütçeyi `0`** gösteriyordu. Bir `500` olsaydı kimse ona dayanarak
+plan yapmazdı.
 
 📌 Ölçülmüş vaka (2026-08-26, `T-294`): `months=12` düzeltmesi `200` veriyordu ve pin
 yeşildi. `code-reviewer` **yetinmedi** ve `endDate`'i ölçtü — `2027` çıktı, `2085`
@@ -2628,3 +2659,38 @@ geçilebilirdi.
 
 > **Pratik:** bir düzeltme pini yazarken sor — *"bu test, doğru statüyle YANLIŞ DEĞER
 > dönen bir üretimi kırmızıya çevirir mi?"* Cevap hayırsa pin **yarımdır**.
+
+
+### PİN KÖR-NOKTA AİLESİ — dört tür, hepsi ÖLÇÜLDÜ (ZORUNLU)
+
+Bir pin yeşilse **dört ayrı sebeple** hiçbir şey ölçmüyor olabilir. Dördü de bu
+projede **mutasyonla** yakalandı:
+
+| # | tür | ne oluyor | vaka |
+|---|---|---|---|
+| 1 | **kaynak-yanlış** | test, üretimin okuduğu yerden **başka** bir yeri besliyor | `K3` `B1` — rol redux'ta, bileşen `useMe()`'den okuyor |
+| 2 | **cins-yanlış** | iddia **durağan**, kanıt **davranışsal** olmalıydı | `T-289` — dört doğru yüzey, yanlış sonuç |
+| 3 | **negatif-yarı-yok** | hücre `5/5`; reddedilen rol **yok**, ayrım **imkânsız** | `W4a` — dekoratör kalksa da pin yeşil |
+| 4 | **echo** | test, servisin **girdiyi geri yazdığı** alanı okuyor | `T-296` `B2` — `granularity` echo'su |
+
+> **`4` için tek cümle: girdinin echo'su bir DEĞER değil, bir TEL-PROTOKOL kanıtıdır.**
+> *"Parametre ulaştı"* der; *"parametre işe yaradı"* **demez**.
+
+### ⇒ VE ÇÖZÜMÜN BİÇİMİ: DEĞER-pini değil, İLİŞKİ-pini (ZORUNLU)
+
+```
+DEĞER-pini    expect(dataPoints.length).toBe(90)        ← fixture'a KİLİTLENİR
+İLİŞKİ-pini   expect(daily).toBeGreaterThan(weekly)     ← fixture'dan BAĞIMSIZ
+```
+
+Bir sayı-pini fixture değiştiği gün **çürür** ve *"testi güncelle"* diye kapatılır —
+yani ilk baskıda **teslim olur**. Bir ilişki-pini **mekanizmayı** ölçer: `granularity`
+veriyi kovalamayı bıraktığı gün kırılır, fixture büyüdüğü gün **kırılmaz**.
+
+📌 Ölçülmüş vaka (2026-08-26): `daily > weekly > monthly` ve *"iki `comparisonType`
+FARKLI `planned` üretir"* — ikisi de **sabit sayı yazmadan** ayırt ediyor.
+
+⚠️ **Ve ilişki-pini de bir fixture şartı taşıyabilir:** aynı turda ölçüldü ki
+**varsayılan tarih aralığı** üç granülaritede de **tek** nokta veriyor (`1/1/1`) —
+ayrım fixture'ın değil, **aralığın yokluğundan** kayboluyordu. İlişki ölçen bir pin,
+ilişkinin **görünür olduğu** girdiyi de kurmalıdır.
