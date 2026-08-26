@@ -167,3 +167,52 @@ Kesmeden ölçünce ayrım **tersine döndü**. `DISIPLIN`: kanıt kurulumunun k
 
 `K3` öne alındı çünkü **bugün kullanıcı etkileniyor**; `K6(a)(b)` en başta çünkü
 sonucu dalganın kapsamını değiştirebilir.
+
+
+---
+
+## ⛔ DALGANIN BÜYÜMESİ — ve DURMA NOKTASI (ürün sahibi, 2026-08-26)
+
+Bu dalga **planlandığından geniş** akıyor ve bu **kayda geçer**:
+
+```
+K3 açıldı        "canlı 403'leri kapat"
+K3 kapandı       üç 403 kapandı
+                 ⇓ ve reviewer kapsam-dışı bir 500 buldu
+T-294 açıldı     "K3'ün KORUDUĞU widget sunucuda kırık"
+T-294 kapandı    500 + 400 kapandı (aynı kökten)
+                 ⇓ ve reviewer AYNI DOSYADA iki kardeş buldu
+T-296 açıldı     iki 400 daha
+```
+
+> **Ürün sahibi:** *"Bu zincirin üçüncü halkasındayız — her düzeltme komşusunda yeni
+> bir kırık buldu ve 'dalga temiz kapansın' gerekçesi her seferinde bir adım daha
+> genişledi. **Meşru bir zincir ama sınırsız değil**; triyaj eşiğimizin tam sınıfı."*
+
+### Durma noktası — ve ÖN-ÖLÇÜMLE KAPATILDI
+
+`T-296`'nın kapsamı **üç uç-özel DTO + pinler**. Review yine kardeş bulursa **task
+olur, dalgaya girmez**.
+
+Ve zincirin sınırı **tahmin edilmedi, ölçüldü** (Team Lead, `T-296` brief şartı —
+*"senin `§7.1` açığının bu kez BAŞTAN kapanmış hâli"*):
+
+```
+finance-reporting.controller.ts
+  13 @Query toplam  =  10 DTO'lu (sağlam)  +  2 ÇIPLAK  +  1 yorum
+  ÇIPLAK KALAN:  granularity · comparisonType
+  üçüncüsü months → T-294'te kapandı
+```
+
+⇒ **Envanter ÜÇ. `T-296` sınıfın tamamını kapatıyor ve zincir DOĞAL OLARAK bitiyor.**
+
+### Kapanış tanımı — DÜZELTİLDİ
+
+⛔ Dalganın kapanışı **şu değildir**: *"`finance-reporting`'in bilinen-kırık envanteri
+sıfır."*
+
+✅ **Şudur:**
+> **`K3`'ün dokunduğu yüzeyde bilinen-kırık SIFIR + kalanı ADRESLİ.**
+
+📌 Fark önemli: birincisi **bitmeyen** bir taahhüt (her tarama yeni bir şey bulur),
+ikincisi **ölçülebilir** bir taahhüt.

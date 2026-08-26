@@ -2561,6 +2561,17 @@ kullanım**.
 (`400`) hem `NaN`'ı üretiyordu. İlk okuma *"üçüncü bağımsız bir kusur olabilir"*
 demişti; **ölçüm hipotezi çürüttü.**
 
+> ### ⇒ VE BU, `T-289` DERSİNİN ÇERÇEVE-SEVİYESİ İKİZİDİR
+>
+> ```
+> T-289   durağan yüzey  dört doğru olgu       ↔  çağrı  yanlış sonuç
+> T-294   durağan yüzey  `= 12` GÖRÜNÜR ve DOĞRU görünür  ↔  çağrı  NaN
+> ```
+>
+> **En sinsi olması buradan gelir:** kod okunduğunda varsayılan **görünür** ve
+> **doğru görünür**. Kusur ancak **çağrılınca** vardır. Bir kod incelemesi bunu
+> yakalayamaz — çünkü yakalanacak şey **kodda değil, boru hattında**.
+
 > **Pratik:** bir çerçeve değeri dönüştürüyorsa, **yokluğun** nereye düştüğünü ölç.
 > `undefined` mi kalıyor, `NaN` mı, `""` mi, `0` mı? Dil-seviyesi varsayılanların
 > **hepsi** yalnız `undefined`'a duyarlıdır.
@@ -2579,3 +2590,41 @@ düzeltme, görünür bir hatayı **sessiz** bir hataya çevirirdi.
 
 > **Bir örtüyü kaldırmadan önce altında ne olduğunu ÖLÇ — ve ikisini AYNI commit'te
 > kapat.** Ayrı commit'ler arasındaki pencerede ürün, öncekinden **daha kötü** olur.
+
+⇒ **VE BU, AYRILABİLİRLİK AİLESİNİN ÜYESİDİR** — hakemi *"kusur KİME görünür?"*:
+
+| vaka | ayrılırsa ne olur |
+|---|---|
+| `T-277` | uç ve onu çağıran ekran ayrı inerse, kullanıcı **çalışmayan bir düğme** görür |
+| `T-270` | düzeltme ve ölçümü ayrı inerse, **yanlış sayı** canlı ekranda kalır |
+| `T-294` | örtü ve alt-kusur ayrı inerse, **görünür** bir hata **sessiz** bir hataya döner |
+
+> **Bir `SIRA` şartı ayrılabilirlik şartı İÇERMEZ** — ama tersi de doğru: bazı
+> düzeltmeler **ayrılamaz**, ve ayrılamazlığın ölçütü *"aradaki pencerede kullanıcı
+> ne görür?"*tur. Cevap *"öncekinden kötüsünü"* ise **tek commit**.
+
+
+### Bir DÜZELTME PİNİ yalnız STATÜ değil, DEĞER doğrular (ZORUNLU)
+
+**`KANIT RENGİN SEBEBİDİR` kuralının YEŞİL tarafı.** O kural kırmızının **sebebini**
+sorar; bu, yeşilin **içeriğini**.
+
+```
+200  +  yanlış tarih     →  pin YEŞİL, ürün BOZUK
+500                      →  pin KIRMIZI, ürün bozuk
+```
+
+> **`200` dönen yanlış bir değer, `500`'den SİNSİDİR** — çünkü `500` bir alarm üretir,
+> yanlış değer **bir karar** üretir.
+
+📌 Ölçülmüş vaka (2026-08-26, `T-294`): `months=12` düzeltmesi `200` veriyordu ve pin
+yeşildi. `code-reviewer` **yetinmedi** ve `endDate`'i ölçtü — `2027` çıktı, `2085`
+değil. Yani `2085` hipotezi **orada** çürüdü; statüye bakan bir pin bunu **hiç
+söylemezdi**.
+
+⚠️ Ve mutasyon tarafında da aynı: `@Type` kaldırıldığında pin kırmızıya döndü çünkü
+**tarih değeri** kırıldı — statü kontrolü olsaydı `400` de bir *"beklenen"* sayılıp
+geçilebilirdi.
+
+> **Pratik:** bir düzeltme pini yazarken sor — *"bu test, doğru statüyle YANLIŞ DEĞER
+> dönen bir üretimi kırmızıya çevirir mi?"* Cevap hayırsa pin **yarımdır**.
