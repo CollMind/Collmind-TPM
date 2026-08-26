@@ -1,6 +1,7 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
 # ölçüm: 2026-08-26 · B3 W7 (master-data katalog göçü, 9 controller × 5) sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
+#dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log/high-risk	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
 src/modules/customer/customer.controller.ts	POST	customers	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
