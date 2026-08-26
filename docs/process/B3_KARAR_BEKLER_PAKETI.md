@@ -287,7 +287,14 @@ YÜKLEM   "bu ONAYI kim verir"           → KADEME    (K-2.5.12-R, T-276)
 `{A,CM,F,P,RO}` = `5/5` **union DEĞİL, TABAN** — `K-2.6.5b` cümleyi **kümeden
 önce** yazmış (*"her rolün okuma tabanı zaten var"*).
 
-### ⛔ DÖRT İSTİSNA ROTA GÖÇ-DIŞI — her biri için TEK SORU
+### ⛔ ~~DÖRT~~ **İKİ** İSTİSNA ROTA GÖÇ-DIŞI — her biri için TEK SORU
+
+> ⚠️ **`F12` izi (2026-08-26, `K4`):** aşağıdaki tablo **dört** satır taşıyor.
+> `GET approvals` ve `GET approvals/pending` **ÇÖZÜLDÜ ve İNDİ** —
+> `APPROVAL_QUEUE_READ` hücresine göçtüler, küme `{A,CM,F,RO}` **birebir**.
+> Satırlar **silinmiyor** (soru nasıl sorulmuştu, kayıtta kalsın), ama
+> **kapanmış** sayılır. Açık kalan **iki**: `budget-variance` (devredildi) ·
+> `validate-budget` (`DUR`).
 
 > **Eksik rolün YOKLUĞU cümlelenebiliyor mu?**
 
@@ -303,8 +310,16 @@ cümlelenen      → kayıtlı ALT-İSTİSNA
 cümlelenemeyen  → tabana hizalama = kayıtlı DAVRANIŞ-İSTİSNASI dalgası
 ```
 
-📌 **Üçü `PLANNER`, biri `FINANCE` eksik** — yani soru tek tip değil: `PLANNER`
-grubu bir **görünürlük** sorusu, `FINANCE` grubu bir **kaza adayı**.
+> ⚠️ **BAYAT — `F12` izi (2026-08-26, `K4`).** `approvals` çifti **göçtü**
+> (`APPROVAL_QUEUE_READ`) ⇒ bugün **İKİ** istisna kaldı: **biri `PLANNER`**
+> (`budget-variance`, `SUMMARY_READ` paketine **devredildi**) · **biri `FINANCE`**
+> (`validate-budget`, hüküm **`DUR`**'da — `T-249` kaydı çıktı, emsal çatışması).
+> ⛔ Ve *"kaza adayı"* nitelemesi de **düştü**: `git log -L` dışlamanın **bilinçli
+> ve gerekçeli** olduğunu gösterdi. `DISIPLIN`: bir kümede **sayı ve DEĞER birlikte
+> bayatlar**.
+
+~~📌 **Üçü `PLANNER`, biri `FINANCE` eksik** — yani soru tek tip değil: `PLANNER`
+grubu bir **görünürlük** sorusu, `FINANCE` grubu bir **kaza adayı**.~~
 
 ## `SUMMARY_READ` + `MODES_READ` — ÖLÇÜM TURU KOŞTU (2026-08-25)
 

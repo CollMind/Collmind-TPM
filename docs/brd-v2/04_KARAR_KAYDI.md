@@ -3496,8 +3496,46 @@ kavram, iki çözümleme**). Üç kapı: **kaldırma** · **hizalama+kanonikleş
 | istisna | hüküm |
 |---|---|
 | `approvals` · `approvals/pending` | **`APPROVAL_QUEUE_READ`** (`'approval-queue:read'`, ad Team Lead tahsisi — **sınıf-adı**). `{A,CM,F,RO}` **birebir**; `PLANNER`'sızlık artık **cümleli**: onaycı yüzeyi |
-| `validate-budget/:planId` | **taban + `FINANCE`**, kayıtlı istisna. Eksiklik bir **kaza** (kardeşlerin tamamı `5/5`) ve cümle yazılabiliyor: eşik-üstü onaycının gönderim-öncesi bütçe kontrolünü okuması `K-2.6.4`'ün **kendi işi** |
+| `validate-budget/:planId` | ⏸️ **DUR — hüküm ASKIYA ALINDI**, aşağı bkz. ~~taban + `FINANCE`, kayıtlı istisna; eksiklik bir **kaza** (kardeşlerin tamamı `5/5`)~~ |
 | `budget-variance` | **`SUMMARY_READ` paketine DEVİR** — `finance-reporting` ailesinin taraması açıkken tek üyeyi ayrı çözmek **yarım muamele** (`İlke 4`) |
+
+### ⏸️ `Z37 §3` REVİZYONU — `validate-budget` hükmü ASKIYA ALINDI (`F12`, 2026-08-26)
+
+**`K4`'ün `DUR` şartı ateşledi ve DOĞRU ateşledi.** Hüküm *"eksiklik bir **kaza**"*
+diyordu; `K4` brief'i buna bir kapı koymuştu: *"kayıt çıkarsa **DUR** — kayıtlı bir
+fark bir kaza değildir."* **Kayıt çıktı.**
+
+```
+git log -L 88,93:spend-calculation.controller.ts   →   d0b8f16  (T-249)
+kayıtlı gerekçe:
+  "validate-budget/:planId → ADMIN, PLANNER, CM, READONLY (FINANCE YOK)
+   (plan.controller'ın kendi :id/budget-check'i, o da FINANCE'ı dışarıda bırakıyor)"
+```
+
+⇒ Dışlama **bilinçli, gerekçeli ve emsalli** bir karardı.
+
+#### ⛔ AMA BU BİR ÇÜRÜTME DEĞİL — İKİ ÖNCÜL DE DOĞRU
+
+Team Lead her iki tarafı da ölçtü:
+
+| emsal tanımı | kim seçti | ölçüm |
+|---|---|---|
+| **modül-kardeşliği** — `spend-calculation`'ın beş `GET`'i | `Z37 §3` | hepsi `5/5` ✅ **doğru** |
+| **işlev-kardeşliği** — `plans/:id/budget-check` | `T-249` | `{A,CM,P,RO}` ✅ **bugün de öyle** |
+
+> **İkisi de meşru bir *"kardeş"* tanımıdır.** `T-249` **işlev**-kardeşliğini seçti,
+> `Z37 §3` **modül**-kardeşliğini. Hangisinin geçerli olduğu bir **ÜRÜN KARARIDIR**.
+
+⛔ **VE BİR İNCELİK:** `T-249`'un yaslandığı emsal (`plans/:id/budget-check`) **kendisi
+karar-bekler** — `Z33`, ve `SUMMARY`/`MODES_READ` paketinin **`5` numaralı kalemi**.
+Yani `T-249` **çözülmemiş bir emsale** yaslanmış.
+
+⇒ **Ürün sahibine giden soru:** `validate-budget` hangi kardeşliğe tabi? Cevap
+`budget-check`'e bağlıysa **ikisi tek pakette** çözülür — paket zaten ikisini de
+taşıyor (`2` = `MODES_READ`, `5` = `budget-check`).
+
+📌 **Bu, `git log -L` kuralının ilk HÜKÜM-DEVİREN vakası.** `-S` ile taransaydı o
+commit **görünmezdi**: rota dizgesi ne doğdu ne öldü, yalnız `@Roles` satırı değişti.
 
 ### 4 · Dalga sözleşmesine üç güçlendirme
 

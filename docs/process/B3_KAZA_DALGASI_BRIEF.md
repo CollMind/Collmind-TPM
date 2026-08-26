@@ -64,7 +64,7 @@ turu **ayrı** akar.
 | K1 | `Z20` daraltması (`GET /users`) | kayıtlı istisna | hazır |
 | K2 | ledger-üçlüsü hizalaması | normalizasyon | hazır |
 | K3 | `T-287` — iki ekranda rol-kapısı ↔ rota-kümesi ayrışması (**canlı `403`**) | canlı kusur | hazır |
-| K4 | `SHARED_READ`'in dört istisnası — **ÜÇ PARÇAYA ayrıldı** | aşağı bkz. | ✅ hükümlü |
+| K4 | `SHARED_READ`'in dört istisnası — **ÜÇ PARÇAYA ayrıldı** | aşağı bkz. | ⚠️ **PARÇA 1 İNDİ · PARÇA 2 `DUR`** |
 | ~~K5~~ | ~~`LTA` dörtlüsü~~ | — | ⛔ **DALGADAN ÇIKTI** (`§0` Şart 2) |
 | K6 | `T-289` — `POST /budget/reserve` **kaldırılması** | uç kaldırma | ✅ **İNDİ** (`211 → 210`) |
 
@@ -75,8 +75,8 @@ turu **ayrı** akar.
 | istisna | hüküm |
 |---|---|
 | `approvals` · `approvals/pending` | **`APPROVAL_QUEUE_READ`** hücresine göçer (`'approval-queue:read'`, ad Team Lead tahsisi — sınıf-adı). Küme `{A,CM,F,RO}` **birebir** ⇒ davranış-koruyucu. `PLANNER`'sızlık artık **cümleli**: onaycı yüzeyi. `W4a-S3`'ün pini **zaten üstünde** ve hücrenin **negatif yarısı var** |
-| `spend-calculation/validate-budget/:planId` | **tabana hizalama (`+FINANCE`)**, kayıtlı istisna olarak **bu dalgada**. `FINANCE`-eksikliği bir **kaza** (spend-calculation kardeşlerinin **tamamı** `5/5`), ve cümle **yazılabiliyor**: eşik-üstü onaycının gönderim-öncesi bütçe kontrolünü okuması `K-2.6.4`'ün **kendi işi**. **Repro-pin:** `FINANCE` bugün `403` → sonra `200`, **kardeşler değişmedi** |
-| `finance-reporting/budget-variance` | **`SUMMARY_READ` paketine DEVREDİLİR.** `finance-reporting` ailesinin küme-gerekçe taraması hâlâ açıkken tek aile-üyesini ayrı çözmek **yarım muamele** (`İlke 4`). Bu satıra **devir notu** düşülür |
+| `spend-calculation/validate-budget/:planId` | ⛔ **`DUR` — HÜKÜM ASKIYA ALINDI** (`Z37 §3` revizyonu). `K4`'ün *"kayıt çıkarsa DUR"* kapısı **ateşledi**: `git log -L` `T-249`'un (`d0b8f16`) **açık ve gerekçeli** dışlama kaydını buldu. ⚠️ Bir **çürütme değil, EMSAL ÇATIŞMASI** — **modül**-kardeşliği (`spend-calculation` beş `GET`, hepsi `5/5`) ↔ **işlev**-kardeşliği (`plans/:id/budget-check`, `{A,CM,P,RO}`). **İkisi de ölçüldü, ikisi de doğru.** Ürün sahibinde. ~~tabana hizalama (`+FINANCE`), bu dalgada; eksiklik bir **kaza**~~ |
+| `finance-reporting/budget-variance` | ⏸️ **DEVREDİLDİ** — **`SUMMARY_READ` paketine** (paketin `3` numaralı kalemi). `finance-reporting` ailesinin küme-gerekçe taraması hâlâ açıkken tek aile-üyesini ayrı çözmek **yarım muamele** (`İlke 4`). Bu satıra **devir notu** düşülür |
 
 ---
 
