@@ -1,5 +1,5 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-26 · B3 W7 (master-data katalog göçü, 9 controller × 5) sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
+# ölçüm: 2026-08-26 · B3 W8 (master-data kpi+mechanic göçü, 19 rota — SON DALGA) sonrası · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
@@ -51,25 +51,25 @@ src/modules/master-data/generic-unit/gu.controller.ts	GET	master-data/generic-un
 src/modules/master-data/generic-unit/gu.controller.ts	GET	master-data/generic-units/:id	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
 src/modules/master-data/generic-unit/gu.controller.ts	PATCH	master-data/generic-units/:id	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
 src/modules/master-data/generic-unit/gu.controller.ts	DELETE	master-data/generic-units/:id	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
-src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/grid/:planId	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/grid	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/calculable	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
-src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
-src/modules/master-data/kpi/kpi.controller.ts	PATCH	master-data/kpis/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
-src/modules/master-data/kpi/kpi.controller.ts	DELETE	master-data/kpis/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/grid/:planId	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/grid	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/calculable	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
+src/modules/master-data/kpi/kpi.controller.ts	GET	master-data/kpis/:id	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
+src/modules/master-data/kpi/kpi.controller.ts	PATCH	master-data/kpis/:id	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
+src/modules/master-data/kpi/kpi.controller.ts	DELETE	master-data/kpis/:id	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
 src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis/validate-formula	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
-src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis/seed-defaults	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
-src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
-src/modules/master-data/mechanic/mechanic.controller.ts	GET	master-data/mechanics	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
-src/modules/master-data/mechanic/mechanic.controller.ts	GET	master-data/mechanics/:id	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_READ	MEKANIK	ROLES	-
-src/modules/master-data/mechanic/mechanic.controller.ts	PATCH	master-data/mechanics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
-src/modules/master-data/mechanic/mechanic.controller.ts	DELETE	master-data/mechanics/:id	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/kpi/kpi.controller.ts	POST	master-data/kpis/seed-defaults	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
+src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
+src/modules/master-data/mechanic/mechanic.controller.ts	GET	master-data/mechanics	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
+src/modules/master-data/mechanic/mechanic.controller.ts	GET	master-data/mechanics/:id	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
+src/modules/master-data/mechanic/mechanic.controller.ts	PATCH	master-data/mechanics/:id	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
+src/modules/master-data/mechanic/mechanic.controller.ts	DELETE	master-data/mechanics/:id	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
 src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/validate-formula	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
-src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/applicable	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_WRITE	MEKANIK	ROLES	-
-src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/check-combination	ADMIN,CATEGORY_MANAGER,FINANCE,PLANNER,READONLY	MASTER_DATA_WRITE	MEKANIK	ROLES	-
-src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/:id/clone	ADMIN	MASTER_DATA_WRITE	MEKANIK	ROLES	-
+src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/applicable	-	MASTER_DATA_READ	Z36	CAP	MASTER_DATA_READ
+src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/check-combination	-	MASTER_DATA_READ	Z36	CAP	MASTER_DATA_READ
+src/modules/master-data/mechanic/mechanic.controller.ts	POST	master-data/mechanics/:id/clone	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
 src/modules/master-data/region/region.controller.ts	POST	master-data/regions	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
 src/modules/master-data/region/region.controller.ts	GET	master-data/regions	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
 src/modules/master-data/region/region.controller.ts	GET	master-data/regions/:id	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
