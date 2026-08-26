@@ -159,7 +159,7 @@ SHARED_WRITE  = {ADMIN, PLANNER, CATEGORY_MANAGER, FINANCE}  = ACFP
 |---|---|---|---|---|
 | `MODES_WRITE` | `AP` | `AFP` | **12** | `FINANCE` → Plan CRUD (**`DELETE /plans/:id` dahil**) |
 | `MODES_WRITE` | `AF` | `AFP` | **7** | `PLANNER` → upload·validate·process |
-| `SHARED_WRITE` | `AP` | `ACFP` | **3** | `CM`+`FIN` → `budget/reserve`, `spend-calculation/distribute` |
+| `SHARED_WRITE` | `AP` | `ACFP` | **3** | `CM`+`FIN` → ~~`budget/reserve`~~ ⚰️ **SİLİNDİ** (`T-289`/`K6c-d`), `spend-calculation/distribute` |
 | `SHARED_WRITE` | `AF` | `ACFP` | **2** | `CM`+`PLANNER` → `budget/envelopes` **oluşturma**, **`split`** |
 | `SHARED_WRITE` | `A` | `ACFP` | **2** | `C`+`F`+`P` → `POST/PATCH /lta-agreements` |
 

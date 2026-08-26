@@ -522,8 +522,20 @@ hâli"*.
 
 Ayrıntı task'ta. Özet: `/budget` ekranı **rol kapısız** · `agreementId` **serbest
 metin** · servis **doğrulamıyor** · `txStatus: POSTED` · `AccessScope` **0**.
-⇒ Bir `PLANNER`, **var olmayan bir anlaşma kimliğiyle herhangi bir zarfa
-kesinleşmiş defter satırı** üretebilir. **Team Lead dört yüzeyde doğruladı.**
+> ⛔ **AŞAĞIDAKİ İDDİA ÇÜRÜDÜ — `F12` izi (2026-08-26, `Z38 §1(i)`).**
+> Repro-pin ucu **çağırdı** ve **her seferinde `500`** aldı
+> (`findEnvelopeWithLock` transaction'sız çağrılıyor, `setLock('pessimistic_write')`
+> reddediyor). Uç, iddia edilen satırı **hiç üretemiyordu**.
+> **Yürürlükteki tanım:** *"yapısal olarak tamamlanamayan **ölü paralel yol**"*.
+> Kaldırma kararı **ayakta kaldı** — üç bağımsız sebeple (`K-2.2.4` savunması ·
+> paralel yol · kırık+ölü), ve `K6(c)(d)`'de **indi**.
+>
+> ⚠️ Eski iddia **silinmiyor**: dört durağan yüzey de **doğruydu**, sonuç yine de
+> yanlıştı. `DISIPLIN`'in *"durağan yüzeyler bir HİPOTEZ oluşturur, bir BULGU
+> değil"* maddesinin **doğuş vakası**.
+
+~~⇒ Bir `PLANNER`, **var olmayan bir anlaşma kimliğiyle herhangi bir zarfa
+kesinleşmiş defter satırı** üretebilir. **Team Lead dört yüzeyde doğruladı.**~~
 
 ⚠️ Ve `K-2.2.4` gerilimi: kural *"bir anlaşma ONAYLANDIĞINDA"* diyor; bu uç
 tetikleyiciyi **atlayan ikinci bir yol**.

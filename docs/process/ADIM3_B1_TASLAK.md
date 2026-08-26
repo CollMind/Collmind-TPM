@@ -425,9 +425,17 @@ PLANLAMACI        POST /reserve'de ZATEN VAR (kardeş uç) — yazabildiği bir 
 İZLEYİCİ          "salt görüntüleme" — bütçe durumu izlemenin ÇEKİRDEĞİ
 ```
 
-📌 **`PLANLAMACI` özellikle kardeş-uç gerekçesi**: `POST /budget/reserve` `@Roles(PLANNER,
-ADMIN)` taşıyor. Rezerve edeceği zarfın bakiyesini göremezse **rezervasyon körlemesine**
-yapılır.
+> ⚠️ **BAYAT — `F12` izi (2026-08-26, `K6c/d`):** aşağıdaki gerekçe
+> `POST /budget/reserve`'ün **varlığına** yaslanıyordu; o uç **SİLİNDİ**
+> (`T-289`). Yürürlükteki dayanak `budget.controller.ts`'te yazılı:
+> `PLANNER` plan-mekanik dağıtımını yazıyor ve zarf durumu o yazmanın
+> **girdisidir**. ⇒ `DISIPLIN`: *"bir istisna kalktığında ona yaslanan
+> kararlar YENİDEN OKUNUR"* — ve bu satır o taramanın **ikinci turunda**
+> bulundu: ilk tarama **koda daralmıştı**.
+>
+> ~~📌 **`PLANLAMACI` özellikle kardeş-uç gerekçesi**: `POST /budget/reserve` `@Roles(PLANNER,
+> ADMIN)` taşıyor. Rezerve edeceği zarfın bakiyesini göremezse **rezervasyon körlemesine**
+> yapılır.~~
 
 ### ⛔ AMA KAPSAM SÜTUNU `❌` — ÖLÇÜLDÜ
 

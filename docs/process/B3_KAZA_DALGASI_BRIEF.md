@@ -66,7 +66,7 @@ turu **ayrı** akar.
 | K3 | `T-287` — iki ekranda rol-kapısı ↔ rota-kümesi ayrışması (**canlı `403`**) | canlı kusur | hazır |
 | K4 | `SHARED_READ`'in dört istisnası — **ÜÇ PARÇAYA ayrıldı** | aşağı bkz. | ✅ hükümlü |
 | ~~K5~~ | ~~`LTA` dörtlüsü~~ | — | ⛔ **DALGADAN ÇIKTI** (`§0` Şart 2) |
-| K6 | `T-289` — `POST /budget/reserve` **kaldırılması** | uç kaldırma | hazır |
+| K6 | `T-289` — `POST /budget/reserve` **kaldırılması** | uç kaldırma | ✅ **İNDİ** (`211 → 210`) |
 
 ---
 
