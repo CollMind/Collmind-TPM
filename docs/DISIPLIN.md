@@ -3077,3 +3077,43 @@ kural yazıldı        →  kendi listesine uygulandı  →  9 üyeden 8'i düş
 ⚠️ Ve mutasyonun **ilk** denemesi bir **kurulum hatasıydı** (`BEKLEYEN`'i boş dict'e
 çevirdi ⇒ `TypeError`) — *derlenmeyen mutasyon kanıt değildir*, sözdizimi korunarak
 tekrarlandı.
+
+
+### ⚠️ TIRNAKSIZ `$F` TUZAĞI TEKRARLADI — ve bu kez SAHTE YEŞİL ÜRETTİ (ZORUNLU)
+
+Bu tuzak `ADIM 0` turunda iki kez kaydedilmişti (*"iki false-green `diff`"*). **Üçüncü
+vaka (2026-08-26, `W7`) yeni bir şekil gösterdi.**
+
+```bash
+FILES=$(... çok satırlı liste ...)
+cp $FILES /tmp/       # ← tırnaksız, ve komut TEK DOSYA ADI sanıyor
+for f in $FILES; ...  # ← aynı hata
+```
+
+**Sonuç:** hiçbir dosya kopyalanmadı, hiçbir dosya geri alınmadı — ve ölçüm
+**değişmemiş ağaç** üzerinde koştu:
+
+```
+pin        YEŞİL   ✅ (doğru görünüyor)
+statik kapı YEŞİL   ⛔ oysa KIRMIZI olmalıydı
+okuma      "tam-geri-alma yapıldı, statik kapı da görmüyor"  ← SAHTE
+```
+
+⛔ **Ve bu okuma bir kapıyı KÖR ilan ederdi** — yani düzeltme turu başlatırdı, tıpkı
+`§2.7`'de kayıtlı *"çalışan bir self-test'i kör sanmak"* vakaları gibi.
+
+> **Bir mutasyonun UYGULANDIĞINI, mutasyonu KURAN komutun başarısından değil,
+> HEDEFİN İÇERİĞİNDEN doğrula.**
+
+**Pratik — çok satırlı dosya listesi için tek güvenli şekil:**
+```bash
+... > /tmp/liste.txt
+while read -r f; do <işlem> "$f"; done < /tmp/liste.txt
+```
+Ve **pozitif kontrol zorunlu**: işlemden sonra hedefte **beklenen değişikliği say**
+(`kalan @RequireCapability: 0` · `@Roles satırı: 45`) — sayı beklenmedikse **ölçüm
+değil, kurulum** hatalıdır.
+
+📌 Ve `ADIM 0` vakalarıyla farkı: orada tuzak **boş çıktı** üretiyordu (iki boş dosya
+`diff` → `rc=0`); burada **hiç çalışmayan bir mutasyon** üretti. İkisi de **yeşil**,
+ikisi de **yalan**.
