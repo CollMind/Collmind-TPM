@@ -3515,3 +3515,53 @@ AYAKTA**, ikisinde geri çekildi.
 📌 Ve bir tembellik kapısı: `Z43 §1`, *"birebir ev varken **tek-vaka etiketi
 TEMBELLİKTİR**"* der. **Tek-vaka bir sınıf değil, bir ARTIKTIR** — ve artık listesi,
 doğru evi aramamanın maliyetiyle şişer.
+
+---
+
+## BİR KAPININ EVREN-KAYNAĞI: **türetilmiş > taranmış > yazılmış** (ZORUNLU)
+
+Bu repo üç kapıda, üç ayrı evren-kaynağı denedi ve **doğrusu üçüncüde bulundu**. Sıralama
+bir tercih değil, **ölçülmüş bir hiyerarşidir**.
+
+| # | evren-kaynağı | kapı | nasıl bozuldu |
+|---|---|---|---|
+| 3 | **YAZILMIŞ** — elle tutulan liste | `G5b` (ilk hâli) · `G2b` (ilk hâli) | **DONDU.** Yeni üye eklendi, listeye **girmedi** ⇒ kapı onu hiç görmedi |
+| 2 | **TARANMIŞ** — bir desenle toplanan | `G2b` (ikinci hâli: `globals()` + `*_ROUTES` + `isinstance(set)`) | **KAÇTI.** Desenin **dışına** çıkan üye (farklı **tip**, farklı **ad**) sessizce düştü — ve **çalışmaya devam etti** |
+| 1 | ⛔ **TÜRETİLMİŞ** — hüküm veren yerin **kaynağından** | `G2b` (bugünkü: `cell_for`'un kaynağı) · `G5c` (göçmüş rotalardan) | *(bugüne kadar bozulmadı — ve iki mutasyon ekseninde sınandı)* |
+
+### ⛔ TEK YASA
+
+> **HÜKÜM VEREN YER NERESİYSE, KAPININ EVRENİ ORASIDIR.**
+
+Bu cümle iki dersin **birleşimidir**:
+- `G5b`: *"referans **dondurulmuş kayıttan** gelir"* — kapının **BEKLENTİSİ** bağımsız olmalı
+- `G5c`: *"evren **canlı haritadan** türer"* — kapının **KAPSAMI** kendiliğinden büyümeli
+
+⇒ İkisi bir arada: **beklenti dondurulur, evren türetilir.** Biri elle tutulursa kapı
+ya **yanlış şeyi** ölçer ya **hiç ölçmez**.
+
+### Neden **taranmış** yetmez — ve neden bu en tehlikelisi
+
+Yazılmış bir liste **görünür biçimde** eksiktir: kimse eklemediyse listede yoktur, ve
+bir gün birisi bakıp fark eder. **Taranmış** bir evren ise *"otomatik"* görünür — ve
+tam da bu yüzden kimse **kapsamını** sorgulamaz.
+
+Ölçülmüş vaka (2026-08-27): `globals()` taraması iki eksende kaçtı (**tip**: `set`→`list`
+· **ad**: `_ROUTES`→`_OVERRIDES`), ve her iki mutasyonda da tablo **hükmü vermeye devam
+etti**. `if not G2B_TABLOLAR` boş-evren kapısı **ateşlemedi**, çünkü o ancak **hepsi**
+yok olursa çalışır.
+
+> **Bir taramanın en tehlikeli yanı, otomatik GÖRÜNMESİDİR.**
+
+### Ve zincirin kendisi bir kayıt: **üç halka**
+
+```
+1  BEN buldum      Faz-B yeni tablo ekledi, elle yazılan listeye eklemedi
+2  BEN düzelttim   globals() taraması — ve yorumuma "bir tur UNUTAMAZ" yazdım
+3  REVIEW çürüttü  iki kaçış yolu, mutasyonla; ve düzeltmenin KENDİ yorumu
+                   ihlal ettiği kuralı anıyordu
+```
+
+📌 Üç halkanın dersi: **bir düzeltmenin iddiası da bir iddiadır** ve aynı kapıdan
+geçmelidir. *"Bir tur unutamaz"* cümlesi bir **ölçüm değil, bir umuttu** — ve o umut
+`(2)`'de yazıldığı için `(3)`'e kadar kimse ölçmedi.

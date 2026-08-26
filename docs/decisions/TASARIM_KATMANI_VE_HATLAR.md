@@ -55,7 +55,7 @@ sessizliği "yok" değil "sırada" olarak görünür (F8'in sözlü haline karş
 ```
 HATLAR — tek satır durum, her dağıtımda güncellenir
 
-güvenlik/ADIM-3     B3a koşuyor · B4'e üç sayaç + ratchet sıfırı kaldı
+güvenlik/ADIM-3     ~~B3a koşuyor · B4'e üç sayaç + ratchet sıfırı kaldı~~ ⚠️ BAYAT, düzeltildi 2026-08-27 (ADIM3 kapanış raporu §3.3): ÜÇ SAYAÇ DA SIFIR ve ratchet sıfırı SAĞLANDI (1adeb14 · 80aa843). B3b-1 de bitti (@Roles 211→15). B4'ün önündeki şey bir SAYAÇ değil, bir TANIM BOŞLUĞU: 'B4 hangi düğme' yazılı değil ve iki düğme ZIT sonuç veriyor — bkz. rapor §3.1
 ekran/senaryo       kanonik: YOL_HARITASI_EKRAN_VE_SENARYO ·
                     EK_E şema-uyum turu açık · denetim Faz 2'de başlar
 tasarım             karar verildi (KAYIT 1) · docs/design/ Faz 2 girişinde doğar
