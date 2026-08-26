@@ -3117,3 +3117,90 @@ değil, kurulum** hatalıdır.
 📌 Ve `ADIM 0` vakalarıyla farkı: orada tuzak **boş çıktı** üretiyordu (iki boş dosya
 `diff` → `rc=0`); burada **hiç çalışmayan bir mutasyon** üretti. İkisi de **yeşil**,
 ikisi de **yalan**.
+
+
+### *"ZATEN"* BİR ÖLÇÜM EMRİDİR, MUAFİYET DEĞİL (ZORUNLU)
+
+Bir turda *"bu **zaten** ölçülmüştü / **zaten** öyle / **zaten** kapsanıyor"* cümlesi
+geçiyorsa, o cümle bir **kısayol değil, bir DURAK**tır: *"zaten"*in **hangi turda,
+hangi kapsamda, hangi araçla** ölçüldüğü sorulur.
+
+**Üç ölçülmüş vaka — üçü de farklı özneden:**
+
+| vaka | *"zaten"* neydi | gerçek |
+|---|---|---|
+| spesifikasyon | *"bu şart zaten yazılı"* | şartın **sağlayıcısı yoktu** ⇒ erteleme değil **kilit** (`Z25`) |
+| `G8` `BEKLEYEN` | *"bu dokuz hücre zaten bekliyor"* | **sekizi taşıyıcı değildi** — `olu` kontrolüne **hiç düşmüyorlardı** |
+| `W7` tam-geri-alma | *"`W2`'de zaten ölçülmüştü"* | `W2` **kendi** değişikliğini ölçtü; arada **dört dalga + iki kapı revizyonu** var |
+
+> **Başka bir turun ölçümü, BU turun kanıtı değildir.**
+
+📌 Üçüncüsü **bayat-devir ailesinin kabul-kriteri hâli**: bir ölçümün **konusu** o
+turun **kendi diff'idir**; konusu değişince ölçüm **devredilemez**.
+
+### Bir MUTASYON da bir ÖLÇÜMDÜR — etkisi kanıtlanmamış mutasyon hiçbir şeyin kanıtı değildir (ZORUNLU)
+
+Ve bu tuzağın **en tehlikeli** üyesi, çünkü **yönü ters**:
+
+```
+önceki iki vaka   SAHTE YEŞİL     boş girdi → "doğrulama geçti" sanılır
+W7 vakası         SAHTE TEŞHİS    hiç çalışmayan mutasyon
+                                  → "kapı görmüyor" okuması
+                                  → ÇALIŞAN kapı KÖR ilan edilir
+                                  → ve muhtemel sonraki adım kapıyı "TAMİR" etmek:
+                                    SAĞLAM MEKANİZMAYA MÜDAHALE
+```
+
+⛔ Sahte yeşil bir **eksik yakalama**dır; sahte teşhis bir **yanlış müdahale**
+üretir. İkincisi geri alması **daha pahalıdır**.
+
+### ⇒ VE POZİTİF KONTROLÜN ÜÇÜNCÜ NESLİ
+
+```
+1. nesil   GİRDİ VAR MI            "aynı grep bilinen bir eşleşmeyi buluyor mu"
+2. nesil   ARAÇ ÇALIŞIYOR MU       "filtre/desen gerçekten filtreliyor mu"
+3. nesil   MÜDAHALE GERÇEKLEŞTİ Mİ "mutasyon HEDEFİN İÇERİĞİNDE görünüyor mu"
+```
+
+📌 `W7`'de üçüncü nesil kullanıldı ve tuzağı **o yakaladı**:
+`kalan @RequireCapability: 0` · `@Roles satırı: 45` — beklenen sayılar tutmasaydı
+**ölçüm değil, kurulum** hatalı sayılacaktı.
+
+### KÖR-NOKTA TÜRLERİ MUTASYON TÜRÜNE GÖRE AYRIŞIR (ZORUNLU — bir daraltma)
+
+`W4a`'nın *"`5/5` hücrede pin kördür"* cümlesi **fazla kabaydı**. `W7` ölçtü:
+
+| mutasyon türü | `5/5` hücrede pin |
+|---|---|
+| **dekoratör DÜŞMESİ** (`@RequireCapability` kalkar) | **KÖR** — beş rol de hâlâ `403` almıyor |
+| **ÜYELİK DARALTMASI** (bir rol hücreden çıkar) | **GÖRÜYOR** — pin'in pozitif yarısı **rol-granüler** (`it.each`) |
+
+> **Bir kör-nokta iddiası, HANGİ MUTASYONA karşı kör olduğunu söylemelidir.**
+> *"Pin kördür"* eksik bir cümledir; *"pin **şu** mutasyona karşı kördür"* tam.
+
+### ⇒ VE PİN, HANGİ KAPIYA YASLANDIĞINI DA SÖYLER
+
+*"Pinin ne ölçmediği başlığa yazılır"* kuralının **bağımlılık yönü**:
+
+```
+pin  →  yetenek ÜYELİĞİNİ tutar        (global ⇒ örnekleme yeter)
+G6   →  rota→hücre ATAMASINI tutar     (45 rotanın HEPSİNDE)
+⇒ örnekleme yeterlidir AMA G6'ya KOŞULLU; G6 daralırsa altı controller
+  SESSİZCE korumasız kalır
+```
+
+📌 Ölçüldü: örneklenmemiş bir controller'da hücre kaydırması → pin **yeşil**,
+`G6` rotayı **adıyla** yakaladı.
+
+### TEK-ÜRETİCİ İLKESİNİN SON İSTİSNASI KAPANDI
+
+Bir artefaktın **bir kısmı** üretilip **bir kısmı elle** yazılıyorsa, elle yazılan
+kısım **her yeniden üretimde kaybolur** — ve kaybı gören kapı **yoksa** sessizce
+tekrarlar.
+
+📌 Vaka (`W7`): TSV'nin dört `#` satırının dördü de elle ekleniyordu; üçü
+hatırlandı, **sütun başlığı unutuldu**. Ve `G7` `#` satırlarını **filtrelediği için
+bunu yapısal olarak göremiyordu**.
+
+> **Artefakt KENDİNİ TARİF ETMELİDİR.** Başlık üreticiye taşındı ⇒ elle-hatırlama
+> sınıfı kapandı.
