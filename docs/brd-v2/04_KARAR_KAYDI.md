@@ -4520,3 +4520,125 @@ ailesinin kapısına çarpar**."*
 değil, dördüncü çift eklendiği için.**
 
 > **Bir kapsama iddiası, kapsamı BÜYÜTEN her turda YENİDEN ölçülür.**
+
+---
+
+# `Z45` — ÜÇ CANLI BULGUYA HÜKÜM; ve `INV-T-004`/`005` AYRIMI
+
+**Tarih:** 2026-08-27 · **Karar:** ürün sahibi · **Girdi:** `ADIM 5` `RLS` ölçümü + `SYSTEM_INVARIANTS` uzlaşısı
+
+## `§0` — İKİ KAYIT
+
+### `git add -A` ihlali — kapandı, ve desen tanıdık
+
+Team Lead'in `50ee412` commit'i uzlaşı turunun **yarım işini** aldı (`git add -A .claude docs`).
+Kapanış: **açık düzeltme commit'i**, veri kaybı **ölçülerek dışlandı** (başlıklar tek, çiftlenme yok).
+
+> **Ürün sahibi:** *"Desen tanıdık — **paylaşılan-ağaç kuralını YAZAN tur, ilk ATEŞLEYEN tur oldu.**
+> Sayaç işliyor, ömür yine kısa."*
+
+### ⛔ `INV-T-004` / `INV-T-005` AYRIMI — bu turun en değerli KAVRAMSAL işi
+
+```
+"boş kapsam = erişim yok"   TEK CÜMLE, İKİ KATMAN
+   YETENEK kapsamı   CapabilityGuard (A′)    → INV-T-004  ✅ HOLDS
+   SATIR   kapsamı   AccessScopeService R-2  → INV-T-005  🔴 VIOLATED
+```
+
+> **Ürün sahibi:** *"Benim **'`A′` onun kod-kanıtı'** notum **`004` için doğruydu, `005` için
+> değildi**. Tek-invariant yazılsaydı **KIRMIZI YEŞİLİN ARKASINA SAKLANACAKTI**."*
+
+⛔ **Ve `INV-T-005`'in KÖKÜ adıyla kaydedilir:**
+```
+SCOPE_ENFORCEMENT_ENABLED = false   (varsayılan KAPALI)
+⇒ satır-kapsamı bir FEATURE-FLAG arkasında
+⇒ PLANNER için "boş kapsam" diye bir durum YOK — koşulsuz UNRESTRICTED
+```
+Bu, **`T-304`'ün GERÇEK KAPSAMIDIR.** ⚠️ Canlı `.env` değeri **`VARSAYIM`** olarak
+işaretli kalır — `RLS` paketi onu **ölçümle** getirir.
+
+---
+
+## `§1` — `T-308` HÜKÜM: `security_invoker` **ŞİMDİ**, ve **vaka değil SINIF** kapanır
+
+> *"Politikadan önce view — yoksa her politika yazımı **SAHTE-YEŞİL** doğar."*
+
+**Üç şart:**
+
+| # | şart |
+|---|---|
+| **1** | Düzeltme **tek view'a değil, VIEW-ENVANTERİNE** iner: tüm view'ların `reloptions` taraması; her biri ya **invoker'lı** olur ya **bypass'ı bir KARAR KAYDIYLA** taşır *(ürün sahibi tahmini: hepsi invoker'lı olur — bypass-gerekçesi yazılabilecek view yok)* |
+| **2** | ⛔ **KAPI DOĞAR:** *"yeni view `security_invoker`'sız DOĞAMAZ"* — `G8` ailesi, evreni **`pg_views`/`reloptions`'tan TÜRETİLMİŞ**, **`"ölçemedim"` çıktılı** |
+| **3** | Pin: iki-tenant probe'un **kalıcılaşması** (zaten var: invoker'sız→**iki**, invoker'lı→**tek**; mutasyonu hazır) |
+
+`app_migrate`-owner + `app_runtime`-`SELECT` düzeni invoker sonrası **doğru** — **dokunulmaz**.
+
+## `§2` — `T-307` HÜKÜM: uygulama-katmanı daraltması **ŞİMDİ**
+
+> ⛔ ***`RLS`'i beklemek KATEGORİK HATA olur.*** Ölçüm söylüyor: `RLS` bu tabloya
+> **yazılamaz** (`tenant_id` yok) ⇒ **beklenecek bir şey yok.** Çözümün evi **zaten
+> uygulama katmanı**, ve süzgeçten geçiyor (**veri-bozulması önleme** sınıfı).
+
+**Dört parça:**
+
+1. **Okuma/güncelleme uçları kendi-kiracı semantiğine iner** — `GET /tenants` listesi
+   **ölür** ya da **tekil kendi-kayda** döner; `GET`/`PATCH /tenants/:id`
+   **`id === currentUser.tenantId`** zorlar. *(`SELF` deseninin **kiracı** hâli.)*
+2. **`create`/`delete` uçları için `İlke-1` sorusu** — *bir kiracının admin'inin kiracı
+   yaratması/silmesi **hiçbir `K`-kaydında YOK**.* ⇒ Bu uçlar ya **ÖLÜR** *(ürün
+   sahibinin tercihi: tenant-yaşam-döngüsü **operatör işi, uygulama dışı**; `T-289`
+   emsali — **tüketicisi ölçülsün, sıfırsa kaldırma zinciri**)* ya **operatör-yolu
+   tasarımına devredilir**. ⛔ **Tüketici ölçümü hangisi olduğunu SÖYLER.**
+3. **Pin iki-tenant fixture ile** — *"verinin yokluğu örter"*in kitabi vakası:
+   `main.tenants=1` iken **her test yeşil**. ⛔ **Fixture ikinci kiracıyı taşımadan
+   hiçbir tenant-izolasyon pini PİN DEĞİLDİR** — ve bu şart **`RLS` paketinin BÜTÜN
+   ölçümlerine** de geçer.
+4. **Dört `tenant_id`'siz tablonun kalan üçü** paket-envanterinde **adıyla** gelir —
+   her biri ya ***"global-meşru"*** cümlesi alır ya **`T-307`'nin kardeşi** çıkar.
+
+## `§3` — `INV-B-009` HÜKÜM: önce TEŞHİS, ama **okuma-düzeltmesi teşhisi BEKLEMEZ**
+
+**Teşhis sorusu:** iki zarfın **defterinden bağımsız yeniden-hesap** —
+`allocated − reserved − consumed` **hangi değeri veriyor?**
+
+**Çerçeve hükmü:**
+> **KANONİK OLAN DEFTER-TÜRETİMİDİR** (`K-2.2` ailesinin ruhu: **defter gerçeğin
+> kaynağı, kolon bir KOPYA**).
+
+| teşhis | sonuç |
+|---|---|
+| **kolon bayat** | güncelleme-yolu **eksik** — hangi işlem atlamış (muhtemelen `Z24`-öncesi bir yol ya da `CAP`/release dalı). Kolon ya **senkron-mekanizmaya bağlanır** ya **ÖLÜR** *(view zaten hesaplıyorsa kolonun varlığı **`İlke-4` adayı**)* |
+| **view yanlış** | **formülü düzeltilir** |
+
+### ⛔ BEKLETİLMEYECEK YARIM
+
+`on-invoice-validation.service.ts:575` — bir **RAG eşiğine** **bayat + sessiz-sıfırlı**
+değer giriyor.
+
+> ***"`500` ALARM üretir; YANLIŞ DEĞER KARAR üretir"*** cümlesinin **canlı vakası.**
+
+**Okuma noktası teşhisten BAĞIMSIZ olarak tek kanonik kaynağa döner.** Bugün için
+**güvenli ara adım:**
+```
+İKİ DEĞERİ DE OKU · AYRIŞIYORSA HATA FIRLAT · SESSİZ DEVAM ETME
+⇒ AYRIŞMA-ALARMI, YANLIŞ-RAKAMLA-RAG'den İYİDİR
+```
+Ve `|| 0` + not-found→`0` dalları **`T-291` sınıfıyla birlikte ÖLÜR**.
+
+⛔ **`T-308` migration'ı bu işten ÖNCE iner** — aynı view, **temiz zeminde teşhis**.
+
+## `§4` — SIRA
+
+```
+T-308 (view SINIFI + kapı)  →  INV-B-009 (teşhis + düzeltme)  →  T-307 (daraltma)
+```
+Üçü **kısa zincir**; dosya kesişimi **tek noktada** (view) ve **sıralı** olduğu için sorun değil.
+⚠️ **`T-309`'un üç ölü mekanizması `T-307` commit'ine BİNEBİLİR** — aynı modül, **ölü kod
+ölür**, ve **dördüncü-yol riski DOĞMADAN** kapanır.
+
+## `§5` — `K1` paketin **EN AĞIR** kalemi, hükmü PAKETLE verilir
+
+`K1`'in kilit tespiti — *denetim-olaylı operatör yolunun **sağlayıcısı yok**: `pgaudit`
+yok, `admin_audit_logs` **tenant'sız aktörü kaydedemez*** — paketin **en ağır karar
+kalemidir**, ve hükmü **paketle** verilir: **çözümü denetim-çekirdeği tasarımıyla AYNI
+MASA.**
