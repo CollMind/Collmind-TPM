@@ -675,7 +675,7 @@ here so they are designed in rather than retrofitted.
 ## 6. Tenancy & Access — `INV-T`
 
 ### INV-T-001 — No financial query executes without a `tenant_id` predicate.
-- **Status:** HOLDS
+- **Status:** HOLDS *(cümlenin kendi evreni için)* — ⛔ **KAPSAM UYARISI eklendi 2026-08-27, bkz. `§14.3b`**
 - **Guard:** TEST → add `LINT` (repository-layer rule)
 - **Source:** audit candidate #12
 
@@ -1317,10 +1317,220 @@ a tenant profile — and TTM's copy marked historical.
 
 ---
 
+---
+
+# 14. ⛔ UZLAŞI TURU — `FAZ-2` ÇAKIŞTIRMA TABLOSU (2026-08-27)
+
+> **Damganın yol maddesi 2'nin ikinci yarısı.** Damganın *"bilinen bayat satırlar"*
+> listesi **ÖRNEKLEMEYDİ, TAM LİSTE DEĞİL** — bu bölüm her `Status:` satırını **tek tek**
+> ele alır. *"Örnekleme"* bir **uyarıydı**, bir kapsam değil.
+>
+> ⛔ **Ve tablonun en önemli sütunu son sütundur.** Bir satırın **`ÖLÇÜLMEDİ`** demesi bir
+> eksiklik itirafı değil, **bir statüdür** — ve `HOLDS`'a yuvarlanmamış olması bu turun
+> asıl çıktısıdır. *"Bilinmiyor"u yeşile yuvarlamak sessiz-yeşilin belge hâlidir.*
+
+## 14.1 Ölçülen satırlar — **statüsü ya da kanıtı DEĞİŞENLER**
+
+| madde | eski `Status:` | bugün | çürüten ölçüm |
+|---|---|---|---|
+| `INV-L-003` | 🔴 VIOLATED (yapısal) | ✅ **HOLDS** · guard `NONE`→**`DB`** | `main.ledger_entries.deleted_at` **kolonu yok** (ADR 0012 / `D-04`) |
+| `INV-L-006` | HOLDS · beş tablo | HOLDS · **dört tablo** | `main.budget_transaction_logs` **tablosu yok** (`Z24`) |
+| `INV-B-003` | VIOLATED at HEAD · HOLDS with **uncommitted** delta | ⚠️ **KISMEN** — bölünmüş boyutta sağlanıyor, bölünmemişte **ÖLÇÜLMEDİ** | `T-057` **commit edildi**; `on-invoice.service.ts` iki aşamalı çözüm |
+| `INV-B-007` | BLOCKED → `D-09` | ⛔ **ÖLÇÜLMEDİ** *(engel kalktı, ölçüm yapılmadı)* | `K-2.2.3` `L2`'de kararlaştırdı · `main.budget_allocations` **tablosu yok** |
+| `INV-R-001` | ⚠️ HOLDS VACUOUSLY | ⛔ **ÖLÇÜLMEDİ** | `main.on_invoice_entries` **sıfır satır** — düzeltme indi, **veri gelmedi** |
+| `INV-R-002` | ⚠️ HOLDS VACUOUSLY | ⛔ **ÖLÇÜLMEDİ** | aynı ölçüm |
+| `INV-N-002` | VIOLATED · guard **NONE** | VIOLATED · guard **`GUARD SCRIPT` (ratchet)** | `money-float.sh --ratchet` doğdu, bugün **exit 0** |
+| `INV-N-004` | 🔴 VIOLATED · beş yüzey | ⛔ **ÖLÇÜLMEDİ** — beş ihlal noktasının **hepsi kapalı**, ama **tek noktanın testi yok** | `\|\| 'GREEN'` ve `!ragStatus` **sıfır**; hepsi `utils/ragCoverage.ts`'ten geçiyor; `main.plans.coverage_ratio` **var** |
+| `INV-C-002` | BLOCKED · *"anonimleştirme ÖLÇÜLMEDİ"* | BLOCKED · **ölçüldü: YOK** | `anonymiz\|anonimle` üretimde sıfır eşleşme |
+| `§3` `T-151` notu | *"bu kısıt bizde yok"* | ⛔ **BAYAT** — kısıt **var** | `CHK_ledger_entries_amount_non_negative` |
+| `§3` `T-188` bloğu | üç FK sessiz mutasyon yolu | ⛔ **BAYAT** — **üçü de `ON DELETE RESTRICT`** | `pg_get_constraintdef`, şema-nitelendirilmiş |
+| `§10` `D-01`·`D-04`·`D-05` | *"açık / öneri"* | ✅ **kapandı** | `04_KARAR_KAYDI §A5` · ADR 0012 · ADR 0007 |
+| `§12` registry notu | *"karar defteri TTM'de"* | ⛔ **BAYAT** — **bu repoda** | `docs/decisions/` + `04_KARAR_KAYDI.md` |
+| header `Count:` | elle yazılmış sayı | ⛔ **REVİZE** — komutla değiştirildi | elle üye-sayısı bu repoda **dokuzda dokuz** bayatladı |
+
+## 14.2 Ölçülen satırlar — **statüsü DEĞİŞMEYENLER** *(teyit de bir ölçümdür)*
+
+| madde | statü | taze kanıt (2026-08-27) |
+|---|---|---|
+| `INV-L-001` | HOLDS | trigger **yok** (`pg_trigger`) — guard hâlâ `NONE`; ama üç FK `RESTRICT` |
+| `INV-L-005` | 🔴 VIOLATED | `UQ_…_reversal_per_tenant` + self-FK **hâlâ yalnız `public`'te** |
+| `INV-L-007` | HOLDS | `ledger-direction.sh` **exit 0** |
+| `INV-B-001` | 🔴 VIOLATED | `if (envelope)` **`else`siz**, satır `:148`→**`:235`** kaydı — kusur değişikliğin **içinden geçti** |
+| `INV-R-003` | HOLDS | `ux_sales_actual_batches_active_scope` kısmi UNIQUE **var** |
+| `INV-T-003` | 🔴 VIOLATED | `main`'de RLS politikası **yok**, `rowsecurity` açık tablo **yok** |
+| `INV-M-001` | 🔴 VIOLATED | migration **kayıtlı**, DDL **`main`'de yok** — ve `main.migrations` o günden beri **büyüdü** |
+| `INV-M-002` | HOLDS | `migration-schema.sh` **exit 0** |
+| `INV-M-003` | 🔴 VIOLATED | `main` **ve** `public` aynı DB'de, **iki `migrations` tablosu** |
+| `INV-N-001` | HOLDS *(guard evreni için)* | `financial-ordering.sh` **exit 0** · ⛔ **kör nokta AÇIK:** `sortBy?: string` hâlâ `@IsIn`'siz (`T-066`) |
+| `INV-N-003` | 🔴 VIOLATED | `getFullYear()`/`getMonth()` fallback **yerinde** |
+| `INV-C-003` | 🔴 VIOLATED | `main`'de `%import%` tablosu **yok** — ⚠️ hâlâ bir **çıkarım**, dosya sistemi taranmadı |
+
+## 14.3 ⛔ BU TURDA **ÖLÇÜLMEYEN** SATIRLAR — *ve bu, tablonun en dürüst kısmı*
+
+> **Brief *"her satır tek tek ölçülür"* diyordu. Aşağıdakiler ölçülmedi ve nedeni yazılı.**
+> Bir kapsam beyanı, **karşılanmadığında da** yazılır — karşılanmış gibi yazmak
+> `§2.7 #9`'un (*"kapsam kendini boşaltıyor"*) belge tarafı olurdu.
+
+| madde | neden ölçülmedi |
+|---|---|
+| `INV-L-002` · `INV-L-004` · `INV-L-008` | davranışsal; bir **reversal e2e koşumu** gerekir, bu tur **salt okuma + katalog** kapsamındaydı |
+| `INV-B-002` (CAP asimetrisi) | `D-01` **kapandı** (`A5` clamp) ⇒ maddenin cümlesi **yeniden yazılmalı**; eski cümleyi ölçmek yeni karara göre **anlamsız** olurdu |
+| `INV-B-004` · `INV-B-005` · `INV-B-006` | `D-02` ve `D-08` `OPEN_DECISIONS.md`'de **açık** (ölçüldü) ⇒ `BLOCKED` doğru, altındaki not ölçülmedi |
+| `INV-R-004` | ⚠️ **veri yok**: `main.sales_actual_batches`'te `REPLACED` **sıfır satır** ⇒ bugün **boş kümede sağlanıyor**. `INV-R-001` ile **aynı sınıf** |
+| `INV-R-005` · `INV-R-006` | `R-005`'in modül-sınırı spec dosyası **var** (ad düzeyinde teyit), içeriği koşturulmadı · `R-006`'nın hedef `CHECK`'i `main`'de **yok** (ölçüldü), `TEST` tarafı ölçülmedi |
+| `INV-R-007` · `INV-R-008` | `D-07` açık, ve `ADR 0010`/`T-142`: **normatif kaynak yok** |
+| `INV-T-002` | tekrar ölçülmedi |
+| `INV-T-001` | ⛔ **ölçüldü — ve statüsü değil, CÜMLESİ sorunlu.** Bkz. `§14.3b` |
+| `INV-C-001` · `INV-C-004` | *"kazara sağlanıyor"* sınıfı — tetikleyicileri bir **kod** değil, bir **veri/entegrasyon** olayı; bu turda ne temizlik işi ne ERP entegrasyonu doğdu (ölçülmedi, **varsayıldı**) |
+
+### 14.3b ⛔ `INV-T-001` — statü doğru olabilir ama CÜMLE bir sınıfı DIŞARIDA bırakıyor
+
+> **`INV-T-001`:** *"No **financial** query executes without a `tenant_id` predicate."*
+
+Bu turda bağımsız olarak ölçüldü (`ÖLÇÜLDÜ` 2026-08-27):
+
+```
+src/modules/tenant/tenant.service.ts       tenantId atfı  0
+src/modules/tenant/tenant.controller.ts    tenantId atfı  0
+POZ.KONTROL  src/modules/customer/customer.service.ts     37   ⇒ tarama çalışıyor
+main.tenants tablosunda `tenant_id` KOLONU YOK
+POZ.KONTROL  aynı sorgu main.tenants'ın diğer kolonlarını saydı, boş değil
+main.tenants  tek satır  ⇒ sınıf bugün GÖRÜNMÜYOR
+```
+
+⛔ **Ve buradaki tehlike statüde değil, KAPSAMDA:** cümle *"financial"* dediği için
+kiracı-yönetimi uçları **invariant'ın evreninin dışında** kalıyor — yani madde
+`HOLDS` olarak **doğru okunabilir** ve aynı anda bir **kiracılar-arası sınıf**
+korumasız durabilir. Bu, `CLAUDE.md §2.7`'nin *"evren, tanımın şartıyla seçilemez"*
+kuralının bu belgedeki **ikinci vakasıdır** (birincisi `INV-N-004`'ün literalle
+tanımlanmış evreniydi, `v0.4`'te düzeltilmişti).
+
+⚠️ **Ve bugün görünmemesinin sebebi bir koruma değil, VERİNİN YOKLUĞU:**
+`main.tenants` **tek satır**. İkinci kiracı geldiği gün sınıf **kendiliğinden**
+canlanır — bir kod değişikliği olmadan. Bu, `INV-C` ailesinin desenidir
+(*"bir kod değil, bir VERİ olayıyla bozulur"*), ama `INV-T` ailesinde.
+
+⛔ **BU BELGE BURADA HÜKÜM VERMEZ.** Aynı olgu `ADIM 5` (`RLS`) turunda da
+ölçülmüş ve orada `T-307` olarak dosyalanmıştır; **iki ölçüm bağımsızdır ve
+aynı yöne bakmaktadır.** Karar iki soruyu birden ister ve **ürün sahibinindir**:
+```
+1  INV-T-001'in cümlesi "financial" ile mi sınırlı kalacak, yoksa
+   "kiracı-kapsamlı her sorgu" mu olacak?
+2  tenants tablosu tenant_id TAŞIMIYOR ⇒ RLS bu tabloyu KAPSAYAMAZ
+   ⇒ bu tek yer için mekanizma ne olacak?
+```
+⇒ İkincisi **`RLS` paketinin girdisidir** ve bu maddeden **oraya bağlanır**.
+*(`§2.4` — bir invariant'ın cümlesini genişletmek, ajanın varsayımı değil ürün
+sahibinin kararıdır.)*
+
+---
+
+## 14.4 `INV-C` ↔ **İLK-DEPLOY ÖN KOŞULLARI** — çapraz referans
+
+> **Neden burada:** `INV-C` ailesinin tamamı bir **kod** değişikliğiyle değil, bir
+> **konuşlandırma / veri / entegrasyon** olayıyla bozulur — yani normal regresyon ağı bu
+> sınıfı **hiç görmez**. Tek yakalama noktası **ilk-deploy ön koşulları listesidir.**
+>
+> ⛔ **Listenin kanonik yeri: `docs/process/FAZ1_PLAN.md` `§0`.** Bu belge o listeyi
+> **kopyalamaz** — bir kural iki yerde yazılırsa iki yerde bayatlar (`F8`).
+
+| `INV-C` maddesi | bugün neden doğru | ilk-deploy ön koşulu olarak ne ister |
+|---|---|---|
+| `INV-C-001` (hiçbir finansal kayıt fiziksel silinmez) | hiçbir şey silinmiyor · ADR 0012 · `ledger_entries.deleted_at` **kolonu yok** | **7 yıl bir SÜREDİR** ve süreyi uygulayan mekanizma yok ⇒ *"arşivleme/temizlik işi eklenmeden önce bir KARAR"* |
+| `INV-C-002` (silinen kullanıcı anonimleştirilir) | ⛔ **anonimleştirme YOK** (ölçüldü), kullanıcı **soft-delete** | KVKK kapsamı bir **hukuk sorusu** ([[T-170]]) — ilk gerçek müşteri verisinden **önce** |
+| `INV-C-003` (fatura dosyası özgün biçimde saklanır) | ⛔ saklanmıyor (çıkarım) | E-Fatura arşivi bir **depolama kararı**dır, kod kararı değil |
+| `INV-C-004` (ERP'nin verisi ezilmez) | ERP **yok** | ⇒ **ilk entegrasyonun ön koşulu** |
+| — (yeni, `ADIM 3` mührü) | `webpack` `minimize:false` **gerekçesiyle** yazılı | ⛔ **guard-tanıma yükleminin minification-dayanıklılığı doğrulanır** — `INV-T-004`'ün kırılganlığı; prod'da minification istenirse yüklem **ada değil TOKEN'a** bağlanmalı |
+| — (`FAZ1_PLAN §0.1`) | yayın ortamı yok | yedekleme **RPO/RTO** |
+| — (bu tur) | `main` şeması **eksik DDL** taşıyor | ⛔ **`INV-L-005` + `INV-M-001`: `db:reset` penceresi.** Şart bugüne kadar *"T-057 commit edilince"* diye yazılıydı; `T-057` **indi**, `db:reset` **olmadı** ⇒ şart bir **tarihe** değil bir **karara** bağlanmalı |
+
+> ⛔ **Son satır bu turun bulgusudur ve `Z44 §4` ile aynı sınıftır:** *"X olunca yapılır"*
+> diye yazılan bir şart, `X` olduktan sonra **kimsenin işi olmadığı için** yapılmaz.
+> Çözüm bir hatırlatma değil, bir **sahip**: şart **ilk-deploy listesine** girer.
+
+---
+
+## 14.5 ⛔ KALICI MEKANİZMA — damganın yol maddesi 3
+
+> **Soru:** bu belge bir daha **nasıl bayatlamaz**?
+> **Cevap tek bir kural değil, bir AYRIMDIR** — çünkü statülerin **hepsi aynı türden
+> değil.**
+
+```
+TÜRETİLEBİLİR statü   →  GUARD ÇIKTISINDAN türetilir, belgeye YAZILMAZ
+ELLE KALAN statü      →  bir Z-KAYDININ "etkilenen türev belgeler" alanına BAĞLANIR
+```
+
+### (A) Türetilebilir statüler — **kaynak guard çıktısıdır, bu belge değil**
+
+Bir invariant'ın guard'ı varsa, statüsü **o guard'ın exit kodudur**. Belgeye bir `HOLDS`
+yazmak, o exit kodunun **elle yazılmış bir kopyasıdır** — ve kopya bayatlar.
+
+| invariant | kanonik komut |
+|---|---|
+| `INV-L-007` | `bash scripts/guards/ledger-direction.sh` |
+| `INV-M-002` | `bash scripts/guards/migration-schema.sh` |
+| `INV-M-003` | `bash scripts/guards/schema-isolation.sh` |
+| `INV-N-001` | `bash scripts/guards/financial-ordering.sh` |
+| `INV-N-002` | `bash scripts/guards/money-float.sh --ratchet` |
+| `INV-T-004` | `route-scope` · `roles-ratchet` · `alan-guard-ratchet` · `domain-guard-parity` · `single-mechanism` + `capability.guard.spec.ts` |
+| `INV-T-005` (kapsam borcu) | `bash scripts/guards/scope-ratchet.sh` |
+| `INV-T-006` (**önerilen**) | `route-cell-map.py` `SUMMARY` ∩ `scope-a1-baseline.txt` — bkz. `D-19` |
+
+⛔ **Ve DB-guard'lı statüler için aynı ilke, farklı komut:** `INV-L-003` · `INV-L-006` ·
+`INV-R-003` bir **katalog sorgusudur** — ve **şema-nitelendirilmiş** olmak zorundadır
+(`nspname`/`table_schema` predicate'i olmadan sorulan her soru `INV-M-003` yüzünden
+**yanlış ürünün** cevabını verebilir).
+
+### (B) Elle kalan statüler — **`Z`-kaydına BAĞLANIR**
+
+Guard'ı olmayan bir statü (`NONE`) elle yazılmak zorundadır. O zaman kural şudur:
+
+> **Elle yazılan bir statü, onu doğuran `Z`-kaydının *"etkilenen türev belgeler"*
+> alanında ADIYLA anılır.** Kayıt kapanırken belge de güncellenir — hatırlanarak değil,
+> **kaydın kendi kontrol listesinden**.
+
+📌 Bu, `DISIPLIN`'in **evren-kaynağı hiyerarşisinin** (`türetilmiş > taranmış > yazılmış`)
+**belge tarafıdır**, ve bu turda **kendi kanıtını üretti**: bu belgedeki bayat satırların
+**hepsi** bir `Z`-kaydı ya da bir ADR tarafından çürütülmüştü — `Z24` · `Z21` · `A5` ·
+ADR 0007 · ADR 0012 · `Z44` — ve **hiçbiri bu belgeye yansımamıştı**, çünkü hiçbir kayıt
+bu belgeyi **etkilenen türev** olarak saymamıştı.
+
+> ⛔ **Yani bayatlık bir ihmal değil, bir MEKANİZMA EKSİKLİĞİYDİ** — ve mekanizma
+> eksikliği, dikkatle kapatılmaz, **bağlantıyla** kapatılır.
+
+### (C) ⛔ VE BU BELGEYE BİR YAZIM KURALI
+
+```
+1  Statü satırına SAYI yazılmaz          (üye-sayısı bu repoda 9/9 bayatladı)
+2  Statünün ÜÇ meşru değeri vardır       HOLDS · VIOLATED · ÖLÇÜLMEDİ
+3  Her ölçüm TARİHLİ ve İŞARETLİ         ÖLÇÜLDÜ | GEREKÇELİ | VARSAYIM
+4  Her NEGATİF bulguya POZİTİF KONTROL   "aynı sorgu başka yerde bulmuş muydu?"
+5  Bayat satır SİLİNMEZ                  F12 — üstüne revizyon izi
+```
+
+⚠️ **`2`'nin gerekçesi bu turda ölçüldü:** *"`HOLDS VACUOUSLY`"* ifadesi iki maddede
+(`INV-R-001`/`R-002`) **`HOLDS` kelimesini taşıyordu** ve bir okuyucuyu *"sağlanıyor"*
+diye yanıltmaya **hazırdı** — oysa altındaki veri **sıfır satırdı**. Üçüncü değer tam
+olarak bunun için var.
+
+---
+
+## 14.6 Bu turun kendi sınırları
+
+| ölçülemeyen | neden |
+|---|---|
+| çalışan ortamın `SCOPE_ENFORCEMENT_ENABLED` değeri | ölçüm ortamı `.env` okumasını **reddetti**; `.env.example` ve kod varsayılanı ölçüldü ⇒ *"kapalı"* bir **VARSAYIM** |
+| davranışsal `INV-L` maddeleri (`002`/`004`/`008`) | bu tur **salt okuma + katalog** kapsamındaydı; e2e koşumu yapılmadı |
+| `INV-C-003`'ün asıl sorusu | dosya sistemi / nesne deposu **taranmadı** — tablo yokluğu bir **sinyaldir** |
+| `TTM`'deki `K1–K45` kopyasının işaretlenmesi | `TTM` bu ölçümün kapsamı dışında (`ADR 0001`) |
+| `INV-N-004`'ün **tek noktasının** doğruluğu | `ragCoverage.ts`'in **testi yok** ⇒ tekilleştirme ölçüldü, **davranış** ölçülmedi |
+
 ## 13. Changelog
 
 | Version | Date | Change |
 |---|---|---|
+| 0.6 | 2026-08-27 | **Uzlaşı turu `FAZ-2` — her `Status:` satırı bugünkü gerçekle çakıştırıldı (`§14`).** Damganın *"bilinen bayat satırlar"* listesi bir **örneklemeydi**; `§14.1` statüsü ya da kanıtı **değişen** satırları, `§14.2` **teyit edilen** satırları, `§14.3` ⛔ **bu turda ölçülmeyen** satırları **nedeniyle birlikte** sayar. En ağır dört değişiklik: `INV-L-003` **VIOLATED → HOLDS** (`deleted_at` kolonu artık **yok**, guard `NONE`→`DB`) · `INV-N-004`'ün **beş ihlal noktası da kapanmış** ama tekilleştirildiği tek noktanın (`utils/ragCoverage.ts`) **testi yok** ⇒ `ÖLÇÜLMEDİ` · `INV-R-001`/`R-002`'nin *"`HOLDS VACUOUSLY`"*'u **`ÖLÇÜLMEDİ`'ye çevrildi** (`HOLDS` kelimesini taşıyan bir statü, sıfır satırlık bir kümede okuyucuyu yanıltmaya hazırdı) · `§3`'ün iki uzun uyarı bloğu (`T-151` kısıt yokluğu · `T-188` FK'ler) **BAYAT** çıktı — kısıt **var**, üç FK'nin **üçü de `ON DELETE RESTRICT`**. `§12` Adoption dört koşulu **tek tek** ölçüldü ve ⛔ **koşul 1'in kendisinin hatalı olduğu** bulundu: `D-01` kapandı ama bir **ADR olarak değil**, karar defterinde — koşul *"ADR olarak"* dediği için **kapanmış bir karar koşulu sağlamıyor görünüyor**; revizyon **önerildi, uygulanmadı** (`§2.4`). `§14.4` `INV-C` ↔ **ilk-deploy ön koşulları** çapraz referansı (liste **kopyalanmadı**, kanonik yeri `FAZ1_PLAN §0`) — ve o listeye bu turun bulgusu eklendi: **`db:reset` penceresi**, çünkü `INV-L-005`/`INV-M-001`'in *"T-057 commit edilince"* şartı `T-057` **indikten sonra da yapılmadı** (`Z44 §4` sınıfı: *"X olunca"* diye yazılan şart, `X` olduktan sonra **kimsenin işi olmadığı için** yapılmaz). `§14.5` ⛔ **kalıcı mekanizma**: guard'lı statüler **guard çıktısından türetilir ve belgeye YAZILMAZ**; elle kalanlar bir `Z`-kaydının *"etkilenen türev belgeler"* alanına **bağlanır** — bu turun kendi kanıtıyla: bayat satırların **hepsi** bir `Z`-kaydı/ADR tarafından çürütülmüştü ve **hiçbiri** bu belgeyi *"etkilenen türev"* saymamıştı. ⇒ **Bayatlık bir ihmal değil, bir mekanizma eksikliğiydi.** |
 | 0.5 | 2026-08-27 | **Uzlaşı turu `FAZ-1` — yetki/kapsam ailesi eklendi, damga KALDIRILMADI.** Damganın kendi tespiti (*"`INV-T` ailesi `ADIM-3` yetki katmanını hiç taşımıyor"*) kapatıldı: `INV-T-004` (yetenek kapsamı — `A′` default-deny, **HOLDS**, çok-dedektörlü kanıt yüzeyiyle), `INV-T-005` (satır kapsamı — `R-2` fail-closed; **birinci yarısı HOLDS, ikinci yarısı VIOLATED**), `INV-T-006` (`SUMMARY_READ` kapsamsız doğamaz — **VIOLATED**, iki kanonik üreticinin kesişiminden **türetilerek** ölçüldü). ⛔ **Ve bir terim ayrımı yapıldı, çünkü tek cümle iki mekanizmayı örtüyordu:** *"boş kapsam = erişim yok"* bu kod tabanında **yetenek kapsamı** (`CapabilityGuard`) ve **satır kapsamı** (`AccessScopeService`) diye iki ayrı katmandır; tek invariant olarak yazılsaydı biri yeşil diğeri kırmızıyken cümle **yeşil okunurdu** — ve bugün tam olarak öyle. `§4`'e `INV-B-008` (negatif kullanılabilirlik — statüsü **`ÖLÇÜLMEDİ`**, `HOLDS`'a **yuvarlanmadı**: negatif üreten yol bugün hiç koşmadı, *"verinin yokluğu örter"* sınıfı) ve `INV-B-009` (**bu turda doğdu** — *"kullanılabilir"in İKİ taşıyıcısı var ve canlı veride ayrışmışlar**; iki canlı rota bayat olanı okuyor, biri bir **RAG eşiğine** besliyor). `§10`'a `D-18` ve `D-19`. Header'ın elle yazılmış `Count:` satırı **revize edildi** (silinmedi, `F12`): yerine kanonik sayım komutu — elle üye-sayısının bu repoda bayatlama oranı **dokuzda dokuz**. ⏳ **`FAZ-2` AÇIK:** damganın altındaki diğer her satır hâlâ **2026-08-10 fotoğrafıdır**; ayırt edici ibare **`ÖLÇÜLDÜ 2026-08-27`**. |
 | 0.1 | 2026-08-03 | Initial draft from CTPM baseline audit. 14 open decisions. Header count of "25 invariants: 15 HOLDS · 10 VIOLATED/BLOCKED" was an estimate and is corrected in 0.2 by counting the entries. |
 | 0.4 | 2026-08-10 | **`INV-C` — Compliance & Retention ailesi açıldı** (§9, dört madde). Bir BRD okuma turu (`docs/analysis/0050`) bu boyutun ne kodda ne sözleşmede var olduğunu ölçtü: `Section_09_NFR` §9.5 üç Türk düzenlemesini adıyla sayıyor, `§9.8` 7 yıllık saklamayı bir **Phase 1 taahhüdü** olarak listeliyor, ve `compliance|KVKK|GDPR|retention|INV-C-` bu belgede **0** geçiyordu. Ailenin özel niteliği: `INV-C-001` ve `INV-C-004` bugün **kazara** sağlanıyor — biri hiçbir şey silinmediği, diğeri hiçbir ERP olmadığı için. İkisi de bir **kod** değişikliğiyle değil, bir **veri/entegrasyon** değişikliğiyle bozulur, ve o gün hiçbir test kırmızıya dönmez; normal regresyon ağı bu sınıfı hiç görmez. Bağlayıcılık **iddia edilmiyor** — BRD'nin listesi bir girdidir (`CLAUDE.md §2.1.2`) ve hukuki kapsam [[T-170]]'te açıktır. Sayı 33 → 38, ve **sayılarak** güncellendi (v0.1'in tahmin hatası tekrarlanmadı). Bölüm numaraları 9→10, 10→11, 11→12, 12→13 kaydı.
