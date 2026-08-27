@@ -793,6 +793,23 @@ Alt-ajana iş verirken **kaynağı referansla ver, özetini değil.**
 
 ### 4.2 "Done" tanımı (ZORUNLU — hepsi sağlanmadan `done` yazılmaz)
 
+- [ ] ⛔ **BİRİNCİ MADDE — ÖLÇÜM ORTAMI TEMİZ Mİ:**
+      ```bash
+      docker ps --filter "label=com.docker.compose.project=tpm"
+      ```
+      → **hayalet `tpm` compose projesinden ÇIKAN HER ŞEY durdurulur.**
+      ⚠️ İlk yazımı `docker ps | grep backend` idi ve **DOĞDUĞU TURDA kör
+      noktası ölçüldü** (`Z47` review 🟡-1): o desen **temiz** raporlarken
+      `collmind-tpm-frontend` (aynı hayalet proje, `/Users/…/Code/TPM/
+      docker-compose.yml`) **`:8080`'de AYAKTAYDI**. ⇒ `DISIPLIN`: *"Bir AD,
+      koruduğu SINIFTAN dar olabilir"* — **maddeyi yazan turda**. Filtre artık
+      **aileyi** hedefliyor, bir **üyeyi** değil. *(imaj `tpm-backend` · compose
+      projesi `tpm` · `tpm_database` · port `5433` — `TTM` donduruluşundan kalma hayalet.)*
+      ⛔ **Bu artık bir UYARI değil, bir LİSTE MADDESİ** (ürün sahibi, 2026-08-27 · `Z47 §4`):
+      `e2e`-öncesi **mekanik** kontrol, *"ölçüm ortamı temiz mi"* ailesinin **ilk sorusu**.
+      **Gerekçe:** `§1`'de bir uyarı olarak duruyordu ve **hatırlanmaya bağlıydı**; bir kez
+      daha yakalandı (2026-08-27, `Z45` doğrulama turu). *Bir uyarı hatırlanmak zorundadır;
+      bir liste maddesi değildir* — `DISIPLIN`: **"kuralı hatırlamak yerine ARACI çağır."**
 - [ ] Testler yeşil (unit + ilgili e2e)
 - [ ] `npm run guards` yeşil (backend'e dokunulduysa) — exit 0
 - [ ] `bash scripts/guards/money-float.sh --ratchet` exit 0 — **hiçbir** Alan A dosyasının

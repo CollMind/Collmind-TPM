@@ -3818,3 +3818,36 @@ durumda NE basar?"*** Cevap *"yine yeşil"* ise kapı **henüz bitmemiştir**.
 
 ⇒ **`ADIM 3`'ün denetim-altyapısı mirası bu yasayla devredilir.** `RLS` ve denetim
 adımlarının kapıları **bu standarda** yazılır.
+
+---
+
+## BİR UYARI HATIRLANMAK ZORUNDADIR; BİR LİSTE MADDESİ DEĞİLDİR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-27, `Z47 §4`):** `docker ps`'te yabancı bir `collmind-tpm-backend`
+container'ı (imaj `tpm-backend`, port `5433`, `TTM` donduruluşundan kalma) doğrulama
+turunun **tam başında** çıktı. Yakalandı — çünkü `CLAUDE.md`'deki **uyarı okundu**.
+
+Ama uyarı **2026-08-21'de yazılmıştı** ve o gün *"davranışsal ölçümleri bozdu"* diye
+kaydedilmişti. Yani **aynı tuzak, aynı repoda, ikinci kez** — ve ikisinde de yakalanma
+sebebi **bir kapı değil, bir hatırlama** oldu.
+
+> **Ürün sahibinin hükmü:** *"`docker ps` kontrolü **doğrulama-listesinin KALICI İLK
+> MADDESİ** olsun. Şu an bir uyarı — **liste maddesi değil**."*
+
+### Kuralın kendisi
+
+> **Bir uyarı, okuyucunun onu HATIRLAMASINA bağlıdır. Bir liste maddesi değildir.**
+> **Aynı tuzağa İKİNCİ kez düşüldüğünde, uyarı bir MADDEYE terfi eder.**
+
+📌 Bu, `DISIPLIN`'in *"kuralı hatırlamak yerine **ARACI ÇAĞIR**"* ilkesinin **belge
+tarafıdır** — ve `T-128`'in (*"mutasyon geri almayı bir script'e indir"*) kardeşidir:
+orada bir **refleks** bir **araca**, burada bir **uyarı** bir **maddeye** çevrildi.
+
+### ⚠️ Ve terfinin ölçütü **sıklık değil, TEKRAR**
+
+Bir uyarı ne kadar iyi yazılmış olursa olsun, **ikinci kez ihlal edildiğinde** artık
+metnin kalitesi tartışılmaz — **yerleşimi** tartışılır. *(Bu repoda ölçülmüş kardeş
+vakalar: `push-order` elle iki kez ters yapıldı ⇒ **script** oldu; mutasyon geri alma üç
+kez yanlış gitti ⇒ **araç** oldu.)*
+
+> **Bir kuralın üçüncü ihlali, kuralın değil YERLEŞİMİNİN kusurudur.**

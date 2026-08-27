@@ -4753,3 +4753,78 @@ login-yolu) **küçük ve çoğu bu üç hükmün TÜREVİ** — paket güncelle
 hesaplıyorsa **kolonun ölümü (`İlke-4`) GÜÇLÜ ADAY** — ⛔ **ama o hüküm, AYRIŞMA-ALARMININ
 CANLIDA NE SIKLIKTA ÖTTÜĞÜ görülmeden VERİLMEYECEK.** Docker-sonrası ilk `e2e` koşumu **o
 veriyi de getirir.**
+
+---
+
+# `Z47` — `INV-B-009` HÜKMÜ: **KOLON ÖLÜR**
+
+**Tarih:** 2026-08-27 · **Karar:** ürün sahibi · **Girdi:** canlı ayrışma ölçümü (4 zarfın 2'si)
+
+## `§1` — ÜÇ GEREKÇE
+
+### 1 · Bu bir *"senkronu BOZULMUŞ kopya"* değil — **HİÇ SENKRON MEKANİZMASI OLMAMIŞ** bir kopya
+
+```
+available_amount  YALNIZ create + splitEnvelope'ta yazılıyor
+reserve / commit / release           HİÇ DOKUNMUYOR
+⇒ doğduğu gün DOĞRUYDU, İLK REZERVDE BAYATLADI
+```
+
+> Senkron eklemek (**seçenek-a**), **var olmayan bir mekanizmayı SIFIRDAN inşa etmek**
+> demek — ve `İlke-4`'ün **kitabi vakası**: aynı gerçek (`available`) **iki yerde**, biri
+> **türetilmiş** biri **yazılmış**, ve **yazılmış olan KANITLANMIŞ BİÇİMDE YALAN SÖYLÜYOR.**
+
+### 2 · Ayrışma ORANI: `4`'te `2` — **rezerv görmüş HER zarf ayrık**
+
+⇒ Senkron *"ara sıra kaçırılan bir yol"* **değil**, **tüm yaşam-döngüsünün eksik** olduğunu
+gösteriyor. Ve alarm-ara-adımı canlıda **yarı yarıya** ötecekti — **sürdürülemez**.
+
+### 3 · `K-2.2` ailesinin ruhu **hükmü zaten vermişti**
+
+> **Defter gerçeğin kaynağı; `available` bir TÜREV.**
+> **Türev, SORGU ANINDA türetilir** (view zaten yapıyor, doğruluğu **bağımsız
+> yeniden-hesapla kanıtlı**) — **kolonda SAKLANMAZ.**
+
+## `§2` — UYGULAMA DİSİPLİNİ, dört satır
+
+| # | |
+|---|---|
+| **a** | **Tüm okuyucular** view'a/türetime döner. Envanter: `on-invoice-validation:575` **düzeltildi**; **kalan okuyucu taraması DÖRT-YÜZEY usulüyle** — *başka `available_amount` okuyan var mı*, **poz. kontrollü** |
+| **b** | Kolon **migration'la düşer** — **`Z24` disiplini**: `run` → `revert` **byte-birebir** → `run`. Finansal tablo ama **satır silinmiyor**, **türetilmiş-kolon** ölüyor ⇒ **ADR 0012 ihlali YOK**; yine de kayda bir cümle: ***"ölen şey VERİ değil, BAYAT TÜREV."*** |
+| **c** | Ara-adımın **ayrışma-alarmı kolonla birlikte ÖLÜR** — *görevini yaptı: **teşhis verisini o üretti***. |
+| **d** | `INV-B-009` statüsü **`RESOLVED`** — kaynak **teklendi**, ve **TEK-KAYNAK invariant'ı olarak YENİDEN YAZILIR**: ***"`available` hiçbir yerde SAKLANMAZ; her okuma DEFTER-TÜRETİMİDİR."*** |
+
+📌 **`(d)` bir ilktir:** uzlaşı turunun **kalıcı-mekanizma kararının** (*türetilebilir statü
+guard çıktısından türer*) **ilk YENİ-DOĞAN uygulaması** — bir invariant, bir **statü satırı**
+olarak değil, bir **tek-kaynak kuralı** olarak yazılıyor.
+
+## `§3` — SIRA
+
+```
+KOLON-ÖLÜMÜ (küçük, BAĞIMSIZ dalga)  →  T-307-m2  →  bağlantı-spike + sonda  →  K1 + denetim
+```
+> **`INV-B-009`'u AÇIK BIRAKIP üstüne dalga bindirmek, *"BİLİNEN AYRIŞMA ÜSTÜNDE
+> ÇALIŞMAK"* olurdu.** Dosya kesişimi **yok**.
+
+## `§4` — İKİ KAYIT
+
+### `T-273` şartının bu turdaki ödemesi
+
+> *"Altı uçta birden kırmızı — bugüne kadar yalnız **kod okumasıydı**."*
+>
+> ⇒ **`T-307`'nin tüm hüküm zinciri artık ÖLÇÜLMÜŞ bir kusurun üstünde duruyor,
+> OKUNMUŞ bir kusurun değil.**
+
+### ⛔ YABANCI CONTAINER: kural maaşını ödedi — ama **LİSTE MADDESİ OLMALI**
+
+`tpm-backend`, port `5433` — **`TTM` donduruluşundan kalma hayalet**. Bugün yakalandı,
+çünkü `CLAUDE.md` uyarısı okundu.
+
+> **Ürün sahibi:** *"`docker ps` kontrolü **doğrulama-listesinin KALICI İLK MADDESİ**
+> olsun. Şu an bir `CLAUDE.md` **uyarısı** — **liste maddesi değil**; `e2e`-öncesi
+> **MEKANİK kontrol** hâline gelsin, ***"ölçüm ortamı temiz mi"* ailesinin İLK
+> SORUSU.***"
+
+📌 Bir uyarı **hatırlanmak** zorundadır; bir **liste maddesi** hatırlanmak zorunda değildir.
+*(Bu, `DISIPLIN`'in *"kuralı hatırlamak yerine ARACI çağır"* ilkesinin bu turdaki
+uygulaması.)*

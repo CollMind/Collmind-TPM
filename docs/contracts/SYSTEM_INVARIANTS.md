@@ -531,7 +531,11 @@ across the estate all concern CAP.
   `FAZ1_PLAN.md` `Adım 2/6` · `ADIM3_KAPANIS_RAPORU §3.5`
 
 ### INV-B-009 — "Available" has exactly one carrier, and every consumer reads that one.
-- **Status:** 🔴 **VIOLATED** — `ÖLÇÜLDÜ` 2026-08-27, **bu turda doğdu**
+- **Status:** ✅ **RESOLVED** — `ÖLÇÜLDÜ` 2026-08-27, **AYNI GÜNDE ÇÖZÜLDÜ** (`Z47`,
+  data-engineer, migration `1814000000000-DropAvailableAmountFromBudgetEnvelopes.ts`).
+  ⚠️ Aşağıdaki `VIOLATED` bulgusu **SİLİNMEDİ** — `F12`/`0006-R` deseni: *"neden
+  ihlaldi"* kayıtta kalır, üstüne çözüm izi yazılır.
+- **Eski status (silinmedi, tarihsel):** 🔴 **VIOLATED** — `ÖLÇÜLDÜ` 2026-08-27, **bu turda doğdu**
 - **Guard:** **NONE** → target `LINT`/`GUARD SCRIPT` (tek okuma noktası) veya `DB` (kolonun düşürülmesi)
 - **Evidence — iki taşıyıcı, ve CANLI VERİDE AYRIŞMIŞ durumdalar:**
   ```
@@ -576,6 +580,52 @@ across the estate all concern CAP.
   güncellenmiyor), diğeri **düşebilir**.
 - **Source:** bu tur (`SYSTEM_INVARIANTS` uzlaşı `FAZ-1`, 2026-08-27) ·
   `INV-B-004` (*"CAP ve spend aynı kaynaktan"*) ile **aynı sınıf, farklı tablo**
+
+- **⛔ ÇÖZÜM — `Z47` (2026-08-27, ürün sahibi): ŞIK (ii), kolon DÜŞÜRÜLDÜ.**
+  Yukarıdaki `D-18`'in üç şıkkı (`i` snapshot-yeniden-adlandır · `ii` türev-düşür ·
+  `iii` canlı-senkron-kur) arasından **`(ii)` seçildi** — `K-2.2` ailesinin ruhu
+  ("defter gerçeğin kaynağı, `available` bir TÜREV, sorgu anında türetilir,
+  kolonda SAKLANMAZ") zaten hükmü vermişti. Gerekçe (özet, tam metin
+  `docs/brd-v2/04_KARAR_KAYDI.md` `Z47 §1`):
+  ```
+  1. Bu bir "senkronu BOZULMUŞ kopya" değil — hiç senkron mekanizması OLMAMIŞ
+     bir kopya (create/split'te yazılıyor, reserve/commit/release hiç
+     dokunmuyor).
+  2. Ayrışma oranı 4 zarfın 2'si — "ara sıra kaçırılan bir yol" değil, TÜM
+     yaşam döngüsünün eksik olduğunu gösteriyor.
+  3. K-2.2 ailesi hükmü zaten vermişti.
+  ```
+  **Uygulama (`Z47 §2`, dört satır — hepsi bu turda kapandı):**
+  - `(a)` Tüm okuyucular view'a/türetime döndü — dört-yüzey taraması
+    (`src`/`test`/`collmind.frontend/src`/`scripts`, pozitif kontrollü)
+    `on-invoice-validation.service.ts`, `agreement-transaction.controller.ts`
+    **ve brifingde adı geçmeyen bir beklenmedik okuyucu**:
+    `budget.service.ts#findAllEnvelopes/#findEnvelopeById` — bunlar entity'yi
+    çıplak döndürüyordu ve `GET /budget/envelopes(/:id)` üzerinden
+    `collmind.frontend`'in envelope liste/dashboard bileşenlerine
+    besleniyordu. Kolon düşseydi bu okuyucular DÜZELTİLMEDEN JSON alanı
+    sessizce kaybolur, frontend `envelope.availableAmount.toLocaleString(…)`
+    üzerinde ÇÖKERDİ — bu yüzden her ikisi de `v_budget_summary`'den
+    zenginleştirmeye taşındı (alan adı korunur, DEĞERİ artık her zaman canlı).
+  - `(b)` Kolon migration'la düştü (`1814000000000`, üç durum ayrımı, `run→
+    revert→run` ampirik doğrulandı — bkz. task raporu). Satır silinmedi,
+    **`ADR 0012` ihlali YOK**.
+  - `(c)` Ara-adımın ayrışma-alarmı (`on-invoice-validation.service.ts`'te
+    iki-kaynak okuma + karşılaştırma) kolonla birlikte kaldırıldı — görevini
+    yaptı, teşhis verisini o üretti.
+  - `(d)` Bu satır — invariant **tek-kaynak kuralı** olarak yeniden yazıldı.
+- **⛔ YENİ İNVARYANT İFADESİ (kanıt yüzeyi: şemanın kendisi):**
+  > **`available` hiçbir yerde SAKLANMAZ; her okuma DEFTER-TÜRETİMİDİR.**
+  > Kanıt: `main.budget_envelopes` tablosunda `available_amount` kolonu YOK
+  > (`information_schema.columns` sorgusu — migration `1814000000000` sonrası
+  > sıfır satır döner). Tek taşıyıcı `main.v_budget_summary.available_amount`
+  > (`allocated − reserved(incl. COMMIT) − consumed`, sorgu anında türetilir).
+  > Bu, eski `INV-B-009` ifadesinin *"tek okuma noktası"* talebini bir GUARD
+  > İLE DEĞİL, **şemanın kendisiyle** sağlıyor — saklanacak ikinci bir
+  > taşıyıcı yok, ihlal etmek için okunacak bir kolon yok.
+- **Guard (güncel):** eski `NONE` bulgusu **kapandı** — kanonik kaynak artık
+  `information_schema.columns` (kolon yokluğu = mekanizma), ek bir
+  lint/guard script'e gerek yok. Eski `NONE` satırı yukarıda **silinmedi**.
 
 ---
 
@@ -1241,7 +1291,7 @@ whether a silent wrong number depends on it.
 | **D-15** | Is a computed KPI of exactly zero the same as "no KPI"? | INV-N-002 (blocks the transformer phases) | Seven live sites flip direction the moment a `decimal` column stops arriving as a string: `"0.0000"` is truthy, `0` is not. ⚠️ **ADR 0008 does NOT cover this** — that decision was about a planner's ENTERED value; these are computed KPIs and rule ceilings. Different axis, separate decision. Measured in `docs/analysis/0014` |
 | **D-16** | How are scale-3 volume columns represented? | INV-N-002 | 8 columns at `numeric(x,3)`. ADR 0007 settled money (minor units) and rate (micro); volume was never decided, so no parser fits them |
 | **D-17** | Are `unitPrice` / `cogs` money or price? | INV-N-002 | Same distinction C3 already drew for `entered_unit_amount`: a per-unit figure legitimately carries four decimals, so the kuruş rule does not apply to it. Whether these two columns are on that side has not been decided |
-| **D-18** | *"Kullanılabilir" hangi taşıyıcıdır?* — `budget_envelopes.available_amount` (saklanan) mı `v_budget_summary.available_amount` (hesaplanan) mı | INV-B-008, INV-B-009 | ⛔ **Yeni (2026-08-27, uzlaşı `FAZ-1`, `ÖLÇÜLDÜ`).** İkisi canlı veride **ayrışmış**, ve iki canlı rota **saklanan** olanı okuyor — biri bir **RAG eşiğine** besliyor. Üç şık: **snapshot** (yeniden adlandır) · **türev** (kolonu düşür) · **canlı** (her yazma yolunda güncelle). `INV-B-008`'in `CHECK`'i hangi kolona konacağı **bu karara bağlı** — yani `D-18` çözülmeden `INV-B-008` yazılamaz. `INV-B-004` (*"CAP ve spend aynı kaynaktan"*) ile aynı sınıf, farklı tablo |
+| **D-18** | *"Kullanılabilir" hangi taşıyıcıdır?* — `budget_envelopes.available_amount` (saklanan) mı `v_budget_summary.available_amount` (hesaplanan) mı | INV-B-008, INV-B-009 | ⛔ **Yeni (2026-08-27, uzlaşı `FAZ-1`, `ÖLÇÜLDÜ`).** İkisi canlı veride **ayrışmış**, ve iki canlı rota **saklanan** olanı okuyor — biri bir **RAG eşiğine** besliyor. Üç şık: **snapshot** (yeniden adlandır) · **türev** (kolonu düşür) · **canlı** (her yazma yolunda güncelle). `INV-B-008`'in `CHECK`'i hangi kolona konacağı **bu karara bağlı** — yani `D-18` çözülmeden `INV-B-008` yazılamaz. `INV-B-004` (*"CAP ve spend aynı kaynaktan"*) ile aynı sınıf, farklı tablo. ✅ **ÇÖZÜLDÜ (2026-08-27, `Z47`, aynı gün):** şık **`(ii)` türev** seçildi, kolon `1814000000000` ile düştü — bkz. `INV-B-009` girdisinin **ÇÖZÜM** bloğu (yukarıda). `INV-B-008`'in `CHECK`'i artık **tek bir kolona** (`v_budget_summary.available_amount`, ya da eşdeğer bir sorgu-anı ifadesi) bağlanabilir — bu, `INV-B-008`'i hâlâ `ÖLÇÜLMEDİ` bırakan **ayrı bir** karardır (bir `CHECK` bir VIEW üzerine yazılamaz; uygulama-katmanı ya da trigger tasarımı gerekir), `D-18`'in kendisi kapandı. |
 | **D-19** | `SUMMARY_READ` üyeliğinin kapsam sözleşmesi bir **KAPIYA** bağlanacak mı | INV-T-006 | ⛔ **Yeni (2026-08-27).** `Z32` kapsamı *"üyeliğin SONUCU"* ilan etti ama sonucu **ölçen bir şey yok**. Önerilen kapı **türetilmiş evrenli** bir ratchet (`route-cell-map.py` `SUMMARY` ∩ `scope-a1-baseline.txt`, tek yön aşağı). Yeni kapı açmak bir karardır → ürün sahibi |
 
 ---
