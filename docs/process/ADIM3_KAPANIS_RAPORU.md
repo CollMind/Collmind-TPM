@@ -2,6 +2,94 @@
 
 **Tarih:** 2026-08-27 · **Hazırlayan:** Team Lead · **Karar:** ürün sahibi
 **Tür:** ⛔ **KARAR-GİRDİSİ BELGESİ** — bir rapor değil
+**Statü:** 🔒 **MÜHÜRLÜ** (2026-08-27) — `B4` hükmü verildi, `A′` indi
+
+---
+
+# 🔒 MÜHÜR — `ADIM 3` KAPANDI
+
+> **`61` filtresiz uçla başladı; `210` rotalık gerekçeli envanter, `25` hücrelik
+> davranıştan-türetilmiş yetenek haritası, `default-deny` çekirdeği (`A′`), kendi
+> evrenlerini türeten `12+` kapı ve `15` satırlık adresli-sözleşmeli artıkla kapandı.
+> **On bir dalga, sıfır beklenmeyen davranış değişikliği.** Kalan her satırın
+> **kim-ne zaman-neyle** açacağı yazılı.**
+
+## Son sabitlik satırı — taze ölçüldü
+
+```
+@Roles 15 + CAPABILITY 195 = 210          G4 çapraz-araç: satır=210
+FILTRESIZ 0 · PUBLIC 3 · SELF 7 · ALAN_GUARD 2 · CAPABILITY 195 · ROLES 15
+G1…G8 · G5b(25/0) · G5c(25/25/0) · G2b(12/12) · G7 BİREBİR · G8(0/0)
+```
+
+## `B4` HÜKMÜ — mühürlenen karar
+
+```
+B4 = A′ → B, SIRALI İKİ ADIM   (tek düğme DEĞİL — iki düğme ZIT sonuç verir)
+
+A′  ✅ İNDİ   CapabilityGuard default-deny + üç ön-şart:
+              @Public/@SelfScoped tanınır · muafiyet TÜRETİLMİŞ evrenden
+              · kalan-@Roles ratchet'i (taban 15, DİP 2)
+B   ⏳ BEKLER  RolesGuard'ın ölümü — tetiği TARİH değil OLAY: kalan-@Roles = 2
+```
+
+⛔ Ve mühre giren bir gerçek: ***"liste sıfırlanınca"* beklemesi SAĞLANAMAZ BİR
+KOŞULDU** — iki satır **KALICI**. Sıfır bir tarih değil, **gelmeyecek bir olaydı**.
+Bunu bir ölçüm değil, **bir sütun** ortaya çıkardı (`AÇILMA KOŞULU`).
+
+## `A′` dalgasının bıraktığı dört kapı
+
+| kapı | ne tutar |
+|---|---|
+| `roles-ratchet` | taban `15` · **dip `2`** |
+| `alan-guard-ratchet` | taban `2` |
+| `domain-guard-parity` | **çift-kayıt** — `route-scope` KAYNAK A ↔ guard KAYNAK B |
+| kilitli-tenant pini | **CANLI** zincir, **TEK `it`**, negatif yarı içinde |
+
+---
+
+## 🔒 MÜHRE GİREN ÜÇ SATIR
+
+### 1 · ⛔ KAPI DİSİPLİNİNİN KAPANIŞ TAŞI
+
+> **BİR KAPI, ÖLÇEMEYECEĞİ DURUMDA YEŞİL DEĞİL, *SETUP HATASI* RAPORLAR.**
+
+Bu, `G5`'in evren-boşalmasından başlayan zincirin **son halkasıdır** ve **dört vakayı
+tek yasada** toplar:
+
+```
+1  BOŞALAN      G5     evren (@Roles rotaları) tükendi     → kapı hiç kırmızı veremez
+2  DONAN        G5b    evren iki hücrede dondu             → yeni üye görünmez
+3  KAÇIŞ-YOLLU  G2b    tip/ad ekseninden düşen tablo       → "otomatik" görünür, değil
+4  ÖLÇEMEYEN    parity env set → KAYNAK A'nın ETKİN değeri → ölçüm ANLAMSIZ
+```
+
+> ### **BİR KAPININ ÜÇ MEŞRU ÇIKTISI VARDIR: `yeşil` · `kırmızı` · `"ölçemedim"`.**
+> ### **SESSİZ-YEŞİL BUNLARIN HİÇBİRİ DEĞİLDİR.**
+
+⇒ `ADIM 3`'ün **denetim-altyapısı mirası** (`G1–G8` + `G5b`/`G5c` + `G2b` +
+`ALAN_GUARD` çifti + `roles-ratchet` + `domain-guard-parity`) **bu yasayla birlikte
+devredilir.** `RLS` ve denetim adımları kapılarını **bu standarda** yazar.
+
+### 2 · `constructor.name` — *"örtük varsayılana yaslanan denetim mekanizması"* sınıfı
+
+`A′`'nın domain-guard muafiyeti sınıf **adına** bağlı. Minification açılsaydı yüklem
+**sessizce çökerdi**: guard adları kısalır → tanınan küme **boşalır** → her `ALAN_GUARD`
+rotası **default-deny**'a düşer.
+
+Bugün `minimize: false` **gerekçesiyle yazılı** (önceden `@nestjs/cli`'nin **örtük**
+`mode:'none'` varsayılanına yaslanıyordu, ve **hiçbir kapı onu tutmuyordu**).
+
+⚠️ **Ama bu satır `Faz-2`/deploy hazırlığında bir KARAR NOKTASI olarak geri gelecek:**
+prod build'de minification istenirse **yüklem ada değil TOKEN'a bağlanmalı.**
+⇒ **İlk-deploy ön-koşul listesine tek satır:**
+> *"Guard-tanıma yükleminin **minification-dayanıklılığı** doğrulanır."*
+
+### 3 · `ADIM 3`'ün tek-paragraf özeti
+
+*(Yukarıda, mührün ilk cümlesi — çünkü altı ay sonra ilk okunacak şey odur.)*
+
+---
 
 > ## Neden bu belge önce geliyor
 >
@@ -305,6 +393,18 @@ yan yana, **ölçülmüş maliyetleriyle** duruyor.
 | `route-scope` | `FILTRESIZ` kovası + `ROLES`/`CAP` sayımı | `G4`'ün çapraz aracı |
 | `single-mechanism` | bir rota **iki mekanizma** birden taşımasın | `B4`'te kritik — bkz. `§3` |
 | `app-runtime-grants` | çalışma-zamanı yetki self-test'i | ⚠️ **aralıklı** — `T-290` |
+
+## 4.2b · `A′` DALGASININ DÖRT KAPISI (2026-08-27)
+
+| kapı | ne ölçer | evren-kaynağı | mutasyon kanıtı |
+|---|---|---|---|
+| `roles-ratchet` | kalan `@Roles` **artmasın** (taban `15`, **dip `2`**) | **türetilmiş** (`route-scope --list-roles`) | ✅ baseline'dan anahtar silindi → `exit 1`, **adıyla** |
+| `alan-guard-ratchet` | `ALAN_GUARD` kovası **büyümesin** (taban `2`) | **türetilmiş** (`--list-alan-guard`) | ✅ fixture'dan guard düşürüldü → `exit 1` |
+| **`domain-guard-parity`** | ⛔ **ÇİFT-KAYIT**: muaf-guard kümesi **iki bağımsız kaynakta AYNI mı** | KAYNAK A `route-scope.sh` ↔ KAYNAK B `capability.guard.ts` | ✅ **iki yönde**: `KAYNAK-A-ONLY` · `KAYNAK-B-ONLY`, ikisi de **adıyla**. Ve **env set → `exit 2`** (*ölçemedim*) |
+| `single-mechanism` **(genişletildi)** | **DÖRDÜNCÜ ÇİFT**: `@RequireCapability` + tanınan domain-guard | KAYNAK A'dan **geçirilir** (üçüncü kopya **yok**) | ✅ `SettlementGuard` sınıf seviyesine → `exit 3`, rotayı **ve çifti** adıyla |
+
+> ⛔ **`ratchet` SAYIYI tutar · `parity` SINIFI tutar.** Yeni bir domain-guard
+> **iki yere birden** yazılmadan geçemez, ve ikinci yazım bir **karar-kaydı** ister.
 
 ## 4.3 ⛔ AĞIN KENDİ SAĞLIĞI — bu arkın en değerli çıktısı
 

@@ -15,7 +15,20 @@
    ortamı yok (`NFR-13`: bazı ölçütler "çözümü konuşlandırma kararında").
    **Kayıt:** ilk-deploy ön koşulları listesine yazıldı — `Faz 4`'te unutulmaması bu
    satırın varlık sebebidir. *(ürün sahibi, 2026-08-15)*
-2. **`T-113` kapsamı temizlik değil, ratchet:** bugünkü hata listesi baseline
+2. **⛔ GUARD-TANIMA YÜKLEMİNİN MİNİFİCATION-DAYANIKLILIĞI DOĞRULANIR** —
+   ilk-deploy ön koşulu (`ADIM 3` mührü, 2026-08-27).
+   `B4 A′`'nın domain-guard muafiyeti sınıf **ADINA** bağlı
+   (`capability.guard.ts` `KNOWN_DOMAIN_GUARD_NAMES` ↔ `constructor.name`).
+   Minification açılırsa yüklem **SESSİZCE ÇÖKER**: adlar kısalır → tanınan küme
+   **boşalır** → her `ALAN_GUARD` rotası **default-deny**'a düşer.
+   Yön **güvenlidir** (fail-**closed**, `403`) ama sonuç bir **ÜRETİM KESİNTİSİDİR**,
+   ve ilk göreni **kullanıcı** olur.
+   Bugün `webpack.config.js` `optimization.minimize = false` **gerekçesiyle** yazılı
+   *(önceden `@nestjs/cli`'nin **örtük** `mode:'none'` varsayılanına yaslanıyordu —
+   *"örtük varsayılana yaslanan denetim mekanizması"* sınıfı)*.
+   ⇒ **Prod build'de minification istenirse yüklem ADA değil TOKEN'a bağlanmalı.**
+
+3. **`T-113` kapsamı temizlik değil, ratchet:** bugünkü hata listesi baseline
    (dosya+kural listesi olarak, sayı olarak değil), **yeni** hata kırmızı. 108'i
    sıfırlamak Faz 1 kapsamı dışıdır. `T-212` ile aynı aile. *(ürün sahibi, 2026-08-15)*
 

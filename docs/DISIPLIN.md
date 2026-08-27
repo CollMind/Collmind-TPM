@@ -3782,3 +3782,39 @@ listesine girer. *(`22` = üç sınıf ⇒ **üç** pin; `15`+`SELF` iki sınıf
 
 ⚠️ Ve kendini kandırma biçimi ince: pin listesi *"kalan-15 birebir"* diyordu ve **`15`'i
 gerçekten** ölçüyordu. **Eksik olan sayı değil, SINIFTI.**
+
+---
+
+## BİR KAPININ ÜÇ MEŞRU ÇIKTISI VARDIR (ZORUNLU — kapı disiplininin kapanış taşı)
+
+```
+yeşil  ·  kırmızı  ·  "ÖLÇEMEDİM"
+```
+
+> ⛔ **SESSİZ-YEŞİL BUNLARIN HİÇBİRİ DEĞİLDİR.**
+> **BİR KAPI, ÖLÇEMEYECEĞİ DURUMDA YEŞİL DEĞİL, *SETUP HATASI* RAPORLAR.**
+
+Bu kural bu gövdedeki **dört ayrı vakayı** tek yasada toplar — hepsi `ADIM 3` boyunca,
+**aynı kapı ailesinde**, ve her biri bir öncekinin **düzeltmesinden** doğdu:
+
+| # | bozulma | kapı | ne oldu |
+|---|---|---|---|
+| 1 | **BOŞALAN** evren | `G5` | `@Roles` rotaları tükendi ⇒ kapı **hiçbir girdide** kırmızı veremez |
+| 2 | **DONAN** evren | `G5b` | iki hücrede dondu ⇒ yeni hücreler **görünmez** |
+| 3 | **KAÇIŞ-YOLLU** evren | `G2b` | tip/ad ekseninden düşen tablo — *"otomatik"* görünür, **değil** |
+| 4 | **ÖLÇEMEYEN** kapı | `domain-guard-parity` | env set edilince KAYNAK A'nın **etkin** değeri literalden farklı ⇒ çakıştırma **anlamsız** |
+
+`1–3`'ün her biri **yeşil** veriyordu ve **hiçbir şey ölçmüyordu**. `4` bunun **bilinçli
+çözümüdür**: kapı, ölçemeyeceğini **anladığı** yerde **`exit 2`** verir.
+
+### Neden `"ölçemedim"` ayrı bir çıktı olmak zorunda
+
+`yeşil` = *"ölçtüm, temiz"*. `"ölçemedim"` = *"ölçmedim"*. **İkisini aynı çıktıya
+sıkıştırmak, kapının tüm değerini yok eder** — çünkü okuyucu farkı **göremez**, ve
+`§2.7`'nin kuralı devreye girer: **sinyal sabitse, sinyal değildir.**
+
+📌 Ve pratik testi: bir kapı yazarken sor — ***"bu kapı hangi durumda ölçemez, ve o
+durumda NE basar?"*** Cevap *"yine yeşil"* ise kapı **henüz bitmemiştir**.
+
+⇒ **`ADIM 3`'ün denetim-altyapısı mirası bu yasayla devredilir.** `RLS` ve denetim
+adımlarının kapıları **bu standarda** yazılır.
