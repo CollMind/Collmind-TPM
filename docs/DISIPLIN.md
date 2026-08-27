@@ -3927,3 +3927,79 @@ o kararın altına gömmez.**
 📌 Bu, uzlaşı turunun **kalıcı mekanizmasının** (*"bir `Z`-kaydını kapatan tur, türev
 belgeleri de yazar"*) **ilk rutin sınavıydı** — ve sınavın öğrettiği: türev belgeyi
 güncellemek *"statüyü değiştirmek"* değil, **gerekçeyi tazelemek** olabilir.
+
+---
+
+## KAPSAM GENİŞLETME **YETKİSİ YOKTUR** — TEKLİF + ÖLÇÜM + `DUR` VARDIR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-27, `T-307-m2`):** brief **iki** dosya adlandırdı; ajan **on
+dört** sildi. Ve **doğru davrandı** — ama *"doğru"*nun tanımı **mekanizma değil, ölçüm**:
+
+```
+✅ genişletti  ∧  DUR'a düşürdü  ∧  ONAY istedi
+⇒ ve onayı MEŞRU kılan şey ajanın TAKDİRİ değil, İKİ ÖLÇÜM:
+     '/tenants' string'i  src genelinde  →  SIFIR
+     silinen 14 dosyanın hayatta kalan referansı  →  SIFIR (poz. kontrollü)
+```
+
+> **KAPSAM GENİŞLETME YETKİSİ YOKTUR.**
+> **KAPSAM-GENİŞLEME TEKLİFİ + ÖLÇÜM + `DUR` VARDIR.**
+
+⚠️ Ve ölçümün **şekli** şarttır: *"bence gerekliydi"* bir teklif değildir; *"şu tarama şu
+sonucu verdi, poz. kontrolü şudur"* bir tekliftir. **Brief'in dışına çıkmanın bedeli bir
+ÖLÇÜMDÜR** — ve o ölçüm olmadan genişleme, kapsamın **sessizce** büyümesidir.
+
+📌 Karşı-örnek aynı turda: brief'in adlandırdığı ikisini silip on ikisini bırakmak
+**erişilemez orphan** bırakırdı ⇒ **daraltmak da bir kusurdur.** Doğru cevap ne *"brief'e
+harfiyen uy"* ne *"gerekeni yap"* — **ölç, teklif et, DUR.**
+
+---
+
+## KAPANMIŞ BİR TASK'IN ANLATI PARANTEZİ, BİR TASK DEĞİLDİR (ZORUNLU)
+
+`DISIPLIN` zaten der: *"bilinen eksiklik TODO ile değil, **TASK** ile kaydedilir."*
+`Z48 §2` bunun **daha sinsi** bir ihlalini ölçtü.
+
+**Vaka:** `T-307-m2` beş canlı ucu **tüketicisiz** bıraktı (`EK_E` `🔒`). Bu, `T-307.md`'de
+**kayıtlıydı** — ama:
+
+```
+konum   "✅ TAMAMLANDI" bloğunun İÇİNDE
+biçim   bir PARANTEZ:  "(🔒 — ileride bir ayarlar ekranı için altyapı)"
+statü   task: done
+```
+
+⇒ **Kayıt VARDI ve ALARM ÖTMÜYORDU.** Kapanmış bir task'a kimse geri dönmez; içindeki
+açık kalem, **kapanışın rengini alır**.
+
+> **Bir eksiklik, KENDİ statüsünü taşıyan bir kayıtta yaşamalıdır.**
+> **`done` bir belgenin içindeki `todo`, `done`dur.**
+
+📌 Ve `🔒`'nin kendisi bunu zaten söylüyordu: **`🔒` bir kabul değil, bir ALARMDIR** —
+ama bir alarm **kapalı bir odada** çalıyorsa, çalmıyordur.
+
+---
+
+## KUSURU **ÖLDÜREN** TURDA REPRO ARTEFAKTI **DAHA** GEREKLİDİR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-27, `Z48 §3a`):** `T-307-m2` sessiz-kaybolmayı **gördü**
+(`POST → 201` · `GET → 200` · id **listede yok, hata da yok**) — sonra `create`'i
+**öldürdü**. Pin geçiciydi, dosyası silindi, **ham çıktı saklanmadı**.
+
+```
+kusur ÖLDÜ  ⇒  davranış ARTIK ÜRETİLEMEZ  ⇒  iddia bir daha HİÇ doğrulanamaz
+```
+
+> **Kalıcı pin yazılamaması MEŞRUDUR; ARTEFAKTIN saklanmaması bir EKSİKLİKTİR.**
+> **Ve tam da bu yüzden: bir kusuru ÖLDÜREN turda repro artefaktı, ÖLDÜRMEYEN
+> turdakinden DAHA gereklidir — İKİNCİ BİR ŞANS YOKTUR.**
+
+### ⇒ Ve iki iddia AYNI TURDA farklı statü taşıyabilir
+
+Aynı task'ta:
+```
+altı-uçlu kırmızı (assertSelfTenant devre dışı)  →  ÖLÇÜLDÜ, artefaktı kayıtlı
+create-repro'su                                  →  BEYAN, artefaktı yok
+```
+İkisi **ayrı statü** taşır ve `T-307.md`'de **öyle yazılıdır** — *"kanıtlanmış gibi
+okunmasın"* şerhiyle. **Dürüstlüğün doğru biçimi, iddiaları TEK BİR RENGE boyamamaktır.**

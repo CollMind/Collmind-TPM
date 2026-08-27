@@ -4909,3 +4909,34 @@ birebir tekrarı olurdu).
 de kendiliğinden bildirildi** — biri Team Lead'in. ⇒ **Raporlama refleksi çalışıyor,
 KAÇINMA refleksi çalışmıyor.** Bu, *"bir kuralın üçüncü ihlali YERLEŞİMİNİN kusurudur"*
 maddesinin **bir sonraki adayı**.
+
+---
+
+## `Z48 §4` — STASH DESENİ: ÜÇÜNCÜ İHLALDE **ARAÇ**, ve ŞEKLİ ŞİMDİDEN YAZILI
+
+**Ürün sahibi (2026-08-27):** *"Üçüncü vaka tartışma açmasın diye şeklini şimdiden
+koyalım."*
+
+```
+BUGÜNKÜ SAYIM   iki vaka  ·  ikisi de BİLDİRİMLİ  ·  kayıp SIFIR
+                (1) Team Lead — `git add -A`   (2) dalga ajanı — `git stash/pop`
+KURAL           zaten yazılı: "bir kuralın ÜÇÜNCÜ ihlali, kuralın değil
+                YERLEŞİMİNİN kusurudur"
+```
+
+### Araç adayı — **bugün KURULMAZ**, üçüncüde **tartışmasız** kurulur
+
+> Paylaşılan-ağaç işlemlerinde **`git stash`** ve **`git add -A`**'yı **FİZİKEN
+> ENGELLEYEN** bir `pre-commit`/wrapper kontrolü.
+
+**Niçin bugün değil:** iki vakanın **ikisi de kendiliğinden bildirildi** ve **kayıp
+sıfır**. Bir aracı iki vakada kurmak, ölçülmüş bir gerekçe olmadan **süreç eklemektir**.
+
+**Niçin üçüncüde kesin:** çünkü desen artık **adlandırılmış**:
+> ⛔ **RAPORLAMA refleksi çalışıyor, KAÇINMA refleksi çalışmıyor.**
+
+Ve bu, kardeş vakaların **birebir** şekli: `push` sırası iki kez ters yapıldı → **script**
+oldu; mutasyon geri alma üç kez yanlış gitti → **araç** oldu.
+
+📌 **Şeklin şimdiden yazılması bir tasarım değil, bir TAAHHÜTTÜR** — üçüncü vaka
+geldiğinde *"gerekli mi"* tartışması **açılmayacak**, çünkü ölçüt **bugün** kondu.
