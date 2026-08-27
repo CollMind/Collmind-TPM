@@ -3887,3 +3887,43 @@ yokluğu** bozukluğu **görünmez** kılıyor.
 ⚠️ Ve pratik tarama sorusu: bir sunucu sözleşmesini değiştirirken *"kim render ediyor"*
 değil, ***"kim TİPLİYOR"*** diye sor — çünkü tip **vaat**, render yalnızca **bugünkü
 kullanım**.
+
+---
+
+## `ÖLÇÜLMEDİ` BİR DURAK DEĞİL, **GEREKÇELİ BİR DURAKTIR** (ZORUNLU)
+
+Bir statünün değeri aynı kalırken **gerekçesi** değişebilir — ve o an, kaydın
+**yenilenmesi gereken** andır.
+
+**Ölçülmüş vaka (2026-08-27, `Z47` review 🟡-4):** `INV-B-008` (*"hiçbir zarf negatif
+kullanılabilirliğe düşemez"*) **`ÖLÇÜLMEDİ`** idi ve öyle **kaldı**. Ama **sebebi
+tamamen değişti**:
+
+```
+ESKİDEN   "kullanılabilir HANGİ KOLON?" bilinmiyordu        →  D-18'e bağlıydı
+BUGÜN     D-18 çözüldü (kolon öldü, taşıyıcı TEKLENDİ)
+          ama CHECK bir VIEW'a YAZILAMAZ                     →  YENİ bir soru
+```
+
+> **Ürün sahibinin formülasyonu:**
+> ***"Blokaj kalkınca statü *'çözüldü'* OLMAZ — GEREKÇESİ DEĞİŞİR, ve onu yazmak
+> türev-belge kuralının ASIL İŞİDİR."***
+
+### Kural
+
+> **`ÖLÇÜLMEDİ` bir DURAK değil, GEREKÇELİ bir duraktır.**
+> **Gerekçe değiştiğinde, durağın ADI aynı kalsa bile KAYDI YENİLENİR.**
+
+⛔ Aksi hâlde bir okuyucu **eski gerekçeyi** okur ve **çözülmüş bir blokajı** arar —
+`§2.7`'nin *"bayat cümle bir sonraki kararın GİRDİ yüzeyinde"* sınıfının **en sinsi
+biçimi**, çünkü **statü doğru** görünür.
+
+### ⇒ Ve doğru dosyalama da kuralın parçası
+
+Yeni soru (*"uygulama-katmanı mı, trigger mı"*) `D-18`'in **DEVAMI değil, KARDEŞİdir** —
+ayrı bir teknik soru, ayrı bir sahiple. **Bir kararın çözülmesi, ondan doğan yeni soruyu
+o kararın altına gömmez.**
+
+📌 Bu, uzlaşı turunun **kalıcı mekanizmasının** (*"bir `Z`-kaydını kapatan tur, türev
+belgeleri de yazar"*) **ilk rutin sınavıydı** — ve sınavın öğrettiği: türev belgeyi
+güncellemek *"statüyü değiştirmek"* değil, **gerekçeyi tazelemek** olabilir.
