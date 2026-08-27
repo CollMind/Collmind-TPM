@@ -4462,3 +4462,61 @@ Farklı bir onaylayıcıyla `200` çıktı.
 ⚠️ **Yan bulgu:** `budget-variance` `PLANNER` ile **`500`** verdi —
 `finance-reporting.service.ts:1261`, `column envelope.cplid does not exist`. RBAC'la
 ilgisiz, **önceden var**, ve guard açılınca **görünür oldu**. `T-306`.
+
+---
+
+## `Z44 §8` — `A′` İNŞA EDİLDİ; ve review **dalganın kendi sırasını** çürüttü
+
+**Tarih:** 2026-08-27 · `B4 A′` dalgası + `code-reviewer`
+
+```
+guards 0 · tsc 0 · unit 1151/1151 · e2e 790/790 · T-047 PASS
+SABİTLİK  @Roles 15 + CAPABILITY 195 = 210   DEĞİŞMEDİ
+```
+
+### Dört kapı doğdu
+
+| kapı | ne tutar |
+|---|---|
+| `roles-ratchet` | taban `15`, **dip `2`** — sıfır **değil** (`§4` gerekçesi guard yorumunda, iki rota **adıyla**) |
+| `alan-guard-ratchet` | taban `2` |
+| **`domain-guard-parity`** | ⛔ **ÇİFT-KAYIT**: `route-scope` KAYNAK A ↔ guard KAYNAK B |
+| kilitli-tenant pini | **CANLI** zincir, **TEK `it`**, negatif yarı **içinde** |
+
+> **ratchet SAYIYI tutar · çift-kayıt SINIFI tutar.**
+
+### ⛔ REVIEW `B1` — çürüyen şey **bu dalganın kendi sırasıydı**
+
+```
+runtime  … → DOMAIN-GUARD → required      (MUAF)
+statik   … → CAPABILITY   → ALAN_GUARD    (CAPABILITY kovasında)
+```
+
+⇒ **İki taraf ZIT SIRALI** = `İlke-4`: aynı olgunun iki temsili, **farklı cevap**.
+Probe: `@RequireCapability(ADMIN_READ)` + tanınan domain-guard taşıyan rota,
+**`READONLY` ile bile `true`** dönüyordu.
+
+⚠️ Ve sınıf seviyesine konan bir domain-guard, o dosyadaki **HER** rotayı muaf yapardı
+— bu turun `DISIPLIN`'e **yeni yazdığı** kuralın (*"sınıf-seviyesi dekoratör, dosyadaki
+HER rotanın sözleşmesini değiştirir"*) **tam olarak ürettiği adım**.
+
+**Düzeltme iki parça, ikisi de gerekliydi:**
+1. muafiyet `!required` dalının **içine** alındı ⇒ **YETENEK BAĞLAR**
+2. `single-mechanism`'e **dördüncü çift** — ve evren **KAYNAK A'dan geçirildi**,
+   üçüncü bir kopya **yazılmadı** *(parity zaten `A↔B` eşitliğini zorluyor)*
+
+**Ölçüm:** `SettlementGuard` sınıf seviyesine konunca `single-mechanism` **`exit 3`**,
+rotayı ve çifti **adıyla** basıyor — `route-scope` ise **`exit 0`**, yani körlük
+**oradaydı** ve artık **kapalı**. Kalıcı pin **ayırt edici**: eski sıra geri konunca
+**tam o tek test** düşüyor.
+
+### 📌 VE `Z44 §2`'NİN BİR CÜMLESİ DARALDI
+
+`§2` şöyle diyordu: *"bir rota ya `@Roles` taşır ya yetenek — **üçüncü hâl `G8`
+ailesinin kapısına çarpar**."*
+
+⛔ **`A′` DÖRDÜNCÜ bir muafiyet üreticisi ekledi** (`TANINAN DOMAIN-GUARD`) ve o hâl
+**hiçbir kapıya çarpmıyordu**. Cümle bugün **yeniden doğru** — ama **kendiliğinden
+değil, dördüncü çift eklendiği için.**
+
+> **Bir kapsama iddiası, kapsamı BÜYÜTEN her turda YENİDEN ölçülür.**

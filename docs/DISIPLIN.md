@@ -3661,3 +3661,124 @@ sandı. ⇒ Bir dedektör ağının **kim neyi görür** tablosu, ağın kendisi
 yazılmazsa her tur onu **yeniden keşfeder ve yanlış okur**.
 
 > **Bir kapının kör noktası, KOMŞU kapının görev tanımıdır — ta ki yazılana kadar.**
+
+---
+
+## POZİTİF KONTROLÜN DÖRDÜNCÜ NESLİ: **müdahale DOĞRU EKSENDE mi?** (ZORUNLU)
+
+Bu gövde pozitif kontrolü üç nesilde kaydetti. `Z44 §7` (2026-08-27) dördüncüyü ekledi
+ve aile artık **tam**:
+
+```
+1  GİRDİ VAR MI            aradığım şeyin bulunabileceği veri/rota mevcut mu
+2  ARAÇ ÇALIŞIYOR MU       aynı tarama BAŞKA bir şeyi buluyor mu
+3  MÜDAHALE GERÇEKLEŞTİ Mİ mutasyon MEKANİZMAYA indi mi (satırı BAS)
+4  MÜDAHALE DOĞRU EKSENDE Mİ  ⛔ mutasyon, HAKKINDA SONUÇ ÇIKARDIĞIM ŞEYİN
+                              GÖRDÜĞÜ eksende mi
+```
+
+`4`'ün doğuş vakası: bir pin, `RolesGuard`'ı *"zincirden çıkar"* yerine *"gövdesini
+`return true` yap"* diye mutasyona uğrattı. `1`, `2`, `3` **sağlanmıştı**. Ama sonuç
+**statik kapı hakkında** çıkarıldı ve statik kapı **gövdeye bakmıyor** — `@UseGuards`
+**listesine** bakıyor. ⇒ `1-3` yeşil, **hüküm yanlış**.
+
+### ⛔ VE BU TURUN ASIL SAĞLIK GÖSTERGESİ
+
+Pin **çerçeveyi doğrularken kendi iki iddiası çürüdü.**
+
+> **Doğrulayan şeyin kendisi de doğrulanıyor.**
+
+📌 Bir doğrulama turunun *"her şey tuttu"* ile bitmesi, turun **iyi** gittiği anlamına
+gelmez — turun **kendi iddialarının ölçülmediği** anlamına da gelebilir. Bu turda
+üç pinin üçü de beklentiyi tutturdu **ve** pinin iki yan-iddiası çürüdü; ikisi birden
+doğru olabilir, çünkü **farklı şeylerin iddialarıdır**.
+
+---
+
+## Her YETKİ-GENİŞLEMESİ, arkasındaki yüzeyin İLK GERÇEK TRAFİĞİDİR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-27, `T-306`):** `finance-reporting/budget-variance`,
+`PLANNER` guard'dan geçirildiği anda **`500`** verdi —
+`column envelope.cplid does not exist`. Kusur **önceden vardı**, RBAC'la **ilgisizdi**,
+ve bugüne kadar **hiç görünmemişti**.
+
+```
+örten şey     BİR KUSUR DEĞİL — ÇALIŞAN BİR YETKİ KONTROLÜ
+PLANNER       403 alıyordu ⇒ iş katmanına HİÇ ULAŞMIYORDU
+```
+
+> **Bir role bir uç açmak, o ucun O ROL İÇİN İLK KEZ KOŞMASI demektir.**
+
+### ⇒ Genişleme pinleri `403 → 200`'ü ölçmekle BİTMEZ
+
+> ⛔ **`200`'ün İÇERİĞİ de ölçülür.**
+
+Bu, `T-296`/`B2` dersinin (*"bir uç `200` dönüyor diye çalışıyor değildir"*) **yetki**
+hâlidir. Bir genişleme pini yalnız statü kodunu okuyorsa, **açtığı yolun ilk adımında
+patlayan** bir kusuru **yeşil** raporlar.
+
+📌 Ve sıra kuralı: ***"ÖRTÜ KALDIRILIRKEN ALTINDAKİ AYNI COMMIT'TE."*** Bir genişleme,
+arkasındaki yüzeyin bilinen kusurlarıyla **aynı pakette** iner — yoksa yeni rolün
+göreceği **ilk şey** bir `500` olur.
+
+---
+
+## SINIF-SEVİYESİ dekoratör, dosyadaki HER rotanın sözleşmesini değiştirir (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-27, `B4 A′` dalgası):** `settlements/close/:agreementId`
+erişimi **yalnız** `SettlementGuard` ile denetleniyordu ve hiçbir yetki dekoratörü
+taşımıyordu. `default-deny`'a geçişte **kırıldı** — sebebi kendi satırında değil, **iki
+dosya-seviyesi adımda**:
+
+```
+1  summary rotası SUMMARY_READ'e göçtü        (Z43 §4 — meşru, ölçülmüş)
+2  ⇒ SINIF seviyesine CapabilityGuard eklendi (şart, o göç için)
+3  close ⟶ İSTEMEDEN kapsama girdi           (kendi satırı hiç değişmeden)
+```
+
+⇒ **Bir rotanın sözleşmesi, o rotaya hiç dokunulmadan değişebilir.**
+
+### ⛔ VE BU, `BİLEŞİMSEL FAIL-OPEN`'IN AYNA VAKASIDIR
+
+| | mekanizma | sonuç |
+|---|---|---|
+| `S2` (bileşimsel fail-open) | **üç masum adım** | rota **AÇILIYOR** |
+| `A′` `DUR`'u | **iki masum adım** | rota **KAPANIYOR** |
+
+Her iki vakada da **hiçbir adım tek başına hatalı değil**, ve **hiçbiri o rotayı
+hedeflemiyor**. İkisinin ortak yasası:
+
+> **ROTA-SEVİYESİ NİYET, SINIF-SEVİYESİ ARAÇLA TAŞINAMAZ.**
+
+📌 Pratik: sınıf seviyesine bir guard/dekoratör eklerken **o dosyadaki TÜM rotaları
+say** — özellikle **hiçbir yetki metadata'sı taşımayanları**, çünkü onlar yeni aracın
+**varsayılan dalına** düşerler. Ve varsayılan dal, aracın **fail-open mu fail-closed mu**
+olduğuna göre **zıt** sonuç verir.
+
+---
+
+## KAPSAM-BEYANI ≠ KAPSAM-KANITI (ZORUNLU)
+
+`ADIM3_KAPANIS_RAPORU §3.1` şunu **doğru** ölçüp **doğru** yazmıştı:
+*"düğme `A`'nın gerçek kapsamı `15` değil, **`22`**"* — `15` `ROLES` + `6` `SELF` +
+**`1` `settlement/close`**.
+
+Sonra `Z44 §7`'nin pin `2`'si `A′`'yi doğruladı — ama **yalnız `15`'i ve `SELF`'i**
+pinledi. **22.'nci hiç çağrılmadı.** İnşa turunda **15 e2e testi** düştü.
+
+> **Ürün sahibinin cümlesi: *"SAYI DOĞRUYDU, PİN DARDI."***
+>
+> ⛔ **`22` YAZMAK, `22`'yi PİNLEMEK DEĞİLDİR.**
+
+📌 Bu, `§2.7 #6`'nın (*"kapsam var, ayırt etme gücü yok"*) **bir üst katmanı**: orada
+**test** dardı, burada **pin listesinin kendisi** dardı — ve dar olduğu, **kapsamı
+doğru sayan bir belgenin yanında** duruyordu.
+
+### Pratik
+
+Bir kapsam sayısı yazdığın anda, o sayının **her sınıfından en az bir örnek** pin
+listesine girer. *(`22` = üç sınıf ⇒ **üç** pin; `15`+`SELF` iki sınıftır, üçüncüsü
+**yazılıydı ve atlandı**.)*
+
+⚠️ Ve kendini kandırma biçimi ince: pin listesi *"kalan-15 birebir"* diyordu ve **`15`'i
+gerçekten** ölçüyordu. **Eksik olan sayı değil, SINIFTI.**

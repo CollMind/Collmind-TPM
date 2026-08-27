@@ -186,6 +186,7 @@ teknik ölçüm gerekiyor) · `bayat?` (kaydedildiğinden beri doğrulanmadı)
 | `D-13` | Idempotency key biçimleri | `SYSTEM_INVARIANTS §10` · `INV-L-009` | açık |
 | `D-16` | Scale-3 hacim kolonları nasıl temsil edilir? | `SYSTEM_INVARIANTS §10` | açık |
 | `D-17` | `unitPrice` / `cogs` **para** mı **fiyat** mı? | `SYSTEM_INVARIANTS §10` | açık |
+| `D-18` | **Domain-guard'ların ROL-ZORLAMASI** capability-katmanıyla `İlke-4` komşuluğunda (aynı soru — *"kim girebilir"* — **iki mekanizmada**): `SettlementGuard`/`ReversalGuard` `{ADMIN,CM}` zorluyor, `CapabilityGuard` onları **muaf** sayıyor. **RLS-SONRASI normalizasyon adayı — bugün DOKUNULMAZ** | `Z44` · `B4 A′` dalgası · `route-scope` `ALAN_GUARD` kovası | açık |
 | [[T-181]] | 77 filtresiz route'un sınıflandırması | `.claude/backlog/tasks/T-181.md` | ölçüm bekliyor |
 | `v2-VERI-AYRIMI` | **Veri ayrımı modeli** hangisi olacak — ve geçiş maliyeti ne? | `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık` · `docs/brd-v2/00_PAKET_INDEKSI.md §Açık kalanlar` | çok-kiracılık · `0064-TENANT` · `0056-K10` | **açık — TEKNİK ÖLÇÜM** · 🔵 v2 açık maddesi (*geçiş maliyetleri*) |
 | `v2-IADE` | **İadenin veri temsili** ne olacak? | `docs/brd-v2/04_KARAR_KAYDI.md §Hâlâ açık` · `docs/brd-v2/00_PAKET_INDEKSI.md §Açık kalanlar` | iade/ters kayıt · `INV-L-004` ailesi | **açık — TEKNİK ÖLÇÜM** · 🔵 v2 açık maddesi (*tek sorgu*) |
