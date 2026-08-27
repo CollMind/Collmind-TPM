@@ -4031,3 +4031,57 @@ yapacağım"*dır, yapılmış olanı değil).
 
 ⇒ **Aynı yasa üç ölçekte:** bir oturum, bir thread, bir ajan — **hangisi ölürse ölsün,
 devralan taraf ANLATIYA değil ÖLÇÜME bakar.**
+
+---
+
+## BİR SAĞLAYICI İDDİASI, **ALAN ALAN** ÖLÇÜLÜR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-28, `Z51`):** bir hüküm *"sağlayıcı sanıldığından **UCUZ** —
+`ALTER ROLE ... SET log_statement='all'` **rol seviyesinde BEDAVA** denetim-izi verir"*
+dedi. Ölçüm: **üç alandan BİRİ**.
+
+```
+ne (statement)   ✅ rol seviyesinde bedava      ← iddia BURADA doğru
+kim (aktör)      ❌ KÜME seviyesi (log_line_prefix'te %u yok)
+kalıcılık        ❌ POSTMASTER seviyesi (docker rm ⇒ iz YOK)
+```
+
+> **Bir sağlayıcı *"var"* ya da *"yok"* değildir — bir ALAN KÜMESİ sağlar.**
+> **İddia, GEREKEN her alan için AYRI ölçülür.**
+
+⛔ Ve tehlikenin biçimi: `1/3` doğru bir iddia, **tamamen yanlış** bir iddiadan
+**DAHA TEHLİKELİDİR** — çünkü ölçülebilir bir doğruluk payı taşır ve karar defterine
+*"çözüldü"* diye geçer. Rol bugün kurulsaydı, *"denetim-olaylı"* şartı **ilk günden**
+ihlal edilirdi ve ihlal **görünmez** olurdu.
+
+📌 Pratik: bir sağlayıcı iddiasını yazarken **gereken alanları önce say** — burada
+`DENETIM_SOZLUGU`'nun *"ortak alanlar"*ı bunu zaten söylüyordu ve **ilk zorunlu alanı
+`kim`**'di. **İddia, kendi sözlüğüne bakmadan yazılmıştı.**
+
+---
+
+## CANLI ORTAM, KURULUM BETİĞİNDEN **ÜRETİLEBİLMELİDİR** (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-28, `Z51 §2`):**
+```
+pg_roles.rolconfig    app_runtime → {log_statement=all}
+repo genelinde grep   log_statement → KOD/SCRIPT'te SIFIR
+```
+⇒ Biri canlıda **elle** `ALTER ROLE` çalıştırmış. Ayar **hiçbir dosyadan türemiyor**.
+
+> **Canlı ortamın, kurulum betiğinin ÜRETEMEYECEĞİ bir durumu varsa, o ortam bir
+> ÖLÇÜM TABANI DEĞİLDİR.**
+
+İki ayrı zarar, ve ikincisi daha sinsi:
+1. Betik taze bir ortamda koşarsa **bu ayar gelmez** ⇒ *"aynı kurulum"* sanılan iki
+   ortam **farklı** davranır
+2. ⛔ **Ayar YANLIŞ ROLDEYDİ** — operatörü ayırt etmek için istenen bir ayar,
+   **uygulama** rolünde duruyordu; yani sapma yalnız *"kayıtsız"* değil, **ters
+   yönde işliyor**du
+
+📌 `§2.7 #10`'un (*"kanıt kurulumunun kendisi güvenilmez"*) **ortam** tarafı: burada
+güvenilmez olan bir komut değil, **ölçümün üstünde durduğu zemin**.
+
+**Pratik:** bir rol/şema kararı ölçerken **`rolconfig`/`reloptions`/`pg_settings`'i
+repoyla ÇAKIŞTIR** — canlıda olup dosyada olmayan her satır **bir sapmadır**, ve
+sapmanın **yönü** ayrıca ölçülür.

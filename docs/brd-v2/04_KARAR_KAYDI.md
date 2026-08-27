@@ -5068,3 +5068,122 @@ politika-şekli  YAZILI      (bağlamsız sorgu = BOŞ KÜME, "hepsi" DEĞİL)
 sonda           ÜÇ-ÇIKTILI  (+ dördüncü ölçüm: tx-dışı sessiz no-op)
 maliyet         ÖLÇÜLÜ      (p95 delta 0.59ms, bütçenin %0.12'si)
 ```
+
+---
+
+# `Z51` — `K1` DALGASI **DUR**: `Z46 §3`'ün SAĞLAYICI İDDİASI **ÜÇTE BİR** DOĞRU
+
+**Tarih:** 2026-08-28 · **Statü:** ⏳ **ALTI HÜKÜM BEKLER** · Ajan **DUR** dedi, Team Lead **doğruladı**
+
+> `Z46 §3` şöyle demişti: *"sağlayıcı sanıldığından **UCUZ**: `ALTER ROLE ... SET
+> log_statement='all'` **rol seviyesinde BEDAVA** denetim-izi verir."*
+
+## `§1` — ⛔ ÖLÇÜM: ÜÇ ALANDAN **BİRİ**
+
+```
+log_statement      ctx=superuser           ✅ ROL SEVİYESİNDE — hüküm BURADA DOĞRU
+log_connections    ctx=superuser-backend   ❌ "cannot be set after connection start"
+log_line_prefix    ctx=sighup   '%m [%p] ' ❌ %u YOK ⇒ AKTÖR GÖRÜNMEZ · KÜME seviyesi
+logging_collector  ctx=postmaster  off     ❌ log yalnız docker stdout'unda
+```
+
+| alan | statü |
+|---|---|
+| **ne** (statement) | ✅ rol seviyesinde **bedava** |
+| **kim** (aktör) | ❌ **KÜME** seviyesi |
+| **kalıcılık** | ❌ **POSTMASTER** seviyesi — `docker rm` ile **iz YOK** |
+
+⛔ **Ve `CLAUDE.md §2.3`:** *"Audit: **immutable**; silinemez."* Bir `docker rm` ile yok
+olan `stdout` akışı bu şartı **karşılamaz**.
+
+### Davranışsal pin — iki marker, canlı log
+
+```
+LOG: statement: SELECT 'MARKER_APP_RUNTIME_PIN_A1';    ← app_runtime
+LOG: statement: SELECT 'MARKER_OPERATOR_PIN_B7';       ← BYPASSRLS'li operatör adayı
+⇒ İKİ SATIR BİRBİRİNDEN AYIRT EDİLEMİYOR
+```
+Onları ayıran **tek şey** enjekte edilen marker metni. Gerçek bir operatör sorgusu,
+uygulamanınkinden **ayırt edilemez** ⇒ `§2.7 #6`: **kapsam var, ayırt etme gücü yok.**
+
+> ⇒ **`K1`'in `B` okuması hâlâ geçerli — ama artık DAHA TEHLİKELİ biçimde:** karar
+> defteri sağlayıcının **indiğine** inanıyor. Rol bugün kurulursa *"denetim-olaylı"*
+> şartı **ilk günden ihlal edilir** ve ihlal **GÖRÜNMEZ** olur.
+
+## `§2` — ⛔ KAYITSIZ CANLI SAPMA: `app_runtime` **zaten** `log_statement=all`
+
+```
+pg_roles.rolconfig   app_runtime → {log_statement=all}   ·  app_migrate → (yok)
+repo genelinde grep  log_statement → KOD/SCRIPT'te SIFIR
+```
+⇒ Biri canlıda **elle** `ALTER ROLE` çalıştırmış. İki sonuç:
+1. **Canlı DB, kurulum betiğinden ÜRETİLEMEZ** — taze ortamda bu ayar **yok**
+2. ⛔ **Ayar YANLIŞ ROLDE:** operatörü **ayırt etmek** için istenmişti; bugün
+   **uygulama** rolünde duruyor ⇒ `411` çağrı yerinin tamamı **parametreleriyle**
+   loglanıyor
+
+## `§3` — ⛔ ÜÇ TÜKETİCİ DEĞİL, **ALTI** — biri **ÖLÜ**, biri **KARŞI REPODA**
+
+| # | yer | brief'te | statü |
+|---|---|---|---|
+| 1 | `scripts/db-query.sh` | ✅ | canlı |
+| 2 | `guards/schema-isolation.sh:38` | ✅ | canlı — **ve kendi `-U postgres` FALLBACK'i var** |
+| 3 | `test/plan-scale-validation.e2e-spec.ts:43` | ✅ | ⛔ **ÖLÜ — yalnız YORUM** (`T-232` ailesi) |
+| 4 | `.claude/agents/data-analyst.md:58` | ✅ | canlı |
+| **5** | `guards/view-security-invoker.sh` | ❌ | **canlı — bir KAPI** |
+| **6** | `guards/dropped-column-absence.sh` | ❌ | **canlı — bir KAPI** |
+| **7** | `collmind.frontend/tests/e2e/support/db-cleanup.ts:71` | ❌ | ⛔ **canlı, ÇAPRAZ REPO** |
+
+⛔ **`#7` `Z46 §3`'ün *"sessizce `postgres`'e geri döner"* şartının TAM MEKANİZMASI:**
+```ts
+user: envOr('DB_USERNAME', 'postgres')   // ← SESSİZ VARSAYILAN
+```
+`.env`'den satır **silinirse** bu dosya sessizce `'postgres'`e düşer. Ve `#2` aynı
+sınıfın ikinci hâli. ⇒ **Sarmalayıcıyı taşımak bu iki dalı KAPATMAZ.**
+
+📌 Ve `#3` bir `T-232` vakası: brief onu *"bir e2e"* diye adlandırmıştı; çalışma
+zamanında `postgres`'e **hiç dokunmuyor**. Taşıma listesine konsaydı, bir **yorumu
+düzeltmek** *"iş yapıldı"* sayılırdı — oysa asıl iş `#5`/`#6`/`#7`'ydi.
+
+## `§4` — ⛔ PAKETTE OLMAYAN BULGU: `ON DELETE CASCADE`
+
+```sql
+admin_audit_logs.tenant_id → main.tenants(id)  ON DELETE CASCADE
+```
+```
+Z46 §1        tenant yaşam-döngüsü (create/DELETE) = OPERATÖRÜN İLK İŞİ
+ölçüm         bir tenant silinince onun TÜM denetim geçmişi de SİLİNİR
+CLAUDE.md §2.3  "Audit: immutable; SİLİNEMEZ"
+```
+
+> ⛔ **OPERATÖR ROLÜNÜN İLK İŞİ, DENETİM İZİNİ YOK EDEN BİR İŞ.**
+
+`Z46 §1(d)` *"sahibi operatör, adresi `K1` tasarımı"* demişti — **adres burası**, ve
+tasarım bu çelişkiyi **çözmeden yazılamaz**.
+
+## `§5` — DENETİM ENVANTERİ (taze)
+
+```
+yazma ucu        107   (@Post 67 · @Patch 24 · @Delete 16)   POZ.KONTROL @Get=112
+denetim üreten    17   logAdminAction, 7 dosyada
+                       ⇒ plan yaşam-döngüsü ve auth: SIFIR (ADIM 2 bulgusu HÂLÂ geçerli)
+§2.5 sessiz atlama  6 vaka  —  `if (adminId && adminEmail)` , else YOK
+denetim ailesi     DÖRT DEĞİL, ÜÇ  (budget_transaction_logs Z24'te öldü)
+değişmezlik        app_runtime'da DELETE yok (kolon-GRANT gerçek mekanizma)
+                   ama SAHİBE karşı koruma YOK · trigger sayısı 0 (K-2.11.7 açık)
+```
+
+⛔ **VE SÖZLÜKSÜZLÜĞÜN BEDELİ CANLI VERİDE:**
+```
+AGREEMENT (BÜYÜK) · mechanic (küçük) · SalesActualBatch (PascalCase)
+⇒ TEK BİR varchar KOLONDA ÜÇ HARF KONVANSİYONU
+```
+`T-231`'in `budget_*` çiftinde bulduğu ayrışmanın aynısı, bu kez **`admin_audit_logs`'un
+kendi içinde**.
+
+### ⚠️ Ve bir sayım DÜRÜSTÇE yapılmadı
+
+`107` ile `ADIM 2`'nin `119`'u **karşılaştırılamadı** — iki sayım **farklı yöntemle**
+üretildi (`ADIM 2` kod okuması, bu tur dekoratör sayımı) ve **farkın kaynağı
+gösterilemiyor**. `DISIPLIN`: *"bir sayım farkı, kaynağı gösterilmeden yorumlanamaz."*
+⇒ **Yorumlanmadı.**
