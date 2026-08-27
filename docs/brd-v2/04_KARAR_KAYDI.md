@@ -4940,3 +4940,74 @@ oldu; mutasyon geri alma üç kez yanlış gitti → **araç** oldu.
 
 📌 **Şeklin şimdiden yazılması bir tasarım değil, bir TAAHHÜTTÜR** — üçüncü vaka
 geldiğinde *"gerekli mi"* tartışması **açılmayacak**, çünkü ölçüt **bugün** kondu.
+
+---
+
+# `Z49` — BAĞLANTI-SPIKE + SONDA GENİŞLETMESİ: **ÜÇ ÇIKTI DA GÖRÜLDÜ**
+
+**Tarih:** 2026-08-28 · `Z46 §2`'nin ölçümü · ⚠️ Ajan **oturum limitine takıldı**; iş
+**tamamlanmıştı**, Team Lead **doğruladı ve koşturdu**.
+
+## `§1` — SONDA GENİŞLEDİ (ikinci dosya **yazılmadı**)
+
+`test/db-role-rls-sonda.e2e-spec.ts` — **9/9 PASS**, `T-047` **PASS**.
+
+### ⛔ FAIL-CLOSED POLİTİKA ŞEKLİ — üç çıktının **üçü de** ölçüldü
+
+```
+ÇIKTI 1/3  bağlam SET EDİLMEDEN      →  0 SATIR        ("hepsi" DEĞİL)
+ÇIKTI 2/3  doğru bağlam (SET LOCAL)  →  YALNIZ KENDİ KİRACISI
+           A → 'tenant-a-row' · B → 'tenant-b-row'   ⇒ SİMETRİK
+ÇIKTI 3/3  YANLIŞ bağlam (3. kiracı) →  0 SATIR
+```
+
+⛔ **VE BOŞLUK ANLAMLI:** `2/3` aynı tabloda **tam 1 satır** döndürüyor ⇒ `1/3` ve
+`3/3`'ün sıfırı *"veri yok"* değil, **politika çalışıyor** demek. *(`T-273` /
+**"boş sonuç FARK DEĞİLDİR"** şartı — karşılandı.)*
+
+**Fixture iki-kiracılı ve GERÇEK:** `main.tenants`'a **iki `INSERT`**, `T-047`
+invaryantını bozmadan temizleniyor.
+
+### ⛔ VE DÖRDÜNCÜ BİR ÖLÇÜM — `SET LOCAL` transaction DIŞINDA
+
+> **`set_config(..., true)` transaction dışında çağrılırsa: SESSİZ NO-OP — bağlam
+> HİÇ UYGULANMAZ.**
+
+⇒ `Z46 §2`'nin *"oturum seviyesinde ASLA `SET` yapılmamalı"* hükmünün **kardeş
+tehlikesi**: `SET LOCAL` de **yanlış yerde** çağrılırsa **sessizce hiçbir şey yapmaz**.
+Taşıyıcı mimari bunu **yapısal olarak** imkânsız kılmalı (`queryRunner` sarmalayıcısı),
+bir çağrı-disiplinine bırakmamalı.
+
+## `§2` — ⛔ `NFR-1.2` PROBE: **`ADAY` KARARA DÖNEBİLİR**
+
+```
+GET /budget/envelopes          N=30    p95 = 8.19 ms   (bugünkü şekil, tx YOK)
+findAllEnvelopes SQL           N=100   BARE p95 = 0.66 ms
+                                       SET-LOCAL-TX-SARILI p95 = 1.25 ms
+                                       ⇒ DELTA = 0.59 ms
+```
+
+**Yorum — sayının söylediği:**
+```
+NFR-1.2 bütçesi      < 500 ms
+bugünkü uç p95         8.19 ms      (bütçenin ~%1.6'sı)
+tx-sarmalama maliyeti  +0.59 ms     (bütçenin ~%0.12'si)
+```
+
+⇒ **`SET LOCAL` + istek-kapsamlı transaction, `NFR-1.2` açısından KARŞILANABİLİR.**
+Ölçüm `Z46 §2`'nin *"probe olmadan bu satır KARARA DÖNMEZ"* şartını **karşıladı**;
+**hüküm ürün sahibinindir.**
+
+⚠️ **Ve ölçümün sınırı yazılı:** bu bir **tek-kullanıcılı, boş-yük** ölçümü. Eşzamanlı
+yük altında bağlantı-havuzu baskısı **ölçülmedi** — `411` çağrı yerinin **tx'e sarılması**
+havuz doygunluğunu değiştirebilir, ve o **ayrı bir ölçümdür**.
+
+## `§3` — KAYIT: bir ajan **öldü**, iş **ölmedi**
+
+Spike ajanı `API` oturum limitine takıldı ve **son satırda** kesildi. İş **tamamlanmıştı**;
+Team Lead ağacı ölçtü (`tsc 0`, dokuz test **PASS**), fixture'ın **iki-kiracılı** ve pinin
+**ayırt edici** olduğunu **bağımsız** doğruladı.
+
+📌 **Ders:** yarım kalmış bir turun ilk sorusu *"nereye kadar geldi"* değil,
+***"BIRAKTIĞI ŞEY DERLENİYOR VE ÖLÇÜLEBİLİYOR MU"*** — çünkü ikincisi ölçülebilir,
+birincisi bir **anlatıdır**.
