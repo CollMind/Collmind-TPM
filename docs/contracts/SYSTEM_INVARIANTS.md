@@ -505,9 +505,11 @@ across the estate all concern CAP.
           birden çok spec/e2e dosyasında BULUNDU ⇒ tarama deseni çalışıyor
   ```
 - **⛔ VE STATÜ NEDEN `HOLDS` DEĞİL — `verinin yokluğu örter` sınıfı:**
-  Bugünkü veride hiçbir zarf negatif değil (`ÖLÇÜLDÜ`: hem
-  `main.budget_envelopes.available_amount` hem `main.v_budget_summary`
-  üzerinde negatif satır **yok**). **Ama bu invariantın sağlandığının kanıtı
+  Bugünkü veride hiçbir zarf negatif değil (`ÖLÇÜLDÜ`: ~~hem
+  `main.budget_envelopes.available_amount` hem~~ ⚠️ **REVİZE `Z47`
+  (2026-08-27):** birinci yüzey **ARTIK YOK** — kolon `1814000000000` ile
+  **düştü** (`INV-B-009` ÇÖZÜM bloğu). Bugün **tek yüzey**:
+  `main.v_budget_summary` üzerinde negatif satır **yok**). **Ama bu invariantın sağlandığının kanıtı
   değildir** — negatif üretecek bir olay henüz **hiç yaşanmadı**.
   ```
   POZ.KONTROL (yolun ÖLÜ olmadığı): v_budget_summary'de reserved_amount ve
@@ -574,10 +576,19 @@ across the estate all concern CAP.
   ```
   Üçü de farklı bir `INV-B-008` `CHECK`'i doğurur. ⇒ **`D-18`** olarak
   `§10`'a girer.
-- **Impact:** `INV-B-008`'i **bugün yazılamaz** kılan şey budur — *"negatif
-  kullanılabilirlik yasak"* demek için önce ***"kullanılabilir hangisidir"***
-  sorusu cevaplanmalı. İki taşıyıcının biri asla negatife düşmez (hiç
-  güncellenmiyor), diğeri **düşebilir**.
+- **Impact:** ~~`INV-B-008`'i **bugün yazılamaz** kılan şey budur — *"negatif
+  kullanılabilirlik yasak"* demek için önce *"kullanılabilir hangisidir"*
+  sorusu cevaplanmalı.~~
+  ⚠️ **REVİZE `Z47` (2026-08-27) — BU BLOKAJ KALKTI.** `D-18` **çözüldü**
+  (şık `(ii)` **türev**): kolon düştü, **taşıyıcı TEKLENDİ**, ve *"kullanılabilir
+  hangisidir"* sorusunun cevabı artık **şemanın kendisinde** yazılı.
+  ⛔ **Ama `INV-B-008` `ÖLÇÜLMEDİ` KALIYOR — ve sebebi DEĞİŞTİ:**
+  eskiden *"hangi kolon"* bilinmiyordu; **bugün `CHECK` bir VIEW'a YAZILAMAZ.**
+  ⇒ Kalan karar: **uygulama-katmanı zorlaması mı, trigger mı** — ayrı bir
+  tasarım kalemi, `D-18`'in devamı **değil**, kardeşi.
+  📌 *(Bu satır, uzlaşı turunun **kalıcı mekanizmasının** ilk rutin sınavıdır:
+  bir `Z`-kaydı kapandığında **türev belgeler AYNI TURDA** güncellenir —
+  `DISIPLIN`: "bir Z-KAYDINI kapatan tur, TÜREV BELGELERİ de yazar".)*
 - **Source:** bu tur (`SYSTEM_INVARIANTS` uzlaşı `FAZ-1`, 2026-08-27) ·
   `INV-B-004` (*"CAP ve spend aynı kaynaktan"*) ile **aynı sınıf, farklı tablo**
 

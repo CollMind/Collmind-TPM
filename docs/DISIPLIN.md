@@ -3851,3 +3851,39 @@ vakalar: `push-order` elle iki kez ters yapıldı ⇒ **script** oldu; mutasyon 
 kez yanlış gitti ⇒ **araç** oldu.)*
 
 > **Bir kuralın üçüncü ihlali, kuralın değil YERLEŞİMİNİN kusurudur.**
+
+---
+
+## `VERİNİN YOKLUĞU ÖRTER`in ALT-TÜRÜ: **KULLANIMIN yokluğu, SÖZLEŞME KIRIĞINI örter** (ZORUNLU)
+
+Bu gövde *"verinin yokluğu örter"*i uzun uzun kaydetti: bir yol **koşmuyorsa** kusuru
+görünmez. `Z47` review 🟡-2 **bir alt-türünü** ölçtü — ve mekanizması farklı.
+
+**Ölçülmüş vaka (2026-08-27):** `Z47` `available_amount` kolonunu düşürdü;
+`POST /budget/envelopes` **ham entity** döndürüyordu ⇒ alan JSON'dan **sessizce
+kayboldu**. Frontend tipi (`budget.types.ts`) onu `availableAmount: number` diye
+**VAAT EDİYOR**.
+
+```
+KIRIK CANLI   sunucu sözleşmeyi bozdu, istemci tipi hâlâ vaat ediyor
+ÇÖKMÜYOR      çünkü useCreateBudgetEnvelope YALNIZ invalidateQueries yapıyor
+              — dönen GÖVDEYİ RENDER ETMİYOR
+⇒ örten şey VERİNİN yokluğu değil, KULLANIMIN yokluğu
+```
+
+> **Bir sözleşme kırığı, kırılan alanın O YOLDA KULLANILMAMASIYLA örtülebilir.**
+> **Ve kullanım bir gün eklenir — kırık o gün, ilgisiz bir commit'te ortaya çıkar.**
+
+### ⇒ Bunun kanıtı: **TEL-PROTOKOL pinleri RENDER'DAN BAĞIMSIZ olmalı**
+
+Bir uç sözleşmesini *"ekran çalışıyor mu"* diye ölçmek, tam da bu vakada **yeşil** verir.
+Ölçüm **yanıtın kendisine** bakmalı: alanlar **var mı**, tipleri **doğru mu** — bileşenin
+onları **kullanıp kullanmadığından bağımsız**.
+
+📌 Bu, `§2.7 #4`'ün (*"kanıt kurulumu ölçtüğü durumu değiştirmesin"*) kardeşi ama zıt
+yönlü: orada **kurulum** ölçülecek durumu **yok ediyordu**; burada **kullanımın
+yokluğu** bozukluğu **görünmez** kılıyor.
+
+⚠️ Ve pratik tarama sorusu: bir sunucu sözleşmesini değiştirirken *"kim render ediyor"*
+değil, ***"kim TİPLİYOR"*** diye sor — çünkü tip **vaat**, render yalnızca **bugünkü
+kullanım**.
