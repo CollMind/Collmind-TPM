@@ -28,7 +28,15 @@
    *"örtük varsayılana yaslanan denetim mekanizması"* sınıfı)*.
    ⇒ **Prod build'de minification istenirse yüklem ADA değil TOKEN'a bağlanmalı.**
 
-3. **`T-113` kapsamı temizlik değil, ratchet:** bugünkü hata listesi baseline
+3. **⛔ AKTİVASYON-ÖNCESİ YÜK PROBE'U** — ilk-deploy ön koşulu (`Z50 §3a`, 2026-08-28).
+   `Z50` `SET LOCAL` + istek-kapsamlı tx'i **kanonik** yaptı; maliyeti **ölçüldü**
+   (`p95` delta **`0.59 ms`** = bütçenin **`%0.12`**'si). ⛔ **Ama o ölçüm
+   TEK-KULLANICILI, BOŞ-YÜK ölçümüdür.**
+   **`411` sorgu çağrı yerinin tx'e sarılmasının HAVUZ-DOYGUNLUĞU etkisi ÖLÇÜLMEDİ** —
+   ve tek-kullanıcı ölçümü onu **cevaplayamaz**, *cevaplamış gibi okunmamalıdır*.
+   ⇒ Aktivasyondan **önce** eşzamanlı-yük probe'u koşulur.
+
+4. **`T-113` kapsamı temizlik değil, ratchet:** bugünkü hata listesi baseline
    (dosya+kural listesi olarak, sayı olarak değil), **yeni** hata kırmızı. 108'i
    sıfırlamak Faz 1 kapsamı dışıdır. `T-212` ile aynı aile. *(ürün sahibi, 2026-08-15)*
 

@@ -5011,3 +5011,60 @@ Team Lead ağacı ölçtü (`tsc 0`, dokuz test **PASS**), fixture'ın **iki-kir
 📌 **Ders:** yarım kalmış bir turun ilk sorusu *"nereye kadar geldi"* değil,
 ***"BIRAKTIĞI ŞEY DERLENİYOR VE ÖLÇÜLEBİLİYOR MU"*** — çünkü ikincisi ölçülebilir,
 birincisi bir **anlatıdır**.
+
+---
+
+# `Z50` — TAŞIYICI MİMARİ: `ADAY` → **KARAR**
+
+**Tarih:** 2026-08-28 · **Karar:** ürün sahibi · **Girdi:** `Z49` spike (üç ölçüm)
+
+> ## ⛔ **`SET LOCAL` + İSTEK-KAPSAMLI TRANSACTION SARMALAYICI — KANONİK**
+
+## `§1` — ÜÇ ÖLÇÜMÜN BİLEŞİMİ
+
+| # | ölçüm | sonuç |
+|---|---|---|
+| **1** | tx-delta **`0.59 ms`** = bütçenin **`%0.12`**'si | ⇒ ***"MALİYET"* SORUSU KAPANDI** — tartışma eşiğinin **altında** |
+| **2** | alternatiflerin **ikisi de** ölçülmüş **fail-open / no-op** sınıfında | session-`SET` **commit-sonrası sızıyor** (`Z49` öncesi) · tx-dışı `SET LOCAL` **sessiz no-op** (`Z49`'un **dördüncü** çıktısı) |
+| **3** | ⇒ sarmalayıcısız **her** desen bir **ÇAĞRI-DİSİPLİNİNE** yaslanıyor | ve çağrı-disiplini bu repoda **kanıtlanmış biçimde ölçeklenmez** — ***"dikkat ölçeklenmez, kapı ölçeklenir"*** |
+
+## `§2` — KARARIN GÖVDESİ
+
+> **TAŞIYICI, SESSİZ NO-OP'U *YAPISAL OLARAK* İMKÂNSIZ KILAR — ÇAĞRI-DİSİPLİNİNE
+> BIRAKMAZ.**
+
+```
+bağlam  YALNIZ tx içinde var olabilir
+tx      SARMALAYICIDAN doğar
+        ⇒ ÜÇÜNCÜ YOL YOK
+```
+
+📌 Bu, `Z49 §1`'in **dördüncü ölçümünün** doğrudan sonucudur: `SET LOCAL`'ın **yanlış
+yerde** sessizce hiçbir şey yapması, bir **çağrı hatası** değil — **mimarinin izin
+verdiği bir şekil**. Karar o şekli **kaldırıyor**.
+
+## `§3` — İKİ ŞERH, KARARIN İÇİNDE
+
+### `a` · EŞZAMANLI-YÜK SINIRI — kayda, ve **ilk-deploy ön-koşuluna**
+
+`Z49`'un probe'u **tek-kullanıcılı, boş-yük** ölçümüdür. **`411` çağrı yerinin tx'e
+sarılmasının HAVUZ-DOYGUNLUĞU etkisi ÖLÇÜLMEDİ.**
+
+> ⛔ **Tek-kullanıcı ölçümü onu CEVAPLAYAMAZ ve CEVAPLAMIŞ GİBİ OKUNMAMALIDIR.**
+
+⇒ **İlk-deploy ön-koşul listesine** (`FAZ1_PLAN §0`) ayrı bir satır: **aktivasyon-öncesi
+YÜK PROBE'U**.
+
+### `b` · İNŞA BU DALGANIN İŞİ **DEĞİL**
+
+Aktivasyon **deploy-eşiğinde**; sarmalayıcının **inşası** o eşiğin **hazırlık
+dalgasında**. **Bugün kararlaşan şey: MİMARİ ŞEKİL + KANIT ZEMİNİ.**
+
+## `§4` — ⇒ `Faz-1`'in `ADIM-5` ÇIKTISI **TAMAMLANDI**
+
+```
+desen           SEÇİLİ      (SET LOCAL + istek-kapsamlı tx)
+politika-şekli  YAZILI      (bağlamsız sorgu = BOŞ KÜME, "hepsi" DEĞİL)
+sonda           ÜÇ-ÇIKTILI  (+ dördüncü ölçüm: tx-dışı sessiz no-op)
+maliyet         ÖLÇÜLÜ      (p95 delta 0.59ms, bütçenin %0.12'si)
+```

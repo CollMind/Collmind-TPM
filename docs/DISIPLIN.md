@@ -4003,3 +4003,31 @@ create-repro'su                                  →  BEYAN, artefaktı yok
 ```
 İkisi **ayrı statü** taşır ve `T-307.md`'de **öyle yazılıdır** — *"kanıtlanmış gibi
 okunmasın"* şerhiyle. **Dürüstlüğün doğru biçimi, iddiaları TEK BİR RENGE boyamamaktır.**
+
+---
+
+## DEVİR-TESLİM YASASI ÜÇ ÖLÇEKTE ÇALIŞIR: **oturum · thread · AJAN** (ZORUNLU)
+
+Bu gövde devir-teslimi iki ölçekte kaydetti: **oturum** (bayat süreç birikir) ve
+**thread** (bağlam sıkıştırması). `Z49 §3` üçüncüyü ekledi: **AJAN ÖLÜMÜ**.
+
+**Vaka (2026-08-28):** bir spike ajanı `API` oturum limitine takıldı ve **son satırda**
+kesildi. Bıraktığı iş **tamdı** — ama bunu bilmenin **tek yolu ölçmekti**.
+
+> ⛔ **Yarım kalmış bir turun İLK SORUSU *"nereye kadar geldi"* DEĞİL:**
+> ### ***"BIRAKTIĞI ŞEY DERLENİYOR VE ÖLÇÜLEBİLİYOR MU?"***
+
+📌 Çünkü **ikincisi ölçülebilir, birincisi bir ANLATIDIR** — ve yarım kalmış bir turun
+kendi anlatısı **en güvenilmez** kaynaktır (son mesajı çoğu zaman *"şimdi şunu
+yapacağım"*dır, yapılmış olanı değil).
+
+**Uygulanan sıra:**
+```
+1  git status        →  neye dokunulmuş
+2  tsc / derleme     →  BIRAKTIĞI ŞEY GEÇERLİ Mİ
+3  ilgili testi KOŞ  →  ve İDDİASINI bağımsız doğrula
+4  ancak sonra       →  "tamamlandı mı" sorusu
+```
+
+⇒ **Aynı yasa üç ölçekte:** bir oturum, bir thread, bir ajan — **hangisi ölürse ölsün,
+devralan taraf ANLATIYA değil ÖLÇÜME bakar.**
