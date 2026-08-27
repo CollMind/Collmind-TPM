@@ -31,10 +31,43 @@
 >
 > Bu belge, uzlaşı turu kapanana kadar **yalnız envanter değeri** taşır (guard-eşleme ·
 > bilinçli-ihlal · "kazara sağlanan" sınıfı); statü okuması için kullanılmaz.
+>
+> ---
+>
+> ### ⏳ UZLAŞI TURU · **`FAZ-1` İNDİ** (2026-08-27) — damga **KALDIRILMADI**
+>
+> **`F12`: yukarıdaki damga silinmez.** Yol maddesi 2'nin **`FAZ-1`'i** (yetki/kapsam
+> invariant ailesi) bugün indi; **`FAZ-2` (tüm `Status:` satırlarının tek tek
+> çakıştırılması · `INV-C` çapraz referansı · `§12` · kalıcı mekanizma) AÇIK.**
+>
+> ```
+> FAZ-1  ✅ INV-T-004 · INV-T-005 · INV-T-006  (§6 sonunda)
+>           INV-B-008 · INV-B-009              (§4 sonunda)
+>           ⇒ ADIM 5 (RLS) karar paketinin GİRDİ KAPISI: AÇIK
+> FAZ-2  ⏳ geri kalan statüler HÂLÂ 2026-08-10 fotoğrafıdır
+> ```
+>
+> ⛔ **Yani bu belge bugün İKİ HIZLIDIR:** `FAZ-1`'de eklenen beş madde
+> **2026-08-27 ölçümlüdür ve statü okuması için kullanılabilir**; **diğer her
+> madde hâlâ damganın altındadır.** Bir maddenin hangi tarafta olduğunu ayırt
+> etme kuralı: **`ÖLÇÜLDÜ 2026-08-27` ibaresi taşıyor mu.**
+>
+> ⚠️ Ve damganın bayat-satır listesi **ÖRNEKLEMEDİR, TAM LİSTE DEĞİL** — `FAZ-2`
+> her satırı **tek tek** ölçer. *"Örnekleme"* bir **uyarıdır**, bir kapsam değil.
 
 > **Status:** Draft for review. Not yet normative.
 > **Subject:** Collmind-TPM (`collmind.backend`) @ `876010f` + guards Phase 2 + uncommitted T-057 delta
-> **Count:** 38 invariants — **20 HOLDS · 10 VIOLATED · 8 BLOCKED** · 14 open decisions
+> **Count:** ~~38 invariants — **20 HOLDS · 10 VIOLATED · 8 BLOCKED** · 14 open decisions~~
+> ⛔ **REVİZE EDİLDİ (2026-08-27, uzlaşı turu `FAZ-1`):** bu satır bir **sayı**dır ve
+> `DISIPLIN`'in *"belgeye elle üye-sayısı yazma"* kuralını ihlal eder — bu repoda elle
+> yazılmış üye-sayısının bayatlama oranı **dokuzda dokuz**. `FAZ-1` beş madde ekledi ve
+> satır **güncellenmedi**: yerine **kanonik sayım komutu** yazılıyor.
+> ```bash
+> grep -c '^### INV-[A-Z]-[0-9]' docs/contracts/SYSTEM_INVARIANTS.md   # INV-X-000 §2 ŞABLONU sayıma girer, çıkar
+> grep -c '^- \*\*Status:\*\* HOLDS\|^- \*\*Status:\*\* 🔴' docs/contracts/SYSTEM_INVARIANTS.md
+> ```
+> ⚠️ Ve statü dağılımı **`FAZ-2` kapanana kadar sayılmaz** — bayat satırlarla yapılan bir
+> sayım, bayatlığı bir **toplama** gömer ve görünmez kılar.
 > (sayıldı 2026-08-10, `### INV-X-NNN` başlıkları + her girdinin **ilk** `Status:` satırı;
 > `INV-X-000` §2 şablonudur ve sayıma girmez. İki `HOLDS` **kazara** sağlanıyor — bkz. §9.)
 > **Derived from:** `docs/verification/CTPM_BASELINE_AND_PORT_AUDIT.md` (2026-08-03)
@@ -133,10 +166,20 @@ Gelecekte *"ledger şunu da yapmalı"* denildiğinde referans budur.
 ### ⚠️ Bu ailenin kaçırdığı bir kaynak maddesi ([[T-151]])
 
 BRD `§3.6` şeması `amount NUMERIC(18,2) NOT NULL **CHECK (amount >= 0)**` diyor ve
-*"amount always positive; sign indicated by direction"* kuralını yazıyor. **Bu kısıt bizde
-yok** (ölçüldü: `pg_constraint contype='c'` boş) ve **aşağıdaki dokuz invariantın hiçbiri
+*"amount always positive; sign indicated by direction"* kuralını yazıyor. ~~**Bu kısıt bizde
+yok** (ölçüldü: `pg_constraint contype='c'` boş)~~ ve **aşağıdaki dokuz invariantın hiçbiri
 onu içermiyor.** Negatif bir `amount` + `DEBIT`, `INV-L-007`'nin `Σ DEBIT − Σ CREDIT`
 hesabını sessizce bozar.
+
+> ⛔ **REVİZE EDİLDİ (2026-08-27, uzlaşı `FAZ-2` · `ÖLÇÜLDÜ`):** kısıt **BUGÜN VAR** —
+> `main.ledger_entries` üzerinde **`CHK_ledger_entries_amount_non_negative`**
+> `CHECK (amount >= 0)` (**POZ.KONTROL:** aynı sorgu `main` şemasında başka `CHECK`'leri de
+> buldu ⇒ sorgu çalışıyor). Aynı tabloda ikinci bir tanesi de doğdu
+> (`CHK_..._adjustment_subtype_bidirectional`).
+> ⚠️ **Ama cümlenin İKİNCİ yarısı hâlâ doğru:** dokuz invariantın **hiçbiri** bu kısıtı
+> **söylemiyor** — yani koruma **kazara** duruyor, bir invariant'ın talebi olarak değil.
+> Bir migration onu düşürse **hiçbir madde kırmızıya dönmez**. *(Bu, `INV-C` ailesinin
+> "kazara sağlanan" sınıfının `INV-L` tarafındaki örneğidir.)*
 
 ### 📌 `deleted_at` ve **D-04**
 
@@ -170,10 +213,41 @@ Sonuç: `v_budget_summary` ledger'ı okuyor ama zarfsız satırları **join edem
 > `INV-L-001`'in `budget_envelope_id` maddesi bugün **yanlış** — ya FK değişmeli
 > (`RESTRICT`), ya madde düzeltilmeli. Karar [[T-188]]'de, `D-04` ile aynı yöne bakıyor.
 
+> ### ⛔ REVİZE EDİLDİ (2026-08-27, uzlaşı `FAZ-2` · `ÖLÇÜLDÜ`) — **bu blok BAYAT, `F12` gereği SİLİNMEDİ**
+>
+> Yukarıdaki üç satırlık FK tablosunun **üçü de değişti**, ve **hepsi doğru yöne**:
+>
+> ```
+> ledger_entries → budget_envelopes    SET NULL  →  ON DELETE RESTRICT
+> ledger_entries → tenants             CASCADE   →  ON DELETE RESTRICT
+> ledger_entries → agreements          YOK       →  FK_ledger_entries_agreement_id_restrict
+>                                                   ON DELETE RESTRICT
+> ```
+> (`pg_constraint` + `pg_get_constraintdef`, `nspname='main'` ile şema-nitelendirilmiş.)
+>
+> ⇒ **Şemadaki iki sessiz mutasyon yolu KAPANDI** ve `INV-L-001`'in `budget_envelope_id`
+> maddesi **bugün doğru**. `T-188`'in *"ya FK değişmeli ya madde düzeltilmeli"* ikilemi
+> **FK tarafından** çözülmüş.
+>
+> ⚠️ **Ölçülen bedel satırları (`1231` satır · `%100 NULL` · *"panoda harcama ₺0"*) bu
+> DB'de ARTIK GEÇERLİ DEĞİL** — çalışma veritabanı o günden beri sıfırlanmış görünüyor
+> (bugün `main.ledger_entries` az sayıda satır taşıyor ve `budget_envelope_id`'leri
+> **dolu**). ⛔ **Bu bir düzeltme kanıtı DEĞİLDİR:** eski bedel **veriyle birlikte
+> silindi**, ölçülerek kapatılmadı. Aynı hasar başka bir ortamın verisinde **hâlâ
+> durabilir** — ve `INV-M-001`/`INV-L-005` o ortamların `main` şemasının **eksik**
+> olduğunu söylüyor.
+
 ### INV-L-001 — No statement may modify `ledger_entries.amount`, `entry_direction`, `budget_envelope_id`, or `period_month` after insert.
 - **Status:** HOLDS
 - **Guard:** NONE → target `DB` (BEFORE UPDATE trigger rejecting changes to these columns)
 - **Evidence:** exactly one mutating statement exists in the codebase; it sets `is_reversed`
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **statü DEĞİŞMEDİ (`HOLDS`), ama
+  `budget_envelope_id` maddesinin dayanağı DEĞİŞTİ — ve iyi yönde.** `§3`'ün üstündeki
+  `T-188` bloğu (*"bu aile ŞEMA tarafından ihlal ediliyor"*) **BAYAT**: `main.ledger_entries`'in
+  üç FK'sinin **üçü de bugün `ON DELETE RESTRICT`** (`tenant_id` · `budget_envelope_id` ·
+  **`agreement_id` — ki `T-188`'de FK'si HİÇ YOKTU**). Yani şemadaki iki sessiz mutasyon
+  yolu (envelope `SET NULL` · tenant `CASCADE`) **kapandı**. Guard hâlâ `NONE`: `main.ledger_entries`
+  üzerinde **kullanıcı trigger'ı yok** (ölçüldü, `pg_trigger` `NOT tgisinternal`).
 - **Source:** audit candidate #1
 
 ### INV-L-002 — The only permitted mutation of an existing ledger row is setting `is_reversed` from `false` to `true`.
@@ -182,8 +256,16 @@ Sonuç: `v_budget_summary` ledger'ı okuyor ama zarfsız satırları **join edem
 - **Source:** audit candidate #2
 
 ### INV-L-003 — No ledger row may ever have a non-null `deleted_at`.
-- **Status:** 🔴 VIOLATED (structurally, not in practice)
-- **Guard:** NONE → target `DB` (`CHECK (deleted_at IS NULL)`, or drop the column)
+- **Status:** ~~🔴 VIOLATED (structurally, not in practice)~~ → ⛔ **REVİZE EDİLDİ: HOLDS**
+  *(2026-08-27, `ÖLÇÜLDÜ` — çürüten ölçüm aşağıda)*
+- **Guard:** ~~NONE~~ → **DB** ✅ — *ve mümkün olan EN GÜÇLÜ biçimde: kolonun kendisi yok*
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** `main.ledger_entries` üzerinde
+  **`deleted_at` kolonu ARTIK YOK** (`information_schema.columns`, şema-nitelendirilmiş,
+  boş döndü · **POZ.KONTROL:** aynı sorgu `main.users.deleted_at`'i **buldu** ⇒ sorgu
+  çalışıyor, yokluk gerçek). Maddenin kendi öngörüsü gerçekleşti: *"bir invariant'ın bunu
+  söylemek zorunda olması, kolonun hiç olmaması gerektiğinin işaretidir."* `D-04`
+  **ADR 0012** ile kapandı. ⇒ Bir `CHECK`'e gerek kalmadı: **var olmayan kolon ihlal
+  edilemez.**
 - **Evidence:** `@DeleteDateColumn` active via `BaseEntity` (`base.entity.ts:23-24`); ~20 sibling
   entities call `softRemove`; no row currently affected
 - **Remediation:** blocked on **D-04**. A single future `softRemove` silently removes money
@@ -214,12 +296,32 @@ Sonuç: `v_budget_summary` ledger'ı okuyor ama zarfsız satırları **join edem
   — an invariant is not held by a fix that has not reached the environment.
 - **Flips to HOLDS / Guard `DB`** after a `db:reset` + `seed` on `collmind_tpm`, to be done
   once T-057 is committed (its test data depends on current DB state).
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **STATÜ DEĞİŞMEDİ — ve bu bir
+  BULGUDUR, bir teyit değil.** Ölçüm bugün tekrarlandı: `UQ_ledger_entries_reversal_per_tenant`
+  ve `FK_ledger_entries_reverses_entry` **hâlâ yalnız `public` şemasında**, `main`'de **yok**
+  (`pg_indexes`/`pg_constraint`, ikisi de şema-nitelendirilmiş · **POZ.KONTROL:** aynı iki
+  sorgu `main`'de başka index ve constraint'leri **buldu**). `reverses_entry_id` ve
+  `is_reversed` kolonları `main`'de **var** ⇒ yol canlı, koruma yok.
+  ⛔ **Ve *"T-057 commit edilince `db:reset`"* şartı ARTIK GEÇERSİZ bir bekleme:** `T-057`
+  çoktan indi (ölçüldü, `INV-B-003`) ve `main.migrations` o günden bu yana **büyümeye devam
+  etti** — yani `db:reset` beklenen olay değil, **yapılmayan iş**. Bu, `Z44 §4`'ün
+  *"sağlanamaz bir koşulu beklemek"* deseninin **bu belgedeki ikinci vakasıdır**; şart bir
+  **tarihe** değil bir **karara** bağlanmalı. ⇒ **`RLS` turu bunu devralır** (aynı DB, aynı
+  `db:reset` penceresi).
 - **Source:** audit candidate #5, violation #5
 
 ### INV-L-006 — Wherever a row carries an `idempotency_key`, that key is unique within its tenant, enforced in the database.
 - **Status:** HOLDS (as of T-095)
 - **Guard:** DB ✅
-- **Scope:** `ledger_entries`, `budget_transactions`, `agreement_transactions`, `on_invoice_entries`, `budget_transaction_logs`
+- **Scope:** `ledger_entries`, `budget_transactions`, `agreement_transactions`, `on_invoice_entries`, ~~`budget_transaction_logs`~~
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **kapsam satırı BAYATTI ve daraltıldı:**
+  `main.budget_transaction_logs` **tablosu artık YOK** (`Z24` · migration
+  `DropBudgetAllocationsAndTransactionLogs1811000000000`, `main.migrations`'ta kayıtlı ·
+  `pg_tables` boş döndü, **POZ.KONTROL:** aynı sorgu `main`'de tabloları **buldu**).
+  Aşağıdaki uzun anlatı o tablonun **kısmi index gerekçesini** anlatıyor ve **tarihsel
+  değeri için SİLİNMEDİ** (`F12`) — ama bugün **var olmayan bir tabloyu** tarif ediyor.
+  Kalan dört tabloda şart ölçüldü: `main.ledger_entries` üzerinde
+  `IDX_LEDGER_ENTRIES_TENANT_IDEMPOTENCY` **UNIQUE** (`(tenant_id, idempotency_key)`).
 - **Source:** audit candidate #6; generalised by T-095
 
 Originally written for `ledger_entries` alone. T-095 measured all five tables that carry the
@@ -306,6 +408,12 @@ across the estate all concern CAP.
 - **Guard:** NONE → target `CI` (nightly reconciliation job) + `TEST`
 - **Evidence:** `agreement-transaction.service.ts:148-170` — `if (envelope) { … }` with no
   `else`. Envelope-not-found ⇒ transaction committed, no ledger entry, `200 OK`.
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **statü DEĞİŞMEDİ, satır numarası
+  DEĞİŞTİ** — `if (envelope) {` bugün **`:235`**'te, `else` **hâlâ yok**, blok
+  `createFromAgreementTransaction` çağrısıyla kapanıyor ve `return transaction;` koşulsuz.
+  ⚠️ **Satır numarası kaymasının kendisi bir uyarıdır:** bu dosya `T-057` ile ağır biçimde
+  değişti ve **kusur değişikliğin içinden geçti** — dokunulan bir kusur, düzeltilen bir
+  kusur değildir.
 - **Impact:** budget reports understate spend by exactly this amount while the CAP check —
   which sums `agreement_transactions` — still counts it. **The two subsystems silently
   disagree.** No error, no log, no test.
@@ -322,8 +430,19 @@ across the estate all concern CAP.
 - **Source:** audit candidate #11, violation #11
 
 ### INV-B-003 — An on-invoice ledger entry is always attributed to an envelope whose spend type is `ON_INVOICE`.
-- **Status:** 🔴 VIOLATED at HEAD · HOLDS with the uncommitted T-057 delta
-- **Guard:** TEST (added by T-057's untracked spec)
+- **Status:** ~~🔴 VIOLATED at HEAD · HOLDS with the uncommitted T-057 delta~~ → ⛔ **REVİZE
+  EDİLDİ: KISMEN sağlanıyor** *(2026-08-27, `ÖLÇÜLDÜ`)* — ve **`HOLDS` yazılmadı**, çünkü
+  kalan yarı ölçüldü ve **açık**
+- **Guard:** TEST ✅ (`T-057` deltası **commit edildi**, spec artık izlenen dosyada)
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** `on-invoice.service.ts:475-493` bugün
+  **iki aşamalı**: önce **niteliksiz** çağrı, ve yalnız bu çağrı bir *split-dimension*
+  guard hatası fırlatırsa **`BudgetSpendType.ON_INVOICE` ile** yeniden çözüm. ⇒ Bölünmüş
+  boyutta invariant **sağlanıyor**. ⛔ **Bölünmemiş boyutta SAĞLANDIĞI ÖLÇÜLMEDİ**: orada
+  zarfın `spend_type`'ı hiç sorulmuyor, ledger satırı ise `ON_INVOICE`'ı **sabit** yazıyor.
+  Bu tasarım **bilinçli** (`agreement-transaction.service.ts`'in uzun `T-057` notu:
+  *"UNSPLIT boyutta bugünkü davranış BİREBİR korunmalıydı"*), ama invariant'ın cümlesi
+  **her zaman** diyor. ⇒ Ya cümle daraltılır ya davranış genişletilir — **bir KARAR**
+  (`§2.4`), bu belgenin tek taraflı vereceği hüküm değil.
 - **Evidence:** `findEnvelopeByDimensions` called without a spend type
   (`on-invoice.service.ts:437`) while the ledger row hardcodes `ON_INVOICE`
 - **Action:** none beyond committing T-057
@@ -359,7 +478,104 @@ across the estate all concern CAP.
 - **Guard:** target `LINT` (single resolution function) + `TEST`
 - **Note:** off-invoice resolves on `(channel, period)`; on-invoice adds category. The same
   logical budget can resolve to different envelopes depending on which path reaches it.
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** `BLOCKED → D-09` **BAYAT**: damganın
+  kendi tespiti — `K-2.2.3` bunu `L2`'de kararlaştırdı, ve ihlalci kod (`budget_allocations`)
+  `Z21`/`Z24`'te öldü. **Bugün ölçüldü:** `main.budget_allocations` **tablosu YOK**
+  (`pg_tables`, **POZ.KONTROL:** aynı sorgu `main`'de tabloları buldu). ⛔ **Ama statü
+  `HOLDS`'a çevrilmedi**, çünkü *"tek boyut kümesi"* iddiasının **kod tarafı bu turda
+  ölçülmedi** — `findEnvelopeByDimensions`'ın iki çağrı yolu (off-invoice: kategorisiz ·
+  on-invoice: kategorili) **hâlâ farklı imzalarla** çağrılıyor (`INV-B-003` ölçümü).
+  ⇒ Statü: **`ÖLÇÜLMEDİ`**, `BLOCKED` değil — engel kalktı, ölçüm yapılmadı.
 - **Source:** spec gap 14, B2 finding #3
+
+### INV-B-008 — No budget envelope may fall to negative availability.
+- **Status:** ⛔ **ÖLÇÜLMEDİ** — *ve bu, `HOLDS` ile `VIOLATED` arasında **üçüncü ve meşru** bir değerdir*
+- **Guard:** **NONE** — ne `DB` ne `TEST`. `ÖLÇÜLDÜ` 2026-08-27
+- **Evidence — iki yüzey, ikisi de boş:**
+  ```
+  DB      main şemasındaki CHECK kısıtları tarandı (pg_constraint, contype='c',
+          nspname='main' ile ŞEMA-NİTELENDİRİLMİŞ)
+          → budget_envelopes'ta CHECK: YOK
+          POZ.KONTROL: aynı sorgu ledger_entries · claims · plan_mechanic_values ·
+          budget_policies · budget_alert_configurations … üzerinde CHECK BULDU
+          ⇒ sorgu çalışıyor, sonuç gerçek bir yokluk (ayrıştırıcı körlüğü değil)
+
+  TEST    "negatif kullanılabilirlik" iddiasını sınayan test: bulunamadı
+          POZ.KONTROL: aynı terimlerle taranan `toBeGreaterThanOrEqual`
+          birden çok spec/e2e dosyasında BULUNDU ⇒ tarama deseni çalışıyor
+  ```
+- **⛔ VE STATÜ NEDEN `HOLDS` DEĞİL — `verinin yokluğu örter` sınıfı:**
+  Bugünkü veride hiçbir zarf negatif değil (`ÖLÇÜLDÜ`: hem
+  `main.budget_envelopes.available_amount` hem `main.v_budget_summary`
+  üzerinde negatif satır **yok**). **Ama bu invariantın sağlandığının kanıtı
+  değildir** — negatif üretecek bir olay henüz **hiç yaşanmadı**.
+  ```
+  POZ.KONTROL (yolun ÖLÜ olmadığı): v_budget_summary'de reserved_amount ve
+  consumed_amount SIFIRDAN FARKLI satırlar var ⇒ tüketim yolu CANLI, yalnız
+  sınıra hiç DAYANMADI.
+  ```
+  `CLAUDE.md §2.7`: *"bir yol bugün koşuyor mu?"* sorusu *"bu yol doğru mu?"*
+  sorusundan **önce** gelir. Cevap: **yol koşuyor, sınır koşmadı.**
+- **Statement (`PLAN_BUTCE_NETLESTIRME.md` madde 4, ürün sahibi):** *"Hiçbir
+  zarf negatif kullanılabilirliğe düşemez."* Bu bir **varlık teyidiydi**, bir
+  inşa değil: test **varsa** referansı kaydedilir, **yoksa** eklenir.
+  ⇒ Ölçüm sonucu: **yok**. ⇒ **Eklenir** — ve nereye ekleneceği `INV-B-009`'a
+  bağlıdır (hangi taşıyıcı?).
+- **⚠️ `K-2.2.9h` (atomiklik) ve `K-2.2.15` (DB seviyesi koruma) tam olarak bu
+  invariantı savunuyor — ama SAVUNDUĞUNUN SINANDIĞI ölçülmedi.** `FAZ1_PLAN`
+  `Adım 2` 6. satırının kendi cümlesi budur ve bugün hâlâ geçerli.
+- **Remediation:** `B5`'in *"10 eşzamanlı onay"* senaryosuyla **aynı aile** —
+  bir eşzamanlılık testi ve/veya bir `CHECK`. ⛔ Hangisi olduğu bir **karar**:
+  `INV-B-009` çözülmeden `CHECK`'in **hangi kolona** konacağı bile belirsiz.
+- **Source:** `Z8` · `docs/decisions/PLAN_BUTCE_NETLESTIRME.md` madde 4 ·
+  `FAZ1_PLAN.md` `Adım 2/6` · `ADIM3_KAPANIS_RAPORU §3.5`
+
+### INV-B-009 — "Available" has exactly one carrier, and every consumer reads that one.
+- **Status:** 🔴 **VIOLATED** — `ÖLÇÜLDÜ` 2026-08-27, **bu turda doğdu**
+- **Guard:** **NONE** → target `LINT`/`GUARD SCRIPT` (tek okuma noktası) veya `DB` (kolonun düşürülmesi)
+- **Evidence — iki taşıyıcı, ve CANLI VERİDE AYRIŞMIŞ durumdalar:**
+  ```
+  TAŞIYICI 1  main.budget_envelopes.available_amount   (saklanan kolon)
+  TAŞIYICI 2  main.v_budget_summary.available_amount   (HESAPLANAN:
+              allocated − (RESERVE+COMMIT−RELEASE) − (DEBIT−CREDIT))
+
+  ÖLÇÜM (dev DB, şema-nitelendirilmiş JOIN): dört zarfın İKİSİNDE fark
+  SIFIR DEĞİL — saklanan kolon tahsis anındaki değerde DURUYOR, view ise
+  tüketimi görüyor.
+  POZ.KONTROL: diğer iki zarfta fark tam olarak 0 ⇒ sorgu doğru eşliyor,
+  fark gerçek bir ayrışma.
+  ```
+- **⛔ VE AYRIŞMA CANLI ROTALARA VARIYOR:**
+
+  | okuyan | hangi taşıyıcı | ne yapıyor |
+  |---|---|---|
+  | `budget.repository.ts` (`sufficient: … >= requestedAmount`) | **VIEW** ✅ | yeterlilik kararı |
+  | `finance-reporting.service.ts` (varyans raporu) | **VIEW** ✅ | rapor |
+  | `agreement-transaction.controller.ts` (`currentAvailable`) | ⛔ **SAKLANAN** | kullanıcıya *"kullanılabilir"* gösteriyor |
+  | `on-invoice-validation.service.ts` (`current`, sonra `utilizationAfter` → **RAG**) | ⛔ **SAKLANAN** | **RAG rengi** bundan çıkıyor |
+
+  ⇒ Sonuncusu en ağırı: bayat bir *"kullanılabilir"* rakamı bir **RAG
+  eşiğine** giriyor. `INV-N-004`'ün *"rengin kendisi yalan söyler"* ailesiyle
+  **aynı yüzey**, farklı sebep.
+- **⚠️ Ve aynı iki satırda `§2.5` ihlali var (ayrı ama komşu):**
+  `Number(foundEnvelope.availableAmount) || 0` ve not-found dalında
+  `currentAvailable: 0` — **sessiz sıfır**. Eksik/çözülemeyen zarf, *"sıfır
+  kullanılabilir"* diye okunuyor; bu **yanlış yöne güvenli** görünüp
+  (`0` = kısıtlayıcı) `utilizationAfter` hesabını **tersine** bozuyor.
+- **⛔ BU BELGE BURADA HÜKÜM VERMEZ — bir KARAR gerekiyor (`§2.4`):**
+  ```
+  (i)   saklanan kolon bir SNAPSHOT'tır (tahsis anı) → adı YANLIŞ, yeniden adlandırılır
+  (ii)  saklanan kolon TÜREVDİR → düşürülür, tek kaynak view olur
+  (iii) saklanan kolon CANLIDIR → her yazma yolunda güncellenmeli (bugün DEĞİL)
+  ```
+  Üçü de farklı bir `INV-B-008` `CHECK`'i doğurur. ⇒ **`D-18`** olarak
+  `§10`'a girer.
+- **Impact:** `INV-B-008`'i **bugün yazılamaz** kılan şey budur — *"negatif
+  kullanılabilirlik yasak"* demek için önce ***"kullanılabilir hangisidir"***
+  sorusu cevaplanmalı. İki taşıyıcının biri asla negatife düşmez (hiç
+  güncellenmiyor), diğeri **düşebilir**.
+- **Source:** bu tur (`SYSTEM_INVARIANTS` uzlaşı `FAZ-1`, 2026-08-27) ·
+  `INV-B-004` (*"CAP ve spend aynı kaynaktan"*) ile **aynı sınıf, farklı tablo**
 
 ---
 
@@ -376,6 +592,15 @@ here so they are designed in rather than retrofitted.
   bu invaryant ilk kez gerçek veriyle sınanacak. Doğrulama yolu (`validateBatch`) hâlâ kırık →
   [[T-064]].
 - **Guard:** TEST → add `CI` (reconciliation) — ⚠️ mevcut testler bu hatayı **yakalamadı**
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **HÂLÂ BOŞ KÜMEDE — ve statü
+  `ÖLÇÜLMEDİ`'ye çevrildi.** `main.on_invoice_entries` **sıfır satır** (`POSTED` 0 ·
+  `ERROR` 0 · **POZ.KONTROL:** aynı turda `main.agreement_transactions` ve
+  `main.sales_actual_batches` **dolu** ⇒ bağlantı ve şema doğru, sıfır gerçek).
+  Maddenin *"[[T-057]]'de düzeltildi; bu invariant ilk kez gerçek veriyle sınanacak"*
+  cümlesi **bir beklentiydi ve gerçekleşmedi** — düzeltme indi, **veri gelmedi**.
+  ⇒ *"`HOLDS VACUOUSLY`"* ifadesi `HOLDS` kelimesini taşıdığı için **yanıltıcıdır**;
+  doğru değer **`ÖLÇÜLMEDİ`**. (`DISIPLIN`: *"verinin yokluğu örter"* — ve örttüğü şey
+  bir gün **kendiliğinden** ortaya çıkar, bir düzeltme turu olmadan.)
 - **Source:** audit candidate #9
 
 ### INV-R-002 — The sum of ledger DEBITs created from an on-invoice batch equals the sum of `discount` over that batch's `POSTED` entries.
@@ -383,6 +608,9 @@ here so they are designed in rather than retrofitted.
   üretilmediği için hiç ledger DEBIT de üretilmedi; iki boş kümenin toplamı eşitti.
   Bkz. INV-R-001 notu, [[T-057]] (posting düzeltmesi) ve [[T-064]] (validate yolu hâlâ kırık).
 - **Guard:** TEST → add `CI` — ⚠️ mevcut testler bu hatayı **yakalamadı**
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** `INV-R-001` ile **aynı ölçüm, aynı
+  sonuç**: `main.on_invoice_entries` sıfır satır ⇒ iki boş kümenin toplamı hâlâ eşit.
+  Statü **`ÖLÇÜLMEDİ`**.
 - **Source:** audit candidate #10
 
 > **Ders (2026-08-04):** İki denetim (`0011` ve CTPM baseline) `on-invoice.service.ts:439`'u okudu,
@@ -462,9 +690,178 @@ here so they are designed in rather than retrofitted.
 - **Status:** 🔴 VIOLATED
 - **Guard:** NONE → target `DB` (RLS) + `CI` (policy-presence check)
 - **Evidence:** 0 RLS policies, 0 tables with `rowsecurity`
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **TEYİT EDİLDİ, taze**: `main` şemasında
+  `relrowsecurity` açık tablo **yok** ve `pg_policies` **boş** (**POZ.KONTROL:** aynı
+  şemada tablolar sayıldı, boş değil ⇒ sorgu doğru şemaya bakıyor). ⚠️ Ve `INV-T-005`
+  bunun **maliyetini** ölçüyor: satır kapsamı bugün **tek katmanlı** ve o katman uygulama
+  kodunda. ⇒ **Bu iki madde `ADIM 5` (`RLS`) paketinin ÇEKİRDEĞİDİR.**
+  📌 `OPEN_DECISIONS.md` `D-11` satırı bir **ön koşul** kaydediyor: *"önce ayrı DB rolü —
+  bugün `postgres` **bypassrls**"*. RLS politikası yazmak, `bypassrls` taşıyan bir rolle
+  bağlanıldığında **hiçbir şey yapmaz** — `§2.7`'nin *"sinyal sabitse sinyal değildir"*
+  vakasının DB tarafı.
 - **Remediation:** blocked on **D-11**. Greenfield in both codebases. This is the gate for
   the second customer, not a hardening nicety.
 - **Source:** audit candidate #22, violation #22
+
+---
+
+## ⛔ `INV-T` YETKİ/KAPSAM AİLESİ — UZLAŞI TURU `FAZ-1` (2026-08-27)
+
+> **Bu bölüm karantina damgasının *yol maddesi 2*'sinin `FAZ-1`'idir** ve
+> `ADIM 5` (`RLS`) karar paketinin **girdi envanteridir**. Damganın kendi
+> tespiti: *"`INV-T` ailesi `ADIM-3` yetki katmanını (`K-2.6.13` DB rolleri ·
+> kapsam zorlaması · capability modeli) **hiç taşımıyor**."* Aşağıdaki dört
+> madde o boşluğu kapatır.
+>
+> ⛔ **Her madde bir STATÜ SATIRI DEĞİL, bir KANIT YÜZEYİDİR:** *guard mı ·
+> test mi · DB constraint mi · **hiçbiri** mi* — ve **hiçbiri**yse **o da bir
+> statüdür**, gizlenmez. Statünün üç meşru değeri vardır: `HOLDS` ·
+> `VIOLATED` · **`ÖLÇÜLMEDİ`**. *"Bilinmiyor"u `HOLDS`'a yuvarlamak
+> sessiz-yeşilin belge hâlidir.*
+>
+> ⚠️ **VE BİR TERİM AYRIMI, ÇÜNKÜ İKİ AYRI MEKANİZMA AYNI ADI TAŞIYOR.**
+> *"Boş kapsam = erişim yok"* cümlesi bu kod tabanında **iki farklı katmana**
+> karşılık gelir ve **guard'ları, statüleri, riskleri ayrıdır**:
+>
+> ```
+> YETENEK KAPSAMI   "rota hangi yeteneği ister"        CapabilityGuard (A′)
+> SATIR KAPSAMI     "kullanıcı hangi satırları görür"  AccessScopeService (R-2)
+> ```
+>
+> Tek bir invariant olarak yazılsaydı **biri yeşil, diğeri kırmızıyken cümle
+> yeşil okunurdu** — ve bugün tam olarak öyle. `INV-T-004` ✅ · `INV-T-005` 🔴.
+> ⇒ **`RLS` paketinin konusu `INV-T-005`/`INV-T-006`'dır, `INV-T-004` değil.**
+
+### INV-T-004 — A route that declares no capability, no `@Roles`, no `@Public`, no `@SelfScoped` and no recognised domain guard is denied. (yetenek kapsamı — `A′` default-deny)
+- **Status:** HOLDS — `ÖLÇÜLDÜ` 2026-08-27
+- **Guard:** **TEST** ✅ + **GUARD SCRIPT** ✅ (çoklu) — *kanıt yüzeyi aşağıda ayrıştırıldı*
+- **Evidence:** `collmind.backend/src/common/guards/capability.guard.ts` — `if (!required) { … return false; }`
+  altıncı dal. Karar: `Z44 §2` (`B4 = A′ → B`), iniş: `Z44 §8`.
+- **Kanıt yüzeyi — hangi bozulmayı KİM görür:**
+
+  | bozulma | dedektör | mutasyon kanıtı |
+  |---|---|---|
+  | guard gövdesi boşaltılır (`return true`) | `test/role-journey.e2e-spec.ts` | `Z44 §7` — `N5`+`N11` düşüyor |
+  | `RolesGuard` `@UseGuards` zincirinden çıkar | `scripts/guards/route-scope.sh` | `Z44 §7` — `exit 2`, rotaları **adıyla** |
+  | bir rotadan `@Roles` kazayla silinir | `route-scope` `FILTRESIZ` kovası + `roles-ratchet` | `Z44 §8` |
+  | kalan-`@Roles` **büyür** | `scripts/guards/roles-ratchet.sh` | baseline'dan anahtar silindi → `exit 1` |
+  | `ALAN_GUARD` kovası büyür | `scripts/guards/alan-guard-ratchet.sh` | fixture'dan guard düşürüldü → `exit 1` |
+  | yeni bir domain-guard **tek yere** yazılır | `scripts/guards/domain-guard-parity.sh` (**çift-kayıt**) | iki yönde, ikisi de adıyla |
+  | bir rota **iki mekanizma** birden taşır | `scripts/guards/single-mechanism.sh` | `SettlementGuard` sınıf seviyesine → `exit 3` |
+  | default-deny dalının **kendisi** | `src/common/guards/capability.guard.spec.ts` — **SENTETİK** rota | `Z44 §5`: gerçek karşılığı **YOK**, o yüzden **üretildi** (`CLAUDE.md §2.7 #4`) |
+
+  ⛔ **`Z44 §7`'nin iş bölümü burada YAZILI, çünkü yazılı olmadığında bir açık
+  sanıldı:** ***yapısal** bozulmayı `GUARD SCRIPT` verir, **davranışsal**
+  bozulmayı `e2e`.* Hiçbiri ikisini birden görmez; bu bir boşluk değil, bir
+  **iş bölümüdür**.
+- **Taze koşum (`ÖLÇÜLDÜ` 2026-08-27, exit kodu boruya SOKULMADI):**
+  ```
+  route-scope · roles-ratchet · alan-guard-ratchet · domain-guard-parity
+  single-mechanism · scope-ratchet                       → hepsi exit 0
+  npx jest capability.guard.spec.ts access-scope.service.spec.ts → exit 0
+  route-scope kovaları: FILTRESIZ 0   (POZ.KONTROL: ALAN_GUARD kovası dolu ⇒
+                                       sıfır gerçek, ayrıştırıcı körlüğü değil)
+  ```
+- **⚠️ Bilinen kırılganlık — `ADIM3 §MÜHÜR 2`, kapanmadı:** muafiyet yüklemi
+  `constructor.name`'e bağlı. Minification açılırsa tanınan küme **boşalır**,
+  her `ALAN_GUARD` rotası default-deny'a düşer. Yön **fail-CLOSED** (`403`),
+  ama sonuç bir **üretim kesintisi**. Bugün `webpack.config.js`
+  `optimization.minimize = false` **gerekçesiyle** yazılı. ⇒ **ilk-deploy ön
+  koşulu** (bkz. `INV-C` çapraz referansı, `FAZ-2`).
+- **Source:** `Z44 §2`/`§5`/`§7`/`§8` · `ADIM3_KAPANIS_RAPORU §3.1`/`§4.2b` · `K-2.6.3`/`K-2.6.6`
+
+### INV-T-005 — A user with no scope row sees nothing; and every route that needs a row-scope predicate applies one. (satır kapsamı — `R-2` fail-closed)
+- **Status:** 🔴 **VIOLATED** — cümlenin **birinci yarısı** `HOLDS`, **ikinci yarısı** ihlal. `ÖLÇÜLDÜ` 2026-08-27
+- **Guard:** birinci yarı **TEST** ✅ · ikinci yarı **NONE** → target `DB` (**RLS**, `INV-T-003`/`D-11`)
+- **Evidence — birinci yarı (mekanizma DOĞRU):**
+  `src/modules/shared/access-scope/access-scope.service.ts` `buildScope`:
+  `rows.length === 0` → `{kind:'SCOPED', pairs:[]}`; `isInScope` → `false`;
+  `applyToQueryBuilder` → `qb.andWhere('1=0')`. Testleri:
+  `access-scope.service.spec.ts` `describe('R-2 — fail-closed (empty scope = nothing)')`
+  — üç `it`, ve `READONLY`/`ADMIN`/`FINANCE` için ayrı `describe`'lar (`Z30 H8`).
+- **Evidence — ikinci yarı (mekanizmaya GİDEN YOL eksik):**
+  ```
+  resolveScope() çağıran ÜRETİM dosyası: plan.service · approval-workflow.service
+    · agreement.service · settlement-summary.service · dashboard.service
+    · finance-reporting.service                            (altı dosya)
+  scripts/guards/scope-a1-baseline.txt: "kapsam GEREKLİ, UYGULANMIYOR" — DOLU
+  ```
+  ⛔ Bu, `CLAUDE.md §7.1`'in *"mekanizma var, ona giden yol yok"* sınıfının
+  **kapsam tarafıdır** — ve tekil değil, bir **liste**dir. Kanonik kaynak
+  **elle bir sayı değil**, `scope-a1-baseline.txt` + `scope-ratchet.sh`
+  çıktısıdır.
+- **⛔ VE ÜÇÜNCÜ BİR YARIM, EN AĞIRI — `PLANNER` bugün hiç ölçülmüyor:**
+  ```
+  access-scope.service.ts:  if (role === PLANNER && !scopeEnforcementEnabled)
+                                return { kind: 'UNRESTRICTED' };
+  .env.example:42           SCOPE_ENFORCEMENT_ENABLED=false
+  ```
+  ⇒ Bayrak kapalıyken **`PLANNER` için "boş kapsam" diye bir durum YOKTUR** —
+  satır sayısına bakılmadan `UNRESTRICTED` dönülür. `R-2`'nin `PLANNER`
+  testleri **bayrağı açarak** koşuyor (`spec.ts:31`), yani **bugünkü üretim
+  yolunu değil, gelecekteki yolu** sınıyorlar.
+  ⚠️ Bu bir kusur *ithamı değil*: bayrak `T-028c`'de **bilinçli** olarak
+  kapalı bırakıldı (backfill doğrulanmadan açmak yıkıcı olurdu, migration
+  `1792000000000` bunu adıyla yazıyor). **Kayda geçen şey niyet değil,
+  BUGÜNKÜ DAVRANIŞ.**
+- **⛔ ÖLÇÜLEMEDİ (ve nedeni):** çalışan ortamdaki `.env`'in
+  `SCOPE_ENFORCEMENT_ENABLED` değeri **okunamadı** — ölçüm ortamı `.env`
+  okumasını reddetti (sandbox). Ölçülen şey `.env.example` (`=false`) ve kod
+  varsayılanı (env yoksa `false`). ⇒ *"Üretimde kapalı"* bir **VARSAYIM**dır,
+  ölçüm değil. **`RLS` paketi bunu bir girdi olarak DEVRALIR.**
+- **Impact (`RLS` için):** `INV-T-003` (RLS yok) ile birlikte okununca, satır
+  kapsamı bugün **tek katmanlı ve o katman uygulama kodunda**. Bir rota kapsam
+  atfını unuttuğunda hiçbir şey kırmızıya dönmez — `scope-ratchet` **listenin
+  büyümediğini** ölçer, **uygulandığını değil** (kendi yorumu böyle diyor).
+- **Remediation:** `D-11` (RLS) · `T-304` (kapsam borcu programı) · `Z25` koşul satırı
+- **Source:** `Z25` · `Z30 H8` · `Z32` · `T-028b`/`T-028c`/`T-235`/`T-254`/`T-304`
+
+### INV-T-006 — No route may hold `SUMMARY_READ` without a row-scope predicate. (`Z32`: kapsam bir ŞART değil, üyeliğin SÖZLEŞMESİ)
+- **Status:** 🔴 **VIOLATED** — `ÖLÇÜLDÜ` 2026-08-27, **türetilmiş evrenden**
+- **Guard:** **NONE** ⛔ — *bugün bu invariantı ölçen hiçbir kapı yok*
+- **Evidence (`ÖLÇÜLDÜ`, iki kanonik üreticinin KESİŞİMİ — elle liste değil):**
+  ```
+  A  scripts/analysis/route-cell-map.py   → hücre == SUMMARY_READ olan rotalar
+  B  scripts/guards/scope-a1-baseline.txt → "kapsam GEREKLİ, UYGULANMIYOR"
+  A ∩ B  =  SUMMARY_READ üyelerinin ÇOĞUNLUĞU  (kanonik sayı: aşağıdaki komut)
+  ```
+  Yeniden üretim (sayı **buraya yazılmaz**, `DISIPLIN` — elle üye-sayısı bu
+  repoda dokuzda dokuz bayatladı):
+  ```bash
+  cd collmind.backend
+  python3 scripts/analysis/route-cell-map.py \
+    | awk -F'\t' '$5=="SUMMARY_READ"{print $1"|"$2"|"$3}' | sort > /tmp/s.txt
+  grep -v '^#' scripts/guards/scope-a1-baseline.txt \
+    | awk -F'\t' 'NF{print $1}' | sed 's/[[:space:]]*$//' | sort > /tmp/a1.txt
+  comm -12 /tmp/s.txt /tmp/a1.txt      # ← ihlal eden üyeler, ADIYLA
+  comm -23 /tmp/s.txt /tmp/a1.txt      # ← şartı sağlayan üye(ler)
+  ```
+- **⛔ POZİTİF KONTROL (negatif bulgu değil, ama sınıf gereği):** kesişim
+  **boş değil** ve tümleyen de **boş değil** — yani filtre gerçekten ayırt
+  ediyor. Şartı sağlayan taraf `actuals-first/settlements/summary`
+  (`settlement-summary.service.ts` `resolveScope` çağırıyor); ihlal eden
+  taraf `finance-reporting/*` ailesi + `sales-actuals/summary`.
+  *(`CLAUDE.md §2.7 #6`: bir ayrımın iki yanı da doluysa ayrım ölçülmüştür.)*
+- **⚠️ VE BİR KARŞIT-ÖRNEK, ÇÜNKÜ TERSİ SANILIRDI:**
+  `finance-reporting/budget-variance` **kapsam zorluyor**
+  (`finance-reporting.service.ts` `getBudgetVarianceReport` → `resolveScope` +
+  `applyToQueryBuilder`) — ve o rota `Z42 ADIM 0` SAPMA-3 ile
+  `SUMMARY_READ`'den **çıkarılmıştı**. Yani bugün **kapsamı zorlayan
+  finance-reporting rotası, `SUMMARY_READ` OLMAYAN rotadır.** Üyelik ile
+  sözleşme **ters düşmüş** durumda.
+  ⇒ Bu, `A1` baseline'ının **rota düzeyinde** doğru olduğunun da kanıtı:
+  `budget-variance` o listede **yok** (`ÖLÇÜLDÜ`), yani baseline dosya
+  düzeyinde kabaca yazılmamış.
+- **Impact:** `Z32` *"kapsam yükümlülüğü, üyeliğin SONUCU"* diyor. Bugün sonuç
+  **doğmuyor**: portföy özeti veren uçlar tenant-genelini dönüyor. Bir
+  `CATEGORY_MANAGER`'a `SUMMARY_READ` verildiği gün **açılım** olur — `Z42 §2`
+  bunu zaten *"`CM`-genişlemeleri KAPSAM-KOŞULLU"* diye kayıt altına aldı.
+- **⛔ ÖNERİLEN KAPI (bu tur KARAR İSTER, tek taraflı açılmaz):** yukarıdaki
+  `comm -12` bir **ratchet**'e bağlanabilir — evren **türetilmiş** (iki kanonik
+  üretici), tek yön **aşağı**, ve `SUMMARY_READ`'e yeni bir üye kapsamsız
+  giremez. Bu **`INV-T-006`'yı `NONE`'dan çıkaran en ucuz adım**, ama yeni bir
+  kapı açmak bir **karar**dır → `FAZ-2` / ürün sahibi.
+- **Source:** `Z31`/`Z32` (üyelik ölçütü) · `Z42 §3` · `Z43 §2` · `T-304 DİLİM-1` · `Z25`
 
 ---
 
@@ -481,6 +878,11 @@ counterpart in either codebase's existing documentation.
   — TTM's table
 - **Impact:** the migration ledger reports success for DDL that was never applied. The
   release process trusts that report.
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **TEYİT EDİLDİ, taze**:
+  `LedgerReversalSupport1777000000000` **hâlâ `main.migrations`'ta kayıtlı**, DDL etkileri
+  **hâlâ yalnız `public`'te**. Ve *"54 migration"* rakamı bayatladı — `main.migrations`
+  o günden bu yana **büyüdü** (kanonik kaynak: `SELECT count(*) FROM main.migrations`,
+  sayı **buraya yazılmaz**). ⇒ Yani kayıt-DDL uçurumu **kapanmadı, ÜZERİNE inşa edildi**.
 - **Remediation:** ⏳ **cause removed and proven, environment not yet carrying it.** The
   unqualified catalogue guards that produced the silent no-op are fixed (INV-M-002) and
   `migration-schema.sh` blocks the class from recurring. A from-empty migrate on a throwaway
@@ -532,6 +934,10 @@ counterpart in either codebase's existing documentation.
 - **Impact:** root cause of INV-M-001. Also: an unqualified `SELECT name FROM migrations`
   resolves by `search_path` and can report the wrong product's history — this misled the
   audit's own first pass.
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **TEYİT EDİLDİ, taze**: aynı DB'de
+  `main` **ve** `public` (`pg_namespace`), ve **iki ayrı `migrations` tablosu** hâlâ orada
+  (satır sayıları **farklı** ⇒ iki ayrı ürün geçmişi). `migration-schema` guard'ı
+  bugün **exit 0**.
 - **Source:** environment notes
 
 ---
@@ -554,13 +960,24 @@ counterpart in either codebase's existing documentation.
   also lacks an `@IsIn(...)` whitelist on `sortBy` (`dto/report-filters.dto.ts:97-100`), and
   TypeORM does not parameterise `orderBy`. Tracked as **T-066**; this invariant is *not* fully
   guarded until it is closed.
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **kör nokta AÇIK** —
+  `dto/report-filters.dto.ts`'te `sortBy?: string;` hâlâ **`@IsIn(...)` beyaz listesi
+  taşımıyor** (satır numarası kaydı: `:97-100` → bugün `:112`). ⇒ `T-066` kapanmadı;
+  *"`0 findings`"* cümlesi **guard'ın gördüğü evren için** doğru, **invariant için**
+  değil.
 - **Note:** a genuine improvement over TTM, whose financial ordering was by `randomUUID()`.
   Worth protecting explicitly so a port does not reintroduce it.
 - **Source:** audit candidate #18
 
 ### INV-N-002 — Monetary arithmetic is exact; no monetary value is represented as a floating-point number in application code.
-- **Status:** 🔴 VIOLATED
-- **Guard:** NONE → target `LINT` (ban `parseFloat`/`Number()` on money fields) + `TEST`
+- **Status:** 🔴 VIOLATED *(statü doğru — aşağıdaki guard satırı değil)*
+- **Guard:** ~~NONE~~ → ⛔ **REVİZE EDİLDİ: `GUARD SCRIPT` (ratchet)** *(2026-08-27)* —
+  `scripts/guards/money-float.sh --ratchet` **doğdu ve işliyor**, bugün **exit 0**.
+  ⚠️ Ratchet bir **çözüm değil, bir SINIRDIR**: Alan A'da bulgu sayısının **artmadığını**
+  ölçer, ihlalin **kalktığını** değil — bu yüzden statü `VIOLATED` kalıyor.
+  Hedef `LINT` + `TEST` **hâlâ açık**, `D-05`/ADR 0007 hattında.
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** damganın *"`INV-N-002` Guard: NONE
+  diyor"* satırı doğruydu ve **kapatıldı**.
 - **Evidence:** all amounts are `number`. `DecimalTransformer` exists but is **not** applied to
   `ledger_entries.amount`. `parseFloat` at `ledger.repository.ts:123,147`; `Number()` at
   `agreement-transaction.service.ts:102` and throughout `budget.service.ts`.
@@ -618,6 +1035,28 @@ counterpart in either codebase's existing documentation.
   render the grey badge). `PlanList.tsx:49` currently does `if (!ragStatus) return null` — no
   colour *and* no explanation.
 - **Source:** `K-2.4.22c` (invariant clause) · `K-2.4.22a`/`a1` · decision `3.9`
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** ⛔ **STATÜ DEĞİŞTİ — bu maddenin
+  ölçülen her ihlal noktası KAPANMIŞ.** Yukarıdaki tablo (`|| 'GREEN'` · `!x || AMBER` ·
+  `return null` · gri-ama-oransız · ham değer Excel'e) **BAYAT** ve `F12` gereği
+  **silinmedi**; bugünkü ölçüm:
+  ```
+  backend   finance-reporting.service.ts   "|| 'GREEN'"  →  0 (yalnız AÇIKLAYICI YORUM kaldı)
+  frontend  "|| 'GREEN'"  ve  "!ragStatus" →  0
+            GrandTotals · PlanList · PlanningGrid · grid-cells · plans.endpoints
+            HEPSİ tek bir yerden geçiyor:  src/utils/ragCoverage.ts
+  POZ.KONTROL  aynı desenlerle aranan "ragStatus" ÇOK SAYIDA dosyada bulundu
+               ⇒ grep çalışıyor, sıfırlar gerçek
+  ```
+  **Ve *"taşıyıcı yok"* engeli de kalktı:** `main.plans` bugün **`coverage_ratio`
+  kolonunu taşıyor** (migration `1804000000000-AddCoverageRatioToPlans`; **POZ.KONTROL:**
+  aynı sorgu `main.plan_fus.calculated_kpis`'i de buldu). Maddenin *"remediation there is
+  blocked, not merely unwritten"* cümlesi **artık doğru değil**.
+  ⛔ **AMA `HOLDS` YAZILMADI, ve gerekçesi ölçüldü:** `ragCoverage.ts`'in **testi yok**
+  (`find src -name "*ragCoverage*"` → yalnız kaynak dosya; **POZ.KONTROL:** arama deseni
+  kaynak dosyayı buldu). ⇒ Beş yüzey **tek bir noktaya** indirildi — bu bir mimari
+  iyileşmedir — ama o **tek nokta korumasız**: bir regresyon **hepsini birden** bozar.
+  ⇒ Statü: **`ÖLÇÜLMEDİ`** · Guard: **`NONE`** · ⚡ **en ucuz kapanış bu belgede: bir
+  birim testi.** (`§2.7 #8`'in tersi: tekilleştirme doğru hamleydi, **testi eksik kaldı**.)
 
 ### INV-N-003 — Fiscal period derivation is timezone-independent.
 - **Status:** 🔴 VIOLATED
@@ -626,6 +1065,10 @@ counterpart in either codebase's existing documentation.
   `getFullYear()`/`getMonth()`, which are local-timezone operations
 - **Impact:** the same invoice lands in different fiscal months on servers in different
   timezones
+- ⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** **TEYİT EDİLDİ, taze**: üç kademeli
+  fallback'in son basamağı hâlâ `invoiceDate.getFullYear()` / `.getMonth()` —
+  **yerel saat dilimi** işlemleri (satır kayması: `:108-122` → bugün `:107-121` civarı,
+  kod **aynı**). `D-12` açık.
 - **Remediation:** blocked on **D-12**
 - **Source:** determinism risk 6, spec gap 22
 - **⚠️ Scope correction (T-107 adım 1, 2026-08-09):** the invariant was written against
@@ -715,6 +1158,13 @@ ailesine bağlı ve o aile **henüz yok** ([[T-168]]).
 **BLOCKED sebebi:** anonimleştirmenin bugün var olup olmadığı ölçülmedi, ve KVKK'nın bu
 ürüne uygulanma biçimi karara bağlanmadı.
 
+⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** *"ANONİMLEŞTİRME ÖLÇÜLMEDİ"* satırı
+**artık ölçüldü: YOK.** `anonymiz|anonimle` üretim kodunda **sıfır eşleşme**
+(**POZ.KONTROL:** aynı ağaçta `softRemove` **bulundu** ⇒ tarama çalışıyor).
+`main.users.deleted_at` **var** ⇒ bugünkü davranış **soft-delete**, yani kimlik
+**duruyor**. Statü `BLOCKED` **kalıyor** — ama artık *"bilinmiyor"* değil, *"yok, ve
+hukuki kapsam karara bağlanmadı"* ([[T-170]]).
+
 ### INV-C-003 — An imported invoice file is retained in its original form.
 ```
 Status:   VIOLATED
@@ -725,6 +1175,13 @@ Source:   BRD §9.5 (E-Fatura: "archived in original format (XML/PDF)") · docs/
 ```
 ⚠️ *"Dosya saklanmıyor"* **tablo yokluğundan çıkarıldı**, doğrudan ölçülmedi — kanıt bir
 sinyaldir, ölçüm değil ([[T-170]]).
+
+⛔ **`FAZ-2` ÇAKIŞTIRMA (2026-08-27, `ÖLÇÜLDÜ`):** tablo yokluğu **taze teyit edildi** —
+`main` şemasında adı `%import%` içeren **hiçbir tablo yok** (**POZ.KONTROL:** aynı sorgu
+`main`'de tabloları buldu). ⚠️ Ve `T-170`'in itirazı **hâlâ geçerli**: bu bir *sinyaldir*,
+"dosya hiçbir yerde saklanmıyor"un **ölçümü değil** — dosya sistemi/nesne deposu bu turda
+**taranmadı**. ⇒ Statü `VIOLATED` **kalıyor**, ama gerekçesi *"ölçülmemiş bir çıkarım"*
+olarak işaretli.
 
 ### INV-C-004 — Master data owned by an external system of record is never overwritten by this product.
 ```
@@ -767,11 +1224,11 @@ whether a silent wrong number depends on it.
 
 | ID | Decision | Blocks | Note |
 |---|---|---|---|
-| **D-01** | CAP exceedance behaviour | INV-B-002, INV-B-005 | Three variants exist: TTM skip · K43-R clamp · CTPM reject. **Proposed:** split by controllability — off-invoice clamps (K43-R), on-invoice always posts and records `OVER_CAP` |
+| ~~**D-01**~~ | ~~CAP exceedance behaviour~~ | INV-B-002, INV-B-005 | ✅ **KAPANDI 2026-08-12** *(bu satır 2026-08-27'de revize edildi, `F12`: silinmedi)* — `04_KARAR_KAYDI §A5`: **tavan aşımı gerçekleşmeyi durdurmaz, hakediş tavana KIRPILIR** (`K43-R` clamp). Bu satırın *"üç varyant var, öneri şu"* metni **BAYATTI**. ⚠️ **Ve karar bir ADR olarak DEĞİL, karar defterinde kapandı** — `§12` koşul 1'in *"recorded as ADRs"* ifadesi bu yüzden bugün ölçülemez hâlde; bkz. `§14`. `INV-B-002`/`INV-B-005` **hâlâ ölçülmedi**: karar indi, **koda indiği ölçülmedi** |
 | **D-02** | CAP source of truth | INV-B-002, INV-B-004 | **Proposed:** the ledger. It is append-only, direction-aware, and already the reporting source |
 | **D-03** | CAP scope and optionality | INV-B-002 | K29 says tactic-level, code is agreement-level. K31 says optional, `cap_total_amount` is `NOT NULL` |
-| **D-04** | Append-only enforcement level | INV-L-001…003 | DB guarantee or application convention? If DB: `deleted_at` arguably should not exist on this table |
-| **D-05** | Numeric contract | INV-N-002, INV-R-008 | Integer minor units · decimal library · SQL-side arithmetic. Plus rounding mode |
+| ~~**D-04**~~ | ~~Append-only enforcement level~~ | INV-L-001…003 | ✅ **KAPANDI 2026-08-12 · ADR 0012** *(revize 2026-08-27)* — finansal kayıtlar **fiziksel silinemez**; zorlama seviyesi ADR'de. ⛔ **Ve sonucu ÖLÇÜLDÜ:** `main.ledger_entries.deleted_at` **kolonu artık yok** ⇒ `INV-L-003` `VIOLATED` → `HOLDS`, guard `NONE` → `DB`. *Bir kararın kapanması ile invariantın kapanması AYNI ŞEY DEĞİL — burada ikisi de ölçüldü* |
+| ~~**D-05**~~ | ~~Numeric contract~~ | INV-N-002, INV-R-008 | ✅ **KARAR VERİLDİ — ADR 0007** *(revize 2026-08-27, `OPEN_DECISIONS.md`'den ölçüldü)*. ⛔ **Ama `INV-N-002` `VIOLATED` KALIYOR:** karar bir **sözleşmedir**, dönüşüm bir **programdır** ve o program açık (`money-float` **ratchet**'i sınırı tutuyor, ihlali kaldırmıyor). ⚠️ Ve `D-15`/`D-16`/`D-17` — ADR 0007'nin **kapsamadığı** üç eksen — hâlâ açık |
 | **D-06** | Settlement base | — (prerequisite for INV-R-007) | ⚠️ **Citation corrected (T-142, ADR 0010).** The previous text cited *"Addendum V2 §5.2 — three types frozen per agreement"*. **No such document exists in the repo**: `settlement` appears **zero** times in the Addendum that is here. The binding BRD (`docs/brd/01_Main_BRD/Section_04`) gives **no frozen-type enum** — it gives two concrete **per-mechanic** bases: `250 units × 15 TL` (volume × unit amount) and `125,000 × 5%` (rate × amount). D-06 is to be rebuilt on those. `LIST_PRICE × VOLUME` remains uncomputable — the off-invoice import template carries **Amount only**, no quantity (`0018 §Ö-C`) |
 | **D-07** | Recognition allocation rule | INV-R-007, INV-R-008 | ⚠️ **Measured (T-142): NO normative source exists.** `recognition` appears **zero** times across the whole binding BRD package; no allocation / pro-rata / attribution rule anywhere. The earlier note (*"two Addendum V2 versions conflict"*) cited a document that could not be found. **The rule in INV-R-007 is therefore a new product decision, not an interpretation** — §2.4 applies |
 | **D-08** | Envelope-not-found policy | INV-B-001, INV-B-006 | Reject · auto-provision · catch-all · persisted exception. **Fixing this also closes Tier-1 risk #1** — same `if` |
@@ -784,6 +1241,8 @@ whether a silent wrong number depends on it.
 | **D-15** | Is a computed KPI of exactly zero the same as "no KPI"? | INV-N-002 (blocks the transformer phases) | Seven live sites flip direction the moment a `decimal` column stops arriving as a string: `"0.0000"` is truthy, `0` is not. ⚠️ **ADR 0008 does NOT cover this** — that decision was about a planner's ENTERED value; these are computed KPIs and rule ceilings. Different axis, separate decision. Measured in `docs/analysis/0014` |
 | **D-16** | How are scale-3 volume columns represented? | INV-N-002 | 8 columns at `numeric(x,3)`. ADR 0007 settled money (minor units) and rate (micro); volume was never decided, so no parser fits them |
 | **D-17** | Are `unitPrice` / `cogs` money or price? | INV-N-002 | Same distinction C3 already drew for `entered_unit_amount`: a per-unit figure legitimately carries four decimals, so the kuruş rule does not apply to it. Whether these two columns are on that side has not been decided |
+| **D-18** | *"Kullanılabilir" hangi taşıyıcıdır?* — `budget_envelopes.available_amount` (saklanan) mı `v_budget_summary.available_amount` (hesaplanan) mı | INV-B-008, INV-B-009 | ⛔ **Yeni (2026-08-27, uzlaşı `FAZ-1`, `ÖLÇÜLDÜ`).** İkisi canlı veride **ayrışmış**, ve iki canlı rota **saklanan** olanı okuyor — biri bir **RAG eşiğine** besliyor. Üç şık: **snapshot** (yeniden adlandır) · **türev** (kolonu düşür) · **canlı** (her yazma yolunda güncelle). `INV-B-008`'in `CHECK`'i hangi kolona konacağı **bu karara bağlı** — yani `D-18` çözülmeden `INV-B-008` yazılamaz. `INV-B-004` (*"CAP ve spend aynı kaynaktan"*) ile aynı sınıf, farklı tablo |
+| **D-19** | `SUMMARY_READ` üyeliğinin kapsam sözleşmesi bir **KAPIYA** bağlanacak mı | INV-T-006 | ⛔ **Yeni (2026-08-27).** `Z32` kapsamı *"üyeliğin SONUCU"* ilan etti ama sonucu **ölçen bir şey yok**. Önerilen kapı **türetilmiş evrenli** bir ratchet (`route-cell-map.py` `SUMMARY` ∩ `scope-a1-baseline.txt`, tek yön aşağı). Yeni kapı açmak bir karardır → ürün sahibi |
 
 ---
 
@@ -824,10 +1283,37 @@ This document becomes normative when:
 4. Every agent definition in `.claude/agents/` references this file and
    `docs/decisions/` as binding sources.
 
-**Registry note:** `DECISION_REGISTRY.md` (K1–K45) currently lives in **TTM**, the frozen
-repo. The product's decision registry cannot live in the legacy codebase. It should be
+**Registry note:** ~~`DECISION_REGISTRY.md` (K1–K45) currently lives in **TTM**, the frozen
+repo.~~ The product's decision registry cannot live in the legacy codebase. It should be
 split — product decisions into Collmind-TPM's `docs/decisions/`, Wella-specific choices into
 a tenant profile — and TTM's copy marked historical.
+
+### ⛔ `FAZ-2` YENİDEN DEĞERLENDİRME (2026-08-27, `ÖLÇÜLDÜ`) — dördü de tek tek ölçüldü
+
+| # | koşul | bugün | ölçüm |
+|---|---|---|---|
+| 1 | beş karar **ADR olarak** kayıtlı | ⛔ **KARŞILANMADI — ve koşulun KENDİSİ hatalı** | `D-04` ✅ ADR 0012 · `D-05` ✅ ADR 0007 · `D-01` ✅ **ama ADR DEĞİL** (`04_KARAR_KAYDI §A5`) · `D-02` ⛔ açık · `D-08` ⛔ açık (`OPEN_DECISIONS.md`'den) |
+| 2 | guard backlog `1–5` | ✅ | `Phase 2`, `T-064` — değişmedi |
+| 3 | `CLAUDE.md §2` kuralları tekrar etmeyi bırakır | ⛔ **KARŞILANMADI** | `CLAUDE.md §2.3` bugün hâlâ RBAC · state machine · RAG · bütçe eşiklerini **metin olarak** tekrar ediyor (kendi başlığı *"normatif DEĞİL"* dese de) |
+| 4 | her ajan tanımı bu dosyayı **ve** `docs/decisions/`'ı bağlayıcı kaynak sayar | ⛔ **YARISI** | `docs/decisions` atfı: `.claude/agents/` altındaki dosyaların **hepsinde** var ✅ · `SYSTEM_INVARIANTS` atfı: **hiçbirinde yok** ⛔ (**POZ.KONTROL:** aynı `grep -l` ikinci terimde dokuz dosya döndürdü ⇒ tarama çalışıyor) |
+
+> ⛔ **KOŞUL 1'İN KENDİSİ REVİZE EDİLMELİ — ve bu bir ölçüm sonucudur, bir tercih değil.**
+> `D-01` **kapandı**, ama `docs/decisions/` altında değil, **karar defterinde**. Koşul
+> *"ADR olarak kayıtlı"* diye yazıldığı için, **kapanmış bir karar koşulu sağlamıyor
+> görünüyor.** Bu, `CLAUDE.md §2.1`'in kaynak hiyerarşisiyle de çelişiyor: orada
+> **ADR'ler ve karar defteri** ayrı ama **ikisi de bağlayıcı**.
+> ⇒ Önerilen yeni metin: ***"…`docs/decisions/` altında bir ADR olarak **ya da**
+> `04_KARAR_KAYDI.md`'de bir `Z`/`§` kaydı olarak kayıtlıdır"***.
+> ⚠️ Ama **koşulu değiştirmek bir karardır** (`§2.4`) — bu belge onu **öneriyor**,
+> uygulamıyor.
+
+> **Registry notu — REVİZE (2026-08-27):** damganın tespiti doğru, kayıt **gerçekleşmiş**:
+> ürünün karar kayıtları bugün **bu repoda** yaşıyor (`docs/decisions/` — on iki numaralı
+> ADR + adlandırılmış karar belgeleri — ve `docs/brd-v2/04_KARAR_KAYDI.md`'nin `Z`
+> kayıtları). ⛔ **`K1–K45` kümesinin TTM kopyasının "historical" işaretlenip
+> işaretlenmediği bu turda ÖLÇÜLMEDİ** — `TTM` reposu bu ölçümün kapsamı dışındaydı
+> (`ADR 0001`: dondurulmuş, referans). ⇒ Not **silinmiyor**, **daraltılıyor**: kalan iş
+> yalnız TTM tarafındaki işaretleme.
 
 ---
 
@@ -835,6 +1321,7 @@ a tenant profile — and TTM's copy marked historical.
 
 | Version | Date | Change |
 |---|---|---|
+| 0.5 | 2026-08-27 | **Uzlaşı turu `FAZ-1` — yetki/kapsam ailesi eklendi, damga KALDIRILMADI.** Damganın kendi tespiti (*"`INV-T` ailesi `ADIM-3` yetki katmanını hiç taşımıyor"*) kapatıldı: `INV-T-004` (yetenek kapsamı — `A′` default-deny, **HOLDS**, çok-dedektörlü kanıt yüzeyiyle), `INV-T-005` (satır kapsamı — `R-2` fail-closed; **birinci yarısı HOLDS, ikinci yarısı VIOLATED**), `INV-T-006` (`SUMMARY_READ` kapsamsız doğamaz — **VIOLATED**, iki kanonik üreticinin kesişiminden **türetilerek** ölçüldü). ⛔ **Ve bir terim ayrımı yapıldı, çünkü tek cümle iki mekanizmayı örtüyordu:** *"boş kapsam = erişim yok"* bu kod tabanında **yetenek kapsamı** (`CapabilityGuard`) ve **satır kapsamı** (`AccessScopeService`) diye iki ayrı katmandır; tek invariant olarak yazılsaydı biri yeşil diğeri kırmızıyken cümle **yeşil okunurdu** — ve bugün tam olarak öyle. `§4`'e `INV-B-008` (negatif kullanılabilirlik — statüsü **`ÖLÇÜLMEDİ`**, `HOLDS`'a **yuvarlanmadı**: negatif üreten yol bugün hiç koşmadı, *"verinin yokluğu örter"* sınıfı) ve `INV-B-009` (**bu turda doğdu** — *"kullanılabilir"in İKİ taşıyıcısı var ve canlı veride ayrışmışlar**; iki canlı rota bayat olanı okuyor, biri bir **RAG eşiğine** besliyor). `§10`'a `D-18` ve `D-19`. Header'ın elle yazılmış `Count:` satırı **revize edildi** (silinmedi, `F12`): yerine kanonik sayım komutu — elle üye-sayısının bu repoda bayatlama oranı **dokuzda dokuz**. ⏳ **`FAZ-2` AÇIK:** damganın altındaki diğer her satır hâlâ **2026-08-10 fotoğrafıdır**; ayırt edici ibare **`ÖLÇÜLDÜ 2026-08-27`**. |
 | 0.1 | 2026-08-03 | Initial draft from CTPM baseline audit. 14 open decisions. Header count of "25 invariants: 15 HOLDS · 10 VIOLATED/BLOCKED" was an estimate and is corrected in 0.2 by counting the entries. |
 | 0.4 | 2026-08-10 | **`INV-C` — Compliance & Retention ailesi açıldı** (§9, dört madde). Bir BRD okuma turu (`docs/analysis/0050`) bu boyutun ne kodda ne sözleşmede var olduğunu ölçtü: `Section_09_NFR` §9.5 üç Türk düzenlemesini adıyla sayıyor, `§9.8` 7 yıllık saklamayı bir **Phase 1 taahhüdü** olarak listeliyor, ve `compliance|KVKK|GDPR|retention|INV-C-` bu belgede **0** geçiyordu. Ailenin özel niteliği: `INV-C-001` ve `INV-C-004` bugün **kazara** sağlanıyor — biri hiçbir şey silinmediği, diğeri hiçbir ERP olmadığı için. İkisi de bir **kod** değişikliğiyle değil, bir **veri/entegrasyon** değişikliğiyle bozulur, ve o gün hiçbir test kırmızıya dönmez; normal regresyon ağı bu sınıfı hiç görmez. Bağlayıcılık **iddia edilmiyor** — BRD'nin listesi bir girdidir (`CLAUDE.md §2.1.2`) ve hukuki kapsam [[T-170]]'te açıktır. Sayı 33 → 38, ve **sayılarak** güncellendi (v0.1'in tahmin hatası tekrarlanmadı). Bölüm numaraları 9→10, 10→11, 11→12, 12→13 kaydı.
 | 0.3 | 2026-08-03 | **Guards now carry their own tests.** Two review rounds each found a real silent false negative, and in both the evidence was a throwaway fixture that was deleted afterwards — the most valuable output of each round was never recorded. `scripts/guards/fixtures/` makes those five cases permanent (round-2 regression, round-1 blocker, the false-positive counterpart, the schema-safe forms, and a **positive control** that fails if a guard has stopped measuring at all), and `self-test.sh` runs the matrix at the start of every `npm run guards`; a red matrix stops the run before any finding is counted. Verified by negative test: reinstating the round-2 pre-pass drops `star-line` from 2 findings to 1 and the self-test goes red. This closes the guard-infrastructure work — a future defect adds a fixture, not a review round. |
