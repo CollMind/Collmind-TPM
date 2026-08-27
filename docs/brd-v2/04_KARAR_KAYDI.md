@@ -4828,3 +4828,84 @@ KOLON-ÖLÜMÜ (küçük, BAĞIMSIZ dalga)  →  T-307-m2  →  bağlantı-spike
 📌 Bir uyarı **hatırlanmak** zorundadır; bir **liste maddesi** hatırlanmak zorunda değildir.
 *(Bu, `DISIPLIN`'in *"kuralı hatırlamak yerine ARACI çağır"* ilkesinin bu turdaki
 uygulaması.)*
+
+---
+
+# `Z48` — `T-307-m2` İNDİ; ve hüküm **BİR `🔒` DOĞURDU**
+
+**Tarih:** 2026-08-27 · `Z46 §1`'in uygulaması · **rota `210 → 207`**
+
+## `§1` — KAPSAM GENİŞLEMESİ: brief **iki** dosya adlandırdı, **on dört** öldü
+
+Ajan genişletti **ve `DUR`'a düşürdü**. İki bağımsız ölçüm genişlemeyi **doğruladı**:
+
+```
+/tenants/:id  →  useParams<{id}>   ⇒ KEYFİ bir :id, URL'den
+                                   ⇒ PLATFORM-KONSOLU şekli
+"kendi ayarlarım" olsaydı :id TAŞIMAZDI — JWT'den türerdi
+tek giriş      →  Sidebar linki + üç route tanımı (ikisi de aynı diffte öldü)
+'/tenants' string'i src genelinde →  SIFIR
+```
+
+⇒ **On dört dosya KAPALI BİR ADAYDI.** Brief'in ikisini adlandırıp on ikisini bırakması
+**erişilemez orphan** bırakırdı — genişleme, `§4.2`'nin *"üretim çağrı yolu"* maddesinin
+**GEREĞİYDİ**, ihlali değil.
+
+📌 Ve `Z46 §1`'in *"yanlış katmanda doğru iş"* teşhisi **koddan doğrulandı**: yüzeyin
+**tamamı** operatör-konsolu şeklindeydi.
+
+## `§2` — ⛔ VE BU HÜKÜM BİR `🔒` DOĞURDU — adresi **`T-313`**
+
+`Z46 §1(b)` beş ucu **meşru yüzey** diye korudu. `T-307-m2` frontend'i **tamamen**
+öldürdü. Sonuç:
+
+```
+CANLI UÇ      GET/:id · PATCH/:id · :id/activate · :id/suspend · :id/stats
+              (beşi de assertSelfTenant kilidinde — ölçüldü)
+TÜKETİCİ      SIFIR
+```
+
+⇒ **`§1(b)`'nin *"meşru yüzey"* gerekçesi, bugün YÜZEYİ OLMAYAN bir hüküm.**
+
+> ⛔ **`🔒` BİR KABUL DEĞİL, BİR ALARMDIR** — ve ilk yazımında **kapanmış bir task'ın
+> PARANTEZİYDİ**. `DISIPLIN`: *"bilinen eksiklik TODO ile değil, **TASK** ile
+> kaydedilir"* — **kapanmış bir task'ın anlatı parantezi bir task değildir.**
+
+⇒ **`T-313`** açıldı. Ve `EK_E` **donmuş** olduğu için satır **ancak bir karar
+kaydıyla** girer — **bu kayıt odur.**
+
+⚠️ `T-313`'ün ilk şartı hükümden çıkıyor: *"kendi ayarlarım"* ekranı **`:id` TAŞIMAZ**
+— aksi hâlde **öldürdüğümüz platform-konsolunu geri getirir**.
+
+## `§3` — ÜÇ KAYIT
+
+### `a` · Bir kusuru **ÖLDÜREN** turda repro artefaktı **DAHA** gereklidir
+
+`(c)`'nin sessiz-kaybolma pini **görüldü** ama **artefaktı saklanmadı**, ve `create`
+öldüğü için davranış **artık üretilemez** ⇒ iddia bir daha **hiç doğrulanamaz**.
+
+> **Kalıcı pin yazılamaması MEŞRU; artefaktın saklanmaması bir EKSİKLİKTİR** — ve
+> `T-307.md`'ye **açıkça** yazıldı, kanıtlanmış gibi okunmasın diye.
+
+### `b` · Ölü mock, **var olmayan bir sözleşmeyi** modeller
+
+Üç `msw` handler'ı (`GET`/`POST /tenants`, `DELETE /tenants/:id`) rotalar ölünce
+**ölü** kaldı. Silindi — çünkü yarın onlara karşı yazılan bir test **üretimde olmayan
+bir şeyi YEŞİL doğrular** (`T-301`'in *"silinmiş uca başarı dönen handler"* vakasının
+birebir tekrarı olurdu).
+
+### `c` · İki ölçüm hatası, **ikisi de kendiliğinden bildirildi**
+
+| kim | ne |
+|---|---|
+| dalga ajanı | `git stash`/`stash pop` — `CLAUDE.md`'nin **açıkça yasakladığı** yöntem |
+| review ajanı | tırnaksız `--include=*.ts` ⇒ **14 grep'in 14'ü hiç koşmadı**, hepsi `0` bastı (`§2.7 #5`) — **pozitif kontrol yakaladı** |
+
+⛔ **`git stash` ihlali ölçüldü: KAYIP YOK** (düşmüş stash bulundu, çalışan ağaçla
+`diff`'lendi, tek fark sonradan koşan prettier). Ama kural bir *"dikkat ederim"* değil:
+`git show HEAD:<dosya>` maliyeti **sıfırdı**.
+
+📌 **Ve desen:** bu oturumda `git stash`/`git add -A` sınıfı **iki** ihlal oldu, **ikisi
+de kendiliğinden bildirildi** — biri Team Lead'in. ⇒ **Raporlama refleksi çalışıyor,
+KAÇINMA refleksi çalışmıyor.** Bu, *"bir kuralın üçüncü ihlali YERLEŞİMİNİN kusurudur"*
+maddesinin **bir sonraki adayı**.
