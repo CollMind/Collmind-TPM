@@ -4642,3 +4642,114 @@ T-308 (view SINIFI + kapı)  →  INV-B-009 (teşhis + düzeltme)  →  T-307 (d
 yok, `admin_audit_logs` **tenant'sız aktörü kaydedemez*** — paketin **en ağır karar
 kalemidir**, ve hükmü **paketle** verilir: **çözümü denetim-çekirdeği tasarımıyla AYNI
 MASA.**
+
+---
+
+# `Z46` — ÜÇ HÜKÜM: tenant yaşam-döngüsü · bağlantı deseni · `K1` kilidi AÇILDI
+
+**Tarih:** 2026-08-27 · **Karar:** ürün sahibi · **Girdi:** `Z45` zinciri + `RLS` karar paketi
+
+## `§1` — `T-307` madde-2: yaşam döngüsü **OPERATÖR-YOLUNA**; uçlar ve ekran **ÖLÜR**
+
+### Kavramsal zemin — ölçümün kendisinden
+
+> **`ADMIN` bu üründe KİRACI-İÇİ bir roldür.** Kiracı **yaratmak/silmek** ise tanım gereği
+> **PLATFORM-SEVİYESİ** iştir.
+>
+> ⇒ Kiracı-içi bir yetkinin **kiracı-üstü** bir nesneye dokunması **`T-307`'nin TA
+> KENDİSİYDİ.** `create`/`delete`'i `ADMIN`'de tutmak, aynı sınıfın ***"ama biz
+> kullanıyoruz"* muafiyetli hâli** olurdu.
+
+⛔ **Canlı tüketici KALDIRMAYI DURDURMAZ, ŞEKLİNİ DEĞİŞTİRİR:**
+> Bu ekran fiilen bir **operatör-konsolu** işlevi görüyor — ama **kiracı-admin
+> kimliğiyle**. ***Yanlış katmanda doğru iş.***
+
+### Hüküm — dört parça
+
+| # | |
+|---|---|
+| **a** | `create`/`delete`/`findAll` uçları **+** `TenantForm`/`TenantList` **İKİ-REPO-TEK-KAPANIŞLA ÖLÜR.** Tenant yaratmanın bugünkü **meşru yolu seed/script** — *zaten öyle*: **hiçbir `K`-kaydı self-service onboarding tanımlamıyor**. Ürünleşirse **`Faz-3` kararıyla** gelir (süzgeç) |
+| **b** | `GET`/`PATCH` **kendi-kayıt** (tenant **ayarları**) **KALIR** — kiracı-içi **meşru** yüzey |
+| **c** | **Sessiz-kaybolma açık kalemi bu hükümle KÖKTEN ölüyor** (`create` ölünce asimetri ölür) — ⛔ **ama ölmeden önce REPRO-PİNE girsin:** bugünkü *"yarat → listede yok → hata yok"* davranışı **BİR KEZ GÖRÜLSÜN** (`T-273`) |
+| **d** | **Geçiş kaydı**, sahipsiz kalmasın: *"tenant yaşam-döngüsü = **script + seed**, sahibi **operatör**, adresi **`K1` tasarımı**"* |
+
+## `§2` — BAĞLANTI DESENİ: **`SET LOCAL` KANONİK**, session-`SET` **YASAK**
+
+### Katman 1 — KESİN
+
+```
+session-SET  ⛔ YASAK   (fail-open ÖLÇÜLDÜ — tartışma bitti)
+```
+
+**Ve politika ŞEKLİ FAIL-CLOSED yazılır:**
+```sql
+current_setting('app.tenant_id', true) boş/NULL  ⇒  politika HİÇBİR SATIR eşleştirmez
+```
+> **Bağlamsız sorgu = BOŞ KÜME, *"hepsi"* DEĞİL.** Böylece sarmalayıcıyı unutan bir yol
+> **sızdırmaz**, **görünür biçimde boş döner**.
+>
+> 📌 Bu, guard'ların ***"üç meşru çıktı"*** yasasının **SQL hâlidir.**
+
+### Katman 2 — **ADAY**: taşıyıcı mimari
+
+```
+istek-kapsamlı transaction sarmalayıcı  (INTERCEPTOR seviyesi
+                                         — 19/411'i ELLE büyütmek DEĞİL)
++ NFR-1.2 MALİYET PROBE'U
+```
+⛔ **Temsili bir okuma ucunun `tx`'li/`tx`'siz `p95`'i ölçülmeden bu satır KARARA
+DÖNMEZ.**
+
+Aktivasyon zaten **deploy-eşiğinde**; `Faz-1`'in çıktısı **bu iki-katmanlı kayıt + probe
+sonucu**. Spike küçük — **`RLS` sondasının genişletilmesiyle (iki-kiracılı) AYNI DALGAYA
+binebilir.**
+
+## `§3` — `K1`: ⛔ **KİLİT AÇILDI** — sağlayıcı `pgaudit` DEĞİL, **ROL-SEVİYESİ LOG**
+
+Kilidin tespiti **doğruydu**, ama **sağlayıcı sanıldığından UCUZ:**
+
+```
+pgaudit        → imaj işi, Faz-3'e kalabilir
+ALTER ROLE collmind_operator SET log_statement='all'
+               → ROL SEVİYESİNDE BEDAVA denetim-izi (postgres LOG'una,
+                 uygulama TABLOSUNA değil)
+⇒ admin_audit_logs'un NOT NULL-tenant sorunu BU KARARA GİRMİYOR
+  (tenant'sız-aktör kaydı DENETİM-ÇEKİRDEĞİ turunun KENDİ maddesi)
+```
+
+### Hüküm
+
+```
+operatör = AYRI DB ROLÜ
+   NOSUPERUSER  +  BYPASSRLS  +  PAROLALI  +  log_statement='all'
+
+db-query.sh postgres'ten BU ROLE taşınır — ve ÜÇ TÜKETİCİ ADIYLA BİRLİKTE:
+   schema-isolation KAPISI · plan-scale e2e · data-analyst ajan talimatı
+   (taşınmazsa SESSİZCE postgres'e geri döner — ölçülmüş şart)
+
+postgres SUPERUSER'ı İNSAN-YOLU olmaktan ÇIKAR
+```
+
+⛔ **Ve `§1` bu role İLK İŞİ DE VERDİ** (tenant yaşam-döngüsü) ⇒ **`K1` artık soyut bir
+güvenlik kalemi değil, SAHİPLİ BİR ROL TANIMI.**
+
+**İnşası denetim-çekirdeğiyle BİRLEŞİK: tek dalga, iki çıktı** (operatör-rolü + denetim-olay
+çekirdeği) — dosya kesişimi **zaten aynı bölge**.
+
+## `§4` — SIRA
+
+```
+Docker  →  doğrulama-listesi (10 madde)  →  PUSH
+        →  T-307-m2 uygulaması (uç + ekran ÖLÜMÜ)
+        →  bağlantı-spike + sonda-genişletme      (aynı dalga)
+        →  K1 + denetim-çekirdeği                 (tek dalga, iki çıktı)
+```
+
+**Paketin kalan hüküm-bekleyenleri** (`K2` tetikleyici cümlesi · `FORCE RLS` · `T-310`
+login-yolu) **küçük ve çoğu bu üç hükmün TÜREVİ** — paket güncellenmiş girdiyle döndüğünde
+**tek turda** kapanırlar.
+
+⛔ **`INV-B-009`'un kolon-kaderi masada BEKLİYOR:** teşhis *"kolon bayat"* dedi; view doğru
+hesaplıyorsa **kolonun ölümü (`İlke-4`) GÜÇLÜ ADAY** — ⛔ **ama o hüküm, AYRIŞMA-ALARMININ
+CANLIDA NE SIKLIKTA ÖTTÜĞÜ görülmeden VERİLMEYECEK.** Docker-sonrası ilk `e2e` koşumu **o
+veriyi de getirir.**
