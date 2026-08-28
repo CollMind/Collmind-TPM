@@ -4085,3 +4085,39 @@ güvenilmez olan bir komut değil, **ölçümün üstünde durduğu zemin**.
 **Pratik:** bir rol/şema kararı ölçerken **`rolconfig`/`reloptions`/`pg_settings`'i
 repoyla ÇAKIŞTIR** — canlıda olup dosyada olmayan her satır **bir sapmadır**, ve
 sapmanın **yönü** ayrıca ölçülür.
+
+---
+
+## DIŞ GİRDİ BİR **GİRDİDİR**, TESCİL BİR **KANIT DEĞİLDİR** (ZORUNLU)
+
+`CLAUDE.md §2.1.2` şunu der: *"bağlayıcı kaynak bir **GİRDİ**dir, kanıt değil"* — ve o
+kural `BRD` için yazılmıştı. `Z53` (2026-08-28) onu **dış kaynağa** taşıdı.
+
+**Vaka:** bir araştırma raporu (kaynak-izsiz derleme), yerel olarak **ölçtüğümüz** üç
+davranışı **bağımsız doğruladı**. Karar (`Z50`) **zaten verilmişti**.
+
+```
+✅ TEYİT     rapor, YEREL ÖLÇÜMÜN sonucunu doğruluyor
+⛔ KANIT     rapor, kararı ÜRETMİYOR — ve üretseydi, karar ÖLÇÜLMEMİŞ olurdu
+```
+
+> **Bir dış kaynağın SAYISAL ya da DAVRANIŞSAL iddiası, YEREL PROBE olmadan KARAR
+> TAŞIMAZ.** **Atıf biçimi: `[dış-girdi, doğrulanmadı]`.**
+
+### ⛔ VE SIRA, İDDİANIN KENDİSİNDEN ÖNEMLİDİR
+
+Aynı cümle iki farklı yerde durabilir ve **iki farklı şey** olur:
+```
+ÖNCE ölçtük, SONRA rapor doğruladı   →  TEYİT   (kararın değeri ölçümde)
+ÖNCE rapor dedi, SONRA uyduk         →  KANIT SANILAN BİR ALINTI
+```
+📌 İkincisi bu repoda **adı konmuş** bir hata sınıfıdır: **uydurulmuş-alıntı** vakası,
+bir **kural metnine** yaslanmıştı; bu, aynı şeyin **dış kaynak** hâli olurdu.
+
+### Pratik — dış girdi bir brief'e nasıl girer
+
+Bir dış uyarı, **bizim ölçtüğümüz bir vakaya bağlanmadan** brief'e girmez.
+*(Örnek: raporun *"dual-write problemi"* uyarısı, ancak bizim **sessiz-düşen-audit-INSERT**
+dersimizle **birleşik** okunduğunda bir girdi olur — tek başına bir **başlık**tır.)*
+
+⇒ **Dış girdi SORU üretir, CEVAP üretmez.**

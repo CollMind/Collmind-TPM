@@ -5060,6 +5060,16 @@ YÜK PROBE'U**.
 Aktivasyon **deploy-eşiğinde**; sarmalayıcının **inşası** o eşiğin **hazırlık
 dalgasında**. **Bugün kararlaşan şey: MİMARİ ŞEKİL + KANIT ZEMİNİ.**
 
+## `§3b` — ⚡ DIŞ TESCİL (`Z53 §2`, 2026-08-28)
+
+Bir dış araştırma raporu **`[dış-girdi, doğrulanmadı]`** bu kararın üç ölçümünü
+**bağımsız** doğruladı: session-`SET` sızıntısı · tx-dışı `SET LOCAL` no-op ·
+fail-closed boş-küme.
+
+⚠️ **Tescil bir KANIT değil, bir TEYİTTİR** — karar **zaten yerel ölçümle** verilmişti
+ve rapor onu **üretmedi**. *(Sıra önemli: *"rapor böyle diyor"* bir gerekçe olsaydı,
+`Z53 §1`'in kuralı anlamsızlaşırdı.)*
+
 ## `§4` — ⇒ `Faz-1`'in `ADIM-5` ÇIKTISI **TAMAMLANDI**
 
 ```
@@ -5302,3 +5312,70 @@ BU DALGA   K1a  +  §1/§2 migration (RESTRICT + nullable-tenant + actor sıkıl
 SONRA      K1b  +  §6 kaderi  →  DENETİM-ÇEKİRDEĞİ dalgası
                                  (sağlayıcı-borcu + olay-envanteri ile birlikte)
 ```
+
+---
+
+# `Z53` — DIŞ-GİRDİ KAYDI: `RLS` / denetim-izi araştırma raporu
+
+**Tarih:** 2026-08-28 · **Kaynak:** ürün sahibi (NotebookLM derlemesi)
+**Dosya:** `docs/research/Research_report_PostgreSQL_RLS_and_SaaS_Audit_Trails.md`
+
+## `§1` — STATÜ: **KAYNAK-İZSİZ DERLEME**
+
+> ⛔ **BU RAPORDAKİ HİÇBİR SAYISAL/DAVRANIŞSAL İDDİA, YEREL PROBE OLMADAN KARAR
+> TAŞIMAZ.**
+
+Sayısal iddialar (ör. *"pgAudit `%15-25` throughput kaybı"*) **atıfsızdır** ve
+**`VARSAYIM` rafındadır**.
+
+**Karar-metinlerinde atıf biçimi:** **`[dış-girdi, doğrulanmadı]`**
+
+📌 Bu, `CLAUDE.md §2.1.2`'nin (*"bağlayıcı kaynak bir **GİRDİ**dir, kanıt değil"*)
+**dış-kaynak** hâlidir — ve orada `BRD`'ye uygulanan ölçüt, burada bir araştırma
+raporuna uygulanıyor. **Bir metnin ikna ediciliği, kanıt değeri değildir.**
+
+## `§2` — TEYİT DEĞERİ: üç yerel ölçümü **BAĞIMSIZ** doğruluyor
+
+| yerel ölçüm | kaydı |
+|---|---|
+| session-`SET` sızıntısı — **in-process havuzda DAHİ** | paket `B/2` probe `E1` |
+| tx-dışı `SET LOCAL` **sessiz no-op** | `Z49 §1` **dördüncü** ölçüm |
+| **fail-closed boş-küme** | `Z49 §1` üç çıktı |
+
+⇒ ⛔ **`Z50`'NİN DIŞ TESCİLİ** *(çapraz-referans `Z50`'ye eklendi)*.
+
+⚠️ **Ama tescil bir KANIT değil, bir TEYİTTİR:** karar **zaten yerel ölçümle** verildi
+ve bu rapor onu **üretmedi**. Sıra önemli — *"rapor böyle diyor"* bir gerekçe olsaydı,
+`§1`'in kuralı anlamsızlaşırdı.
+
+## `§3` — GİRDİ EŞLEMESİ (hükümlerle **birlikte** okunacak yerler)
+
+| rapor | bizim hüküm | okuma |
+|---|---|---|
+| **`§3`** FORCE RLS | ⏳ **AÇIK** — `K1b` turunda | `app_migrate`=owner / `app_runtime`=DML-only ayrımımız **endüstri deseniyle örtüşüyor**; `FORCE` = **owner-muafiyetine karşı DERİNLİK-SAVUNMASI** |
+| **`§2`** mimari tablosu | `K1b` tasarımı | **bugün:** `logging_collector` + `log_line_prefix %u` + **volume-kalıcılık** · **deploy-çağı adayları:** `WORM`/S3, `CDC` (⇒ ilk-deploy listesine satır) · **`Faz-3` aday:** `pgAudit` **dar kapsam** |
+| **`§1`** mitigasyon | havuz-doygunluk probe'u (ilk-deploy) | probe'un **ölçüm listesine**: *tx içinde dış-çağrı **yasağı*** · **holding-time** · **timeout** |
+| **`§4`** impersonation | `K1a` + `SET LOCAL` | **uyumlu**; **TTL-kimlik/Vault** = **çok-müşteri çağı** adayı |
+
+⛔ **Ve `§2`'nin *"dual-write problemi"* uyarısı, çift-yazım seçilirse bizim
+SESSİZ-DÜŞEN-AUDIT-INSERT dersiyle BİRLEŞİK okunur** — yani dışarıdan gelen bir uyarı,
+**bizim ölçtüğümüz** bir vakaya bağlanmadan brief'e girmez.
+
+## `§4` — İKİ KAPI ADAYI (`K1b`/denetim-çekirdeği brief'ine)
+
+### `a` · **BYPASSRLS-HİJYEN** kapısı
+```
+app_runtime'da BYPASSRLS/SUPERUSER  →  YOK
+BYPASSRLS taşıyan roller            →  KAYITLI LİSTE (bugün: app_operator, Z51 kaydıyla)
+evren  pg_roles'tan TÜRETİLMİŞ  ·  "ölçemedim" çıktılı
+```
+📌 `Z51 §2`'nin **kayıtsız rolconfig sapması** bu kapının **doğum gerekçesi**: bir rol
+ayarı canlıda **elle** değişti ve **hiçbir kapı görmedi**.
+
+### `b` · **YENİ-TABLO-RLS** kapısı
+```
+tenant_id taşıyan tablo RLS-etkin DEĞİLSE  →  KIRMIZI
+statü: AKTİVASYONA KADAR blocked · AÇILMA KOŞULU YAZILI
+```
+⇒ **`T-308` davranış-pini deseni**: kapı **doğar ama `blocked` durur**, ve açılma
+koşulu **kayıtta** — *"sessizce ertelenemez"* kuralının kapı tarafı.
