@@ -1,3 +1,80 @@
+# ✅ `K1B` KAPANIŞ PİNİ — **GEÇTİ** (2026-08-28)
+
+> **Bu belge bir BEKLEME belgesiydi. Bekleme bitti.**
+> Aşağıdaki özgün metin `F12` gereği **silinmedi** — pinin neden beklediği
+> ve nasıl kapandığı kayıtta kalır.
+
+## SONUÇ
+
+```
+bash scripts/verification/k1b-two-marker-pin.sh
+PIN EXIT=0
+
+  app_runtime@   satırı: 1
+  app_operator@  satırı: 4
+  ✅ PASS — iki bağlantı, MARKER METNİ OLMADAN, u= alanıyla ayrışıyor
+```
+
+### Ön koşullar `[ÖLÇÜLDÜ]` — pin öncesi
+```
+container   collmind-tpm-postgres   Up (healthy)   0.0.0.0:5434->5432/tcp
+volume      collmind-tpm-postgres-data · collmind-tpm-postgres-logs  (İKİSİ DE PİNLİ)
+GUC         logging_collector=on · log_line_prefix=%m [%p] %u@%d %a
+            log_connections=on · log_statement=all
+veri        dört-tablo korunum sayımı 1/9/5/39 (ürün sahibi doğruladı)
+```
+
+### ⛔ İKİ ADIMLI KOŞUM — ve birincisi bir BULGU
+
+```
+1. tur   bash k1b-two-marker-pin.sh              →  EXIT 2
+         "DB_RUNTIME_PASSWORD / DB_OPERATOR_PASSWORD verilmedi — ölçüm yapılamadı"
+2. tur   set -a; . ./.env; set +a  +  aynı komut →  EXIT 0
+```
+
+📌 **Birinci tur bir başarısızlık değil, sözleşmenin işlemesidir:** script kimlikleri
+**ortam değişkeninden** okur, `.env`'den değil. Kimlik yokken **sahte `PASS`
+üretmedi** — *"ölçemedim"* dedi (`exit 2`, kapının **üçüncü meşru çıktısı**).
+
+### ⭐ VE PİN, `ADIM 6` REVIEW'ÜNÜN `B1` DÜZELTMESİNİ CANLI DOĞRULADI
+
+```
+DÜZELTME ÖNCESİ   grep "u=app_runtime,"     ← VİRGÜLLÜ, prefix'te böyle bir şey YOK
+                  ⇒ MATEMATİKSEL OLARAK GEÇEMEZDİ
+                  ⇒ ve hata mesajı insanı "%u eksik olabilir" diye YANLIŞ SEBEBE
+                    gönderirdi (%u VARDI)
+DÜZELTME SONRASI  grep "] app_runtime@"      ← prefix'le hizalı
+BUGÜN             EŞLEŞTİ
+```
+
+> **Düzeltme olmasaydı bu pencere YANLIŞ SEBEPLE kırmızı verecekti** — ve insan
+> eylemi gerektiren bir pencere **ikinci kez** açılmak zorunda kalırdı.
+
+## BUNUNLA KAPANAN BORÇ
+
+`Z52 §3`: *"`K1b` kapanmadan **'operatör denetim-olaylıdır'** cümlesi HİÇBİR BELGEDE
+KURULAMAZ."* ⇒ **Artık kurulabilir.** `01-roles-and-ownership.sql`'deki borç cümlesi
+`F12` iziyle kapatıldı (üstü çizildi, silinmedi).
+
+**Üç parçanın üçü de ölçüldü:**
+
+| parça | nerede | kanıt |
+|---|---|---|
+| **NE** | `log_statement=all` (rol seviyesi) | `01-roles-and-ownership.sql` |
+| **KİM** | `log_line_prefix` `%u` | pin: `app_runtime@` 1 · `app_operator@` 4 |
+| **KALICILIK** | `logging_collector=on` + `-logs` volume | `docker rm` **iz bırakır** |
+
+⛔ **VE BİR SINIR YAZILDI:** üç parçadan **ikisi ortam seviyesindedir**
+(`docker-compose.yml`), `01-roles-and-ownership.sql` **değil** — yani taze bir
+kurulumda **o dosya tek başına denetim izini SAĞLAMAZ**. Kapısı: ilk-deploy ön koşulu
+`4` (**compose-tanımı ↔ canlı-container eşleşmesi**).
+
+---
+
+---
+
+# 📄 ÖZGÜN METİN (bekleme dönemi — `F12`, silinmedi)
+
 # `ADIM 6` / `K1b` — kapanış pini **ÖLÇÜLEMEDİ** (sandbox blokajı, insan eylemi gerekli)
 
 **Tarih:** 2026-08-28 · **Ölçen:** backend-engineer · **Statü:** ⛔ **DUR — insan eylemi bekliyor**

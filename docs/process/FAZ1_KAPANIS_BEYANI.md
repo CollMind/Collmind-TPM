@@ -127,7 +127,7 @@ ilişki-pini · tx-güvenli yazım · görünür fallback · tekrar-bastırma.
 | 2 | Guard-tanıma yükleminin **minification dayanıklılığı** | prod build'de minification istenirse |
 | 3 | **Aktivasyon-öncesi yük probe'u** (`411` sorgu çağrı yerinin havuz etkisi) | `RLS` aktivasyonundan **önce** |
 | 4 | **compose-tanımı ↔ canlı-container eşleşmesi** (port · volume · env) | `compose` kullanımı başlayınca |
-| 5 | `K1b` iki-belirteç pini + `DB_OPERATOR_PASSWORD` → `.env` | **insan eylemi** — container yeniden yaratma |
+| ~~5~~ | ✅ **`K1b` iki-belirteç pini — GEÇTİ (2026-08-28, `exit 0`)** · `DB_OPERATOR_PASSWORD` `.env`'de | ~~insan eylemi~~ — **TAMAMLANDI** |
 | 6 | `RLS` **aktivasyonu** | **ikinci müşteri / deploy** |
 | **6a** | ⛔ **`T-308` davranışsal pin** + **`BLOCKED` kapıların açılışı** (yeni-tablo-`RLS` dahil) | **aktivasyonla BİRLİKTE** |
 
@@ -190,3 +190,34 @@ listesine koyup `Faz-3`'e atmıştı. **Yapılmış.**
 | 5 | `information_schema` ile grant sorup *"canlı değil"* diyecektim | **kuralı hatırlamak yerine ARACI çağır** |
 
 > **Beşinin ikisi *"ajanı yakaladım"* hissi veriyordu.** İkisi de **ben yanılmıştım.**
+
+---
+
+# 8 · MÜHÜR SONRASI — **`K1b` KAPANDI** *(append-only, 2026-08-28)*
+
+Beyan mühürlendikten sonra ürün sahibi `K1b` penceresini açtı: container yeni
+compose ile yaratıldı, `-logs` volume'u doğdu, roller+`GRANT`'lar senkron, veri
+korunumu **dört-tablo sayımıyla** kanıtlı (`1/9/5/39`).
+
+```
+bash scripts/verification/k1b-two-marker-pin.sh     PIN EXIT=0
+  app_runtime@   1 satır
+  app_operator@  4 satır
+  ✅ iki bağlantı, MARKER METNİ OLMADAN, u= alanıyla ayrışıyor
+```
+
+⇒ **Eşik listesi kalemi `5` KAPANDI.** `Z52 §3`'ün şartı düştü: *"operatör
+denetim-olaylıdır"* cümlesi **artık kurulabilir**, ve borç cümlesi
+`01-roles-and-ownership.sql`'de **`F12` iziyle** kapatıldı.
+
+📌 **Ve pin, `ADIM 6` review'ünün `B1` düzeltmesini CANLI doğruladı:** düzeltme
+öncesi desen (`u=app_runtime,`) **matematiksel olarak geçemezdi** ve hata mesajı
+insanı **yanlış sebebe** gönderirdi. Düzeltme olmasaydı bu pencere yanlış sebeple
+kırmızı verir, **insan eylemi gerektiren bir pencere ikinci kez açılırdı.**
+
+⚠️ **Kalan sınır kayda geçti:** denetim izinin üç parçasından **ikisi ortam
+seviyesindedir** (`docker-compose.yml`) — taze bir kurulumda rol betiği **tek başına
+denetim izini sağlamaz**. Kapısı **eşik `4`**.
+
+⇒ **Eşik listesinde kalan: `1` · `2` · `3` · `4` · `6` · `6a`.**
+
