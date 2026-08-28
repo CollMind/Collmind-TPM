@@ -103,7 +103,8 @@ tüm verisi e2e'nin ürettiği ve sildiği veridir (`T-047` net-sıfır invaryan
 | `RLS` tasarımı + politika şekli + kanıt altyapısı | `T-293` LTA birleşmesi · `T-291` | `T-321` `%100 BLOCKED` |
 | Denetim kaydı **yazımı** (kim + ne zaman) | ROI-onay politikaları (`E1`,`E4`) | `T-324` ✅ *(bu turda kapandı)* |
 | Bildirim dilimi — **`K-2.2.7b` yürürlükte** | çok-seviyeli sıralı onay (`E2`) | `T-325` e2e tek-çalıştıran kilidi |
-| Dört DB-hijyen kapısı + ratchet ağı | `sales_actuals` tüketicisi | temizlik: ölü ikiz grid (854 satır) · `tier_roles` · `calculate-kpis` ucu · `ledger.repository.spec` · bayat `claim` yorumları · filtrelemeyen filtre |
+| Dört DB-hijyen kapısı + ratchet ağı | `sales_actuals` tüketicisi | **`T-314` dörtlüsü** — `GRANT`-drift kapısı · `NULL`-tenant okuyucu · arşiv adımı · `schema-isolation` kapsamı |
+| — | — | temizlik: ölü ikiz grid (854 satır) · `tier_roles` · `calculate-kpis` ucu · `ledger.repository.spec` · bayat `claim` yorumları · filtrelemeyen filtre |
 
 ## Bildirim halkası — **beş-ölçüt tablosunun satırı**
 
@@ -128,6 +129,12 @@ ilişki-pini · tx-güvenli yazım · görünür fallback · tekrar-bastırma.
 | 4 | **compose-tanımı ↔ canlı-container eşleşmesi** (port · volume · env) | `compose` kullanımı başlayınca |
 | 5 | `K1b` iki-belirteç pini + `DB_OPERATOR_PASSWORD` → `.env` | **insan eylemi** — container yeniden yaratma |
 | 6 | `RLS` **aktivasyonu** | **ikinci müşteri / deploy** |
+| **6a** | ⛔ **`T-308` davranışsal pin** + **`BLOCKED` kapıların açılışı** (yeni-tablo-`RLS` dahil) | **aktivasyonla BİRLİKTE** |
+
+> ⚠️ **`6a` neden ayrı bir satır:** `T-308` bugün `status: blocked` ve açılma koşulu
+> *"`RLS` aktivasyonu"*. **Aktivasyon günü bir checklist okunacak — o gün hatırlanması
+> gereken her şey BUGÜN o listede olmalı.** *(Bir eşik listesi, eşiğe varan turun
+> hafızasına güvenemez.)*
 
 ---
 
