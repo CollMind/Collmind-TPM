@@ -4121,3 +4121,92 @@ Bir dış uyarı, **bizim ölçtüğümüz bir vakaya bağlanmadan** brief'e gir
 dersimizle **birleşik** okunduğunda bir girdi olur — tek başına bir **başlık**tır.)*
 
 ⇒ **Dış girdi SORU üretir, CEVAP üretmez.**
+
+---
+
+## BİR `should-fix`'i ERTELEMEK, ONU BİR SONRAKİ DALGANIN **KÖR NOKTASI** YAPABİLİR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-28, `K1a`):** `Z47` review'u `view-security-invoker.sh`'ta bir
+**ölü dal** buldu — `$DB_QUERY` **hesaplanıyor, kontrol ediliyor, HİÇ ÇAĞRILMIYOR**;
+her iki dal da `docker exec ... -U postgres` koşuyordu. **`S4` / `should-fix`** diye
+kaydedildi ve **bırakıldı**.
+
+Bir dalga sonra `K1a` **tam o yolu taşımaya** kalktı:
+```
+plan     "db-query.sh sarmalayıcısını app_operator'e taşı"
+gerçek   guard sarmalayıcıyı HİÇ ÇAĞIRMIYORDU
+⇒ TAŞINACAK SANILAN YOL, TAŞINMIYORDU
+```
+
+> ⛔ **Bir *"ölü dal"* etiketi, o dalı TAŞIMAYA KALKAN ilk turda *"TAŞINMAYAN YOL"*a
+> dönüşür.**
+
+### ⇒ `should-fix` TRİYAJINA TEK SORU
+
+```
+"Bu kalem, PLANLANAN BİR SONRAKİ DALGANIN DOKUNACAĞI YÜZEYDE Mİ?"
+   evet  →  should-fix DEĞİL — O DALGANIN ÖN-ŞARTI
+   hayır →  should-fix
+```
+
+📌 Ve ayrım **kalemin ağırlığında değil, KONUMUNDA**: aynı ölü dal, dokunulmayacak bir
+dosyada gerçekten bir `should-fix`'tir. **Erteleme bir öncelik kararıdır; ama önceliği
+belirleyen şey KALEM değil, SONRAKİ DALGANIN YÜZEYİDİR.**
+
+⚠️ **Özellikle ertelenen şey BİR YOLUN CANLILIĞI hakkındaysa** — *"bu dal ölü"*,
+*"bu değişken kullanılmıyor"*, *"bu fallback'e hiç düşülmüyor"* — çünkü bir sonraki tur
+o yolu **canlı sanarak** planlar.
+
+---
+
+## CANLILIK PROBU, **ASIL KONTROLÜN YÜZEYİNDE** KOŞMALIDIR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-28, `K1a` review `B3`):** `dropped-column-absence.sh`'ın
+canlılık probu `information_schema.schemata`, asıl kontrolü
+`information_schema.columns` kullanıyordu.
+
+```
+schemata  YETKİ FİLTRELEMEZ  →  USAGE'ı olan HER role 1 satır
+columns   YETKİ FİLTRELER    →  GRANT'i olmayan role 0 satır
+
+ÖLÇÜLDÜ   app_runtime → schemata 1 · main.claims columns 0
+          POZ.KONTROL postgres → aynı sorgu 18
+GUARD     sıfır-GRANT rolüyle → EXIT=0 "✅ hepsi düşük"   ⛔ FAIL-OPEN
+```
+
+⇒ Kapı ***"ölçemedim"* ile *"temiz"*i AYNI ÇIKTIYA** sıkıştırıyordu — `§2.7`: **sinyal
+sabitse, sinyal değildir**.
+
+> **Prob, asıl kontrolün ÖLÇTÜĞÜ ŞEYİ ölçmelidir — *"bağlantı var mı"*yı değil.**
+> **Farklı yüzeydeki bir prob, kapının ÜÇ MEŞRU ÇIKTISINI İKİYE İNDİRİR.**
+
+📌 Bu, **kaynak-yanlış pin** türünün **kapı-içi** hâlidir: pin ailesinde *"mutasyon
+yanlış yere düştü"* neyse, burada *"prob yanlış yüzeyde koştu"* odur.
+
+**Pratik:** bir kapı yazarken sor — ***"probun başarısı, asıl kontrolün koşabileceğini
+GERÇEKTEN kanıtlıyor mu?"*** İkisi farklı bir yetki/kapsam yüzeyindeyse, cevap **hayır**.
+
+---
+
+## BİR HÜKMÜN *"GERİ-ALMA CAZİBESİ"* ÖNCEDEN ADLANDIRILIR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-28, `Z52 §1` → `T-314 C`):** `admin_audit_logs.tenant_id`
+`CASCADE`→`RESTRICT` oldu; hüküm *"önce arşiv, sonra silme"* sırasını **yapısal** kılmak
+istedi. Ama **arşiv adımı hiç yazılmadı** (tarama: sıfır).
+
+Bugün etkisi **yok** — silme yolu da yok. Ama borç **adresli** yazıldı, ve gerekçesiyle:
+
+> ⛔ **Yolu açan tur `RESTRICT` DUVARINA ÇARPAR — ve EN KOLAY ÇIKIŞ `RESTRICT`'i GERİ
+> ALMAKTIR.** Yani hükmü **sessizce çürütmek**.
+
+### Kural
+
+> **Bir hüküm bir ENGEL kuruyorsa, o engelin GERİ-ALMA CAZİBESİ hükümle AYNI YERDE
+> adlandırılır.**
+
+📌 Çünkü engele çarpan tur, **hükmün gerekçesini okumaz — engeli okur**. Ve bir engel,
+**niçin var olduğu yanında yazmıyorsa**, bir **kusur gibi** görünür.
+
+⚠️ Ve bu, `DISIPLIN`'in *"`ÖLÇÜLMEDİ` bir GEREKÇELİ duraktır"* kuralının **kısıt**
+tarafıdır: bir statü gerekçesiz kalırsa **yanlış okunur**; bir **kısıt** gerekçesiz
+kalırsa **kaldırılır**.
