@@ -5704,3 +5704,114 @@ SONRA   ⛔ FAZ-1'İN SON MADDESİ — kapanış denetimi
           kalan-15 / koşul-satırları tazeliği
 ```
 
+
+---
+
+## `Z58` — `K-2.2.8c` REVİZYONU: **donmuş BRD'nin ÖLÇÜMLE düzeltilen İLK kuralı**
+
+> **Kaynak:** ürün sahibi, 2026-08-28 · ölçüm: `T-316` (`BudgetPolicyService`, canlı katalog)
+> **Statü:** `L2_01` `K-2.2.8b` + `K-2.2.8c` **revize edildi** (`F12` izli, `Z1` kayıtlı)
+
+### `§0` · ÖLÇÜM — iddia ve gerçek
+
+```
+K-2.2.8c İDDİA   "eşit spesifiklik MÜMKÜN DEĞİLDİR"
+ÖLÇÜM            MÜMKÜN
+  UNIQUE NULLS NOT DISTINCT(tenant, kanal, kategori) yalnız AYNI tuple'ı engeller
+  (kanal=X, kategori=NULL)  ⎫  FARKLI tuple'lar ⇒ İKİSİ DE KURULABİLİR
+  (kanal=NULL, kategori=Y)  ⎭
+  sorgu (kanal=X + kategori=Y) ⇒ ikisi de spesifiklik=1 ⇒ EŞİT
+```
+
+### `§1` · HÜKÜM = **(a)** — kural revize edilir
+
+**`(b)` ELENDİ — öncelik kolonu.** İki gerekçe, ve **ikincisi daha ağır**:
+`İlke 1` (ölçülmemiş bir ihtiyaca şema eklemek) — ve daha kötüsü:
+
+> **Eşitliği SESSİZCE ÇÖZÜLÜR kılar** — bugün **açık hata** veren bir belirsizliği,
+> yarın **kimsenin fark etmeyeceği** bir tie-break'e çevirir.
+> **Belirsizliğin GÖRÜNÜR olması bir kusur değil, `§2.5` disiplininin KAZANCIDIR.**
+
+**`(c)` ELENDİ — "birlikte kurulamaz" kısıtı.** `K-2.2.8b`'nin **harfini** kurtarmak
+için `K-2.2.8a`'nın **iki boyutlu tasarım uzayını** daraltır: *"kanal-geneli politika
+VE kategori-geneli politika birlikte var olamaz"* demek, **meşru bir konfigürasyon
+sınıfını** (kanal-bazlı taban + kategori-bazlı istisna) **kural katmanında yasaklamak**
+olur.
+
+> **Kuyruğu kurtarmak için köpeği feda etmek.** *(ürün sahibi)*
+
+**`(a)` KALIR — tek gerçeğe-uyan şık:** kod **zaten doğru davranışı seçmiş** (açık
+hata, gizli sıra yok); **kural koda uyar.**
+
+### `§2` · REVİZYON ŞABLONU — üç parça *(ve üçüncüsü olmadan revizyon YARIM)*
+
+```
+1  ESKİ CÜMLE ölür, İZİYLE          "eşit spesifiklik mümkün değildir"
+                                    → ÖLÇÜLDÜ-yanlış (F12 usulü)
+2  YENİ CÜMLE                       eşitlik MÜMKÜNDÜR · sessizce ÇÖZÜLMEZ ·
+                                    açık hata · KURULUM-ZAMANI sorumluluğu
+3  K-2.2.8b'nin GÜVENCESİ DARALTILIR "DB seviyesinde imkânsız"
+                                    → "AYNI TUPLE'ın çift kaydı imkânsız;
+                                       kısmi-tuple eşitliği uygulama
+                                       seviyesinde açık hatayla yakalanır"
+```
+
+### ⛔ `§3` · ÜÇÜNCÜ PARÇA NEDEN ZORUNLU — *"1/3-doğru iddia"nın BRD hâli*
+
+Sapma **yalnız `8c`'de değil, `8b`'nin GÜVENCE-İDDİASINDA da.**
+
+> *"Çakışma **veritabanı seviyesinde imkânsızdır**"* cümlesi, **kapsamadığı bir vakayı
+> kapsar gibi okunuyor.**
+
+📌 `Z51`'in *"bir sağlayıcı iddiası ALAN ALAN ölçülür"* (provider `1/3` doğru) dersinin
+**BRD tarafındaki hâli**: bir güvence cümlesi **kısmen** doğruysa, okuyucu onu
+**tamamen** doğru okur. **İkisini birden düzeltmeyen revizyon YARIM olur.**
+
+### ⛔ `§4` · BİR İLK — **donmuş BRD'nin ÖLÇÜMLE düzeltilen İLK kuralı**
+
+```
+2026-08-15  BRD v2 DONDU   (Z1)
+o günden beri akış          BRD → kod   (TEK YÖN)
+2026-08-28                  KOD → BRD   ← TERS YÖNDEKİ İLK KAYITLI DÜZELTME
+```
+
+**Ve tam olması gereken biçimde oldu — dört adım:**
+
+```
+1  kod SESSİZCE SAPMADI   §2.5'e uydu, AÇIK HATA fırlattı
+2  sapma ÖLÇÜLDÜ          T-316, canlı katalog + pozitif kontrol
+3  hüküm KARAR DEFTERİNDEN geçti
+4  L2'ye dokunuş          F12 izli · Z1 kayıtlı
+```
+
+> **`§2.1.2`'nin *"BRD bir GİRDİdir, kanıt değil"* cümlesi bugüne kadar bir İLKEYDİ —
+> artık bir EMSALİ var.**
+
+### `§5` · VE AJANIN **GİZLİ TIE-BREAK YAPMAMASI** AYRICA KAYDA GEÇER
+
+Ajan iki eşit adayla karşılaştı ve **birini seçmedi** — `BUDGET_POLICY_AMBIGUOUS_CODE`
+ile **açık hata** fırlattı.
+
+> `§2.5`'in *"iki seçenek arasında rastgele/gizli tie-break yapma"* maddesi
+> — *"`if` yazıp `else` bırakmama"nın kardeşi: **belirsizliği sessizce çözme*** —
+> **tam da bu an için var.**
+
+📌 Ve sonuç zinciri buna bağlı: ajan sessizce bir tarafı seçseydi **sapma hiç
+ölçülmezdi**, `K-2.2.8c` yanlış hâliyle **kalırdı**, ve bir gün iki kısmi politika
+tanımlayan tenant **sessizce yanlış eşikle** çalışırdı.
+**Bir disiplin kuralının değeri, ONA UYULDUĞU İÇİN ORTAYA ÇIKAN BULGUYLA ölçülür.**
+
+### `§6` · Ek kayıt — `information_schema` refleksi, **vaka sayaca**
+
+Team Lead, `app_runtime`'ın `budget_policies` grant'ını `information_schema.
+role_table_grants` ile sorguladı, **0 satır** aldı ve *"grant canlı değil"* diyecekti.
+`db-query.sh` `app_operator` ile bağlanıyor; o rol grant'ın tarafı **değil** ⇒ görünüm
+**filtreliyor**. `has_table_privilege` → **`t`**. **Ajan doğruydu, ölçüm yanlıştı.**
+
+⛔ Ve bu, **iki dalga önce `new-table-rls.sh`'te kapatılan tuzağın ta kendisi**
+(`K1a` review `B3`). Kuralı yazan ve kapıyı düzelten kişi **yine refleksle** o görünüme
+uzandı.
+
+> `DISIPLIN`: *"kuralı hatırlamak yerine **ARACI** çağır"* — **bir refleks üretmeyen
+> kural, yazılmış olmakla korunmuş olmaz.**
+

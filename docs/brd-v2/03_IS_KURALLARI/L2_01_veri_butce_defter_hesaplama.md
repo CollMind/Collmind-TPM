@@ -553,11 +553,35 @@ varsayılan olarak gelir (`80/90/100` ve `80/95`) ve ilk müşteride dokunulmaz.
 > Gerekçe (ürün sahibi): kanal bazlı farklılaşma istisnai değil, ticari yapının kendisi —
 > zincir müşterilerde bütçe disiplini sıkı, distribütörde tolerans yüksek.
 
-**K-2.2.8b** — Çakışma **veritabanı seviyesinde imkânsızdır:** `UNIQUE(tenant, kanal,
-kategori)`, boş değer joker.
+**K-2.2.8b** — ~~Çakışma **veritabanı seviyesinde imkânsızdır:** `UNIQUE(tenant, kanal,
+kategori)`, boş değer joker.~~ ⛔ **GÜVENCE DARALTILDI** (2026-08-28, `Z58 §3`) —
+kısmi-tuple eşitliğini **kapsamıyordu**, ama kapsıyor gibi okunuyordu.
 
-**K-2.2.8c** — Çözümleme tek kurallıdır: **en spesifik kayıt kazanır.** Eşit spesifiklik
-mümkün değildir.
+> **Yürürlükteki cümle:** **Aynı tuple'ın çift kaydı** veritabanı seviyesinde
+> imkânsızdır (`UNIQUE NULLS NOT DISTINCT(tenant, kanal, kategori)`, boş değer joker).
+> **Kısmi-tuple eşitliği** uygulama seviyesinde **açık hatayla** yakalanır
+> (`K-2.2.8c`).
+
+**K-2.2.8c** — Çözümleme tek kurallıdır: **en spesifik kayıt kazanır.**
+~~Eşit spesifiklik mümkün değildir.~~ ⛔ **ÖLÇÜLDÜ-YANLIŞ, revize edildi**
+(2026-08-28, `Z58` · ölçüm: `T-316`, canlı katalog + `BudgetPolicyService`).
+
+> **Ölçüm:** `UNIQUE NULLS NOT DISTINCT(tenant, kanal, kategori)` yalnız **aynı**
+> tuple'ı engeller. `(kanal=X, kategori=NULL)` ile `(kanal=NULL, kategori=Y)`
+> **farklı** tuple'lardır ⇒ ikisi de kurulabilir ⇒ `kanal=X + kategori=Y` sorgusunda
+> **ikisi de `spesifiklik=1`** ile eşleşir. **Eşitlik mümkündür.**
+>
+> **Yürürlükteki cümle:** Eşit spesifiklik **mümkündür** (kanal-only ∧ kategori-only
+> aynı sorguda eşleşebilir). Çözümleme bunu **sessizce çözmez:** eşitlik **açık
+> hatadır** (`BUDGET_POLICY_AMBIGUOUS_CODE`) ve **kurulum-zamanı sorumluluğudur** —
+> çakışan kısmi politikalar tanımlayan tenant, **sorgu zamanında değil, tanımı gözden
+> geçirerek** düzeltir.
+
+> 📌 **Bu, donmuş `BRD v2`'nin ÖLÇÜMLE düzeltilen İLK kuralıdır** (`Z58 §4`).
+> Dondurmadan beri akış tek yöndeydi (`BRD → kod`); bu, **ters yöndeki ilk kayıtlı
+> düzeltme** — ve olması gereken biçimde oldu: kod **sessizce sapmadı** (`§2.5`'e uydu,
+> açık hata fırlattı), sapma **ölçüldü**, hüküm **karar defterinden geçti**, `L2`'ye
+> dokunuş `F12` izli ve `Z1` kayıtlı indi.
 
 > ⚠️ **Öncelik kolonu yoktur** ve bilinçli olarak eklenmez.
 >
