@@ -429,8 +429,8 @@ status: active        # planned | active | closed
 > **Açık kararlar:** [docs/decisions/OPEN_DECISIONS.md](../../docs/decisions/OPEN_DECISIONS.md)
 > — ürün sahibi · hukuk · danışman · teknik ölçüm bekleyen tüm kararların **indeksi**
 > (içerik taşımaz, yere işaret eder). Yeni bir açık karar doğduğunda oraya satır eklenir.
-- [[T-316]] `budget_policies` CANLANIR — davranış merdiveni okunur hâle gelir (+ seed `50/60`→`80/90`, **AYNI COMMIT** — `Z57 §1a`) — `backend-engineer` — **todo**
-- [[T-317]] Bildirim şeması — `BUDGET_FINANCE_REVIEW` + zarf-başına son kademe (`1816000000000`) — `data-engineer` — **todo**
+- [[T-316]] `budget_policies` CANLANIR — davranış merdiveni okunur hâle gelir (+ seed `50/60`→`80/90`, **AYNI COMMIT** — `Z57 §1a`) — `backend-engineer` — **review** (Team Lead doğruladı; seed reconcile DARALTILDI)
+- [[T-317]] Bildirim şeması — `BUDGET_FINANCE_REVIEW` + zarf-başına son kademe (`1816000000000`) — `data-engineer` — **done**
 - [[T-318]] Olay üretimi — `%80`+`%90` bildirimleri; **zili ÇALAR yapmak** (bugün `createNotification` çağıranı **0**, UI `Header.tsx:105`'te monte) — `backend-engineer` — **blocked** (`T-316`+`T-317`)
 - [[T-319]] Dört kabul pini — `P1` **ilişki-pini** · `P2` şablon · `P3` tekrar-bastırma · `P4b` **bildirim-yolu-canlılığı** (uçtan uca) — `qa-engineer` — **blocked** (`T-318`)
 - [[T-321]] `K-2.2.7a` **`%100 BLOCKED` hiç uygulanmamış** (bloklama yolu **0**) — kod değil, **hüküm bekler**; `Faz-1` kapanış denetimine girdi — **blocked**
