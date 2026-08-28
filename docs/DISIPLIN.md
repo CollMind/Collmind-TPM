@@ -4472,3 +4472,46 @@ yolunda `500`.
 çünkü sonuç (bulgu) aynıdır; **ayrılan şey RİSKTİR:** `DUR` bir soru üretir, `throw`
 bir **kesinti** üretir.
 
+
+---
+
+## ÖLÇEN ŞEYİN EVRENİ, **ÖLÇÜLEN ŞEYİN YETKİSİNDEN GENİŞ** OLMALI (ZORUNLU)
+
+Bir kapı, ölçtüğü sistemin **kimliğiyle** çalışırsa, o sistemin **göremediği yerde
+doğan bozulmayı göremez** — ve **yeşil kalır.**
+
+**Ölçülmüş vaka (2026-08-28, `Z61`):** `T-047` satır-sayısı invaryantı evreni
+`has_table_privilege(current_user, …)` ile türetiyordu ve `current_user` =
+`app_runtime`:
+
+```
+main relkind='r'                48
+app_runtime SELECT edebiliyor   39   ← evren buydu
+app_migrate / app_operator      48 / 48
+```
+
+⇒ Kör kalan dokuz tablonun **birine** yeni bir yazıcı gelse, invaryant **yine kör**
+kalırdı — ve o dokuzun içinde **açık bir port-adayı** vardı.
+
+> **Bir HARNESS, ölçtüğü uygulama DEĞİLDİR.** Uygulamanın kimlik/yetki sınırları
+> ürünün sözleşmesidir; **ölçümün sözleşmesi değil.**
+
+**Pratik:** bir kapı yazarken sor — *"bu kapı hangi kimlikle bakıyor, ve o kimliğin
+göremediği bir yer VAR MI?"* Varsa evren **daha geniş bir kimlikle** türetilir.
+⚠️ Ve okuma-yapan bir harness için bu **yetki genişletmesi değildir**: `count(*)`
+yapan bir bağlantı **yapı gereği** SELECT-only'dir.
+
+---
+
+## ÖLÇÜM KOLAYLIĞI İÇİN **ÜRETİM YETKİSİ GENİŞLETİLMEZ** (ZORUNLU)
+
+Üstteki kuralın **yanlış çözümü** şudur ve reddedilmiştir: *"`app_runtime`'a eksik
+`SELECT`'leri verelim, kapı da görsün."*
+
+> **Sınıf tekrar gelecek:** her yeni kapı *"uygulama rolüne şu `GRANT`'ı verelim mi?"*
+> sorusunu doğurabilir. **Cevap hep aynı: HAYIR — harness KENDİ ROLÜYLE ölçer.**
+
+📌 Gerekçe `Z42` disiplininin ta kendisi: bir yetki, **ürünün** ihtiyacıyla verilir —
+**ölçümün** rahatlığıyla değil. Aksi hâlde üretim yetki yüzeyi, **hiçbir ürün
+gereksinimi olmadan** büyür ve her büyüme **kalıcıdır**.
+

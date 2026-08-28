@@ -6060,3 +6060,102 @@ hüküm UYGULANIRKEN karar defterinde COMMIT'Lİ DEĞİLDİ
 📌 Ve bu, `§1`'in yasasının **kendi üstüne katlanmış hâli**: bir gerekçe **ölçümünün
 tarihiyle** yaşıyorsa, bir **hüküm** de **kaydının tarihiyle** yaşar.
 
+
+---
+
+## `Z61` — `T-324`: **ÖLÇEN ŞEYİN EVRENİ, ÖLÇÜLEN ŞEYİN YETKİSİNDEN GENİŞ OLMALI**
+
+> **Kaynak:** ürün sahibi, 2026-08-28 · **Statü:** `(a)` **ONAYLI** · `(b)` **REDDEDİLDİ**
+
+### `§1` · HÜKÜM ve TAM GEREKÇE
+
+> **Sayım bağlantısı bir ÖLÇÜM-HARNESS'IDIR, ürün-yolu DEĞİL.**
+> `K-2.6.13`'ün ayrımı (*"`app_runtime` = uygulamanın kimliği"*) **harness'ı
+> BAĞLAMAZ** — çünkü harness **uygulama değil, uygulamayı ÖLÇEN şeydir.**
+>
+> ⛔ **VE ÖLÇEN ŞEYİN EVRENİ, ÖLÇÜLEN ŞEYİN YETKİSİNDEN GENİŞ OLMAK ZORUNDADIR** —
+> yoksa **tam bu vaka doğar:** kapı, **uygulamanın GÖREMEDİĞİ yerde doğan artığı
+> göremez.**
+
+`app_migrate` ile `count(*)`: **yapı gereği SELECT-only** (yazma yolu yok) ⇒ risk
+profili **sıfıra yakın**.
+
+### `§2` · `(b)`'NİN REDDİ — ve cümlesi `DISIPLIN`'e
+
+> **ÖLÇÜM KOLAYLIĞI İÇİN ÜRETİM YETKİSİ GENİŞLETİLMEZ.**
+
+📌 **Sınıf tekrar gelecek:** her yeni kapı *"`app_runtime`'a şu `GRANT`'ı verelim
+mi?"* sorusunu doğurabilir. **Cevap hep aynı: hayır — harness KENDİ ROLÜYLE ölçer.**
+
+### `§3` · EK ŞART — *"muhtemelen" BİR HÜKÜM DEĞİLDİR*
+
+*"`app_runtime` `claims`'i okuyamıyor"* bir **not olarak kalamaz** — sınıflandırılır:
+
+```
+backend'de bu tabloya bir repository/entity VAR MI?
+  VAR + GRANT YOK  →  ⛔ GERÇEK KUSUR (T-306 sınıfı: İLK ÇAĞRIDA PATLAR)
+  YOK              →  "port-bekleyen, GRANT portuyla gelir" KAYDI
+```
+
+⚠️ Ürün sahibinin ön-görüsü (`claims` ailesi **port-adayı** ⇒ muhtemelen ikinci sınıf)
+**bir hüküm değil, bir hipotezdir** — ve on dakikalık bir `grep` iki sınıfı ayırır.
+
+📌 **Kaydın işlevi GELECEĞE dönük:** `claims` portu geldiğinde `GRANT`'ın **o dalganın
+checklist'inde** olması **bu kayıtla garanti olur** — `Z60 §2`'nin dersi:
+*yeni-çağıran-doğuran dalga, `GRANT`-gerekçelerini tarar.*
+
+### `§4` · `Z60 §1` **YAZILDIĞI GÜN İKİNCİ VAKASINI ÜRETTİ**
+
+```
+Z60 §1 yazıldı        "ölçümü değiştiren tur, gerekçenin okuyucusudur"
+aynı gün, T-319       evreni değiştirdi · gerekçeyi OKUMADI
+aynı dosya            e2e-row-count.js
+```
+
+> **Bu, kuralın GEÇ değil TAM ZAMANINDA yazıldığının kanıtıdır.**
+
+### `§5` · MANŞET DÜZELTMESİ — `Z58 §3` disiplininin doğru uygulaması
+
+`e2e-row-count.js` **manşetinde** *"böylece bu sınıf ÜÇÜNCÜ KEZ doğamaz"* diyor,
+**12 satır sonra** *"o tablolara yeni bir yazıcı gelirse YİNE kör kalır"* diyordu.
+
+> **Teslim edilmeyen MANŞET, teslim edilen DAR İDDİADAN tehlikelidir — çünkü okuyucu
+> MANŞETİ okur.**
+
+### `§6` · `39/48` DOĞRU STATÜDE — *"bitti-VE-kalan-şuradadır"* GRAMERİ
+
+```
+ilerleme GERÇEK    elle-liste ÖLDÜ · evren TÜRETİLDİ · reprodüksiyon KARŞILANDI
+hüküm YARIM        9 tablo KÖR
+yarımlık ADRESLİ   T-324 kapatacak
+```
+📌 Bu gramerin **kapı ölçeğindeki** hâli.
+
+### `§7` · BİLDİRİM DİLİMİ **TAMAM** — halka satırı kabul edildi
+
+> **"Zil çalıyor. Kanıtı: `P1`–`P4b` + iki-yol pinleri, mutasyon-kanıtlı,
+> `P4b` mock'suz."**
+
+**Ve açılış↔kapanış mesafesi kayda değer:**
+
+```
+üç hafta önce   canlı zil · SIFIR çağıran · tablo/servis/kanal/UI VARDI, ZİNCİR KOPUKTU
+bugün           üç-dünyalı ilişki-pini · tx-güvenli yazım
+                görünür fallback · tekrar-bastırma
+⇒ K-2.2.7b YÜRÜRLÜKTE
+```
+
+### `§8` · SIRA
+
+```
+1  T-324 dalgası   rol-dönüşü + 48/48 pini + dokuz-tablo sınıflandırması  (küçük)
+2  ⛔ KAPANIŞ DENETİMİ — TEK OTURUM
+     beş ölçütün ÖLÇÜLEREK işaretlenmesi
+     5-halka envanterinin MÜHÜRLENMESİ  (bildirim halkası dahil)
+     dört-girdili Faz-2 çakıştırması
+     Section-10 karantina damgası
+     kalan-15 / koşul-satırları tazeliği
+     T-321 hükmü (beş-ölçüt masasında) · T-324 sonucu
+     ⇒ FAZ-1'İN KAPANIŞ BEYANI
+```
+
