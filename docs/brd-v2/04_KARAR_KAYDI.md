@@ -5474,3 +5474,112 @@ Yeni olaylar **doğrudan sözlük-adıyla** doğar.
 
 📌 Bu, `Z53 §4b`'nin *"kapı doğar ama `blocked` durur"* deseninin **kardeşi**: burada
 kapı **doğar ve HEMEN çalışır** — çünkü koruduğu şey **gelecek**, geçmiş değil.
+
+
+---
+
+## `Z56` — `ADIM 6` REVIEW'ÜNDEN ÜÇ KALICI KAYIT
+
+> **Kaynak:** ürün sahibi, 2026-08-28 · `ADIM 6` push'unun onay mesajı
+> **Statü:** üçü de **kalıcı** — ikisi `DISIPLIN`'e, biri `FAZ1_PLAN §0`'a indi.
+
+### `§0` · Push hükmü ve **neden bloklamadığı**
+
+`ADIM 6` push edildi (`push-order.sh` `EXIT=0`, üç repo doğrulandı). İki insan-eylemi
+(`K1b` pini · `DB_OPERATOR_PASSWORD` `.env`'e taşıma) **push'u bloklamaz** — gerekçe
+ürün sahibinin kaydından:
+
+> İkisi de **aktivasyon-değil-beyan** sınıfı: pin geçene kadar hiçbir belge
+> *"denetim-olaylı"* **demiyor**.
+
+📌 Ve ürün sahibinin ikinci cümlesi bir **ölçüm** kaydıdır, bir övgü değil:
+`Z52 §3`'ün **fiilen işlemesi** — ajanın sahte `PASS` üretmemesi, borç cümlesinin
+`01-roles-and-ownership.sql`'de **kendiliğinden** durması — *bu oturumun
+**mekanizma-olgunluğunun** sessiz kanıtı.* Yani bir hükmün değeri, **ihlal
+edilmediğinde** görülür.
+
+⇒ `K1b` pini **docker-yenileme uygun bir arada** koşulur; **ping'lendiğinde
+doğrulanır.**
+
+### `§1` · ORTAM-TANIMI ↔ CANLI-ORTAM AYRIŞMASI — **ilk-deploy ön koşulu**
+
+`B2` (port `5432` ↔ `5434`) ve pinsiz volume **tek sınıftır**, ve adı kondu:
+
+> **"Ortam-tanımı ile canlı-ortam ayrışması, guard'ların göremediği tek yüzeydir."**
+
+Kritik gözlem ürün sahibinin altını çizdiği yerde: **guard'lar `docker exec` kullandığı
+için hepsi yeşil kalırdı — kırılan tek şey uygulama olurdu.** İkisi de **bugün
+zararsız**, yarın (bir `docker compose up` refleksiyle) **sessiz felaket**.
+
+⇒ Bu, `§ CANLI ORTAM, KURULUM BETİĞİNDEN ÜRETİLEBİLMELİDİR` kuralının **ayna-yarısı**:
+**betik de canlıyı tarif etmelidir** — ve ikisi arasındaki **drift'in kapısı yok**.
+
+**Hüküm:** `FAZ1_PLAN §0` madde `4` — *"compose-tanımı ↔ canlı-container eşleşmesi
+doğrulanır (port · volume · env)"*. ⚠️ **Sürekli kapı DEĞİL**, deploy-öncesi **tek
+seferlik** ölçüm — `[GEREKÇELİ]`: **drift-yüzeyi ancak `compose` kullanımı başlayınca
+canlanır.**
+
+### `§2` · `B3`'ün ZAMANLAMA BOYUTU + SELF-TEST'İN SÖZLEŞMESİ
+
+**`a` · Kapı-körlüğü KORELASYONLU olabilir.** `fail-open` taksonomisi bugüne kadar
+**yön** ölçüyordu; `B3` bir boyut ekledi:
+
+> **Kör nokta rastgele değil — tehdidin geliş yönüyle AYNI EKSENDE.**
+> Evreni daraltan işlem (**bir tablodan yetki çekmek**) = **`RLS`-aktivasyon
+> dalgasının yapacağı şeyin ta kendisi.**
+
+`pg_attribute` evrenine geçiş **doğru düzeltmedir** — katalog **yetki filtrelemez**.
+
+**`b` · Üç-meşru-çıktı yasası self-test'lere genişledi.**
+
+> **Bir self-test, kapının DAVRANIŞINI değil SÖZLEŞMESİNİ sınar — sözleşmeye aykırı
+> beklenti taşıyan bir self-test, YANLIŞI MÜHÜRLER.**
+
+Vaka: `CASE A` *"boş envanter → `exit 0`"* bekliyordu, yani kapının *"ölçemedim"*ini
+*"temiz"*e **yuvarlamasını doğru ilan ediyordu**. Self-test **yeşildi**.
+
+### `§3` · `S3` DESEN OLDU · `S4` STATÜ-DÜRÜSTLÜĞÜ
+
+**`a` · Baseline-artışının reddi ikinci kez aynı biçimde işledi:**
+
+| tur | talep | reddin ürettiği |
+|---|---|---|
+| `K1a` | `money-float` `114 → 117` | üç `Number(...)` kaldırıldı — biri **gizli sessiz-sıfır** |
+| `ADIM 6` | `lint-ratchet` `6 → 8` | `Record<string,any>` → `unknown` · **23 çağrı yeri ölçüldü** · `improved: 6 → 0` · baseline **ayrı commit** |
+
+⇒ **"Artışta kod düzelir" kuralı iki vakada da DAHA DOĞRU KODU üretti.**
+
+**`b` · `S4` — `T-311` ailesine temiz ekleme:**
+
+```
+yol var · mekanizma yok     T-311 ailesi
+mekanizma var · yol yok     T-314/B        ← ADIM 6
+```
+
+⇒ **İkisi de `done` değil, ikisi de ADRESLİ.** *(`T-314/B` → `blocked-unreachable`,
+açılma koşulu: **platform rolü `RBAC`'te tanımlandığında**.)*
+
+### `§4` · SIRA — ve **bildirim brief'ine bir ön-hatırlatma**
+
+```
+1  BİLDİRİM DİLİMİ    üç olay · in-app · %90-pini  ⇒ K-2.2.7b'nin YÜRÜRLÜK ANI
+2  FAZ-1 KAPANIŞ DENETİMİ
+     5-halka zincir envanteri (tek sayfa)
+     Faz-2 çakıştırma turu (dört-girdili JOIN)
+     beş çıkış ölçütünün ÖLÇÜLEREK işaretlenmesi
+     Section-10 karantina damgası
+     kalan-15 / koşul-satırları tazeliği
+```
+
+⛔ **VE BİLDİRİM BRIEF'İ İÇİN ŞİMDİDEN SÖYLENEN TEK ŞART** *(ürün sahibi)*:
+
+> **`%90`-pini DEĞER-pini değil, İLİŞKİ-pini olsun** — *eşik-geçişi olayı*, sabit-sayı
+> değil.
+
+📌 `T-296/B2` dersinin **bildirim hali**: bir pin, sabitlediği şeyin **anlamını**
+sabitlemelidir — o anlamın bugünkü **sayısal değerini** değil. Eşik konfigürasyondan
+gelir (`§2.3`: *"hardcoded threshold YASAK"*); `%90`'ı pinleyen bir test, eşik
+değiştiği gün **doğru davranışı kırmızıya** çevirir.
+
+⇒ **`ADIM 6`'nın `Faz-1` payı BİTTİ. Kapanışa iki iş kaldı.**
+

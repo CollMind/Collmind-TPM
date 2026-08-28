@@ -4088,6 +4088,49 @@ sapmanın **yönü** ayrıca ölçülür.
 
 ---
 
+## ⛔ VE AYNA-YARISI: **BETİK DE CANLIYI TARİF ETMELİDİR** (ZORUNLU)
+
+Üstteki kural bir yönü kapatır: *canlıda olup betikte olmayan*. **Ters yön de bir
+sapmadır ve ONUN KAPISI YOK:** *betikte olup canlıda olmayan* — yani **ortam-tanımı
+ile canlı-ortamın ayrışması.**
+
+> **ORTAM-TANIMI İLE CANLI-ORTAM AYRIŞMASI, GUARD'LARIN GÖREMEDİĞİ TEK YÜZEYDİR.**
+
+**İki ölçülmüş vaka, aynı turda (2026-08-28, `ADIM 6` review):**
+
+| # | sapma | bugün | yarın |
+|---|---|---|---|
+| `B2` | compose `5432:5432` · canlı **`5434`** · `.env` **`5434`** | zararsız | `container_name` **pinli** ⇒ `docker compose up` canlıyı **devralır** ve portu **sessizce** düşürür |
+| volume | compose volume'ü **pinsiz** ⇒ `collmindbackend_postgres_data` (2026-06-16, **bayat**) | zararsız | **boş/bayat veriye** sessizce bağlanır |
+
+⛔ **VE KRİTİK GÖZLEM — NEDEN BU YÜZEY KÖR:**
+
+```
+tüm guard'lar  docker exec  kullanıyor   ⇒ container'ın İÇİNDEN konuşuyorlar
+               ⇒ yayımlanan PORT'u hiç görmüyorlar
+               ⇒ HEPSİ YEŞİL KALIRDI
+kırılan tek şey: UYGULAMA
+```
+
+📌 Yani bu, `§2.7`'nin *"sinyal sabitse sinyal değildir"* ailesinin **ortam** üyesi:
+kapı doğru şeyi ölçüyor, ama **sapmanın yaşadığı katmana hiç bakmıyor**.
+
+**Hüküm — sürekli kapı DEĞİL, deploy-öncesi TEK SEFERLİK ölçüm** *(ürün sahibi,
+2026-08-28)*:
+
+```
+İLK-DEPLOY ÖN-KOŞUL LİSTESİ — tek satır:
+  "compose-tanımı ↔ canlı-container eşleşmesi doğrulanır (port · volume · env)"
+```
+
+⚠️ **`GEREKÇELİ`** (bir *"ölçmedim"* değil, bir **gerekçeli durak** —
+`§ ÖLÇÜLMEDİ bir GEREKÇELİ duraktır`): **drift-yüzeyi ancak `compose` KULLANIMI
+başlayınca canlanır.** Bugün `compose up` hiç koşulmuyor; sürekli bir kapı
+**ölçecek bir sapma bulamaz** ve `§2.7 #9`'un (*"kapsam kendini boşaltıyor"*)
+yeni bir vakası olurdu.
+
+---
+
 ## DIŞ GİRDİ BİR **GİRDİDİR**, TESCİL BİR **KANIT DEĞİLDİR** (ZORUNLU)
 
 `CLAUDE.md §2.1.2` şunu der: *"bağlayıcı kaynak bir **GİRDİ**dir, kanıt değil"* — ve o
@@ -4243,3 +4286,107 @@ kaldırmak isteyene şunu söylüyoruz"*** diyor.
 
 ⚠️ Çünkü engele çarpan tur **hükmün gerekçesini okumaz — ENGELİ okur**. İkinci cümle
 yoksa, engel bir **kusur gibi** görünür ve **en kolay çıkış onu kaldırmaktır**.
+
+
+---
+
+## KAPI-KÖRLÜĞÜ **KORELASYONLU** OLABİLİR — kör nokta, tehdidin geliş yönüyle **AYNI EKSENDE** (ZORUNLU)
+
+`§ fail-open` ailesi bugüne kadar **yön** ölçüyordu (*kusur hangi tarafa yanılıyor*).
+`ADIM 6` `B3` bir **boyut** daha ekledi: **ZAMANLAMA.**
+
+**Ölçülmüş vaka (2026-08-28, `new-table-rls.sh`):** evren
+`information_schema.columns`'tan türüyordu — ve o görünüm **yetki filtreler**:
+
+```
+app_operator   44 tablo
+app_runtime    38 tablo      ← ALTI TABLO KAYBOLUYOR
+pg_attribute   44 tablo      ← katalog: yetki filtrelemez
+```
+
+Yön fail-open. **Ama asıl bulgu zamanlamadaydı:**
+
+> ⛔ **EVRENİ DARALTAN İŞLEM, TAM OLARAK KAPININ EN ÇOK GEREKTİĞİ ANDAKİ İŞLEMDİR.**
+
+Bir tablodan yetki çekmek = **`RLS`-aktivasyon dalgasının yapacağı şeyin ta kendisi.**
+Yani kapı, koruduğu tehdit **geldiği anda** körleşirdi. Kör nokta **rastgele değil**;
+tehditle **korelasyonlu**.
+
+**Pratik:** bir kapının evrenini seçerken sor — *"bu evreni daraltan işlem NEDİR, ve o
+işlem BENİM KORUDUĞUM ŞEY MİDİR?"* Cevap *"evet"*se evren **yanlış katmandan** geliyor.
+Düzeltme yönü sabit: **katalog** (`pg_attribute`), **görünüm** (`information_schema`)
+değil.
+
+---
+
+## BİR SELF-TEST, KAPININ **DAVRANIŞINI** DEĞİL **SÖZLEŞMESİNİ** SINAR (ZORUNLU)
+
+`§ bir kapının ÜÇ MEŞRU ÇIKTISI` (`yeşil` · `kırmızı` · `"ölçemedim"` = `exit 2`)
+kapılar için yazılmıştı. **Bu, onun self-test tarafına genişlemesi.**
+
+**Ölçülmüş vaka (2026-08-28):** `new-table-rls` self-test'inin `CASE A`'sı
+*"boş envanter → `exit 0`"* bekliyordu — yani kapının ***"ölçemedim"*ini *"temiz"*e
+YUVARLAMASINI DOĞRU İLAN EDİYORDU.*
+
+```
+self-test  YEŞİL     ✓ 7/7
+mühürlediği şey      SÖZLEŞME İHLALİ
+```
+
+> **SÖZLEŞMEYE AYKIRI BEKLENTİ TAŞIYAN BİR SELF-TEST, YANLIŞI MÜHÜRLER.**
+
+📌 Ve bu, `§2.7 #8`'in (*"test, sınadığı kontrolün kopyasını çalıştırır"*) **bir
+üst katmanı**: orada test **mekanizmayı** yeniden uyguluyordu; burada test
+**sözleşmeyi yanlış yazmış** — mekanizma doğru sınanıyor, **yanlış cevap doğru
+kabul ediliyor.**
+
+**Pratik:** bir self-test yazarken her `CASE` için sor — *"bu beklenti, kapının
+SÖZLEŞMESİNDEN mi türüyor, yoksa kapının BUGÜNKÜ DAVRANIŞINDAN mı?"* İkincisi bir
+**anlık görüntüdür**, bir şartname değil.
+
+---
+
+## BASELINE **ARTIŞININ REDDİ** BİR DESEN — *"artışta kod düzelir"* (ZORUNLU, iki vaka)
+
+`§4.2` bir `improved` satırının **o turun kapanmamış işi** olduğunu söyler. Bunun
+**simetriği** iki turda ölçüldü ve aynı biçimde işledi:
+
+| tur | artış talebi | reddin ürettiği |
+|---|---|---|
+| `K1a` | `money-float` baseline `114 → 117` | üç `Number(...)` **kaldırıldı** — ve biri **gizli sessiz-sıfır**dı (`parseFiniteOnRead` `null` geçirir, `Number(null)` → `0`) |
+| `ADIM 6` | `lint-ratchet` baseline `6 → 8` | `Record<string,any>` → `unknown`; **23 çağrı yeri ölçüldü**, hiçbiri kırılmadı; `improved: 6 → 0` |
+
+⇒ **İki vakada da red, DAHA DOĞRU KODU üretti** — bir bilgi kaybı değil.
+
+> **Bir ratchet baseline'ının ARTIRILMASI, bir ölçüm sonucu değil bir TALEPTİR — ve
+> gerekçesiz talep reddedilir.** Doğru soru *"sayı neden arttı"* değil, ***"artışı
+> üreten kod neden yazıldı"***.
+
+⚠️ Ve düşüş `§4.2`'nin şeklini korur: **ayrı ve SONRAKİ commit** (`ADIM 6`'da öyle indi).
+
+---
+
+## `done` DEĞİLİN İKİ SİMETRİK YÜZÜ — ve **İKİSİ DE ADRESLİ** (ZORUNLU)
+
+`§4.2`'nin *"üretim çağrı yolu var mı"* maddesi bir sınıf kapatır. `ADIM 6` onun
+**ikinci yüzünü** kayda geçirdi:
+
+| yüz | şekil | vaka |
+|---|---|---|
+| **yol var · mekanizma yok** | uç canlı, arkasındaki kural yazılmamış | `T-311` ailesi |
+| **mekanizma var · yol yok** | yetenek doğdu, çağıranı yok | `T-314/B` |
+
+`T-314/B` ölçümü: `logAdminAction`'ın **23** çağrı yerinde `null` geçen **0** ·
+`getPlatformAuditLogs` çağıranı **0** · DB'de `tenant_id IS NULL` **0/39**.
+
+⛔ **Ve `HTTP` yüzeyinin EKLENMEMESİ gerekçesi SAĞLAMDI:** bugünkü `RBAC`'te bir
+**platform/süper-admin rolü TANIMSIZ**; eklemek `§2.4`'ün yasakladığı **varsayımı**
+üretirdi.
+
+> **Doğru gerekçe, statüyü `done` YAPMAZ.** İş **bilinçli olarak** yarım bırakıldıysa
+> sonuç `blocked-unreachable`'dır — ve **açılma koşulu yazılır** (*platform rolü
+> `RBAC`'te tanımlandığında*).
+
+📌 İkisi de `done` değil, ve **ikisi de bir TASK'ta adresli** — `§ bilinen eksiklik
+TODO ile değil, TASK ile kaydedilir`.
+

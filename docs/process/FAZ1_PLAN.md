@@ -36,7 +36,24 @@
    ve tek-kullanıcı ölçümü onu **cevaplayamaz**, *cevaplamış gibi okunmamalıdır*.
    ⇒ Aktivasyondan **önce** eşzamanlı-yük probe'u koşulur.
 
-4. **`T-113` kapsamı temizlik değil, ratchet:** bugünkü hata listesi baseline
+4. **⛔ COMPOSE-TANIMI ↔ CANLI-CONTAINER EŞLEŞMESİ DOĞRULANIR (port · volume · env)** —
+   ilk-deploy ön koşulu *(ürün sahibi, 2026-08-28 · `ADIM 6` review `B2`+volume)*.
+   İki sapma **aynı turda** ölçüldü: `docker-compose.yml` `5432:5432` derken canlı
+   **`5434`** koşuyordu (`.env` de `5434`), ve compose volume'ü **pinsizdi** ⇒
+   `collmindbackend_postgres_data`'ya (2026-06-16, **bayat**) bağlanacaktı.
+   `container_name` **pinli** olduğu için bir `docker compose up` refleksi canlıyı
+   **devralıp** ikisini de **sessizce** uygulardı.
+   ⛔ **VE BU YÜZEYİN KAPISI YOK:** tüm guard'lar `docker exec` kullanıyor — yani
+   container'ın **içinden** konuşuyorlar, yayımlanan portu **hiç görmüyorlar** ⇒
+   **hepsi yeşil kalırdı**; kırılan tek şey **uygulama** olurdu.
+   ⇒ `DISIPLIN`: *"ortam-tanımı ile canlı-ortam ayrışması, guard'ların göremediği tek
+   yüzeydir"* — `§ CANLI ORTAM … ÜRETİLEBİLMELİDİR` kuralının **ayna-yarısı**.
+   ⚠️ **`[GEREKÇELİ]` — sürekli kapı DEĞİL, deploy-öncesi TEK SEFERLİK ölçüm:**
+   drift-yüzeyi ancak **`compose` kullanımı başlayınca** canlanır; bugün `compose up`
+   hiç koşulmuyor, sürekli bir kapı ölçecek sapma bulamaz ve `§2.7 #9`'un
+   (*"kapsam kendini boşaltıyor"*) yeni bir vakası olurdu.
+
+5. **`T-113` kapsamı temizlik değil, ratchet:** bugünkü hata listesi baseline
    (dosya+kural listesi olarak, sayı olarak değil), **yeni** hata kırmızı. 108'i
    sıfırlamak Faz 1 kapsamı dışıdır. `T-212` ile aynı aile. *(ürün sahibi, 2026-08-15)*
 
