@@ -5583,3 +5583,124 @@ değiştiği gün **doğru davranışı kırmızıya** çevirir.
 
 ⇒ **`ADIM 6`'nın `Faz-1` payı BİTTİ. Kapanışa iki iş kaldı.**
 
+
+---
+
+## `Z57` — BİLDİRİM DİLİMİ: İKİ HÜKÜM + BİR **DARALMA-KAYDI**
+
+> **Kaynak:** ürün sahibi, 2026-08-28 · brief: `docs/process/BILDIRIM_DILIMI_BRIEF.md`
+> **Statü:** dalga **AÇIK**
+
+### `§1` · `DUR-1` = **(a)** — `budget_policies` **CANLANIR**, ayrım **korunarak**
+
+```
+budget_alert_configurations   RENK       (görsel durum)
+budget_policies               DAVRANIŞ   (karar-eşiği)
+%90-bildirimi bir DAVRANIŞ olayıdır  ⇒  evi DAVRANIŞ tablosudur
+```
+
+⛔ **Ve gerekçe *"bugün çakışma yok"*tan DAHA GÜÇLÜ olmalı** — ürün sahibinin kaydı:
+
+> Renk tablosundan okumak, `T-276`'da kapattığımız **katman-karışıklığının**
+> (hücre ↔ yüklem) **eşik hâli** olurdu: bugün çakışma yok diye iki katmanı tek
+> kaynağa bağlamak, yarın ***"rengi değiştirdim, davranış değişti"*** sürprizini
+> üretir.
+
+📌 Yani `DUR-2`'nin çökmesi **(a)**'yı kolaylaştırdı ama **gerekçesini değiştirmedi**:
+ayrım `K-2.2.7a`/`K-2.2.8`'in **kendi yapısıdır**, bir çakışma-önlemi değil.
+⇒ `İlke 4`'ün (*"aynı olgunun iki temsili ayrışır"*) **tersi** okunmamalı: bunlar
+**iki farklı olgu**.
+
+**Ve canlandırmanın kendisi bir yol AÇMIYOR** *(çekincesizliğin ölçümü)*:
+
+> Yazılmış-ama-okunmamış bir kuralı **okunur** kılıyor — `İlke 3`'ün düzeltici
+> uygulaması: *"verisi düzenlenemeyen kural fiilen koddur"*un tersi —
+> ***"verisi OKUNMAYAN kural HİÇ YOKTUR."***
+
+### ⛔ `§1a` · **ŞART: `T-316` seed düzeltmesi AYNI COMMIT'te**
+
+```
+bugün      seed 50/60 · okuyucu 0   ⇒ ZARARSIZ
+okuyucu doğduğu an                  ⇒ YANLIŞ-DAVRANIŞ ÜRETECİ
+```
+
+> **Örtü kaldırılırken altındaki AYNI COMMIT'te** — kuralın **seed hâli.**
+
+⇒ `budget_policies` `50/60` → **`80/90/100`**, canlandırmayla **tek commit**.
+
+⚠️ **Ve `P1`'in pozitif kontrolü BU VAKAYI hedefler:** *eşik-değiştir → pin-tutar*
+testinin **ilk koşumu**, `50/60` dünyasında pinin **ne ölçeceğini** de kayda geçirir.
+
+📌 Bu, ilişki-pininin değer-pinine üstünlüğünün **en somut kanıtı**: bir değer-pini
+`50/60`'ı ölçüp **yeşil** derdi; ilişki-pini *"eşik neyse onu"* ölçtüğü için
+seed düzeltmesiyle **birlikte doğruyu** ölçer.
+
+### `§2` · `DUR-3` = **(B)** — zamanlayıcı bu dalgada **DOĞMAZ**
+
+Dilim **iki eşik-olayıyla** iner (`%80` · `%90` — ikisi de **istek içinde**).
+`7/14`-gün **kendi dalgasında**.
+
+⛔ **Ve gerekçe TERSİNE değil, İLERİ işliyor** *(ürün sahibi düzeltmesi)*:
+
+`2026-08-22`'nin yerleşim gerekçesi (*"zamanlayıcı somut bir iş üstünde
+tasarlansın"*) `Z50`'den sonra **zayıflamadı — GÜÇLENDİ**, çünkü `Z50` zamanlayıcıya
+**yeni bir tasarım sorusu ekledi**:
+
+```
+İSTEKSİZ BAĞLAM   hangi kimlikle?  ·  hangi tenant-döngüsüyle?
+                  SET LOCAL'ı KİM sarar?
+⇒ K2-turunun "ÖZNESİ YOK" bulgusu artık ÖZNE KAZANIYOR
+```
+
+> **Ve o soruların cevabı bir bildirim-dalgasının KENAR-İŞİ olamaz.**
+
+### ⛔ `§2a` · DARALMA-KAYDI — *"çıkarılmadı, ERTELENDİ"*
+
+`2026-08-22` sözleşmesi *"üç olay türü"* diyordu. **İkiye iniyor**, ve
+**koşullu-karar disiplinine** göre **adres + tetikleyiciyle** kayda geçiyor:
+
+```
+ÜÇÜNCÜ OLAY (7/14-gün)   ÇIKARILMADI — ERTELENDİ
+  sağlayıcı    zamanlayıcı-tasarım dalgası
+  tetikleyici  O DALGANIN BRIEF'İ
+```
+
+📌 **Böylece sözleşme-değişikliği `§2.4`-ihlali olmaktan çıkıp KAYITLI DARALMA
+olur.** *(`DISIPLIN`: bir şartın sağlayıcısı yoksa şart bir erteleme değil bir
+kilittir — burada **sağlayıcı adlı**, yani gerçekten bir erteleme.)*
+
+### `§3` · ÜÇ NOT — brief'in geri kalanına onay
+
+**`a`** — *"Kullanıcı canlı bir zil görüyor ve o zil hiç çalamaz"* cümlesi
+`T-314/B` sınıfının **görünür üyesi** olarak doğru konumlandı; **bu dalganın
+gerçek işi zaten bu — zili ÇALAR yapmak.**
+⇒ `P4b`'nin gerekçesi (*"dördü de vardı, zincir kopuktu"*) **5-halka envanterinin
+BİLDİRİM-HALKASI** olarak **kapanış denetimine** girer.
+
+**`b`** — `DUR-2`'nin **çöküş-dürüstlüğü** `T-321`'i doğru doğurdu.
+`%100 BLOCKED`'ın hiç uygulanmamış olması **bildirim işi değil, KONTROL işi**; ve
+`SYSTEM_INVARIANTS` satırının **bu dalgada** yazılması (uygulanmamışlık **kayıtlı**
+olsun) uzlaşı-mekanizmasının **rutin işleyişi**.
+⇒ **`T-321`'in hükmü `Faz-1` kapanış denetimine GİRDİ olarak gelir** —
+*"`BLOCKED`-yolu `Faz-1`'de mi `Faz-2`'de mi"*, beş-ölçüt tartışmasının parçası.
+⚠️ **Ürün sahibinin ön-eğilimi *(hüküm DEĞİL, denetim günü verilecek)*:**
+`%100 BLOCKED` **çekirdek-döngü koruması**; `Faz-1`-artığı olarak **adresli kalır**
+ama **inşası kapanışı BLOKLAMAZ**.
+
+**`c`** — `T-316` seed bulgusunun *"pin yeşil geçerdi"* cümlesi `P1`'in
+**varlık-gerekçesi** olarak brief'e yazıldı (⇒ `§1a`).
+
+### `§4` · SIRA
+
+```
+ŞİMDİ   bildirim dalgası (T-316 ∥ T-317 → T-318 → T-319 · T-321 kayıt)
+SONRA   ⛔ FAZ-1'İN SON MADDESİ — kapanış denetimi
+        girdilerinin HEPSİ HAZIR:
+          5-halka envanteri (BİLDİRİM-HALKASI dahil)
+          dört-girdili Faz-2 çakıştırması
+          beş ölçütün ÖLÇÜLMÜŞ işaretleri
+          T-321 hükmü
+          Section-10 karantina damgası
+          kalan-15 / koşul-satırları tazeliği
+```
+
