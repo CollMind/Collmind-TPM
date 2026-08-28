@@ -5187,3 +5187,118 @@ kendi içinde**.
 üretildi (`ADIM 2` kod okuması, bu tur dekoratör sayımı) ve **farkın kaynağı
 gösterilemiyor**. `DISIPLIN`: *"bir sayım farkı, kaynağı gösterilmeden yorumlanamaz."*
 ⇒ **Yorumlanmadı.**
+
+---
+
+# `Z52` — `K1` ALTI HÜKÜM: çelişki çözüldü, `K1a` onaylı, borç **sert** yazıldı
+
+**Tarih:** 2026-08-28 · **Karar:** ürün sahibi · **Girdi:** `Z51` ölçümleri
+
+## `§1` — `#4` **`CASCADE` ÖLÜR → `RESTRICT`**, ve karar `tenant_id`'den BÜYÜK
+
+> **DENETİM İZİ, İZ SÜRDÜĞÜ NESNENİN YAŞAM DÖNGÜSÜNE TABİ OLAMAZ.**
+
+`Z46 §1`'in çelişkisi (*"operatörün ilk işi, denetim izini yok eden iş"*) **tek bir
+FK'nin sorunu değil** — bir **tasarım cümlesinin eksikliği**. ⇒ **`ADR 0012`'nin
+(finansal kayıt fiziken silinmez) DENETİM-KATMANI KARDEŞİ.**
+
+```
+admin_audit_logs.tenant_id  →  ON DELETE RESTRICT
+tenant-silme akışı          →  "önce DENETİM-ARŞİVİ, sonra silme" sırasını
+                               YAPISAL olarak alır
+```
+📌 `RESTRICT` bunu **zorlar**: arşivlenmemiş logu olan tenant **silinemez** — ve bu,
+**doğru davranışın ta kendisi**.
+
+⛔ **`SET NULL` ELENİR:** aktörsüz/kaynaksız kalan bir log satırı, *"kim-ne yaptı"*nın
+**yarısını kaybetmiş** izdir. **İZ BÜTÜNLÜĞÜ `NULL`'LA YAŞAMAZ.**
+
+## `§2` — `#3` **AYNI TABLO** + `tenant_id` NULLABLE
+
+Ayrı platform-tablosu **reddedilir** — `Z15`'in **kendi cümlesiyle**: *"bağımsız
+tanımlarsak **beşinci aile** oluruz."*
+
+```
+operatör eylemi  →  AYNI TABLO
+tenant_id NULL   →  "PLATFORM-SEVİYESİ EYLEM"   ⛔ TANIMLI ANLAMIYLA
+```
+> ⛔ **`NULL` burada BİLGİ-EKSİKLİĞİ DEĞİL, KATMAN-BİLGİSİDİR** — ve bu ayrım
+> **tablonun yorumuna yazılır**.
+
+```
+tenant_id    NOT NULL  →  NULLABLE   (katman bilgisi)
+admin_id     NOT NULL  →  KALIR ve SIKILAŞIR
+admin_email  NOT NULL  →  KALIR ve SIKILAŞIR
+```
+⇒ **Tenant'sız satırda bile `kim`'siz satır OLAMAZ.**
+
+`§1` ile birlikte tablo hem **platform-eylemini taşıyabilir** hem **yaşam-döngüsü
+bağımsızlığını** kazanır.
+
+## `§3` — `#1` BÖLÜNME **ONAYLI**: `K1a` bugün · `K1b` **adresli borç**
+
+`K1a`'nın kazancı **bugün gerçek**: `postgres`-`SUPERUSER`'ın **insan-yolundan
+düşmesi** — *en büyük tekil operasyonel risk kaleminin kapanışı*.
+
+### ⛔ VE BORÇ CÜMLESİ **SERT** YAZILIR
+
+> ## **`K1a`'NIN DENETİM-İZİ İDDİASI YOKTUR.**
+> **`log_statement` rol-seviyesinde `ne`'yi verir; `kim`'i ve `kalıcılığı` VERMEZ.**
+> **O ikisi `K1b`'nin işidir — ve `K1b` KAPANMADAN *"operatör denetim-olaylıdır"*
+> cümlesi HİÇBİR BELGEDE KURULAMAZ.**
+
+📌 Ve borcun başına, aynen: ***"`1/3` doğru bir iddia, tamamen yanlış olandan DAHA
+TEHLİKELİDİR."***
+
+**`K1b`'nin şekli** kendi **mini-tasarımını** ister: `logging_collector` +
+`log_line_prefix`'e `%u` + **volume-kalıcılık** — ya da **uygulama-katmanı çift-yazım**.
+`docker-compose`'a dokunur, **ilk-deploy listesiyle kesişir** ⇒ **adresi o liste**.
+
+## `§4` — `#2` KURULUM-YOLU **İSTİSNADIR** — ve istisna **kayıtlı-dar** yazılır
+
+```
+"İNSAN-YOLU"  =  etkileşimli sorgu · bakım · veri-erişimi     →  app_operator
+BOOTSTRAP     =  rol yaratma · migration-zinciri kurulumu     →  superuser, TANIM GEREĞİ DIŞINDA
+```
+⛔ **`Z29` istisna disipliniyle:** `_lib.sh`'in superuser kullanımı **yalnız
+kurulum-fonksiyonlarında**, **adıyla listeli**.
+
+⛔ **VE ÇAPRAZ-REPO FALLBACK BU HÜKMÜN TAM HEDEFİ:**
+```
+envOr('DB_USERNAME', 'postgres')   ⇒  VARSAYILAN postgres'E DÜŞEMEZ
+ya operatör-rolü VARSAYILAN olur, ya değişken ZORUNLU (fallback'siz, eksikse HATA)
+⇒ "sessizce postgres'e geri döner" MEKANİZMASI ÖLÜR
+```
+
+## `§5` — `#6` BETİĞE YAZILIR, **DOĞRU ROLE TAŞINARAK**
+
+Kayıtsız sapmanın **iki** kusuru var (**üretilemezlik** + **yanlış-rol**) ve ikisi **tek
+hamlede** çözülür:
+```
+app_runtime'dan  log_statement=all  KALKAR
+   (uygulama trafiğini loglamak ne denetim-tasarımının parçasıydı ne performans-masum;
+    hüküm gereği denetim K1b'de)
+app_operator'ün log_statement=all'ı  KURULUM BETİĞİNDE DOĞAR
+```
+📌 Böylece ***"canlı ortam betikten üretilebilir"*** kuralının **ilk uygulaması** bu
+satır olur — **canlı sapma betiğe KOPYALANMAZ, DOĞRU TASARIMA ÇEVRİLİR.**
+
+## `§6` — `#5` NORMALİZASYON **ŞİMDİ DEĞİL**; konvansiyon **kararı** + eşleme **şimdi**
+
+```
+BUGÜN     konvansiyon KARARI (DENETIM_SOZLUGU/Z15 ailesine bağlı; üç-harf
+          yaşayacaksa GEREKÇESİYLE)  +  mevcut 39'un sözlüğe EŞLEMESİ (taze ölçüm)
+SONRA     39 satırın KADERİ (migrate / tolere / dondur) — o eşlemenin SONUCUNA
+          hüküm olarak biner
+```
+⛔ **Veri-katmanında YARI-NORMALİZE dokunuş bugün `İlke-4` RİSKİ.**
+⇒ `K1b` + olay-envanteri dalgasının işi.
+
+## `§7` — SIRA
+
+```
+BU DALGA   K1a  +  §1/§2 migration (RESTRICT + nullable-tenant + actor sıkılaştırma)
+                +  §5 taşıması  +  §4 fallback-ölümü
+SONRA      K1b  +  §6 kaderi  →  DENETİM-ÇEKİRDEĞİ dalgası
+                                 (sağlayıcı-borcu + olay-envanteri ile birlikte)
+```

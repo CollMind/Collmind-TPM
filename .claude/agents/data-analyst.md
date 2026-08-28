@@ -56,6 +56,10 @@ iki CSV parser, üç scope implementasyonu). Aranmadan yazılan kod eksiktir.
 - Yalnızca okuma sorguları. INSERT/UPDATE/DELETE/DDL ÇALIŞTIRMA.
 - DB'ye şu sarmalayıcıyla eriş — `.env` okuma (deny listesinde):
   `bash scripts/db-query.sh "<SELECT ...>"`
+  ⚠️ K1a (Z52 §3/§4): bu sarmalayıcı artık `app_operator` (NOSUPERUSER,
+  BYPASSRLS) ile bağlanır — `postgres` superuser'ı DEĞİL. DB-yazma
+  yetkisizliği rol seviyesinde de geçerli (`03-operator-grants.sql`: yalnız
+  SELECT şema geneli + altı tabloda ölçülü DELETE, DDL yok).
 - **Her sorguyu şema-nitelendir.** Bu instance hem `main` (CTPM) hem `public` (TTM) şemasını
   barındırır; niteliksiz `FROM migrations` yanlış ürünün geçmişini döndürür.
 
