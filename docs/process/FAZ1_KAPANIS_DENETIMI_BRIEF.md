@@ -93,46 +93,120 @@ edilen dar iddiadan tehlikelidir.**
 
 ---
 
-## 4 · ⛔ İKİ TERİM KULLANILIYOR, İKİSİ DE TANIMSIZ — `§2.4` `DUR`
+## 4 · ✅ TERİMLER TANIMLANDI *(ürün sahibi, 2026-08-28)*
 
-### `4a` · **`5-halka zincir envanteri`**
+### `4a` · **`5-HALKA` = ÇEKİRDEK DÖNGÜNÜN BEŞ ADIMI** — ölçütlerle ilgisi YOK
 
-Karar defterinde **dört kez** anılıyor (`Z57 §4`, `Z59 §3a`, `Z61 §8`, `T-319`), ve
-**hiçbir yerde tanımlı değil.** En yakın kullanım `ADIM3_KAPANIS_RAPORU §3.4`:
+⛔ **Team Lead okuması YANLIŞTI** (*"beş ölçüt × zincir"*) ve ürün sahibi düzeltti:
 
 ```
-"zincir" = TEK bir `it` içinde, MOCK'SUZ, canlı HTTP:
-  admin POST /users (rol+kapsam) → login → kapsam içi 201 → kapsam DIŞI 403
-⛔ ÜÇÜ DE AYRI `it` + nonexistent UUID ⇒ GUARD'ı kanıtlar, ZİNCİRİ kanıtlamaz (§2.7 #6)
+anlaşma/plan → gerçekleşme → eşleştirme → settlement/claim → defter
 ```
 
-**Team Lead okuması `[VARSAYIM]`:** *"5 halka" = **beş çıkış ölçütünün her biri için
-bir canlı zincir**;* bildirim halkası bunlardan **biri** (ürün sahibi *"bildirim
-halkası dahil"* dedi).
+Bu, ***"süreçler net mi"*** sorusuna verilen **envanter tablosunun MÜHÜRLENMİŞ hâli.**
+Her halka için **üç sütun**:
 
-⚠️ **Ama bu bir varsayım ve `§2.4` varsaymayı yasaklıyor.** İki okuma **materyal
-olarak farklı iş** üretir:
-- **beş ölçüt × zincir** ⇒ `RLS` halkası **bugün yazılamaz** (`RLS` yok)
-- **beş ayrı yetenek zinciri** ⇒ liste **senin belirleyeceğin** bir küme
+| ne KANITLI | ne BEYAN | bilinen BOŞLUKLAR |
+|---|---|---|
+| hangi test/pin **tutuyor** | kod-okuması / varsayım | **adresli** olmalı |
 
-### `4b` · **`dört-girdili Faz-2 çakıştırması`**
+**Bilinen boşluk adayları (ürün sahibinin verdiği):** `T-293` · `T-291` ·
+on-invoice-veri-yokluğu · e2e'siz onay-uçları.
 
-*"Dört girdi"* deniyor ama **dördünün adı hiçbir yerde yazılı değil.**
-📌 Ve bu, `DISIPLIN`'in *"bir sayı, LİSTESİYLE anılır ya da HİÇ anılmaz"* kuralının
-**tam vakası** — sayı üç kez tekrarlandı, liste **bir kez bile** yazılmadı.
+⛔ **VE İKİ ŞEY BU TABLOYA GİRMEZ — ikisi de YATAY katman, çekirdek-döngü adımı değil:**
+
+| | nereye ait |
+|---|---|
+| **bildirim** | **beş-ölçüt tablosunda** yaşar: *"`K-2.2.7b` yürürlükte: zil çalıyor, kanıtı `P1`–`P4b`"* |
+| **`RLS`** | **ölçüt-5'in konusu** (izolasyon) |
+
+### `4b` · **DÖRT GİRDİ** — liste ürün sahibinden, aynen
+
+```
+1  SECTION-10'un Faz-2 İÇERİK LİSTESİ  — ADAY-YETENEK ENVANTERİ statüsüyle
+     KPI motoru · planning grid · baseline · ROI-onay
+     ⛔ çerçeve/takvim/gate-metrikleri DEĞİL — YALNIZ yetenek listesi
+2  FAZ2_ACIK_KARARLAR DEVİR LİSTESİ
+     Finance-ayrışması · T-292 · T-293 giriş-koşulu · T-304/+CM ·
+     idempotency-köken-segmenti · T-321 hükmü (ne çıkarsa)
+3  KOD GERÇEKLİĞİ — BRD'nin "Faz-2" dediklerinden hangileri FİİLEN İNŞA EDİLMİŞ
+     plan/volume/tactic yüzeyi · MODES_PLAN_WRITE'ın 12 rotası
+     📌 K7-K12 revizyonu deseni: "ERTELENDİ SANILAN, YAPILMIŞ"
+4  MOD-BİRLEŞMESİ EKSENİ
+     her kalem "hangi modda" DEĞİL, "TEK AKIŞIN NERESİNE" sorusuyla yerleşir
+```
+
+### ⛔ `4c` · `VARSAYIM` BORCU **KAPANDI — KAYIT VAR** `[ÖLÇÜLDÜ]`
+
+Ürün sahibi: *"mod-birleşmesi kararının `Z`/`K` numarası repodan bulunup `JOIN`'in
+başlığına yazılır — **bulunamazsa** bu denetim onu `Z`-kaydına döker."*
+
+**Bulundu. Yeni kayıt GEREKMİYOR:**
+
+```
+04_KARAR_KAYDI.md · BÖLÜM A · A1 — "Çalışma biçimi ayrımı"
+KARAR  ❌ "Mod, bir DAVRANIŞ BELİRLEYİCİ olarak ÖLDÜ."
+       Kapsam politikası · öncelik eşleşmesi · karma biçim REDDEDİLDİ.
+       Geriye yalnız bir GÖRÜNÜRLÜK BAYRAĞI kalır.
+```
+
+📌 Ve karar turunun **kendi bulgusunda** `A1` özel olarak anılıyor:
+> *"`A1` özellikle: mod kendi kararıyla değil, **davranışları teker teker
+> sahiplerine dağıtıldığı için** öldü."*
+
+⇒ **`JOIN`'in başlığı: `A1`.** *(Arama ilk terim kümesiyle — `mod-birleşme`/`tek akış` —
+**sıfır** döndü; ikinci küme `mod ayrımı` bulguyu verdi. `DISIPLIN`: *"arama terimi,
+aranan yerin diliyle seçilir"* — ve karar defteri buna **`mod ayrımı`** diyor.)*
 
 ---
 
-## 5 · SENDEN BEKLENEN — üç kalem
+## 5 · ⚡ `§1` HÜKMÜ: **KOŞULSUZ KAPANIŞ** — `(C)` DEĞİL *(ürün sahibi)*
+
+⛔ **Team Lead'in `(C)` önerisi de YANLIŞ ÇERÇEVEYDİ.**
+
+> **Ölçüt-5 AÇIK DEĞİL** — tanımı **kayıtla daraltıldı** ve **o tanım KARŞILANDI.**
 
 ```
-1  §1 HÜKMÜ    Faz-1, ölçüt-5 açıkken kapanır mı?   TL görüşü: (C) koşullu kapanış
-2  §4a         "5-halka" NEYİN beş halkası?         TL okuması: beş ölçüt × canlı zincir
-3  §4b         dört girdi HANGİLERİ?                 TL'de okuma YOK — liste senden
+ÖLÇÜT-5'İN YÜRÜRLÜKTEKİ TANIMI (süzgeç kararıyla revize):
+  "Çok-tenant izolasyonu: TASARIM + POLİTİKA-ŞEKLİ + KANIT-ALTYAPISI Faz-1'de;
+   AKTİVASYON ikinci-müşteri/deploy SERT EŞİĞİNDE."
 ```
 
-⛔ **`2` ve `3` olmadan denetim başlayamaz** — yanlış okuma, **yanlış envanter**
-üretir ve envanter **mühürlenecek** bir belgedir.
+**Ve tanımın her parçası ölçülü** *(denetim bunları DOĞRULAYACAK)*:
+üç açılış-kararı hükümlü (`Z45`/`Z46`/`Z50`) · politika-şekli yazılı (fail-closed
+boş-küme) · sonda **üç-çıktılı + iki-kiracılı** · desen **kanonik** (`SET LOCAL` + tx,
+`NFR`-ölçümlü) · `FORCE`-hükmü kayıtlı (`Z54`) · `T-307`/`T-308` **canlı kusurları
+kapalı**.
 
-⚠️ `1` ise denetimin **sonunda** gerekir: ölçümler onsuz yapılabilir, **beyan
-yapılamaz.**
+> **`Faz-1`, `RLS`'i ERTELEYEREK kapanmıyor — `RLS`'in FAZ-1 PAYINI TAMAMLAYARAK
+> kapanıyor.** Aktivasyon **bir sonraki fazın değil, bir EŞİĞİN** işi; ve eşik listesi
+> (**ilk-deploy ön koşulları**) **kapanış beyanının EKİDİR.**
+
+⛔ **Ve dil önemli** *(ürün sahibi)*: *"Koşullu-kapanış dili, **üç haftalık işin kendi
+kaydına haksızlık** olur."*
+
+```
+BEYAN NET YAZILIR:
+  "Faz-1 TAM kapandı; aktivasyon-eşiği listesi EKTEDİR,
+   sahibi ve tetikleyicisi YAZILIDIR."
+```
+
+⚠️ **Denetimin işi bu tanımın BEŞ ÖLÇÜTTE DE tutup tutmadığını ÖLÇMEK** — tutmuyorsa
+o gün konuşulur. *(Ön-veri tuttuğunu söylüyor.)*
+
+---
+
+## 6 · TURUN ÇIKTISI — altı kalem
+
+```
+1  5-HALKA MÜHÜRLÜ SAYFA        (üç sütun × beş halka)
+2  BEŞ-ÖLÇÜT İŞARETLİ TABLO     (ÖLÇÜLEREK — bayat tablo okunmaz, §0)
+3  FAZ-2 ÇAKIŞTIRMA JOIN'İ      (dört girdi, başlığı A1)
+4  SECTION-10 KARANTİNA DAMGASI
+5  KALAN-15 / KOŞUL SATIRLARI TAZELİĞİ
+6  ⇒ FAZ-1 KAPANIŞ BEYANI       + aktivasyon-eşiği listesi EKİ
+```
+
+## 7 · SIRAYA ALINAN
+`T-325` — e2e için **tek-çalıştıran kilidi** (`flock` sınıfı, harness'a). Aday statüsü
+**doğru**; kapanışı **bloklamaz**, denetim sonrası kuyruğa.
