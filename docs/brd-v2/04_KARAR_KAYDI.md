@@ -5379,3 +5379,98 @@ statü: AKTİVASYONA KADAR blocked · AÇILMA KOŞULU YAZILI
 ```
 ⇒ **`T-308` davranış-pini deseni**: kapı **doğar ama `blocked` durur**, ve açılma
 koşulu **kayıtta** — *"sessizce ertelenemez"* kuralının kapı tarafı.
+
+---
+
+# `Z54` — `FORCE RLS`: **(ii) AÇIK** + kayıtlı muafiyet; uygulaması **AKTİVASYON PAKETİNDE**
+
+**Tarih:** 2026-08-28 · **Karar:** ürün sahibi
+
+> ## ⛔ HER TENANT-TABLOSUNDA **`ENABLE` + `FORCE` BİRLİKTE** YAZILIR
+
+`app_migrate`'in operasyonel bypass ihtiyacı (**seed · migration · backfill**) bir
+**muafiyet-politikasıyla DEĞİL**, **o işlemlerin kendi doğasıyla** çözülür.
+
+## `§1` — ÖLÇÜLEN ROL-AYRIMI **ZATEN İŞİ YAPIYOR**
+
+```
+app_runtime   owner DEĞİL   →  FORCE'suz da POLİTİKAYA TABİ
+app_migrate   owner         →  FORCE ONU DA TABİ KILAR
+                               ⇒ İSTEDİĞİMİZ DERİNLİK-SAVUNMASI TAM BU
+```
+
+Seed/migration'ın **bağlamsız** çalışması gerekiyorsa çözüm **`FORCE`'u kapatmak
+değil**, o betiklerin:
+- ya **`BYPASSRLS`'li operatör-yoluyla** (`Z51` **kayıtlı istisna**),
+- ya **bağlam-set-ederek**
+
+koşmasıdır. ⇒ **Hangisi olduğu AKTİVASYON DALGASININ ÖLÇÜMÜDÜR.**
+
+## `§2` — GEREKÇE HİYERARŞİSİ
+
+| # | |
+|---|---|
+| **1** | ⛔ **`FORCE`'suz dünyada *"owner'ın sorguları politikadan muaf"* satırı, BİLEŞİMSEL-FAIL-OPEN ailesinin DB'DEKİ UYUYAN ÜYESİ olur** — bir gün biri `app_migrate` kimliğiyle bir **okuma-yolu** açar ve **hiçbir kapı görmez** |
+| **2** | **Maliyet bir POLİTİKA satırı değil, bir TEST satırı** — sonda zaten üç-çıktılı; `FORCE` altında **owner-bağlamsız sorgu → boş küme** pini **eklenir** |
+| **3** | Dış-girdi `§3` **aynı yönde** — **`[dış-girdi, doğrulanmadı]`**, ama **bizim yerel rol-ölçümümüzle ÇAKIŞIK** |
+
+📌 `(1)` bu kararın **kalbi**: `FORCE`'suz bir dünyada kusur **bugün yok**, ama
+**mekanizması var** — ve `DISIPLIN`'in *"bileşimsel fail-open: her parça masum, boşluk
+BİLEŞİMDE"* ailesinin **DB tarafı**.
+
+## `§3` — ZAMANLAMA
+
+```
+HÜKÜM        bugün kayda girer
+UYGULAMA     RLS-AKTİVASYON dalgasının İLK MADDESİ
+             (politikalarla AYNI migration ailesi — bugün FORCE'lanacak POLİTİKA YOK)
+```
+
+⛔ **VE YENİ-TABLO-RLS KAPISININ SÖZLEŞMESİNE ŞİMDİ YAZILIR:**
+> **`tenant_id` taşıyan bir tablo, `ENABLE` + `FORCE` ÇİFTİ OLMADAN DOĞAMAZ.**
+*(Kapı **aktivasyona kadar `blocked`**, **koşulu yazılı** — `T-308` deseni.)*
+
+---
+
+# `Z55` — `#5` KONVANSİYON: **SÖZLÜK KAZANIR**; üç-harf **ölür**, ama **veri-dokunmasız**
+
+**Tarih:** 2026-08-28 · **Karar:** ürün sahibi
+
+> ## ⛔ KANONİK AD-UZAYI **`DENETIM_SOZLUGU`**'DUR
+> Üç-harf konvansiyonu **TARİHSEL BİÇİM** statüsüne iner.
+
+**Gerekçe:** `Z15`'in *"bağımsız tanımlarsak **beşinci aile** oluruz"* cümlesi
+**AD-UZAYI için de geçerli**.
+
+## `§1` — ÜÇ KATMAN, SIRA **SERT**
+
+### `1` · TAZE ENVANTER (`S1–S4` yöntemiyle)
+⛔ **`107` ↔ `119` farkı KAYNAK GÖSTERİLEREK kapanmadan HİÇBİR EŞLEME YAZILAMAZ.**
+
+### `2` · EŞLEME TABLOSU
+```
+her mevcut action_type / entity_type değeri  →  sözlük-adı  +  STATÜ
+   birebir  ·  birleşiyor  ·  SÖZLÜKTE-YOK → sözlüğe ADAY SATIR
+```
+⛔ **SÖZLÜK DE BU TURDA SINANIYOR — tek yönlü itaat DEĞİL.** *(Eşlenemeyen bir değer,
+sözlüğün eksikliğini gösterebilir.)*
+
+### `3` · VERİ KATMANINA **DOKUNULMAZ**
+```
+mevcut satırlar OLDUĞU GİBİ kalır
+okuma-katmanı EŞLEME TABLOSUNDAN normalize eder
+⛔ UPDATE YAZILMAZ
+```
+> **`İlke-4` şartı + `ADR 0012` ruhu: DENETİM SATIRI, NORMALİZASYON UĞRUNA BİLE YENİDEN
+> YAZILMAZ — İZ, İZDİR.**
+
+## `§2` — EŞLEME TABLOSU **İKİ İŞ BİRDEN** YAPAR
+
+```
+GEÇMİŞİN okuma-anahtarı
+GEÇİŞİN  ratchet'i        ⇒ YENİ satırda ESKİ-BİÇİM → KIRMIZI
+```
+Yeni olaylar **doğrudan sözlük-adıyla** doğar.
+
+📌 Bu, `Z53 §4b`'nin *"kapı doğar ama `blocked` durur"* deseninin **kardeşi**: burada
+kapı **doğar ve HEMEN çalışır** — çünkü koruduğu şey **gelecek**, geçmiş değil.

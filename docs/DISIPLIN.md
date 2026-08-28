@@ -4210,3 +4210,36 @@ Bugün etkisi **yok** — silme yolu da yok. Ama borç **adresli** yazıldı, ve
 ⚠️ Ve bu, `DISIPLIN`'in *"`ÖLÇÜLMEDİ` bir GEREKÇELİ duraktır"* kuralının **kısıt**
 tarafıdır: bir statü gerekçesiz kalırsa **yanlış okunur**; bir **kısıt** gerekçesiz
 kalırsa **kaldırılır**.
+
+---
+
+## KISITLARIN YANINA GEREKÇE YAZMAK BİR **SİSTEMDİR**, TESADÜF DEĞİL (ZORUNLU)
+
+`ÖLÇÜLMEDİ`-kuralı ile `RESTRICT`-cazibesi kuralı **tek yasada birleşir**:
+
+> ### **Bir STATÜ gerekçesiz kalırsa YANLIŞ OKUNUR.**
+> ### **Bir KISIT gerekçesiz kalırsa KALDIRILIR.**
+
+Ve bu repoda **artık bir sistem**, çünkü aynı pratiğin **dört ayrı üyesi** var — hepsi
+farklı turlarda, farklı sebeplerle doğdu, ve **aynı şeyi yapıyor**:
+
+| kısıt | yanındaki gerekçe |
+|---|---|
+| `admin_audit_logs` FK `RESTRICT` | *"denetim izi, iz sürdüğü nesnenin yaşam döngüsüne tabi olamaz"* — ve **geri-alma cazibesi** adıyla yazılı (`T-314 C`) |
+| ratchet **dip değerleri** | `roles-ratchet`'in **`2`**'si: *"sıfır SAĞLANAMAZ bir koşuldu — iki satır KALICI"* |
+| `Z29` **istisna listeleri** | `_lib.sh`'in üç satırı, ve üçüncüsünün **doğum kaydı**: *"bu listeyi yazan commit'in kendisinde doğdu"* |
+| `KARAR_HUKMU` **dondurulmuş tablosu** | *"bir hücrenin ROL KÜMESİ bir KARARDIR; değişiklik bir `Z`-kaydı ISTER"* |
+
+📌 **Ortak şekil:** hiçbiri *"bu böyle"* demiyor; hepsi ***"bu böyle, ÇÜNKÜ — ve
+kaldırmak isteyene şunu söylüyoruz"*** diyor.
+
+### ⇒ Pratik: bir kısıt yazarken **İKİ cümle** yazılır
+
+```
+1  KISIT NE YAPAR        (kod zaten söylüyor)
+2  ⛔ KALDIRMAK İSTEYEN NE GÖRECEK
+   — hangi duvara çarpacak, ve NİÇİN o duvarın doğru olduğunu
+```
+
+⚠️ Çünkü engele çarpan tur **hükmün gerekçesini okumaz — ENGELİ okur**. İkinci cümle
+yoksa, engel bir **kusur gibi** görünür ve **en kolay çıkış onu kaldırmaktır**.

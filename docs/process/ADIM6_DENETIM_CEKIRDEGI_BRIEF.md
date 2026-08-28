@@ -57,15 +57,22 @@ AGREEMENT (BÜYÜK) · mechanic (küçük) · SalesActualBatch (PascalCase)
 ⇒ TEK BİR varchar KOLONDA ÜÇ HARF KONVANSİYONU
 ```
 
+## ✅ HÜKÜM VERİLDİ — `Z55`: **SÖZLÜK KAZANIR**, üç-harf **tarihsel biçim**
+
 **Bu turda:**
-1. **Konvansiyon KARARI** — `DENETIM_SOZLUGU`/`Z15` ailesine bağlı. *(Üç-harf
-   yaşayacaksa **gerekçesiyle**.)*
+1. ✅ **Konvansiyon KARARI VERİLDİ** — kanonik ad-uzayı **`DENETIM_SOZLUGU`**
+   (`Z15`: *"bağımsız tanımlarsak beşinci aile oluruz"* — **ad-uzayı için de geçerli**).
+   ⛔ **Ve SÖZLÜK DE SINANIYOR:** eşlenemeyen bir değer **sözlüğün eksikliğini**
+   gösterebilir — **tek yönlü itaat DEĞİL**.
 2. ⛔ **Mevcut satırların sözlüğe EŞLEMESİ — TAZE ÖLÇÜMLE** *(sayı `Z51`'de `39`'du;
    **yeniden say**, bayat olabilir)*
-3. **Kader** (`migrate` / `tolere` / `dondur`) → **eşlemenin SONUCUNA hüküm olarak biner**
-
-⛔ **Veri-katmanında YARI-NORMALİZE dokunuş bu turda `İlke-4` RİSKİDİR** — eşleme
-çıkmadan `UPDATE` yazılmaz.
+3. ⛔ **VERİ KATMANINA DOKUNULMAZ** (`Z55 §1.3`) — mevcut satırlar **olduğu gibi**
+   kalır, **okuma-katmanı eşleme tablosundan normalize eder**, **`UPDATE` YAZILMAZ**.
+   > **`İlke-4` + `ADR 0012` ruhu: DENETİM SATIRI, NORMALİZASYON UĞRUNA BİLE YENİDEN
+   > YAZILMAZ — İZ, İZDİR.**
+4. **Eşleme tablosu İKİ İŞ BİRDEN yapar:** *geçmişin **okuma-anahtarı*** ∧ *geçişin
+   **ratchet**'i* ⇒ **yeni satırda ESKİ-BİÇİM → KIRMIZI**. Yeni olaylar **doğrudan
+   sözlük-adıyla** doğar.
 
 ---
 
@@ -135,13 +142,24 @@ dış-girdi     rapor §3: FORCE = OWNER-MUAFİYETİNE KARŞI DERİNLİK-SAVUNMA
               ve bizim owner/DML-only ayrımımız endüstri deseniyle ÖRTÜŞÜYOR
 ```
 
-**İki seçenek:**
-| | |
-|---|---|
-| **(i)** `FORCE` **kapalı** | migration/seed **doğal bypass** · bugünkü şekil · derinlik-savunması **yok** |
-| **(ii)** `FORCE` **açık** + `app_migrate`'e **açık muafiyet politikası** | derinlik-savunması **var** · migration yolu **politikayla** açılır ⇒ bir **politika satırı** daha |
+## ✅ HÜKÜM VERİLDİ — `Z54`: **(ii) AÇIK**, muafiyet-politikası **DEĞİL**
 
-⚠️ **Aktivasyon deploy-eşiğinde** — bu hüküm **şekli** belirler, **açmaz**.
+```
+HER tenant-tablosunda  ENABLE + FORCE  BİRLİKTE
+app_migrate'in bypass ihtiyacı → MUAFİYET POLİTİKASIYLA DEĞİL,
+                                 O İŞLEMLERİN KENDİ DOĞASIYLA
+   ya BYPASSRLS'li operatör-yolu (Z51 kayıtlı istisna)
+   ya bağlam-set-ederek           ⇒ hangisi: AKTİVASYON dalgasının ÖLÇÜMÜ
+```
+⛔ **Kalbi:** `FORCE`'suz dünyada *"owner muaf"* satırı **bileşimsel-fail-open'ın DB'deki
+UYUYAN ÜYESİ** olur — biri `app_migrate` kimliğiyle bir okuma-yolu açar, **hiçbir kapı
+görmez**.
+**Maliyet bir POLİTİKA satırı değil, bir TEST satırı:** sondaya **owner-bağlamsız
+sorgu → boş küme** pini eklenir.
+
+⇒ **BU TURUN İŞİ:** hüküm **kayıtta**; uygulama **`RLS`-aktivasyon dalgasının ilk
+maddesi**. ⛔ **Ve `EK 1/b` kapısının sözleşmesine ŞİMDİ yazılır:**
+> **`tenant_id` taşıyan tablo, `ENABLE` + `FORCE` ÇİFTİ OLMADAN DOĞAMAZ.**
 
 ---
 
