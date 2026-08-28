@@ -435,3 +435,5 @@ status: active        # planned | active | closed
 - [[T-319]] Dört kabul pini — `P1` **ilişki-pini** · `P2` şablon · `P3` tekrar-bastırma · `P4b` **bildirim-yolu-canlılığı** (uçtan uca) — `qa-engineer` — **blocked** (`T-318`)
 - [[T-321]] `K-2.2.7a` **`%100 BLOCKED` hiç uygulanmamış** (bloklama yolu **0**) — kod değil, **hüküm bekler**; `Faz-1` kapanış denetimine girdi — **blocked**
 - [[T-324]] `T-047` invariant evreni **hâlâ yetki-filtreli** — 48 tablodan **39**; kör kalan 9`da `claims` ailesi (**açık port-adayı**). Körlüğün sebebi bir zorunluluk değil, **geçerliliğini yitirmiş bir gerekçe** (`Z60 §1`'in aynı gün, aynı dosyadaki ikinci vakası) — **hüküm bekler**
+- [[T-325]] e2e için **tek-çalıştıran kilidi** (`flock` sınıfı) — paralel koşum riski **ikinci kez** görüldü; kapanışı bloklamaz — **todo**
+- [[T-326]] Denetim ekranı — **API hazır, sayfa stub**; ölçüt-4'ün **GÖRME yarısı**. `justification`-paketi + `sözlük Madde 2` ile **aynı pakette** — `frontend-engineer` — **todo**

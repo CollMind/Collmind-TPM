@@ -3,6 +3,41 @@
 
 ---
 
+> ## ⚠️ KARANTİNA DAMGASI
+> **2026-08-28 · Team Lead, ürün sahibi onayıyla · `F12`: içerik DEĞİŞMEDİ**
+>
+> ### 1 · İÇERİK — **ADAY-YETENEK ENVANTERİ**, plan değil
+> Bu bölümün `Faz-2`/`Faz-3` listeleri **aday yetenek envanteridir**; bir teslim
+> planı **değildir**. `Faz-1` kapanış denetimi (2026-08-28) `Faz-2` listesini
+> koda karşı çakıştırdı ve **listenin yarısının bugün ÇALIŞTIĞINI** ölçtü —
+> yani liste bir *"yapılacaklar"* olarak okunursa **yanlış okunur.**
+>
+> ### 2 · ⛔ KANONİK **DEĞİL** olan üç şey
+> | ne | neden |
+> |---|---|
+> | **Çerçeve · takvim** (`Phase 2 Timeline`, hafta/milestone tabloları) | Bu ürün **tek geliştirici + ajan** düzeniyle yürüyor; BRD'nin `10 Weeks` takvimi hiçbir zaman **bağlayıcı olmadı** ve ölçülmedi |
+> | **Gate metrikleri** (`Phase 2 Success Criteria`) | Yürürlükteki çıkış ölçütü `docs/process/FAZ1_PLAN.md §0b`'dir *(ürün sahibi, 2026-08-20 — ve `0071 §6`'dan **bağımsız** yazıldı)* |
+> | **MOD DİLİ** (*"Planning-First Activation"*, *"Actuals-First"* fazlama) | ⛔ **`A1` ile ÖLDÜ:** *"Mod, bir **davranış belirleyici** olarak öldü; geriye yalnız bir **görünürlük bayrağı** kalır."* Bir yeteneğin adresi *"hangi modda"* değil, ***"tek akışın neresinde"***dir |
+>
+> ### 3 · KANONİK ADRES
+> ```
+> ürün tanımı ve kuralları   docs/brd-v2/   (L0 · L1 · L2 · EK_A–EK_E)
+> kararlar                   docs/brd-v2/04_KARAR_KAYDI.md   (A/B/K/Z kayıtları)
+> Faz-2'nin GERÇEK durumu    docs/process/FAZ1_KAPANIS_DENETIMI_*  → JOIN belgesi
+> çıkış ölçütü               docs/process/FAZ1_PLAN.md §0b
+> ```
+>
+> ### 4 · NE **KORUNUYOR**
+> Bölüm **silinmedi ve silinmez.** `Faz-2` yetenek adları (`A1`–`F3`, **27 kalem**)
+> denetimin `JOIN`'ine **girdi olarak** alındı ve orada **kalem kalem** koda karşı
+> ölçüldü. Bu belge o ölçümün **kaynak referansıdır** — `docs/brd/`'nin
+> `§2.1`'deki statüsüyle birebir: *"kaynak referansı — artık birincil değil."*
+>
+> ⚠️ **Ve bir uyarı:** *"`Explicitly NOT in Phase 2`"* listesi de **kanonik değil** —
+> denetim, o listedeki bir kalemin (`variance-analysis`) **yapılmış** olduğunu ölçtü.
+
+---
+
 # 10. PHASED DELIVERY & ROADMAP
 
 ## Introduction
