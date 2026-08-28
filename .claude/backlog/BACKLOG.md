@@ -434,3 +434,4 @@ status: active        # planned | active | closed
 - [[T-318]] Olay üretimi — `%80`+`%90` bildirimleri; **zili ÇALAR yapmak** (bugün `createNotification` çağıranı **0**, UI `Header.tsx:105`'te monte) — `backend-engineer` — **blocked** (`T-316`+`T-317`)
 - [[T-319]] Dört kabul pini — `P1` **ilişki-pini** · `P2` şablon · `P3` tekrar-bastırma · `P4b` **bildirim-yolu-canlılığı** (uçtan uca) — `qa-engineer` — **blocked** (`T-318`)
 - [[T-321]] `K-2.2.7a` **`%100 BLOCKED` hiç uygulanmamış** (bloklama yolu **0**) — kod değil, **hüküm bekler**; `Faz-1` kapanış denetimine girdi — **blocked**
+- [[T-324]] `T-047` invariant evreni **hâlâ yetki-filtreli** — 48 tablodan **39**; kör kalan 9`da `claims` ailesi (**açık port-adayı**). Körlüğün sebebi bir zorunluluk değil, **geçerliliğini yitirmiş bir gerekçe** (`Z60 §1`'in aynı gün, aynı dosyadaki ikinci vakası) — **hüküm bekler**
