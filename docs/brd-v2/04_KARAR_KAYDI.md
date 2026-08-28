@@ -5815,3 +5815,123 @@ uzandı.
 > `DISIPLIN`: *"kuralı hatırlamak yerine **ARACI** çağır"* — **bir refleks üretmeyen
 > kural, yazılmış olmakla korunmuş olmaz.**
 
+
+---
+
+## `Z59` — BİLDİRİM ALICI HÜKMÜ: `K-2.2.7c`'nin **BİLDİRİM KATMANINA GENELLENMESİ**
+
+> **Kaynak:** ürün sahibi, 2026-08-28 · bulgu: `T-318` (canlı regresyon, mutasyonla kanıtlı)
+> **Statü:** `(1)` + `(2)` **ONAYLI** · `(3)` **REDDEDİLDİ**
+
+### ⛔ `§0` · KARAR ZİNCİRİNİN TEK CÜMLESİ
+
+> **Bu vaka, `K-2.2.7c`'nin (*"aşımda bile süreç durmaz"*) BİLDİRİM KATMANINA
+> GENELLENMESİDİR:**
+> **Para yolu, hiçbir türev yan-etkinin REHİNİ olamaz — ama hiçbir türev yan-etki de
+> SESSİZCE ÖLEMEZ.**
+
+📌 **İki ilkenin kesişimi tam `(2)`'nin şeklini veriyor.** `(3)` (izole et) o kesişimin
+**yalnız birinci yarısını** sağlıyordu; `T-318`'in indiği hâl (hard throw) yalnız
+**ikinci** yarısını.
+
+### `§1` · BULGU — ölçüm, ve iki maskeleme
+
+```
+budget_envelopes.budget_owner_id     4/4 NULL   (POZ.KONTROL: tenant_id 4/4 · name 4/4)
+SAĞLAYICI (dört yüzey, poz. kontrollü)
+  backend src 1 (OKUMA) · test 0 · frontend src 2 (TİP BEYANI) · seeds 0
+  POZ.KONTROL allocatedAmount        30 / 14 / 26 / 7
+```
+
+⇒ **Canlı bir para yolu, ÜRÜNDE HİÇBİR YAZICISI OLMAYAN bir alana bağlandı.**
+
+**Patlama yarıçapı** `790/790` → **`788/790`**, ve **mekanizma mutasyonla kanıtlandı**
+(tier AÇIK → 2 FAIL · tier KAPALI → 2 PASS, `103/103`).
+
+⚠️ **İkinci maskeleme:** ajan **bir** düşüş raporladı (iki spec dosyası koşmuştu); tam
+suite **ikincisini** (`role-journey C9c`, `CANCEL`→release) gösterdi.
+⇒ `DISIPLIN`: *"kapsam maskelemesi — desen çalışır, **EVREN eksiktir**."*
+
+### `§2` · `(2)`'NİN HÜKMÜ — **"GÖRÜNÜR FALLBACK" TANIMIYLA**, üç katman
+
+Owner yoksa `WARNING` alıcısı **`FINANCE`'e düşer**, ve görünürlük **üç katmanda**:
+
+```
+a  BİLDİRİM GÖVDESİNE   FINANCE'e giden mesaj "bütçe sahibine (TANIMSIZ)
+                        yönlendirilemedi" bilgisini TAŞIR
+                        ⇒ alıcı, FALLBACK-ALICISI OLDUĞUNU BİLİR
+b  LOG'A                yapılandırılmış uyarı (kontrol-ailesi taraması SAYABİLSİN)
+c  last_notified_tier   NORMAL İŞLER — fallback tekrar-bastırmayı BOZMAZ
+```
+
+⛔ **`(a)` asıl satırdır:** sessiz-fallback'i görünür-fallback yapan şey **log değil,
+ÜRÜN YÜZEYİNDE görünürlüktür.** *(Bir log satırı kullanıcıya ulaşmaz; bildirimi okuyan
+kişi, adresin kendisi olmadığını **bilmelidir**.)*
+
+📌 **Ve fallback KEYFÎ DEĞİL:** `FINANCE`, `%80` uyarısının **doğal alıcısı**
+(`K-2.6.4` tenant-genel-finans).
+
+> **Bu, *"en az yanlış adres"* değil — *"İKİNCİ-DOĞRU adres."***
+
+### `§3` · `(1)`'İN HÜKMÜ — üç parça, ve **`İlke 1` SINIRIYLA**
+
+⛔ **`budgetOwnerId` create/split akışında OPSİYONEL KALIR — ZORUNLU OLMAZ.**
+
+> Zorunlu kılmak, **bugün hiçbir formun taşımadığı** bir alanı bir gecede **her
+> zarf-yaratma çağrısının kırılma noktası** yapar — `T-306` dersinin **tersi**:
+> **yol açmadan zorunluluk koymak.**
+
+```
+a  frontend formuna ALAN GELİR      opsiyonel, kullanıcı-seçer
+b  seed'ler DOLDURUR                4/4-NULL ölür; mevcut dört zarf backfill'le
+                                    owner kazanır
+c  "OWNER'SIZ ZARF" MEŞRU-TANIMLI   ve cevabı (2)'dir
+   durum olarak KALIR
+```
+
+> **`(1)` *"asla boş olmaz"*ı VAAT ETMİYOR. Vaat edilen: boşluk artık
+> TASARLANMIŞ BİR DURUMDUR, kaza değil.**
+
+**Backfill sahibi** *(Team Lead cevabı, `Z59` kaydına)*: **`category.manager@wella.com`**
+— zarf kanal+kategori kapsamlı, harcamanın sahibi kategori yöneticisi; **ve `FINANCE`
+DEĞİL**, yoksa owner-yolu ile fallback-yolu **aynı alıcıya** düşer ve pin ikisini
+**ayırt edemez** (`DISIPLIN`: *fixture, ayırt etmek istediği iki tarafta FARKLI değer
+taşımalı*).
+
+### `§4` · ÇERÇEVE DÜZELTMESİ — genelleme geri alınmaz, **SINIRI YAZILIR**
+
+| yol | hüküm |
+|---|---|
+| **`FINANCE`** | *"boş küme → açık hata"* **DOĞRU KALIR** — tenant'ta `FINANCE` yoksa bu bir **kurulum hatasıdır**, sistem zaten çalışamaz; hata **meşru** |
+| **`WARNING`** | **hard-throw ÖLÜR**, `(2)` gelir |
+
+### ⛔ `§4a` · VE BİR AYRIM `DISIPLIN`'E — **üretken-genelleme ≠ doğru-usül**
+
+Ajanın genellemesi **üretkendi**: boşluğu **o görünür kıldı**.
+**Ama usül yanlıştı:** brief `WARNING` için bunu istememişti.
+
+> **Kapsam-genişleme teklifi disiplini (ÖLÇ + DUR) burada da geçerliydi — ve
+> `throw` YAZMAK yerine `DUR`'a düşmek doğru davranış olurdu.**
+
+📌 Fark önemli, çünkü ikisi **karıştırılabilir**: bir genişletmenin **iyi bir şey
+bulması**, onu **yetkili** yapmaz. Bulgu kalır, usül kaydedilir.
+
+### `§5` · İKİ ŞART
+
+**`(i)` `T-322` BU DALGAYA BİNER — aday kalmaz.**
+`NotificationRepository.create` dış-transaction `manager`'ını **almıyor**, ve bu
+**tam da bu dalganın inşa ettiği yolun üstünde**: tier-bildirimi `RESERVE`/`COMMIT`
+tx'inin **içinden** doğuyor ⇒
+
+```
+rollback-olan-reserve'den GERİDE KALAN bildirim
+  = YANLIŞ-POZİTİF finansal uyarı
+  ⇒ "500'DEN SİNSİ" ailesi
+```
+Bildirim yazımı **tx-manager'a bağlanır**; `T-047`/`SP-E2E` pinleri patlama yarıçapını
+zaten ölçüyor.
+
+**`(ii)` İKİ-SUITE-DÜŞÜŞÜNÜN İKİSİ DE KAPANIŞ PİNİNE GİRER** — `split` yolu **ve**
+`CANCEL`→`release` yolu. Ajanın tek-suite bulgusu **"kapsam maskelemesi"** olarak
+kayıtlı; pin **her iki yolda** yeşili kanıtlar.
+
