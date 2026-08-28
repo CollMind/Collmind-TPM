@@ -4390,3 +4390,85 @@ SÖZLEŞMESİNDEN mi türüyor, yoksa kapının BUGÜNKÜ DAVRANIŞINDAN mı?"* 
 📌 İkisi de `done` değil, ve **ikisi de bir TASK'ta adresli** — `§ bilinen eksiklik
 TODO ile değil, TASK ile kaydedilir`.
 
+
+---
+
+## BİR GEREKÇE, DAYANDIĞI **ÖLÇÜMÜN TARİHİYLE** YAŞAR (ZORUNLU)
+
+> **Ve o ölçümü DEĞİŞTİREN tur, gerekçenin OKUYUCUSUDUR.**
+
+Bir karar *"çünkü bugün X yok"* diye yazıldığında, **`X` doğduğu gün karar bir
+gerekçe taşımaz — bir KALINTI taşır.** Ve kalıntı, yazıldığı gün **doğru** olduğu
+için **sorgulanmaz.**
+
+**Ölçülmüş vaka (2026-08-28, `Z60 §2`):** `02-runtime-grants.sql` şunu **yazılı**
+taşıyordu (`T-249`):
+
+```
+"INSERT BİLEREK VERİLMEDİ: createNotification'ın hiçbir üretim çağıranı yok"
+```
+
+⛔ Ve `Z59` dalgasının **yaptığı şey tam olarak o çağıranı yaratmaktı.** Dalga
+gerekçeyi **okumadı**; ilk e2e `permission denied` ile **500** verdi.
+
+📌 Bu, `§ istisna kalkınca ona yaslanan kararlar yeniden okunur` maddesinin
+**ters-yön vakası**: istisna **kalkmadı** — ***istisnanın ÖNCÜLÜ kalktı.***
+
+**Pratik — tarama şartına tek satır:**
+> **Yeni bir üretim-çağıranı DOĞURAN dalga, o yolun üstündeki tüm
+> *"çağıran-yok"*-gerekçeli kararları TARAR.**
+> `grep`-sınıfı iş (`çağıran yok|no caller|üretim yolu yok`): **`GRANT`'lar ·
+> guard muafiyetleri · ölü-kod kayıtları · `blocked-unreachable` task'lar.**
+
+---
+
+## BİR KAPININ KÖR NOKTASI, **KOMŞU KAPININ GÖREV TANIMIDIR** — ta ki yazılana kadar (ZORUNLU)
+
+`app-runtime-grants` guard'ı *"okuyor ama **YAZAMIYOR**"* ayrımını **görmüyor** ve bunu
+**kendi belgesinde yazıyor** (ikinci sınırı). `notifications` `INSERT` eksikliğini
+**yalnız e2e** yakaladı.
+
+> **Bir kapının belgelenmiş sınırı, o sınırın KAPANDIĞI anlamına gelmez — yalnız
+> BİLİNDİĞİ anlamına gelir.** Ve bilinen bir boşluğu bugün kim kapatıyorsa
+> (*burada: e2e*), **o kapanış TESADÜFÎDİR** — yazılana kadar.
+
+**Pratik:** bir guard'ın *"bunu görmez"* notu bir **task adayıdır**, bir mazeret
+değil. Kapatan mekanizma **adlandırılmamışsa**, bir gün **kapatmaz**.
+
+---
+
+## KARAR **ÖNCE İNER**, UYGULAMA SONRA BAŞLAR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-28, `Z60 §4`):** Team Lead `Z59`'u yazdı, task'ları açtı,
+**iki ajanı başlattı** — ve kaydı **commit etmedi**. `push-order.sh` yakaladı.
+
+```
+hüküm UYGULANIRKEN karar defterinde COMMIT'Lİ DEĞİLDİ
+⇒ ajanlar ORIGIN'DE VAR OLMAYAN bir hükmün uygulayıcısıydı
+⇒ kapı sonunda yakaladı — ama PENCERE BOYUNCA İKİ DALGA o hükümle koştu
+```
+
+> **Dalga açmadan önce TEK SORU: *"Hükmün kaydı commit'li mi?"***
+
+📌 `§ yazma ile commit arasına bir DOĞRULAMA koy` maddesinin **hüküm tarafı** — ve
+`§ bir gerekçe ölçümünün tarihiyle yaşar` yasasının **kendi üstüne katlanmış hâli:**
+bir hüküm de **kaydının tarihiyle** yaşar.
+
+---
+
+## ÜRETKEN-GENELLEME ≠ DOĞRU-USÜL (ZORUNLU)
+
+**Ölçülmüş vaka (2026-08-28, `Z59 §4a`):** `T-318` brief'i *"boş küme → açık hata"*yı
+**yalnız `FINANCE`** için istemişti. Ajan bunu `WARNING`'e **genelleştirdi** — ve
+genelleme **gerçek bir boşluğu görünür kıldı** (`budgetOwnerId`'nin üründe hiçbir
+yazıcısı yoktu). **Ama bedeli ölçüldü:** `790/790` → `788/790`, iki suite, canlı para
+yolunda `500`.
+
+> **Bir genişletmenin İYİ BİR ŞEY BULMASI, onu YETKİLİ yapmaz.**
+> **Bulgu kalır, usül kaydedilir.**
+
+**Pratik:** kapsam-genişleme teklifi disiplini (**ÖLÇ + DUR**) burada da geçerliydi —
+`throw` **yazmak** yerine **`DUR`'a düşmek** doğru davranıştı. İkisi karıştırılabilir,
+çünkü sonuç (bulgu) aynıdır; **ayrılan şey RİSKTİR:** `DUR` bir soru üretir, `throw`
+bir **kesinti** üretir.
+

@@ -5935,3 +5935,128 @@ zaten ölçüyor.
 `CANCEL`→`release` yolu. Ajanın tek-suite bulgusu **"kapsam maskelemesi"** olarak
 kayıtlı; pin **her iki yolda** yeşili kanıtlar.
 
+
+---
+
+## `Z60` — **BİR GEREKÇE, DAYANDIĞI ÖLÇÜMÜN TARİHİYLE YAŞAR**
+
+> **Kaynak:** ürün sahibi, 2026-08-28 · bulgular: `Z59` dalgası
+> **Statü:** iki bulgu, **tek yasa** — ve `T-323` hükmü (`§0`)
+
+### `§0` · `T-323` HÜKMÜ = **(a)**, tek genişletmesiz
+
+**Zarf yaratabilen bir rol, bütçe sahibi ATAYAMAZ.** Ve bu bir kusur değil:
+
+> Atama, **kullanıcı-listesi görme** yetkisi ister; kullanıcı-listesi
+> **`USER_MANAGE`**'in işidir (`Z20`'nin dünyası). *"Zarf yaratmak"* ile
+> *"kişi-dizinine erişmek"* **iki ayrı yetki sorusudur**, ve ikisini birleştirmek
+> `K-2.6.4a`'nın gerçek cümlesinin ihlali olurdu — *"rol adres defteri değildir"*in
+> **tersi:** ***adres-defteri de rol değildir.***
+
+`(b)` (`GET /users/selectable`) **elendi**: ölçülmemiş bir ihtiyaca **yeni rota + yeni
+hücre** (`İlke 1` + `Z42` kalemi maliyeti).
+⛔ **KOŞUL SATIRI:** *ihtiyaç kanıtı gelirse* — **gerçek bir tenant'ta `FINANCE`
+*"owner atayamıyorum"* derse** — o gün **`Z42` usulüyle** açılır.
+
+📌 Ve `Z59 §3c` bunu zaten hazırlamıştı: *"owner'sız zarf **meşru-tanımlı** bir
+durumdur"* + `FINANCE`'in **fallback alıcılığı** ⇒ `FINANCE`/`PLANNER`'ın owner
+atayamayışı **o hükmün doğal sonucu**.
+
+**Ve UI düzeltmesi hükmün doğru tamamlayıcısıdır:** *"yetkin yok ≠ kimse yok"*
+ayrımının **görünür** olması, **boş-açıklamasız-seçici** sınıfını kapattı —
+`§2.7`'nin *"verinin yokluğu örter"* maddesinin **UI hâli**.
+
+---
+
+### ⛔ `§1` · YASA — ve bu kayıt onu ADLANDIRMAK için var
+
+> **BİR GEREKÇE, DAYANDIĞI ÖLÇÜMÜN TARİHİYLE YAŞAR — VE O ÖLÇÜMÜ DEĞİŞTİREN TUR,
+> GEREKÇENİN OKUYUCUSUDUR.**
+
+İki bulgu bu yasanın **iki yüzü**.
+
+### `§2` · BİRİNCİ YÜZ — **İSTİSNA KALKMADI, İSTİSNANIN ÖNCÜLÜ KALKTI**
+
+`02-runtime-grants.sql` şu gerekçeyi **yazılı** taşıyordu (`T-249`):
+
+```
+"INSERT BİLEREK VERİLMEDİ: createNotification'ın hiçbir üretim çağıranı yok"
+```
+
+⛔ **Ve `Z59` dalgasının YAPTIĞI ŞEY tam olarak o çağıranı YARATMAKTI.**
+Gerekçe **çürüdü**; dalga onu **okumadı**. İlk e2e `permission denied for table
+notifications` ile **500** verdi.
+
+📌 Bu, *"istisna kalkınca ona yaslanan kararlar yeniden okunur"* kuralının
+**ters-yön vakası**: burada **istisna kalkmadı** — ***istisnanın ÖNCÜLÜ kalktı.***
+
+**⇒ TARAMA ŞARTINA TEK SATIR:**
+> **Yeni bir üretim-çağıranı DOĞURAN dalga, o yolun üstündeki tüm
+> *"çağıran-yok"*-gerekçeli kararları TARAR.**
+> `grep`-sınıfı iş: `T-249|çağıran yok|no caller` — **`GRANT`'lar ·
+> guard-muafiyetleri · ölü-kod kayıtları.**
+
+**Ve guard yakalamadı:**
+`app-runtime-grants` *"okuyor ama **YAZAMIYOR**"* ayrımını **görmüyor** — kapının
+**kendi belgelediği ikinci sınırı**.
+
+> **Bir kapının kör noktası, komşu kapının görev tanımıdır — ta ki YAZILANA KADAR.**
+> Yazılana kadar komşu-kapı **e2e** oldu, ve **gördü**.
+
+⇒ **`GRANT`-yön-ayrımı** (`SELECT`/`INSERT`/`UPDATE`/`DELETE` bazında **beklenen
+matris**) `T-314`'ün **`GRANT`-drift kalemiyle BİRLEŞİR** — aynı iş, **tek kapı**:
+
+```
+beklenen GRANT matrisi   KARAR-KAYITLI
+canlı GRANT'lar          katalogdan
+fark                     KIRMIZI
+```
+📌 `Z51` sınıfının (**kayıtsız sapma**) **kalıcı çözümü**.
+
+### `§3` · İKİNCİ YÜZ — **`T-047` EVRENİ, KENDİ BELGELEDİĞİ KÖRLÜĞÜ TEKRARLADI**
+
+```
+Z59 dalgası → notifications'a İLK üretim yazıcısı
+tam e2e     → 16 satır ARTIK           T-047 invariant: YEŞİL ✅
+sebep       → countRows() ELLE YAZILMIŞ 7 tablo sayıyor
+```
+
+⛔ **İkinci kez** — ve **ilkini dosyanın KENDİ yorumu kaydediyor**
+(`e2e-row-count.js:84-90`, `T-060`): *"`approval_requests` 9.116 satır, `plans` 0 —
+invaryantın **bütün bir tabloya kör** olduğunun kanıtı."*
+
+⇒ **`G5` ailesinin** (*"yazılmış evren < taranmış < türetilmiş"*) **invariant hâli.**
+
+⛔ **VE *"NOTIFICATIONS EKLE"* GERÇEKTEN YANLIŞ DÜZELTMEYDİ** *(ürün sahibi)*:
+
+> **Sekizinci tablo, DOKUZUNCUNUN körlüğünü hazırlardı.**
+
+⇒ Evren **katalogdan TÜRETİLİR** (tüm `main.*` tabloları) — **böylece bu sınıf
+ÜÇÜNCÜ KEZ DOĞAMAZ.** `T-060` yöntemi (`T-319` acceptance'ında, **reprodüksiyon
+şartıyla**): tam bir e2e koşumunun **hemen öncesi ve sonrası** her tablo sayılır;
+delta'sı sıfır olmayan **her** tablo raporlanır — **tahmin edilmez, ÖLÇÜLÜR.**
+
+⚠️ Ve türetme **`information_schema`'dan DEĞİL, `pg_catalog`'dan**: bu görünüm
+**yetki filtreler** ve o tuzak bu oturumda **iki kez** çarptı (ikincisi Team Lead'e).
+
+### ⛔ `§4` · VE ÜÇÜNCÜ BİR VAKA — **KARAR ÖNCE İNER, UYGULAMA SONRA BAŞLAR**
+
+Team Lead `Z59`'u **yazdı**, task'ları açtı, **iki ajanı başlattı** — ve kaydı
+**commit etmedi**. `push-order.sh` *"commit edilmemiş değişiklik"* kapısıyla
+**durdu ve yakaladı**.
+
+**Kapının yakalaması tam amaçlanan işleyiştir. Ama vakanın SINIFI kayda değer:**
+
+```
+hüküm UYGULANIRKEN karar defterinde COMMIT'Lİ DEĞİLDİ
+⇒ ajanlar, ORIGIN'DE VAR OLMAYAN bir hükmün uygulayıcısıydı
+⇒ push-order sonunda yakaladı — ama PENCERE BOYUNCA İKİ DALGA o hükümle KOŞTU
+```
+
+> *"Karar önce iner, uygulama sonra başlar"* bugüne kadar **örtük** disiplindi.
+> **Bu vaka onu AÇIK KURAL yapıyor** — dalga-açma öncesi **tek soru:**
+> ***"Hükmün kaydı commit'li mi?"***
+
+📌 Ve bu, `§1`'in yasasının **kendi üstüne katlanmış hâli**: bir gerekçe **ölçümünün
+tarihiyle** yaşıyorsa, bir **hüküm** de **kaydının tarihiyle** yaşar.
+
