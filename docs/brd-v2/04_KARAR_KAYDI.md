@@ -6260,3 +6260,84 @@ ve `NIV` off-invoice hesabının **tabanı**. Cevap *"bilinçli düşüş değil
 2  BRD 40 → 42 F12       W2'de
 ```
 
+
+---
+
+## `Z63` — `T-329`: TAKVİM-AYI NORMALLEŞTİRME + iki `DISIPLIN` kaydı
+
+> **Kaynak:** ürün sahibi, 2026-08-29 · **Statü:** `(c)` **ONAYLI**, üç şartla
+
+### `§1` · HÜKÜM `(c)` — ve gerekçe **ürün tarafından**
+
+> *"Aylık trend"* kavramsal olarak bir **takvim-ayı** sorusudur: kullanıcının sorduğu
+> şey ***"Şubat'ta ne harcandı"***tır — *"31 Ocak'tan 28 Şubat'a kayan pencerede ne
+> harcandı"* değil.
+>
+> **`(a)`/`(b)` taşmayı düzeltir ve kayık pencereyi KORUR — teknik-doğru, ÜRÜN-YANLIŞ.**
+
+⭐ **Ve bağımsız bir dış teyit var:** demo-Excel'in `Fund Utilization Report` kova
+yapısı **`Jan` / `Feb` / `Mar` kolonları** — **atadan gelen model de takvim-ayı.**
+📌 `DISIPLIN`: *"en iyi kontrol, BAĞIMSIZ BİR KAYITLA ÇAKIŞTIRMADIR"* — hüküm bir
+sezgiden değil, **iki kaynağın kesişiminden** çıktı.
+
+### `§2` · ÜÇ ŞART
+
+```
+i   KOVA TANIMI     etiket = TAKVİM AYI · sınırlar ayın 1'i
+                    uç kovalar KISMİ olabilir ve bu MEŞRU
+                    (15 Ocak'ta başlayan sorgu → Ocak kovası 15-31'i kapsar,
+                     etiketi yine "Ocak") ⇒ BELGEYE TEK CÜMLE
+ii  PİN             İLİŞKİ-PİNİ, tarihten BAĞIMSIZ:
+                    ay-sonu başlangıçlı DÖRT vaka (28/29/30/31) parametrik
+                    + "her ay TAM BİR KEZ"
+                    + ⛔ MUTABAKAT SATIRI: "toplam = kovaların toplamı"
+iii YERLEŞİM        düzeltme add-months.ts ailesinde DEĞİL, KOVA ÜRETİMİNDE
+                    yardımcı GENEL kalır; takvim-ayı normalleştirme
+                    RAPORUN semantiğidir
+```
+
+⛔ **`(ii)`'nin mutabakat satırı özellikle önemli:** Şubat-kaybı vakasında **toplam da
+kayıyordu**. Bir mutabakat pini **birikimli-sapma sınıfını kalıcı olarak** yakalar —
+tek tek kova kontrolü yakalamayabilir.
+
+📌 **`(iii)`'ün gerekçesi ileriye dönük:** yarın *"haftalık trend"* gelirse **aynı
+yardımcı farklı normalleştirmeyle** kullanılır. Yardımcıya semantik gömmek onu
+**tek raporun esiri** yapardı.
+
+### `§3` · İKİ `DISIPLIN` KAYDI
+
+**`a` · ZAMANA BAĞLI KUSURUN TESTİ, KUSURUN UYKUDA OLDUĞU GÜNLERDE YAZILDIYSA YEŞİLDİR**
+
+Ajanın ölçümü: kusur ayın **1–28**'inde doğru, **29–31**'inde yanlış ⇒ sözleşme testi
+**ayda ~3 gün uyanık, ~28 gün kör**. `2026-08-29`'da **kod değişmeden** kırmızıya döndü.
+
+> **`"Flaky"` etiketi yapıştırmadan önce sinyalin TAKVİM DESENİNE bakılır.**
+
+⇒ Ve bu, **`T-290` flaky kuyruğu için bir OKUMA ANAHTARI**: oradaki her vaka
+*"aralıklı"* diye kayıtlı — **aralığın takvimle mi yükle mi ilişkili olduğu
+sorulmamış.**
+
+**`b` · KUSUR-BELGELEME YATIRIMININ İLK ÖLÇÜLEBİLİR GETİRİSİ**
+
+Ajan ikinci, daha sessiz bir kusuru (**okuma yerel `getMonth()` / yazma UTC
+`toISOString()`**) yakaladı — ve **tanıdı**, çünkü `excel-serial-date.ts`'in
+docstring'i **aynı gün-kaymasını ölçümleriyle** kaydetmişti.
+
+> **Belgelenmiş eski bir kusur, yeni bir kusurun TEŞHİS HIZLANDIRICISI oldu.**
+
+📌 Bu proje üç haftadır kusurları **gerekçeleriyle** belgeliyor; bu, o yatırımın
+**ilk ölçülebilir getirisidir**.
+
+### `§4` · SIRALAMA — `W1` önce, `T-329` sonra *(Team Lead `touches` ölçümü)*
+
+```
+DOSYA KESİŞİMİ      finance-reporting ∩ budget = ∅ · test/ ikisi de YENİ dosya
+                    ⇒ touches disjoint
+⛔ ÜÇÜNCÜ ŞART      DOĞRULAMA İZOLASYONU — SAĞLANMIYOR
+                    T-325 (e2e tek-çalıştıran kilidi) HENÜZ YOK
+                    ikisi de TAM e2e koşuyor · DB PAYLAŞILIYOR
+```
+
+⇒ **SIRALI.** `§4`'ün kendi kuralı: *"`touches` kesişimi GEREKLİ ama YETERLİ DEĞİL —
+ağaç PAYLAŞILIR."* Burada paylaşılan şey ağaç değil **veritabanı**, ve sonuç aynı.
+

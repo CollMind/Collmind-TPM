@@ -4515,3 +4515,54 @@ yapan bir bağlantı **yapı gereği** SELECT-only'dir.
 **ölçümün** rahatlığıyla değil. Aksi hâlde üretim yetki yüzeyi, **hiçbir ürün
 gereksinimi olmadan** büyür ve her büyüme **kalıcıdır**.
 
+
+---
+
+## `"FLAKY"` DEMEDEN ÖNCE **TAKVİM DESENİNE** BAK (ZORUNLU)
+
+`§ flaky bir test, ürünün YÜK ALTINDA aralıklı bozulduğunun kanıtı olabilir` maddesi
+**yükü** ölçmeyi söyler. **Bu onun ikinci ekseni: ZAMAN.**
+
+**Ölçülmüş vaka (2026-08-29, `T-328`):**
+```
+kusur ayın 1-28'inde   DOĞRU sonuç
+kusur ayın 29-31'inde  YANLIŞ sonuç
+⇒ sözleşme testi AYDA ~3 GÜN UYANIK, ~28 GÜN KÖR
+⇒ 2026-08-29'da KOD DEĞİŞMEDEN kırmızıya döndü
+```
+
+> **Zamana bağlı bir kusurun testi, kusurun UYKUDA olduğu günlerde yazıldıysa
+> YEŞİLDİR — ve o yeşil hiçbir şey kanıtlamaz.**
+
+**Pratik:** bir test *"birden"* kırmızıya döndüyse ve **diff yoksa**, ilk soru
+*"ortam mı"* değil: ***"bugün ayın kaçı?"*** Takvim deseni (ay sonu · ay başı ·
+artık gün · yıl devri · hafta sonu) yükten **daha kolay** ölçülür.
+
+⇒ Ve bu, **`T-290` flaky kuyruğu için bir OKUMA ANAHTARIDIR:** oradaki vakalar
+*"aralıklı"* diye kayıtlı, ama **aralığın YÜKLE mi TAKVİMLE mi ilişkili olduğu
+sorulmamış.**
+
+---
+
+## BELGELENMİŞ BİR KUSUR, YENİ BİR KUSURUN **TEŞHİS HIZLANDIRICISIDIR** (ZORUNLU — ve bir GETİRİ kaydı)
+
+Bu proje üç haftadır kusurları **gerekçeleriyle ve ölçümleriyle** belgeliyor. Bu
+maddenin varlık sebebi, o yatırımın **ilk ölçülebilir getirisini** kaydetmek.
+
+**Vaka (2026-08-29, `T-328`):** ajan asıl kusuru (`setMonth` taşması) düzeltirken
+**aynı satırda ikinci, daha sessiz** bir kusur gördü — **okuma yerel** (`getMonth()`),
+**yazma UTC** (`toISOString()`). Ve onu **tanıdı**, çünkü:
+
+```
+src/common/date/excel-serial-date.ts   docstring
+  → AYNI gün-kaymasını, ÖLÇÜMLERİYLE, T-107'de kaydetmişti
+```
+
+> **Bir kusuru gerekçesiyle belgelemek, onu bir daha yapmamayı garanti etmez —
+> ama BİR SONRAKİNİ TANIMAYI hızlandırır.**
+
+📌 Ve bu, `§ bir hatayı BELGELEMEK onu KORUMA ALTINA ALIR` maddesinin (`T-084`:
+*"must not be fixed to match"*) **karşı kutbudur**: orada belge kusuru **savunmuştu**,
+burada **teşhis etti**. Fark **belgenin ne dediğinde**: *"böyle kalsın"* mı,
+*"bu bir kusurdur, ölçümü şu"* mu.
+
