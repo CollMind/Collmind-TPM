@@ -6159,3 +6159,104 @@ bugün           üç-dünyalı ilişki-pini · tx-güvenli yazım
      ⇒ FAZ-1'İN KAPANIŞ BEYANI
 ```
 
+
+---
+
+## `Z62` — `FAZ-2` AÇILIŞ PAKETİ: SÜZGEÇ + BEŞ HÜKÜM + ÜÇ-KAYNAKLI EŞLEME
+
+> **Kaynak:** ürün sahibi, 2026-08-28 · brief: `docs/process/FAZ2_PLANLAMA_BRIEF.md`
+> **Statü:** `Faz-2` **AÇIK** · `W0` başlatıldı
+
+### ⛔ `§0` · `FAZ-2` SÜZGECİ — **tüm yerleşim kararlarına uygulanır**
+
+```
+TEK-TENANT + İLK-MÜŞTERİ-DEĞERİ ÖNCELİKLİDİR.
+Ölçek-hazırlığı kalemleri TAKVİMLE değil, OLAY-TETİKLİ KOŞUL SATIRIYLA yaşar
+  — sağlayıcı + tetikleyici YAZILI.
+```
+
+📌 Bu, `İlke 1`'in (*"spekülatif esneklik"*) **faz ölçeğindeki** hâli — ve
+`W2`-kovalarının **`Faz-2`-şart / aday / `Faz-3`** yerleşimi **bu süzgeçle** yapılır.
+
+⚠️ Ve süzgeç bir **erteleme aracı değil**: bir kalem *"koşul satırı"*na düştüğünde
+**sağlayıcısı ve tetikleyicisi adlandırılır** — aksi hâlde `DISIPLIN`'in
+*"sağlayıcısı yoksa şart bir erteleme değil bir **KİLİTTİR**"* maddesi işler.
+
+### `§1` · BEŞ HÜKÜM
+
+| # | kalem | hüküm | sağlayıcı / tetikleyici |
+|---|---|---|---|
+| `2a` | `FINANCE` ayrışması | **(c) koşullu** | sağlayıcı: **ikinci-müşteri onboarding** · tetikleyici: **`RLS`-aktivasyon brief'i** ⇒ **`Faz-2` listesinde DEĞİL** |
+| `2b` | `T-292` `DEĞİŞTİR`/`ONAYLA` | **(b) tasarım-girdisi** | motor inerken `L2`'ye **`Z`-kayıtla** |
+| `2c` | `T-321` `%100 BLOCKED` | **(a) `Faz-2` `W1`** | ⛔ **ŞART:** pin **iki-eksen ayrımı** taşır ↓ |
+| `2d` | `+CM` / `T-304` | **(b) alt-küme** | **Dilim-1** = `+CM×3` + `T-306` + davranış-pinleri |
+| `2e` | idempotency köken segmenti | **ÖLÇÜM-ÖNCE** + **(b)** | ölçüm *"evet"* derse **(a) açılır** |
+
+#### ⛔ `2c`'nin ŞARTI — pin **iki ekseni AYIRT ETMELİ**
+
+```
+BLOCKED   =  yeni-RESERVE GİRİŞ-REDDİ          ← eşik davranışı
+K-2.2.7c  =  MEVCUT SÜREÇ DURMAZ               ← hakediş tarafı
+```
+📌 İkisi karıştırılırsa `%100` kapısı **hakediş akışını durdurur** ve
+`K-2.2.7c`'yi (*"borç doğmuştur, bütçe onu geçersiz kılamaz"*) **ihlal eder**.
+⇒ Pin **iki girdi, iki çıktı** ile bunu ayırmalı; ayıramıyorsa **yazılmaz**.
+
+#### `2e`'nin ölçümü — hüküm istemeden yapılabilir
+> *"İki farklı yükleme yolu **aynı** idempotency anahtarını üretebilir mi?"*
+> **`K6b` test vakası** girdi olarak verildi. Ölçüm *"evet"* derse şema kalemi `(a)` açılır.
+
+### `§2` · KPI EVRENİ — **`Section_05 §5.3` KANONİK, GRUPLAR (`42`)**
+
+Başlık *"40 KPIs"* ↔ gruplar `2+4+3+8+11+6+5+3 = 42`.
+⇒ **Gruplar kanonik**, çünkü *"bir sayı **listesiyle** anılır ya da **hiç** anılmaz"*.
+**Başlık-`40`'ın `F12`'si `W2`'de** yazılır.
+
+### `§3` · SIRALAMA — üç düzeltme **KABUL**
+
+```
+W0  KPI TEMİZLİĞİ      6 e2e artığı + üreteç + T-047 teyidi     ← BAŞLADI
+W1  SENARYO            yedi spec · AYIRT-EDİCİ ZORUNLU · +T-321 (2c)
+W2  ÇİFT DALGA         KPI eşleme  ∥  T-293 + T-291
+W3  BASELINE           D3 → D2/D4 → yüzey
+W4  <500ms ÖLÇÜM       ⛔ Faz-2-ŞART SETİ TAM İNİNCE
+```
+⚠️ `W4`'ün koşulu **değişti**: *"eşlemeden sonra"* değil — ***"`Faz-2`-şart seti tam
+inince"***. Gerekçe: ölçüm, **inen her KPI'la** değişir; yarım sette ölçmek **iyimser
+ve yanıltıcıdır**.
+
+### `§4` · SENARYO FORMATI — `AYIRT-EDİCİ` **zorunlu** + **`DEMO-DEĞERİ` opsiyonel**
+
+`DEMO-DEĞERİ` **yeni bir alan**: bir senaryonun **gösterilebilir** olup olmadığı.
+📌 Süzgecin (*"ilk-müşteri değeri"*) senaryo tarafındaki karşılığı.
+
+### ⭐ `§5` · YENİ GİRDİ — `DEMO_EXCEL_KPI_TACTIC_REFERANSI.md`
+
+**`W2` eşlemesi artık ÜÇ-KAYNAKLI:**
+```
+Excel ~60 kalem (FORMÜLLÜ)  ↔  BRD §5.3  42  ↔  canlı ÜRÜN  24 aktif
+                                Excel muhtemelen BRD listesinin ATASI
+```
+
+| bölüm | `Faz-2`'deki yeri |
+|---|---|
+| **`§6` beş soru** | ⛔ **cevaplanmadan eşleme KAPANMAZ** — `NIV` grubunun düşüşü bilinçli miydi · sell-in/sell-out ayrımı · `ROI` paydası `TTS` · *"Excl. BMI"* · mekanik-değerinin `SKU` düzeyi |
+| **`§2` tactic tablosu** | **`EK_E` referansı** |
+| **`§3` agregasyon işaretleri** | **kabul kriteri** |
+| **`§7` üç senaryo tohumu** | **`W1`**'e |
+| **`§4` fark tablosu (6 kalem)** | **süzgeçten** geçirilir |
+| `T-293`+`T-291` pini | **LTA taban zincirini** ölçer |
+
+⚠️ Ve zamanlayıcı-müşteri listesine **`Ongoing`/`Complete`** eklendi.
+
+📌 **`§6 soru-1` özellikle ağır:** `NIV` grubu Excel'de **var**, `BRD-42`'de **yok** —
+ve `NIV` off-invoice hesabının **tabanı**. Cevap *"bilinçli düşüş değil"* ise
+**`42` sayısı da eksik** demektir ⇒ evren **üçüncü kez** düzelir.
+
+### `§6` · İLK COMMIT'LERE
+
+```
+1  BEYAN DÜZELTME NOTU   33/30 → 24/27   (append-only, mühür BOZULMAZ)
+2  BRD 40 → 42 F12       W2'de
+```
+

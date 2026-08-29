@@ -221,3 +221,40 @@ denetim izini sağlamaz**. Kapısı **eşik `4`**.
 
 ⇒ **Eşik listesinde kalan: `1` · `2` · `3` · `4` · `6` · `6a`.**
 
+---
+
+# 9 · ⛔ DÜZELTME NOTU — `B1` SAYISI KİRLİYDİ *(append-only, 2026-08-28)*
+
+`§5` ve `§6`'da `B1` için **`33/30 aktif`** yazılmıştı. `Faz-2` planlama turu o sayıyı
+**yeniden ölçtü ve KİRLİ buldu**:
+
+```
+YAZILAN   33 toplam / 30 aktif
+GERÇEK    27 toplam / 24 aktif          ← ÜRÜN KPI'ları
+fark = 6  kpi_group='Test' · E2E_KPILOCK_* · created_at 2026-08-16 · is_active=TRUE
+```
+
+⇒ **Altı e2e artığı canlı DB'de `is_active` duruyor** ve *"aktif KPI"* sayan **her**
+ölçümü `+6` şişiriyor.
+
+### Ve `ÖLÇEMEDİM` de düştü — kanonik liste **VAR**
+```
+docs/brd/01_Main_BRD/Section_05_Planning_First_Mode.md:587
+  "### Complete KPI Library (40 KPIs)"
+```
+Beyan *"kanonik `40+` listesi `Section-10`'da **yok**"* diyordu ve **doğruydu** —
+liste **başka bölümde**. Boşluk `7`–`10` **değil**: **`42 − 24 = 18`**
+*(gruplar `2+4+3+8+11+6+5+3`; BRD'nin kendi başlığı `40` diyor — `F12`'si `W2`'de)*.
+
+> **📌 Ve bu düzeltmenin kendisi `B1` disiplininin kanıtı:**
+> *"sayı bir **ENVANTERDİR**, bir **TEŞHİS DEĞİL**"* — beyan o sayıyı bir envanter
+> olarak yazmıştı ve **teşhis niyetine kullanmamıştı**. Teşhis turu geldiğinde
+> envanterin **kendisi** düzeldi.
+>
+> ⛔ **Mühür bozulmaz:** düzeltme `append-only` ve sayı hiçbir **ölçüt** işaretini
+> taşımıyordu — `B1` `Faz-2`'nin `DEVRETTİ` sütununda, `KAPATTI`'da değil.
+
+⚠️ **Ve `42` de nihai olmayabilir:** yeni girdi (`DEMO_EXCEL_KPI_TACTIC_REFERANSI.md`)
+Excel'de **`NIV` grubunun** varlığını, `BRD-42`'de **yokluğunu** gösterdi (`§6 soru-1`).
+Cevap *"bilinçli düşüş değil"* ise evren **üçüncü kez** düzelir.
+
