@@ -444,3 +444,5 @@ status: active        # planned | active | closed
 - [[T-330]] `T-321` **e2e kapsaması** — gate + iki-eksen gerçek DB/`v_budget_summary` üzerinden; yedi-senaryo dalgasında — `qa-engineer` — **todo**
 - [[T-331]] `plans/:id/review` `approve` **koşulsuz 400** — `channelCode` kilitli satırdan okunuyordu; kardeş yol doğruyu yapıyordu (`§7`) — **review**
 - [[T-332]] Mock `findById` ↔ `findByIdForUpdate` **tek ayrımını siliyor** — unit katmanı `T-331` sınıfına **yapısal olarak kör**, ve **iki yönde birden** — `qa-engineer` — **todo**
+- [[T-329]] `getSpendTrend` **takvim-ayı** normalleştirme — ve `PREVIOUS_PERIOD` dalında **çift sayım** (2×) bulundu — **review**
+- [[T-333]] Yerel `getMonth()` ile `YYYY-MM` etiketi — **dokuz çağrı yeri**, TZ kayması; bugün ateşliyor mu **ölçülmedi** — **todo**
