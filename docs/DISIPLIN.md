@@ -4720,3 +4720,34 @@ UYDURUYOR** — temiz bir suite **sızdırıyor gibi** görünüyor.
 📌 Ve `§2.6`'nın uyarısı burada birebir doğrulandı: **`"Tests: 832 passed"` satırı tek
 başına yeterli sinyal değildir** — suite yeşil, koşum kırmızıydı.
 
+
+---
+
+## EVREN, DEĞİŞKENİN **GEÇTİĞİ YERLERDEN** TÜRETİLİR — desen taraması `PASS-OUT`'u kaçırır (ZORUNLU)
+
+`§ evren-kaynağı hiyerarşisi` (*yazılmış < taranmış < türetilmiş*) **nereden** okunacağını
+söyler. **Bu onun ÇAĞRI-AKIŞI hâli: neyi izleyeceğini.**
+
+**Ölçülmüş vaka (2026-08-29, `T-331`):** kusur *"kilitli satırdan `channel?.code`
+okumak"*tı. Ajan evreni **iki kez** kurdu:
+
+```
+1. EVREN   desen taraması:  channel?.code|name   →  21 hit
+           ⛔ EKSİK — çünkü reviewPlan kilitli planı ÜÇ METODA GEÇİRİYOR
+             ve o geçişler desende GÖRÜNMEZ
+2. EVREN   findByIdForUpdate'in TÜM ÇAĞIRANLARI  →  11 çağrı yeri
+           ⇒ her biri için: "bu değişken NEREDEN geliyor, ve NEREYE gidiyor?"
+```
+
+> **Bir değişkenin kusuru, o değişkenin ADIYLA aranmaz — İZLEDİĞİ YOLLA aranır.**
+> Desen taraması **okuma noktalarını** bulur; kusur bir **geçiş** (`pass-out`) yoluyla
+> yayılıyorsa **görünmez**.
+
+**Pratik:** bir kusurun kardeşlerini sayarken sor — *"bu değer bir parametre olarak
+başka bir metoda GEÇİYOR mu?"* Geçiyorsa evren **desen değil, ÇAĞRI GRAFİĞİDİR.**
+
+📌 Ve aynı tur bu kuralın **ikizini** de üretti: `0` dönen bir dalın **enjeksiyon
+kontrolü** (tarayıcının kopyasına kasten bir eşleşme sokup dalın raporladığını görmek).
+⇒ **Negatif-sonuç disiplininin en zor iki uygulaması aynı raporda verildi:**
+**doğru evreni kurmak** ve **sıfırın gerçek olduğunu kanıtlamak.**
+
