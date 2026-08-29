@@ -322,3 +322,37 @@ olması gerektiğini** söyler.
                    ediyor — hangisi kanonik? (TL: GRUPLAR, çünkü başlık bir SAYI,
                    gruplar bir LİSTE — "sayı listesiyle anılır ya da hiç anılmaz")
 ```
+
+---
+
+# 7 · `W2` ÜÇ-KAYNAK — **TAM YOLLAR** *(ölçüm sınırı kapatıldı, 2026-08-29)*
+
+`Fable` `§6-1`'in BRD yarısını ölçerken `Section_05`'i **yerel repoda bulamadı**
+(iki arama sıfır, *"muhtemelen submodule içi"* diye not düşüldü). **Değil — meta
+repoda ve git-takipli.** Üç kaynak **tek komutla** açılsın diye tam yollar:
+
+```
+repo kökü   /Users/sertact/Documents/CollMind/Code/Collmind-TPM
+
+1  EXCEL     docs/research/DEMO_EXCEL_KPI_TACTIC_REFERANSI.md          (~60, formüllü)
+2  BRD       docs/brd/01_Main_BRD/Section_05_Planning_First_Mode.md     73.250 bayt
+             §5.3 başlığı  satır 587   "Complete KPI Library (40 KPIs)"
+             GROUP 1  616 · GROUP 2  652 · GROUP 3  720 · GROUP 4  772
+             GROUP 5  904 · GROUP 6  961 · GROUP 7 1061 · GROUP 8 1145
+3  CANLI     bash scripts/db-query.sh "SELECT kpi_group, kpi_code, kpi_name,
+             formula_text FROM main.kpis WHERE kpi_group<>'Test' ORDER BY 1,2"
+             → 27 satır / 24 aktif   (W0'da temizlendi)
+```
+
+📌 **Ve aramanın neden sıfır döndüğü kayda değer:** dosya `docs/brd/` altında ve
+`§2.1`'e göre **"kaynak referansı — artık birincil değil"** statüsünde; `brd-v2`'de
+arayan biri onu **görmez**. `DISIPLIN`: *"bir yokluk iddiası için üçüncü soru:
+**HANGİ BÖLÜM**"* — ve burada cevap **hangi PAKET** oldu.
+
+⚠️ **Team Lead notu — `Fable`'ın `52` bulgusu bir DÖRDÜNCÜ kaynak açıyor:**
+`A1-promptu` (proje bilgisinde, **repoda değil**) `11 grup / 52 kalem` taşıyor.
+⇒ `W2` eşlemesi **dört kaynaklı** olur, ve dördüncüsünün **repoda bir adresi yok**.
+**`W2` brief'inin ilk maddesi:** `A1`-promptunun grup ağacı **repoya alınır**
+(`docs/research/` altına, kaynağı ve tarihi yazılı) — aksi hâlde evren
+**doğrulanamaz bir yerde** yaşar.
+
