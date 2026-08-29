@@ -4679,3 +4679,44 @@ TEARDOWN PENCERESİ    temizlik koşuyor; sayımlar geçici olarak kayar
 📌 **Ve bedel kaydı olduğu gibi durur:** yanlış ölçüm **koda yazıldı** — ajanın işini
 **yok sayan** bir yorum olarak. Bu türden satırlar `§7`'nin değerini **yapan** şeydir.
 
+
+---
+
+## BİR DELTA'NIN **YÖNÜ** TEŞHİSTİR (ZORUNLU)
+
+`T-047` satır-sayısı invaryantı *"başlangıç ≠ bitiş"* der. **Ama YÖN, sebebi söyler:**
+
+```
+POZİTİF delta   sonda FAZLA satır var   →  SIZINTI  (suite temizlemedi)
+NEGATİF delta   sonda EKSİK satır var   →  ⛔ BAŞLANGIÇ KİRLİYDİ
+                                            (suite BAŞKASININ artığını temizledi)
+```
+
+**Ölçülmüş vaka (2026-08-29, `W1` tam koşumu):**
+```
+Tests: 832 passed, 832 total        ← HEPSİ YEŞİL
+e2e exit                     1      ← ama KIRMIZI  (§2.6: globalTeardown'dan fırlıyor)
+  plans:              2 → 0  (-2)
+  plan_skus:        104 → 0  (-104)
+  approval_requests:  3 → 2  (-1)
+```
+⇒ Suite **sızdırmadı** — **önceki HEDEFLİ koşumların artığını temizledi**. Sonraki
+ölçüm: canlı DB **temiz tabanla birebir** (`plans 0` · `approval_requests 2` ·
+`agreements 5`).
+
+⛔ **VE BU, "ölçüm ortamının bayatlığı bir maskeleme sınıfıdır" maddesinin TERS
+YÖNÜDÜR:** orada bayat ortam bir kusuru **gizliyordu**; burada **olmayan bir kusuru
+UYDURUYOR** — temiz bir suite **sızdırıyor gibi** görünüyor.
+
+**Pratik:**
+```
+1  Delta'nın YÖNÜNE bak, sayısına değil.
+2  NEGATİF delta gördüysen ilk soru "ne sızdırdık" DEĞİL: "başlangıç neden kirliydi?"
+3  Kaynağı çoğu zaman bir HEDEFLİ (kısmi) koşumdur — kendi teardown'ı vardır ama
+   BAŞKA bir suite'in yarattığı satırı temizlemez.
+4  ⇒ Tam koşumdan ÖNCE tabanı ölç; kirliyse ÖNCE temizle, SONRA koş.
+```
+
+📌 Ve `§2.6`'nın uyarısı burada birebir doğrulandı: **`"Tests: 832 passed"` satırı tek
+başına yeterli sinyal değildir** — suite yeşil, koşum kırmızıydı.
+

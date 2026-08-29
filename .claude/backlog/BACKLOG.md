@@ -442,3 +442,5 @@ status: active        # planned | active | closed
 - [[T-329]] `getSpendTrend` MONTHLY **aynı kusur, DAHA AĞIR** — bir kovayı **tamamen kaybediyor**, sapma **birikimli**; kova-sınırı semantiği **hüküm bekliyor** — **blocked**
 - [[T-321]] `K-2.2.7a` **%100 BLOCKED kapısı** indi — iki-eksen **mutasyonla kanıtlı** (beş mutasyon, ters-mutasyon dahil); `§2.3` ihlali de kapandı — **review**
 - [[T-330]] `T-321` **e2e kapsaması** — gate + iki-eksen gerçek DB/`v_budget_summary` üzerinden; yedi-senaryo dalgasında — `qa-engineer` — **todo**
+- [[T-331]] `plans/:id/review` `approve` **koşulsuz 400** — `channelCode` kilitli satırdan okunuyordu; kardeş yol doğruyu yapıyordu (`§7`) — **review**
+- [[T-332]] Mock `findById` ↔ `findByIdForUpdate` **tek ayrımını siliyor** — unit katmanı `T-331` sınıfına **yapısal olarak kör**, ve **iki yönde birden** — `qa-engineer` — **todo**
