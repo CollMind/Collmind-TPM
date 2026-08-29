@@ -4604,3 +4604,78 @@ Yanlış ölçüme dayanarak ajana **iki kez** düzeltme mesajı gittı; ikisind
 📌 Ve bu, `§ çürüten ölçüm de ölçümdür` maddesinin **en pahalı biçimi**: burada
 çürüten ölçüm **doğru bir sayıydı** ve **yanlış bir hikâyeye** bağlandı.
 
+
+---
+
+## MUTASYONUN İKİ TÜRÜ: **VARLIK** ve **YERLEŞİM** (ZORUNLU)
+
+Bugüne kadar bu projedeki her mutasyon tek yöndeydi:
+
+```
+VARLIK-MUTASYONU     mekanizmayı KALDIR  →  test KIRMIZI olmalı
+                     kanıtladığı: "bu kontrol VAR ve çalışıyor"
+```
+
+**`T-321` ilk kez ikincisini üretti (2026-08-29):**
+
+```
+YERLEŞİM-MUTASYONU   mekanizmayı YANLIŞ YERE EKLE  →  test KIRMIZI olmalı
+                     kanıtladığı: "bu kontrolün SINIRI da korunuyor"
+```
+
+**Vaka:** `%100 BLOCKED` kapısı **yeni yükümlülük** yollarına konur, **`RESERVE→COMMIT`
+dönüşümüne konmaz** (dönüşüm net encumbrance'ı değiştirmez — `K-2.2.7c`: *"borç
+doğmuştur, süreç durmaz"*). Ajan kapıyı **kasten dönüşüm dalına ekledi** ve
+*"NEVER calls"* testi **kırmızı** verdi.
+
+> **Bir varlık-mutasyonu, kontrolün VAR olduğunu kanıtlar.**
+> **Bir yerleşim-mutasyonu, kontrolün YANLIŞ YERE KONAMAYACAĞINI kanıtlar.**
+
+⛔ **VE İKİNCİSİ OLMADAN, SINIR SESSİZCE KAYABİLİR:** bir gelecek tur *"kapıyı ortak
+huniye alalım, daha temiz"* der, `K-2.2.7c` **sessizce ihlal edilir**, ve **hiçbir test
+kırmızı vermez** — çünkü tüm testler kapının *varlığını* sınıyordur.
+
+**Pratik — kural:**
+> **İki-eksenli bir hükmün pini HER İKİ MUTASYONU da taşır:**
+> **varlık-mutasyonu + yerleşim-mutasyonu.**
+> *(Emsal: `RESERVE` ↔ `RESERVE→COMMIT` dönüşümü ayrımı, `T-321`.)*
+
+---
+
+## ÖLÇÜM **FAZ TAŞIR** — bir sayının doğruluğu YETMEZ (ZORUNLU)
+
+`§ çürüten ölçüm de ölçümdür` maddesinin **tamamlayıcısı**, ve ailenin en olgun hâli.
+
+**Ölçülmüş vaka (2026-08-29, `T-321`):** Team Lead `npm test` koştu, **`1 failed`**
+aldı, *"ajanın kendi testi düşüyor"* dedi.
+
+```
+SAYI      DOĞRUYDU     — test o anda GERÇEKTEN kırmızıydı
+HİKÂYE    YANLIŞTI     — kırmızının sebebi bir KUSUR değil,
+                         KANIT ÜRETİMİNİN KENDİSİYDİ
+                         (ajan mutasyon koşuyor, shasum ile geri yüklüyordu)
+```
+
+> **Bir sayının doğruluğu yetmez — HANGİ PENCEREDE alındığı da okunur.**
+
+**Meşru-kırmızı fazları** *(hiçbiri bir regresyon değildir)*:
+```
+MUTASYON PENCERESİ    kanıt üretiliyor; kırmızı BEKLENEN sonuçtur
+İNŞA PENCERESİ        dosya yazılıyor; yarım hâl derlenmeyebilir
+TEARDOWN PENCERESİ    temizlik koşuyor; sayımlar geçici olarak kayar
+```
+
+**Pratik:**
+```
+1  YAZILMAKTA OLAN DOSYA ÖLÇÜLMEZ.
+   (Ajan-koşarken-ölçüm, YARIM-DEVİR yasasının TERS YÖNÜ:
+    orada yarım iş commit'e giriyordu, burada yarım iş ÖLÇÜME giriyor.)
+2  Ölçüm bir ajan koşarken alındıysa, sonucu bir HÜKÜM değil GÖZLEM say —
+   ve ajana "şunu gördüm, doğru mu" diye SOR.
+3  Uzun koşumu (e2e) AJANIN İÇİNDE bekletme — ORKESTRATÖRÜN işidir.
+   ⚠️ `T-325` (tek-çalıştıran kilidi) gelene kadar bu satır onun yerine de geçer.
+```
+
+📌 **Ve bedel kaydı olduğu gibi durur:** yanlış ölçüm **koda yazıldı** — ajanın işini
+**yok sayan** bir yorum olarak. Bu türden satırlar `§7`'nin değerini **yapan** şeydir.
+
