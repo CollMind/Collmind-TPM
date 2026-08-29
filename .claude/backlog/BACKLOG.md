@@ -437,3 +437,6 @@ status: active        # planned | active | closed
 - [[T-324]] `T-047` invariant evreni **hâlâ yetki-filtreli** — 48 tablodan **39**; kör kalan 9`da `claims` ailesi (**açık port-adayı**). Körlüğün sebebi bir zorunluluk değil, **geçerliliğini yitirmiş bir gerekçe** (`Z60 §1`'in aynı gün, aynı dosyadaki ikinci vakası) — **hüküm bekler**
 - [[T-325]] e2e için **tek-çalıştıran kilidi** (`flock` sınıfı) — paralel koşum riski **ikinci kez** görüldü; kapanışı bloklamaz — **todo**
 - [[T-326]] Denetim ekranı — **API hazır, sayfa stub**; ölçüt-4'ün **GÖRME yarısı**. `justification`-paketi + `sözlük Madde 2` ile **aynı pakette** — `frontend-engineer` — **todo**
+- [[T-327]] `W0` KPI temizliği — `kpi_group=Test` **0 satır**, üreteç zaten sağlammış (artıklar **kesintili** koşumdan) — **review**
+- [[T-328]] cash-flow **ay-gün taşması** — `addMonthsClamped` (UTC, mutasyonsuz), e2e **811/811** — **review**
+- [[T-329]] `getSpendTrend` MONTHLY **aynı kusur, DAHA AĞIR** — bir kovayı **tamamen kaybediyor**, sapma **birikimli**; kova-sınırı semantiği **hüküm bekliyor** — **blocked**
