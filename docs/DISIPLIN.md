@@ -4566,3 +4566,41 @@ src/common/date/excel-serial-date.ts   docstring
 burada **teşhis etti**. Fark **belgenin ne dediğinde**: *"böyle kalsın"* mı,
 *"bu bir kusurdur, ölçümü şu"* mu.
 
+
+---
+
+## BİR AJAN KOŞARKEN, AĞAÇ **HAREKET HÂLİNDEDİR** — Team Lead ölçümü GEÇERSİZDİR (ZORUNLU)
+
+`§ touches kesişimi GEREKLİ ama YETERLİ DEĞİL — ağaç PAYLAŞILIR` maddesi **iki ajan**
+arasındaki çakışmayı anlatır. **Bu onun üçüncü tarafı: TEAM LEAD'in kendisi.**
+
+**Ölçülmüş vaka, aynı turda İKİ KEZ (2026-08-29, `T-321`):**
+
+| # | Team Lead ne ölçtü | ne sandı | gerçek |
+|---|---|---|---|
+| 1 | `git diff --stat` **`+8`**, `grep` **`0`** | *"pin YAZILMAMIŞ"* | ajan **yazıyordu**; nihai hâl **`+188`**, blok `:171`'de |
+| 2 | `npm test` → **`1 failed`** | *"ajanın kendi testi düşüyor"* | ajan **mutasyon kanıtı** koşuyordu: gate çağrısını **kasten** kaldırmış, kırmızıyı görmüş, `shasum` ile geri yüklüyordu |
+
+⛔ **İkincisi daha öğretici:** ölçüm **doğruydu** — o anda test **gerçekten** kırmızıydı.
+**Yanlış olan yorumdu:** kırmızının sebebi bir kusur değil, **kanıt üretiminin kendisiydi.**
+
+> **Bir mutasyon penceresi, dışarıdan bakana bir REGRESYON gibi görünür.**
+
+### Ve bedeli ölçüldü — iki tur boşa gitti
+Yanlış ölçüme dayanarak ajana **iki kez** düzeltme mesajı gittı; ikisinde de ajan
+**zaten doğru** çalışıyordu. Üstelik ilkinde yanlış ölçüm **koda yazıldı**
+(*"hiçbir test yok"* yorumu) ve ajanın işini **yok sayıyordu**.
+
+**Pratik — üç madde:**
+```
+1  Bir ajan KOŞARKEN onun dosyalarını ÖLÇME. Rapor gelsin, SONRA ölç.
+2  Ölçmen gerekiyorsa (ilerleme, blokaj), sonucu bir HÜKÜM değil bir GÖZLEM say —
+   ve ajana "şunu gördüm, doğru mu" diye SOR, "şunu yapmamışsın" DEME.
+3  Uzun e2e'yi AJANIN İÇİNDE bekletme — Team Lead koşsun. Bu turda ajan e2e
+   beklerken İKİ KEZ yarım raporla durdu, ve o pencereler ölçüm karışıklığını
+   üretti.
+```
+
+📌 Ve bu, `§ çürüten ölçüm de ölçümdür` maddesinin **en pahalı biçimi**: burada
+çürüten ölçüm **doğru bir sayıydı** ve **yanlış bir hikâyeye** bağlandı.
+

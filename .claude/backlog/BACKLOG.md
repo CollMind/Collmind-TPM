@@ -440,3 +440,5 @@ status: active        # planned | active | closed
 - [[T-327]] `W0` KPI temizliği — `kpi_group=Test` **0 satır**, üreteç zaten sağlammış (artıklar **kesintili** koşumdan) — **review**
 - [[T-328]] cash-flow **ay-gün taşması** — `addMonthsClamped` (UTC, mutasyonsuz), e2e **811/811** — **review**
 - [[T-329]] `getSpendTrend` MONTHLY **aynı kusur, DAHA AĞIR** — bir kovayı **tamamen kaybediyor**, sapma **birikimli**; kova-sınırı semantiği **hüküm bekliyor** — **blocked**
+- [[T-321]] `K-2.2.7a` **%100 BLOCKED kapısı** indi — iki-eksen **mutasyonla kanıtlı** (beş mutasyon, ters-mutasyon dahil); `§2.3` ihlali de kapandı — **review**
+- [[T-330]] `T-321` **e2e kapsaması** — gate + iki-eksen gerçek DB/`v_budget_summary` üzerinden; yedi-senaryo dalgasında — `qa-engineer` — **todo**
