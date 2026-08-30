@@ -6341,3 +6341,71 @@ DOSYA KESİŞİMİ      finance-reporting ∩ budget = ∅ · test/ ikisi de YEN
 ⇒ **SIRALI.** `§4`'ün kendi kuralı: *"`touches` kesişimi GEREKLİ ama YETERLİ DEĞİL —
 ağaç PAYLAŞILIR."* Burada paylaşılan şey ağaç değil **veritabanı**, ve sonuç aynı.
 
+
+---
+
+## `Z64` — `W2` ÇİFT DALGA: üç hüküm + **`A0'` keskinleştirmesi**
+
+> **Tarih:** 2026-08-30 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `docs/process/W2_CIFT_DALGA_BRIEF.md` (`A0` · `B0` ölçümleri)
+
+### `§1` · ÜÇ HÜKÜM
+
+| # | hüküm |
+|---|---|
+| 1 | **`A0'` ÖNCE** — ama sorusu **değiştirildi** *(§2)* |
+| 2 | **PARALEL İNİŞ ONAYLI** — `A` analiz+`F12`+rapor (**e2e yok**) ∥ `B` kod dalgası |
+| 3 | **MİGRATION `1817000000000`** `DALGA-B`'ye tahsis edildi *(numara-tahsisi Team Lead defteri)* |
+
+### `§2` · ⛔ `A0` YARIM ÖLÇÜMDÜ — **soru "NIV ≡ TO mu?" değil, "CANLI-TO HANGİSİ?"**
+
+Team Lead'in `A0` bulgusu (*"`NIV` kodda `TO` adıyla var"*) **doğruydu ama yarımdı.**
+Ürün sahibi migration metnini Excel sözlüğüyle **yan yana** koydu:
+
+```
+canlı  PLANNED_TO = GSV − ON_INVOICE_SPEND   ≡ Excel PlannedNIV (GSV − TotalSpendOn)
+canlı  BASE_TO    = GSV − LTA_ON             ≡ Excel BaseNIV    (GSV × (1−LTAOnPct))
+Excel  PlannedTO  = GSV − PlannedPromoTotalSpend    ← ON+OFF birlikte — BAŞKA KAVRAM
+```
+
+⇒ **Canlıdaki `TO`, Excel'in `NIV`'idir.** Excel'in **gerçek `TO`**'su (off-invoice de
+düşülmüş net ciro) canlıda **hiç olmayabilir**.
+
+⛔ **Sonuç hükmü:** *"`TO` var ⇒ `Turnover(4)` eşleşti"* **YASAK**. Öyle yazılırsa
+`NIV(3)` doğru eşleşir, `Turnover(4)` **yanlış** eşleşir — ve eksik-`18`
+**küçülmüş GÖRÜNÜR** ama gerçekte küçülmemiştir.
+
+> ### **BİR AD EŞLEŞMESİ, BİR KAVRAM EŞLEŞMESİ DEĞİLDİR.**
+> **İki farklı kavram tek ada sıkıştığında, ad-düzeyi eşleme boşluğu KAPATMAZ — SİLER.**
+
+📌 Bu, `A0`'ın kendi dersinin (*"arama terimi aranan yerin diliyle seçilir"*) **ters
+yüzü**: orada **aynı kavram iki ad** taşıyordu, burada **iki kavram tek ad**. İlki
+boşluğu **büyük gösterir**, ikincisi **küçük** — ve ikincisi tehlikelidir, çünkü
+*"kapandı"* diye kaydedilir.
+
+### `§3` · `A0'` ÇIKTI ŞARTI — **yedi kalem** (`NIV 3` + `Turnover 4`)
+```
+1  canlı-karşılık   kpis satırı (KOD) ya da "YOK"
+2  SEMANTİK KANIT   FORMÜL karşılaştırması — AD karşılaştırması DEĞİL
+3  verdict          eşleşen-doğru | eşleşen-sapmalı | YOK
+```
+⛔ İki kavram tek addaysa → **`AD-BORCU`** olarak kayda girer.
+Yeniden-adlandırma hükmü **eşleme-sonrası**, **VERİ-DOKUNMASIZ** ilkeyle
+*(bu turda kolon/enum adı değiştirilmez)*.
+
+### `§4` · HÜKÜM 2'NİN EK-SATIRI
+`B`'nin migration'ı ∩ `A`'nın `F12` dokunuşları **kesişimsiz** ⇒ tam paralel.
+Kesişseydi: `F12`'ler **`B`-sonrası tek commit**. *(Yapısal olarak `∅` — `A` meta-repo
+`docs/`'a, `B` submodule `src/`'ye yazıyor.)*
+
+### `§5` · İKİ `DISIPLIN` KAYDI
+
+**1 · `T-332`'nin kapanış cümlesi kural oldu** — fixture kuralının **eksik yarısı**:
+*"fixture farkı taşımak GEREKLİ; o farkı OKUYAN assertion olmadan YETERSİZ."*
+Ve beş üyeli ailede **iki kopyanın gerekçeli-doğru** çıkması (docstring'ler birbirine
+atıflı) → **`§7` sınıfının İLK OLUMLU vakası**.
+
+**2 · Büyük/küçük-harf refleksi — DÖRDÜNCÜ vaka** ⇒ kendi kuralımız işledi
+(*"üçüncü ihlal yerleşimin kusurudur"*). Çözüm **kuralı tekrarlamak değil, VARSAYILANI
+DEĞİŞTİRMEK**: ilk tarama **her zaman** `rg -i`/`grep -i`; case-duyarlılık ancak
+**bilinçli gerekçeyle** kaldırılır.

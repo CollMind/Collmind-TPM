@@ -50,12 +50,43 @@ canlı kpis:
 kod `TO` diyor. **Bu, bugün DÖRDÜNCÜ vaka** *(mod ayrımı · `scopeEnforcementEnabled` ·
 `TODO: Implement` · `LTACalculationService`)*.
 
-⛔ **VE BU, `52`'NİN ANLAMINI DEĞİŞTİRİR:** `52`'deki **`NIV(3)`** ve **`Turnover(4)`**
-grupları **canlı `TO` çiftine** eşleşiyor olabilir. Eğer öyleyse *"eksik `18`"* sayısı
-**abartılıdır** ve gerçek boşluk **daha küçük**.
+## `A0'` · ⛔ HÜKÜM — SORU **"NIV ≡ TO mu?"** DEĞİL, **"CANLI-TO HANGİSİ?"**
+*(ürün sahibi hükmü, 2026-08-30)*
 
-> **`A0` bu yüzden dalganın İLK işi:** eşlemeye başlamadan **`NIV` ↔ `TO` ilişkisi
-> kalem kalem kurulur.** Aksi hâlde `A1` yanlış bir evrenle koşar.
+Yukarıdaki okuma **yarım**. Migration metni Excel sözlüğüyle yan yana konduğunda
+**iki kavramın tek ada sıkıştığı** görülüyor:
+
+```
+canlı  PLANNED_TO = GSV − ON_INVOICE_SPEND     ≡ Excel PlannedNIV  (GSV − TotalSpendOn)
+canlı  BASE_TO    = GSV − LTA_ON               ≡ Excel BaseNIV     (GSV × (1−LTAOnPct))
+Excel  PlannedTO  = GSV − PlannedPromoTotalSpend
+                            ↑ ON + OFF BİRLİKTE düşülmüş — BAŞKA KAVRAM
+```
+
+⇒ **Canlıdaki "TO", Excel'in NIV'idir.** Excel'in **gerçek TO**'su (off-invoice de
+düşülmüş net ciro) canlıda **hiç olmayabilir**.
+
+⛔ **BU YÜZDEN AD-DÜZEYİ EŞLEME YASAK.** *"`TO` var ⇒ `Turnover(4)` eşleşti"* demek
+**yanlış** olur: `NIV(3)` gerçekten eşleşir, `Turnover(4)` **eşleşmez** — ve eksik-`18`
+**küçülmüş GÖRÜNÜR** ama gerçekte küçülmemiştir.
+
+> **Bir ad eşleşmesi, bir kavram eşleşmesi değildir.** İki farklı kavram tek ada
+> sıkıştığında, ad-düzeyi eşleme **boşluğu SİLER**, kapatmaz.
+
+### `A0'` ÇIKTI ŞARTI — **yedi kalem, kalem kalem**
+`NIV(3)` + `Turnover(4)` = **7 kalem.** Her biri için:
+```
+1  canlı-karşılık        kpis satırı (KOD) ya da "YOK"
+2  SEMANTİK KANIT        FORMÜL karşılaştırması — ad karşılaştırması DEĞİL
+3  verdict               eşleşen-doğru | eşleşen-sapmalı | YOK
+```
+⛔ **Ve iki kavram tek addaysa bu bir `AD-BORCU` olarak KAYDA GİRER.**
+Yeniden-adlandırma hükmü **eşleme-sonrası** verilir, ve **VERİ-DOKUNMASIZ** ilkesiyle
+*(ad borcu bir kayıt kalemidir; bu turda kolon/enum adı DEĞİŞTİRİLMEZ)*.
+
+> **`A1` eşlemesi `A0'` raporundan SONRA başlar.** *(TL görüşüyle aynı — gerekçesi
+> artık daha sert: mesele evrenin büyüklüğü değil, evrenin **yanlış yerde küçülmesi**.)*
+
 
 ## `A1` · EŞLEME — üç kova
 
@@ -164,10 +195,20 @@ da kararlaştırılır. ⚠️ `İlke 1`: **konfigürasyon yüzeyi bugün AÇILM
 
 ---
 
-## `1` · SENDEN BEKLENEN
+## `1` · ⛔ ÜÇ HÜKÜM **İNDİ** (ürün sahibi, 2026-08-30)
+
+| # | hüküm |
+|---|---|
+| 1 | **`A0'` ÖNCE** — ve sorusu keskinleştirildi *(yukarı bkz.)*: **"canlı-TO hangisi?"** |
+| 2 | **PARALEL İNİŞ ONAYLI** — `A` = analiz + `F12` + rapor (**e2e YOK**) · `B` = kod dalgası |
+| 3 | **MİGRATION TAHSİS EDİLDİ** → **`1817000000000`** *(`DALGA-B`)* |
+
+### ⛔ HÜKÜM 2'NİN EK-SATIRI — `F12` DOKUNUŞLARI
 ```
-1  DALGA-A'nın A0 bulgusu (NIV ≡ TO?) evreni değiştirir mi — eşleme
-   BUNU ÖLÇTÜKTEN SONRA mı başlasın?   TL görüşü: EVET, A0 önce
-2  Paralel iniş onayı (A e2e koşmuyor ⇒ çakışma yok)
-3  DALGA-B'nin migration numarası: MIGRATION_SEQUENCE'ten tahsis edeyim mi
+B'nin migration'ı  ∩  A'nın F12 dokunuşları (Section_05, beyan)
+  KESİŞİMSİZ  ⇒  TAM PARALEL          ← bugün ölçülen durum
+  kesişirse   ⇒  F12'ler B-SONRASI tek commit
 ```
+📌 `A` **meta-repo `docs/`**'a, `B` **submodule `src/`**'ye yazıyor ⇒ **farklı repo**,
+kesişim yapısal olarak `∅`. Yine de `A` ajanı `docs/process/` altındaki **canlı brief'lere
+dokunmaz** — yalnız `docs/research/` + `Section_05` + `FAZ1_KAPANIS_BEYANI §9`.

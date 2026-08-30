@@ -4751,3 +4751,72 @@ kontrolü** (tarayıcının kopyasına kasten bir eşleşme sokup dalın raporla
 ⇒ **Negatif-sonuç disiplininin en zor iki uygulaması aynı raporda verildi:**
 **doğru evreni kurmak** ve **sıfırın gerçek olduğunu kanıtlamak.**
 
+
+---
+
+## FIXTURE FARKI **GEREKLİ**, onu OKUYAN ASSERTION olmadan **YETERSİZ** (ZORUNLU)
+
+> **Bir fixture'ı ayırt edici kılan, farkı TAŞIMASI değil — o farkın bir ASSERTION'a
+> ULAŞMASIDIR.**
+
+Bu, *"Fixture, ayırt etmek istediği iki tarafta FARKLI değer taşımalı"* kuralının
+**eksik yarısıdır** — ve ölçülerek bulundu (2026-08-30, `T-332`).
+
+Vaka: `approval-workflow` spec'inde kilitli satırın `channel`'ı `undefined` yapıldı
+(`T-331`'in kusurunu tetikleyecek fark). **Hiçbir şey kırılmadı** — çünkü
+`budgetService` **tamamen mock'lu**ydu ve fark hiçbir kontrole ulaşmıyordu.
+
+Ayırt etme gücünü **assertion** getirdi:
+```ts
+expect(budgetService.commitAllReservedForPlan).toHaveBeenCalledWith(
+  expect.any(Number), 'NKA', /* ← kilit-ÖNCESİ okumadan gelmiş olmalı */ …);
+```
+⇒ Ters-mutasyonda sinyal **canlı `400` kusuruyla BİREBİR aynı**: `''` geldi, `'NKA'`
+bekleniyordu.
+
+📌 **Ailedeki yeri:** `§2.7 #6` (*"kapsam var, ayırt etme gücü yok"*) bir **test şekli**
+kusuruydu; bu onun **fixture tarafı**: fark **kuruldu**, ama **okunmadı**. Mock'lu bir
+bağımlılık, farkı **sessizce yutar**.
+
+**Pratik:** bir fixture'a fark koyduğunda sor — *"bu farkı hangi satır OKUYOR?"*
+Cevap bir `expect` değilse, fixture bir **dekordur**.
+
+### ⭐ VE AYNI TURUN OLUMLU KAYDI — `§7` SINIFININ **İLK OLUMLU VAKASI**
+
+`T-332`'nin sınıf taraması beş üyeli bir aile buldu ve **yalnız biri** kusurluydu.
+Diğer iki gerçek vaka (`agreement.service#approve`) `T-331` desenini **zaten**
+uyguluyordu — ve **docstring'leri birbirine atıflıydı**:
+*"same rationale as `plan.service.ts#approve`'s `channelCode` capture"*.
+
+> **`§7` bugüne kadar hep *"aynı yetenek iki kez yazıldı, biri bozuk"* diye kaydedildi.**
+> **Bu vaka tersini gösterdi: iki kopya DOĞRU, ve GEREKÇESİNİ YAZMIŞ.**
+> **Bir deseni doğru uygulamak yetmez — nedenini yazmak, onu ÜÇÜNCÜ kopyada da doğru kılar.**
+
+---
+
+## İLK TARAMA **HER ZAMAN** CASE-INSENSITIVE (ZORUNLU — varsayılan değişikliği)
+
+```bash
+rg -i '<terim>'      # ✅ VARSAYILAN
+rg '<terim>'         # ⚠️ yalnız BİLİNÇLİ gerekçeyle (ve gerekçe yazılır)
+```
+
+**Gerekçe — dördüncü vaka, tek oturumda:**
+
+| # | aranan | bulunan | gerçek |
+|---|---|---|---|
+| 1 | `mod-birleşme` | 0 | `mod ayrımı` |
+| 2 | `SCOPE_ENFORCEMENT_ENABLED` | 0 | `scopeEnforcementEnabled` |
+| 3 | `yakında` | 0 | `TODO: Implement` |
+| 4 | `LtaCalculationService` | **0** | `LTACalculationService` → **3 dosya** |
+
+Dördüncüsü en pahalıydı: *"motor yok"* teşhisi üretecekti; motor **enjekte + canlı
+rotalardan çağrılıyordu**.
+
+⛔ **VE BU KAYIT BİR HATIRLATMA DEĞİL, BİR VARSAYILAN DEĞİŞİKLİĞİDİR.** Kendi kuralımız
+zaten söylüyordu: ***"üçüncü ihlal yerleşimin kusurudur"*** — dördüncüsü geldiğine göre
+kusur **kuralda değil, ARAÇTA**.
+
+> **Refleks üretmeyen bir kuralın çözümü, kuralı TEKRARLAMAK değildir — VARSAYILANI
+> DEĞİŞTİRMEKTİR.** *(`§4.2`'nin *"kuralı hatırlamak yerine ARACI çağır"* maddesinin
+> arama tarafı.)*
