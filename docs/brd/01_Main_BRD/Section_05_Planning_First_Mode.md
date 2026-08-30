@@ -506,6 +506,30 @@ The KPI Calculation Engine is the **computational brain** of Planning-First Mode
 
 ### KPI Library Structure
 
+> ## ⛔ `F12` — SAYI DÜZELTMESİ *(2026-08-31 · `T-340` · hüküm `docs/brd-v2/04_KARAR_KAYDI.md` `Z67`)*
+>
+> **Aşağıdaki metin SİLİNMEDİ; üstü çizilir.** Bu bölümdeki her sayı **başlıktan**
+> geliyor, bir **kalem listesinden** değil — ve `DISIPLIN`: *"bir başlık sayısı,
+> listesinden türetilmemişse VERİ DEĞİLDİR."*
+>
+> ```
+> "40 KPIs" / "40+ KPIs"    başlık        ↔  §5.3 SQL: 34 ADLANDIRILMIŞ blok
+> "8 groups" (aşağıda)      başlık        ↔  aşağıda DOKUZ madde sayılıyor
+> aşağıdaki 9 maddenin toplamı  43        ↔  ve iki grubu HİÇ saymıyor
+>                                            (Total Planned Spend · Gross Margin)
+> GROUP başlıklarının toplamı   42        ↔  8'i HAYALET (GROUP 5, aşağıya bkz.)
+> ~~42 → 52~~                             ↔  ⛔ "52" DE BİR BAŞLIK TOPLAMIYDI
+> ```
+>
+> ⇒ **`42 → [TÜRETİLMİŞ LİSTE]`.** Kanonik evren artık bir SAYI değil, bir **LİSTEDİR**:
+> **`docs/research/KPI_EVRENI_TURETILMIS_LISTE.md §1`**
+> *(kaynak metin: `.cursor/KPI_Details.docx` → "KPI Library for Marketing Promotions and
+> Analysis"; bağımsız doğrulama: `docs/research/DEMO_EXCEL_KPI_TACTIC_REFERANSI.md §1`)*
+>
+> ⚠️ Ve **`GROUP 4: LTA Spend (8 KPIs)` başlığı DOĞRUDUR** — sekiz SQL bloğunun sekizi de
+> adlıdır. Sekizincisi (`KPI 17 · TOTAL_PLANNED_LTA`) **yalnız bu belgede** vardır;
+> `Q11` (`Z66 §4`) uyarınca **kaynağı olduğu için evrende kalır.**
+
 **40+ KPIs organized into 8 groups:**
 
 1. **Master Data** (2 KPIs) - Price, COGS
@@ -586,6 +610,13 @@ CREATE UNIQUE INDEX idx_kpis_code ON kpis(tenant_id, kpi_code);
 
 ### Complete KPI Library (40 KPIs)
 
+> ⛔ **`F12` (2026-08-31 · `T-340`):** başlıktaki `40`, aşağıdaki `#### GROUP n: … (m KPIs)`
+> başlıklarının toplamı `42`, ve **adlandırılmış SQL bloğu sayısı `34`**
+> (`grep -c "^-- KPI [0-9]*:"` `[ÖLÇÜLDÜ]`). Fark `8`, **tamamı `GROUP 5`'tedir** ve
+> `:955`'teki tek yorum satırının (`-- KPI 21-28: …`) ürünüdür.
+> **O sekiz slot YOKTUR** — `GROUP 5`'in kanonik uzunluğu **dokuzdur** ve dokuzunun da
+> adı `KPI_EVRENI_TURETILMIS_LISTE.md §1a`'da yazılıdır.
+
 **KPI Engine Architecture Note:**
 
 While the KPI engine supports 40+ KPIs and can calculate all of them in real-time, **only a curated subset is exposed in the Phase 1 planning grid UI**. The full library is available for:
@@ -607,6 +638,9 @@ While the KPI engine supports 40+ KPIs and can calculate all of them in real-tim
 - COGS values (2 KPIs) - used for GP calculation, not displayed
 - Detailed promo spend by mechanic (11 KPIs) - aggregated in "Total Spend"
 - Base GP, Base COGS (3 KPIs) - used for incremental calculations
+  <!-- F12 (2026-08-31, T-340): iki kalem sayılıyor, "3" yazıyor. Z67 §2'nin
+       "başlık sayıları bu belge ailesinde sistematik güvenilmez" kaydına DÖRDÜNCÜ tanık —
+       ve bu kez aynı satırın içinde. Metin silinmedi. -->
 
 **Why This Matters:**
 - Prevents grid overload (20 columns manageable, 40 overwhelming)

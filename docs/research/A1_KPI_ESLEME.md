@@ -2,7 +2,7 @@
 
 > **iş:** `W2` `DALGA-A` / `A1` · **hüküm:** `docs/brd-v2/04_KARAR_KAYDI.md` **`Z65`** (beş hüküm)
 > **yazan:** `data-analyst` · **tarih:** 2026-08-30 · **statü:** salt-okunur ölçüm
-> **girdiler:** `docs/research/KPI_EVRENI_52_GRUP_AGACI.md` (`A4`) ·
+> **girdiler:** `docs/research/KPI_EVRENI_GRUP_AGACI.md` (`A4`) ⚠️ *(eski ad `..._52_...`; `Z69`)* ·
 > `docs/research/A0_KAVRAM_ESLEME_RAPORU.md` (`A0'`) ·
 > `docs/research/DEMO_EXCEL_KPI_TACTIC_REFERANSI.md` `§1`/`§3`
 > **işaretleme:** `[ÖLÇÜLDÜ]` bugün canlı · `[GEREKÇELİ]` türetildi · `ÖLÇEMEDİM`
@@ -163,7 +163,7 @@ sınırı** olarak kaydedilir; `T-334` kapsamında **değil**.
 | 25 | CPP On-invoice% Spend | `(GSV − LTA_On) × CPPOnPct / 100` | `CPP_ON_SPEND` kpis-satırı **VE** `calculateOnInvoiceDiscount` (`:252-261`) | ⚠️ **İKİ İMPLEMENTASYON** | S → S | **eşleşen-doğru** |
 | 26 | CPP Off-invoice% Spend | `PlannedNIV × CPPOffPct / 100` | `calculateOffInvoiceDiscount` (`:266-283`) — taban `GSV − LTA_On − **LTA_Off** − Σpromo_on` | ⚠️ satır yok, **kod** | S → S | ⚠️ **eşleşen-sapmalı** (`Q5`) |
 | 27 | Price Support per Unit | `PriceSupportperPiece × **EffectiveTotalIMSVolumePC**` | `calculatePerUnitSupport` (`:288-295`) = `enteredValue × plannedVolume` (**sell-in**) | ⚠️ satır yok, **kod** | S → S | ⚠️ **eşleşen-sapmalı** ETİKET **`kaynağı-belirsiz-girdi`** |
-| 28–35 | **8 kalem** | `[KAYNAKTA YOK]` | ⚠️ **kova ATANAMAZ** | — | — | ⛔ **`[KAYNAKTA YOK]`** |
+| ~~28–35~~ | ⛔ **`F12`: SLOT YOK** — altı ADLI kalem (`KPI_EVRENI_TURETILMIS_LISTE.md §1a`) | Excel `§1` + `.cursor/KPI_Details.docx` | **yok** (canlı: `VIS_LS` `DISPLAY_FEE` `MEC-DISCOUNT` — eşleme **belirsiz**) | — | — | ⛔ **`eşleme-belirsiz`** (`S2`) |
 
 ⛔ **`27` için *"eşleşti"* YAZILAMAZ** (`Z62 §6-2`, sessiz-vekil yasağı): sell-in hacmi
 sell-out'un yerine **geçici olarak bile** sayılmaz. Kanon girdisi (`EffectiveTotalIMSVolumePC`)
@@ -262,6 +262,23 @@ bir şey söylüyor. **Hüküm olmadan yazılmaz.**
 ---
 
 ## `§2` · KOVA SAYIMI
+
+> ## ⛔ `F12` — BU BÖLÜMÜN SAYILARI DÜŞTÜ *(2026-08-31 · `T-340` · hüküm `Z67`)*
+>
+> **İki şey aynı anda değişti:**
+> ```
+> (a) EVREN    "52" bir BAŞLIK TOPLAMIYDI ⇒ hayalet 8 slot DÜŞTÜ, adlı 6 kalem DOĞDU
+> (b) CANLI    T-334 İNDİ (migration FormulaCanonTurnoverNivSplit1818000000000)
+>              ⇒ 10 11 12 13 14 15 26 44 45 48 50 artık eşleşen-doğru
+> ```
+> ⇒ **YENİDEN TÜRETİLMİŞ KOVALAR: `docs/research/KPI_EVRENI_TURETILMIS_LISTE.md §4`.**
+> ⭐ **`[KAYNAKTA YOK]` kovası KAPANDI** — etiketin tanımı (*"hiçbir repo kaynağında adı
+> geçmiyor"*) artık **hiçbir kaleme uymuyor**; altı kalemin adı `.cursor/KPI_Details.docx`
+> ve Excel `§1`'de **yazılı**. Yerine bir **DUR kaydı** doğdu (`eşleme-belirsiz`): adlar
+> var, **canlı karşılıkları belirsiz**.
+> ⚠️ `Faz-2-ŞART 6` → **kalan 4** (`9 17 18 39`); `12` ve `15` **inşa edildi**.
+> **Aşağıdaki metin SİLİNMEDİ** (append-only izi).
+
 
 ```
 eşleşen-doğru     19      1 2 3 5 6 7 8 19 20 21 23 25 36 37 38 40 41 42 46

@@ -1,4 +1,23 @@
-# KPI EVRENİ — `11 GRUP / 52 KALEM` GRUP AĞACI
+# KPI EVRENİ — GRUP AĞACI
+
+> ## ⛔ `F12` — BU BELGENİN SAYISI DÜŞTÜ *(2026-08-31, `T-340` · hüküm `Z67`+`Z69`)*
+>
+> ```
+> önceki DOSYA ADI   KPI_EVRENI_52_GRUP_AGACI.md
+> önceki BAŞLIK      "11 GRUP / 52 KALEM"
+> ```
+> **`52` bir ONBİR BAŞLIĞIN TOPLAMIYDI**, bir kalem listesinin uzunluğu değil.
+> `Section_05 §5.3`'ün `GROUP 5 … (11 KPIs)` başlığı **dokuz** adlı kalemin üstünde
+> duruyordu ⇒ `52` **iki fazla** sayıyordu.
+>
+> ⭐ **Ad da düzeltildi** (`Z69`): *"bir dosya adı, içeriği okunmadan önce okunan tek
+> satırdır"* — `52` taşıyan bir ad, bu `F12`'yi asla görmeyecek okuyuculara (dizin
+> listesi · link · atıf) **düzeltilmemiş sayıyı beyan etmeye devam ederdi.**
+> `git mv` kullanıldı; dosya geçmişi korundu.
+>
+> ⇒ **TÜRETİLMİŞ EVREN: `docs/research/KPI_EVRENI_TURETILMIS_LISTE.md`.**
+> ⚠️ Aşağıdaki metin **SİLİNMEDİ** (append-only izi). `52`, `11 kalem` ve
+> `[KAYNAKTA YOK] 8` geçen her satır **bu `F12` altında okunur.**
 
 > **kaynak:** Faz-2 açılış paketi, ürün sahibi, 2026-08-29
 > **statü:** **YAZILMIŞ evren, türetilmiş DEĞİL**
@@ -35,8 +54,18 @@ iki kaynaktan **yeniden üretilebiliyor**.
 geri)"* aritmetiği **birebir tutuyor**. Yani evren *"uydurulmuş"* değil; **kaynağı
 gösterilmemişti.** Bu dosya o adresi verir.
 
-⚠️ Ama **`52`'nin 8 kalemi hâlâ ADSIZ** (`§2 GRUP 7`) — aşağıda `[KAYNAKTA YOK]`
-işaretli. Sayı türetilebiliyor, **liste tamamlanamıyor**.
+~~⚠️ Ama **`52`'nin 8 kalemi hâlâ ADSIZ** (`§2 GRUP 7`) — aşağıda `[KAYNAKTA YOK]`
+işaretli. Sayı türetilebiliyor, **liste tamamlanamıyor**.~~
+
+> ⛔ **`F12` — BAŞLIK HATASI, SLOT YOK** *(`T-340`, 2026-08-31)*
+> **Sekiz adsız kalem diye bir şey YOKTU.** `Section_05 §5.3`'ün `(11 KPIs)` başlığı
+> **dokuz** adlı kalemin üstündeydi; `.cursor/KPI_Details.docx` (*"KPI Library"*) ve
+> Excel `§1` **aynı dokuz adı** taşıyor. Üçü canlı listede zaten vardı, **altısının
+> adı bu turda bulundu**:
+> `PlannedVisibilityMTPH · PlannedVisibilityGT · PlannedTPRDriveOn ·
+> PlannedTPRDriveLumpsum · PlannedWSTPROn · PlannedWSTPROff`
+> ⇒ **`[KAYNAKTA YOK]` kovası KAPANDI.** Etiket doğruydu, ama işaretlediği şey bir
+> **eksiklik değil, bir SAYIM HATASIYDI** (`Z67 §4`).
 
 📌 `DISIPLIN`: *"bir sayı, LİSTESİYLE anılır ya da HİÇ anılmaz."* Bu belge sayıyı
 listesiyle anıyor — **ve listenin eksik yerini de gösteriyor.**
@@ -149,7 +178,7 @@ Bkz. `A0_KAVRAM_ESLEME_RAPORU.md §1`.
 | 25 | CPP On-Invoice % Spend | `CPP_ON_SPEND` | `((PLANNED_GSV - PLANNED_LTA_ON) * CPP_ON_PCT) / 100` |
 | 26 | CPP Off-Invoice % Spend | `CPP_OFF_SPEND` | `((PLANNED_GSV - PLANNED_LTA_ON - CPP_ON_SPEND) * CPP_OFF_PCT) / 100` |
 | 27 | Price Support per Unit Spend | `PRICE_SUPPORT_SPEND` | `PLANNED_VOL * PRICE_SUPPORT_PER_UNIT` |
-| 28–35 | **8 kalem** | `[KAYNAKTA YOK — ürün sahibinden istenecek]` | `[KAYNAKTA YOK]` |
+| ~~28–35~~ | ⛔ **`F12`: SLOT YOK — başlık hatası** | — | **6 adlı kalem** ⇒ `KPI_EVRENI_TURETILMIS_LISTE.md §1a` |
 
 ⛔ **Ölçüm:** `Section_05 §5.3`'te bu sekiz kalemin yerinde **tek bir yorum satırı** var:
 `-- KPI 21-28: Display Fees, Visibility, TPR lumpsums` (satır 955) — **SQL bloğu yok, kod
@@ -209,8 +238,8 @@ ama paydası `Turnover` değil `NIV`'dir (`AD-BORCU` zinciri). Eşleme `A1`'de.
 ```
 2 + 4 + 3 + 3 + 4 + 8 + 11 + 6 + 5 + 3 + 3  =  52        ✅
 grup sayısı                                  =  11        ✅
-adı KAYNAKTAN gelen kalem                    =  44
-adı HİÇBİR KAYNAKTA olmayan kalem            =   8        (GRUP 7 · KPI 28–35)
+adı KAYNAKTAN gelen kalem                    =  44      ← F12: gerçekte 50 (§1a+§1b)
+adı HİÇBİR KAYNAKTA olmayan kalem            =   8        ← F12: SIFIR — slot yoktu
 kodu atanmamış ama adı/formülü bilinen kalem =  10        (GRUP 4, 5, 10)
 ```
 
