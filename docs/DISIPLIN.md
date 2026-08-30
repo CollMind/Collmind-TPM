@@ -5072,3 +5072,32 @@ GEREKÇE çürükse     hüküm MAKUL görünmeye DEVAM EDER   → çürüme SES
 `BİR HÜKMÜN GEREKÇESİ, ALTINDAKİ MEKANİZMA DEĞİŞİNCE TAŞINMAZ — YENİDEN KURULUR`
 maddesinin **neden ayrı bir kayıt** olduğunun cevabı budur: statü-çürümesi bir **engel**
 üretir, gerekçe-çürümesi **hiçbir şey** üretmez.
+
+---
+
+## SEÇİCİ `git add`, **SEÇİCİ COMMIT DEMEK DEĞİLDİR** (ZORUNLU)
+
+> **`git commit` INDEX'İN TAMAMINI alır — o turda `git add` ile ne eklediğini değil.**
+> **Başkasının (ya da bir aracın) ÖNCEDEN STAGE ETTİĞİ her şey commit'e BİNER.**
+
+Ölçülmüş vaka (2026-08-31): Team Lead `git add docs/DISIPLIN.md` yapıp commit etti; commit
+**paralel bir ajanın `git mv`'sini de taşıdı** (`R100`, bir doküman yeniden adlandırması).
+`git mv` değişikliği **kendiliğinden stage eder** ve `git add`'in seçiciliği onu **elemez**.
+
+```
+git add <yol> && git commit          ⛔ INDEX'in TAMAMI gider
+git commit -- <yol> [<yol> …]        ✅ YALNIZ bu yollar
+git diff --cached --stat             ✅ commit ÖNCESİ index'i GÖR
+```
+
+📌 **`git add -A` yasağının kör noktası:** o kural **kendi** fazla-eklemeni engeller;
+bu vaka **başkasının** eklemesini gösterir — ve paralel ajanlı bir ağaçta ikincisi
+**daha olasıdır**.
+
+⚠️ Zararı bu vakada **düşüktü** (rename doğruydu ve zaten hükümlüydü) — ama aynı mekanizma
+**yarım bir işi** ya da **başka bir ajanın henüz doğrulanmamış değişikliğini** commit'e
+sokabilirdi. `§4`: *"`touches:` kesişimi gerekli ama yeterli değil — ağaç PAYLAŞILIR"*
+maddesinin **index tarafındaki** hâli.
+
+**Pratik:** commit'ten önce **`git diff --cached --stat`** — ve bir ajan koşarken
+`git commit -- <yol>` kullan.
