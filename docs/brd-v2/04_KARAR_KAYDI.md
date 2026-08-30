@@ -6651,3 +6651,75 @@ boş bir kova **süzgecin çalıştığının kanıtıdır**.
 **Onaylı task'lar:** `S3` ebeveyn `agreements.status` kapısı · `S4` bağ tekilliği ↔
 `TERMINATED`/soft-delete · canlı yoldaki `?? 0` **yeniden kararı** *(`T-027`'nin bilinçli
 kararı ⇒ düz düzeltme DEĞİL)* · **çift LTA implementasyonu**.
+
+---
+
+## `Z67` — `Q10`: **KAYNAKSIZ-8 DİYE BİR SINIF YOK** — `"11"` bir BAŞLIK HATASI, ve `"52"` DÜŞER
+
+> **Tarih:** 2026-08-30 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `A1` promptunun tam metni (proje bilgisi) + `DEMO_EXCEL_KPI_TACTIC_REFERANSI.md §1`
+
+### `§1` · BULGU — çapraz kanıtlı
+
+`A1` bulgusu (*"`28–35` sekiz slot adlandırılmamış"*) **doğru okundu ama bir adım eksikti.**
+
+```
+PSbM grubu başlığı        "(11)"
+PSbM grubu ADLI LİSTESİ     9   CPP-On · CPP-Off · PriceSupport · Vis-MT/PH · Vis-GT
+                                Drive/TPR-On · TPR-Lumpsum · WS-On · WS-Off
+Excel sözlüğü (§1)          9   ← AYNI DOKUZ, BAĞIMSIZ KAYNAK
+```
+
+⇒ **Sekiz boş slot YOK. Başlık `9` yerine `11` diyor.**
+
+### `§2` · ⛔ ÜÇÜNCÜ VAKA — **BAŞLIK SAYILARI BU BELGE AİLESİNDE SİSTEMATİK GÜVENİLMEZ**
+
+```
+1  Section_05 §5.3   "40 KPIs" başlığı   ↔  liste 42
+2  evren beyanı      "42"                ↔  ölçülen grup listesi
+3  PSbM grubu        "(11)"              ↔  adlı liste 9        ← BU TUR
+```
+
+> ### **BAŞLIK SAYILARI GÜVENİLMEZ; KALEM ADLARI KANONİKTİR.**
+
+### `§3` · ⛔ VE ZİNCİR YUKARI ÇIKIYOR — **`"52"` DE BİR BAŞLIK TOPLAMIYDI**
+
+```
+52 = 2+4+3+3+4+8+11+6+5+3+3      ← ONBİR BAŞLIĞIN TOPLAMI
+                    ↑        ↑
+                    │        └── "(11)" ölçüldü: gerçekte 9
+                    └── LTA "(8)" muhtemelen 7 adlı kalemin üstünde
+adlı-kalem ön-sayımı: 49 — ve Excel'in adlı listesiyle BİREBİR ÖRTÜŞÜYOR
+```
+
+### `§4` · ⭐ `Q4` HÜKMÜ **ÖLÇÜMLE DÜZELTİLİYOR** — ve düzelten şey **kendi kuralımız**
+
+> **`Z65 §4`'te *"evren 52 (BRD-`A1`)"* denmişti. O `52` de bir YAZILMIŞ EVRENDİ.**
+> `G5` yasası (`yazılmış < taranmış < türetilmiş`) **hükmü verenin kendi sayısına** işledi.
+
+```
+YENİ HÜKÜM   evren  =  ADLI-KALEM LİSTESİ
+             sayısı  LİSTEDEN TÜRETİLİR — HİÇBİR BAŞLIKTAN ALINMAZ
+```
+
+📌 **Ve `A0'`/`Z64`'ün deseninin üçüncü yüzü:** orada *"iki kavram tek ad"* boşluğu
+**siliyordu**; burada *"bir başlık, listesinden fazla sayıyor"* boşluğu **uyduruyor** —
+`8` hayalet kalem, hem de `[KAYNAKTA YOK]` etiketiyle **saygıyla taşınan** hayaletler.
+
+⛔ **Bir etiket, olmayan bir şeyi de KORUYABİLİR.** `[KAYNAKTA YOK]` doğru bir işaretti,
+ama işaretlediği şey **bir eksiklik değil, bir sayım hatasıydı**.
+
+### `§5` · `T-340` AÇILDI — ve **`T-334`'ü ETKİLEMEZ**
+`T-334`'ün `9+1` kalemi **tamamen adlı-kanonik bölgede** (`TO`/`NIV` ayrıştırma · GP taban ·
+off-invoice taban · kalem `22` · ROI payda bölünmesi) — **başlık-hatası bölgesine dokunmuyor.**
+⇒ `T-340` **paralel ya da sonra** iner.
+
+### `§6` · İKİ BAĞIMSIZ KAYNAĞIN YAKINSAMASI
+> **`A1` promptunun adlı listesi ↔ Excel sözlüğünün adlı listesi — aynı `9`.**
+> **İki bağımsız kaynak aynı listeye yakınsıyorsa, bu EVRENİN EN SAĞLAM HÂLİDİR** —
+> bir başlığın, hatta iki başlığın hemfikir olmasından **daha güçlü**.
+
+### `§7` · `A1` KOVA-YERLEŞİMİ **ONAYLI**
+`Faz-2-ŞART 6`'nın **kimlikleri** `T-334` sonrası **ilk planlama masasına** gelir.
+⚠️ `T-334`'ün `9+1`'i ile `ŞART-6`'nın **kesişimi muhtemelen büyük** — **kalan fark,
+sonraki dalganın kapsamıdır.** Boş `Faz-3` zaten `Z66 §5b`'de kayıtlı.

@@ -452,3 +452,4 @@ status: active        # planned | active | closed
 - [[T-337]] CANLI spend yolunda sessiz sıfır — ⛔ `T-027`'nin **bilinçli** kararı ⇒ **yeniden karar**, düz düzeltme değil — **todo**
 - [[T-338]] LTA taban formülünün **iki implementasyonu** — bu tur onları **eksik girdide ayrıştırdı** (biri fırlatıyor, biri `0`'lıyor) — **todo**
 - [[T-339]] **Alan A üyeliği TÜRETİLSİN** — `money-float`'un dosya listesi **elle yazılmış evren** (`G5`); `shared/lta` hiç ölçülmemişti — **blocked** (`T-334` sonrası)
+- [[T-340]] KPI evreni **adlı-kalem listesinden TÜRETİLSİN** — `"52"` onbir başlığın toplamıydı, `PSbM "(11)"` gerçekte **9** (Excel bağımsız teyit). ⛔ **kaynaksız-8 diye bir sınıf YOK** — hayalet slotlar (`Z67`) — **todo**

@@ -4890,3 +4890,39 @@ yalnız **yön**.
 ```
 Desen çıkarsa teşhis artık *"üç bug"* değil, **bir BASINÇ** — ve çözümü tek tek düzeltme
 değil, o basıncı ölçen **kalıcı bir kapıdır**.
+
+---
+
+## BİR BAŞLIK SAYISI, LİSTESİNDEN TÜRETİLMEMİŞSE **VERİ DEĞİLDİR** (ZORUNLU)
+
+> **Kalem adları kanoniktir. Başlık sayıları, listeden türetilmedikçe, YAZILMIŞ bir evrendir.**
+
+Ölçülmüş **üç** vaka, aynı belge ailesinde (`Z67 §2`):
+```
+1  Section_05 §5.3  "40 KPIs"   ↔  liste  42
+2  evren beyanı     "42"        ↔  ölçülen grup listesi
+3  PSbM grubu       "(11)"      ↔  adlı liste  9      ← ve bu ÜÇÜNCÜ vaka
+```
+
+⛔ **Ve üçüncü vakanın bedeli bir eksiklik değil, bir UYDURMA idi:** `11 − 9 = 2`
+sayılamayan kalem, bir tur boyunca **sekiz hayalet slota** dönüştü (`28–35`), ve
+`[KAYNAKTA YOK]` etiketiyle **saygıyla taşındı**.
+
+> ### **BİR ETİKET, OLMAYAN BİR ŞEYİ DE KORUYABİLİR.**
+> `[KAYNAKTA YOK]` **doğru** bir işaretti — ama işaretlediği şey bir **eksiklik** değil,
+> bir **sayım hatasıydı**. Bir boşluğu dürüstçe işaretlemek, boşluğun **var olduğunu**
+> kanıtlamaz.
+
+📌 **Ailedeki yeri — `G5`'in üçüncü yüzü:**
+```
+"aynı kavram iki ad"      → boşluk BÜYÜK görünür     (arama terimi dersi)
+"iki kavram tek ad"       → boşluk SİLİNİR           (Z64 §2)
+"başlık listesinden fazla"→ boşluk UYDURULUR         (Z67)
+```
+
+**Pratik:** bir evren sayısı gördüğünde sor — *"bu sayı LİSTEDEN mi türedi?"* Türemediyse
+**sayıyı değil listeyi taşı**, ve sayıyı **her seferinde yeniden türet**.
+
+⚠️ **Ve bu kural, kuralı VERENE de işler:** `Z65 §4`'te ürün sahibi *"evren `52`"* hükmü
+vermişti; `52` de **onbir başlığın toplamıydı**. Hükmü düzelten şey bir otorite değil,
+**kendi yasasının kendisine uygulanması** oldu (`Z67 §4`).
