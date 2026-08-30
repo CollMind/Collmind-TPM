@@ -455,3 +455,4 @@ status: active        # planned | active | closed
 - [[T-340]] KPI evreni **adlı-kalem listesinden TÜRETİLSİN** — `"52"` onbir başlığın toplamıydı, `PSbM "(11)"` gerçekte **9** (Excel bağımsız teyit). ⛔ **kaynaksız-8 diye bir sınıf YOK** — hayalet slotlar (`Z67`) — **todo**
 - [[T-341]] Parser beyaz listesi **üstel gösterimi reddediyor** — `|v| < 1e-6` bir ara değere düştüğü an KPI **sessizce `null`** (`§2.5`). `T-334`'te **ölçüldü ve bugünkü hâliyle PİNLENDİ** — **todo**
 - [[T-342]] **RAG iki-eksen kadran inişi** (`Q7`) + LTA-only planlarda **TANIMLI-YOKLUK** (`ragExclusionReason`) — ⛔ `AMBER` **İLK KEZ DOĞUYOR**, tüketici ön-ölçümü şart; migration YOK (`Z68`) — **in-progress**
+- [[T-343]] **`ragAmberThreshold` ÖLÜR** (tüketicisiz — ölçüldü) · `ragGreenThreshold` **AD-BORCU** alır (tüketicisi RAG değil **Target ROI**). ⛔ Kadran-RAG **işaret tabanlı**: *"sıfırdan büyük"* konfigüre edilecek değer değil, **kavramın kendisi** (`Z70`) — **todo**

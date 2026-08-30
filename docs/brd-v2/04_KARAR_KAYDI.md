@@ -6878,3 +6878,83 @@ taşınmaz, yeniden kurulur"* → `DISIPLIN`'e, **`Z60`'ın yanına katman notuy
                  YENİDEN SINANMAMIŞ demektir (Z68 §3b)
 2  T-341         üstel gösterim — ikinci ateşleme dalgasının BİLİNEN İLK ADAYI
 ```
+
+---
+
+## `Z70` — `AMBER` UYARISI **KADRAN DİLİNE ÇEVRİLİR** · `ragAmberThreshold` **ÖLÜR**
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `T-342` raporu (`A0` tüketici taraması · `A0b` eşik asimetrisi)
+
+### `§1` · `AMBER` SUBMIT UYARISI — **EVET, ama İKİ UYARI AYNI CÜMLE OLMAZ**
+
+```
+KADRAN ÖNCESİ   tek uyarı vardı  ÇÜNKÜ  TEK KÖTÜ-DURUM vardı
+KADRAN SONRASI  iki farklı kötü-durum   ⇒  UYARI KATMANI DA O AYRIMI KONUŞMALI
+```
+
+| durum | uyarı |
+|---|---|
+| **`RED`** | *"**ciro kaybı**: plan incremental ciro üretmiyor"* — bugünkü uyarının **kadran-doğru** hâli |
+| **`AMBER`** | *"**kârsız büyüme**: satış artıyor, kâr negatif — gözden geçirin"* — `AMBER`'ın **var-oluş cümlesinin** uyarıya taşınması |
+
+⛔ **İkisi de `warnings`** (bloklamayan) — **`K-2.2.7c` ailesi: submit DURMAZ, KARAR DESTEĞİ KONUŞUR.**
+
+> ### **GÖRÜNÜR KILINMAK İÇİN DOĞAN BİR DURUM, DOĞDUĞU GÜN UYARI YÜZEYİNDEN DÜŞÜYORDU.**
+> Bu düzeltme `AMBER`'ı **tam amaçlandığı yere** koyar.
+
+### `§1a` · ⛔ VE BİR GENELLEME TARAMASI ŞART (`D1` refleksi)
+> **`ragStatus === 'RED'` literali BAŞKA NEREDE OKUNUYOR?**
+
+Submit uyarısı **bir tüketiciydi**. Filtreler · raporlar · widget'lar aynı
+**kadran-öncesi varsayımı** taşıyor olabilir. *(`BudgetAtRiskWidget` `AMBER`-tanır çıkmıştı —
+ama **tam evren ölçülmedi**.)*
+
+> ### **BİR KAVRAMI DOĞURMAK, ONU TÜKETEN YÜZEYLERİ KENDİLİĞİNDEN GÜNCELLEMEZ.**
+> ### ⇒ **DOĞURAN DALGA, TÜKETİCİ EVRENİNİ TÜRETİR.**
+
+`rg -i "ragStatus|RAG_STATUS|'RED'"` **kesişimi — `T-342` KAPANIŞININ ŞARTI.**
+
+### `§2` · `ragAmberThreshold` **KALDIRILIR** — `İlke 3` cevabı: **HAYIR**
+
+> `İlke 3` testi: *"bu kural, kullanıcının **düzenlemek isteyeceği** bir kural mı?"*
+> Kadran-RAG'ın tanımı **eşik değil, İŞARET tabanlıdır** (`iTO`/`iGP` **sıfır çizgileri**).
+> ### **`"SIFIRDAN BÜYÜK"` KONFİGÜRE EDİLECEK BİR DEĞER DEĞİL, KAVRAMIN KENDİSİDİR.**
+
+⛔ **Geri dönüş kapısı adlandırıldı:** `AMBER`'ı eşikle oynatmak *(`iGP < −5000` olursa Amber
+sayalım)* **kadranın anlamını GERİ-EŞİĞE çevirir** — **dün öldürdüğümüz tek-eksen dünyasının
+GERİ DÖNÜŞ KAPISI.**
+
+| alan | hüküm |
+|---|---|
+| `ragAmberThreshold` | **ÖLÜR** — tüketicisiz (ölçüldü). Kolon + endpoint alanı + tip beyanı. Emsal `E2`/`tier_roles` — ama **bu kez CANLIYKEN ölüyor**, ölü doğmuş değil |
+| `ragGreenThreshold` | **YAŞAR ama `AD-BORCU` alır** — tüketicisi **RAG değil Target ROI** (`plan.service:2892`). `rag` önekiyle yaşaması, `ragAmber`'ın öldüğü dünyada yarın birini **"RAG konfigüre edilebilir"** yanılgısına götürür ⇒ `targetRoiThreshold` sınıfı, **ad-borcu paketine** |
+
+⇒ **`T-343`** açıldı. ⛔ **Spekülatif konfigürasyon inşa edilmez** (`İlke 1`): bir tenant
+*"kadran yetmez, eşik isterim"* derse **o gün süzgeçten geçer, olay-tetikli**.
+
+### `§3` · `rag_exclusion_reason` EKSİĞİ — **ÖN HÜKÜM NET**
+> ### **`Z68 §2`'NİN ŞARTI YARIM KALAMAZ.**
+```
+"grid rozeti CANLI, liste + raporlar GRİ"
+= T-323'ün ÖLDÜRDÜĞÜ belirsizlik ("değerlendirilmedi ≠ kötü-değil")
+  İKİ YÜZEYDE YAŞAMAYA DEVAM EDİYOR
+```
+⇒ **`T-342` ailesinde kapanır.** ⚠️ **Kolon ŞART DEĞİL** — `JSONB` geçişi yeterliyse
+kolonsuz da olur; **ama ÜÇ tüketici yüzeyin ÜÇÜ DE ayrımı göstermeli.**
+**Ölçüm hangisinin ucuz olduğunu söylesin.**
+
+### `§4` · İKİ `Z69` YASASININ **İLK CANLI DOĞRULAMASI — AYNI TURDA**
+
+**`4a` · RANDEVU-PİNİ:** kırılma **görüldü**, sıra ters yapılmadı
+(`önce exit 0 → kadran indi exit 1 "Expected RED / Received AMBER" → sabitler yenilendi exit 0`).
+**Kırılma bir sürpriz değil, bir TESLİM TARİHİYDİ.**
+
+**`4b` · HÜKÜM-GEREKÇE KATMANI:** `S1`'in gerekçesi **tamamen değişti**, hüküm aynı kaldı.
+```
+T-334'te   HÜCRE 4 renksiz ÇÜNKÜ payda 0 ⇒ ROI null      → renksizlik bir YAN ETKİYDİ
+kadranda   iki eksen de DOLU ⇒ kadran RED ÜRETİRDİ
+yeni       tetikleyici = INCR_PROMO_SPEND === 0 — AÇIK BİR KAPI (mutasyonla kanıtlandı)
+```
+⛔ **Ölçülmeseydi hüküm YANLIŞ BİR GEREKÇEYLE yaşayacaktı** — ve kadran onu **sessizce
+geçersiz kılmıştı**.
