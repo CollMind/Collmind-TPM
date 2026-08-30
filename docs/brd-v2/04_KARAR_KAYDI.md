@@ -6723,3 +6723,98 @@ off-invoice taban · kalem `22` · ROI payda bölünmesi) — **başlık-hatası
 `Faz-2-ŞART 6`'nın **kimlikleri** `T-334` sonrası **ilk planlama masasına** gelir.
 ⚠️ `T-334`'ün `9+1`'i ile `ŞART-6`'nın **kesişimi muhtemelen büyük** — **kalan fark,
 sonraki dalganın kapsamıdır.** Boş `Faz-3` zaten `Z66 §5b`'de kayıtlı.
+
+---
+
+## `Z68` — `Q7` KADRAN İNİŞİ + `S1`: **RENKSİZLİK ÖLÜR, TANIMLI-YOKLUK DOĞAR**
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `T-334` kapanış raporu + review · `Z66 §2`
+
+### `§1` · `Q7` — **İNİŞ KARARI** (hüküm zaten `Z66 §2`'de verilmişti)
+```
+Red     iTO ≤ 0
+Amber   iTO > 0  ∧  iGP ≤ 0
+Green   ikisi de > 0
+```
+**Migration YOK** — hesaplanan-değer davranışı. ⇒ **`plans=0` penceresi bu iş için gerekmiyor.**
+
+⭐ **İniş ucuz, çünkü PİN ÖNCEDEN DOĞRU KURULDU:** literal `liveRag` sabiti + *"hüküm indiği
+gün bilerek kırılır"* şerhi.
+> ### **`T-341` DESENİNİN RAG HÂLİ: BUGÜNÜ PİNLE, YARINI İŞARETLE.**
+> Bir sapmayı **bugünkü hâliyle** pinlemek, düzeltmeyi **ucuzlatır** — çünkü düzeltme günü
+> kırılan test bir **sürpriz değil, bir randevudur**.
+
+### `§1a` · ⛔ TEK ŞART — **`AMBER` İLK KEZ DOĞUYOR**
+> **Bugün hiç üretilmeyen bir durum yarın üretilecek.** Tüketicileri (**renk eşlemesi ·
+> filtre · rapor**) `AMBER`'ı **tanıyor mu**? Tek grep'lik **ön-ölçüm raporda görünür.**
+
+📌 **Team Lead ön-ölçümü** *(ajan RİGOROUS hâlini yapacak)*: `AMBER` tip birleşimlerinde
+(`plans` · `dashboard` · `finance-reporting` · `budget` · `on-invoice`), renk haritalarında
+(`PlanPerformanceWidget:67` · `BudgetUtilizationWidget:39`) ve `BudgetAtRiskWidget`'te
+**tanınıyor** ⇒ ilk doğuş bilinmeyen-değer yoluna düşmeyecek **gibi görünüyor**.
+⚠️ **Ama bir yan bulgu:** `ragAmberThreshold` (`kpi.endpoints.ts:25,53` ·
+`kpi.repository.ts:101`) **tek-eksen eşiğinin konfigürasyon alanıdır** — iki-eksen kadranda
+**ne olacağı ölçülmeli**: ölü mü kalıyor, yoksa hâlâ bir yerde okunuyor mu?
+
+### `§2` · `S1` — **RENKSİZLİK ÖLÜR, TANIMLI-YOKLUK DOĞAR**
+
+> ### **RAG HESAPLANMAZ, VE BU MEŞRUDUR — AMA MEŞRU-YOKLUK GÖRÜNÜR YAZILIR.**
+
+**Gerekçe:** LTA-only bir plan **bir promosyon değerlendirmesi değildir** —
+**incremental ekseni yok**; plan, baseline'ın **sözleşmeli hâli**.
+```
+RAG'ı ZORLA üretmek   →  ANLAMSIZ SAYI      ⛔ yasaklı sınıf
+boş bırakmak          →  SESSİZ BOŞLUK      ⛔ yasaklı sınıf
+                         ⇒ DOĞRU ŞEKİL ÜÇÜNCÜ DURUM
+```
+
+| yüzey | şekil |
+|---|---|
+| **UI** | gri/nötr **"Değerlendirme dışı — LTA"** rozeti · tooltip'te **tek cümle gerekçe** |
+| **API** | `ragStatus: null` **+** `ragExclusionReason: 'LTA_ONLY'` sınıfı **açık alan** |
+
+⇒ Filtre/rapor tüketicileri **`"Red değil"`** ile **`"değerlendirilmedi"`**yi **ayırt eder.**
+
+📌 **`T-323` UI dersinin RAG hâli:**
+```
+"yetkin yok"  ≠  "kimse yok"        neyse
+"kötü değil"  ≠  "değerlendirilmedi"   o
+```
+
+⇒ `T-342` ile **aynı dalgaya biner** — aynı dosya ailesi.
+
+### `§3` · ÜÇ KAYIT
+
+**`3a` · ⭐ `§2.7` AİLESİNİN EN SIKI INVARIANT FORMÜLASYONU:**
+> ### **DENETLENEN DİZGE = DEĞERLENDİRİLEN DİZGE.**
+Parser vakasının **kalıcı mirası**. Yanına ilk-düzeltmenin dersi:
+> **Bir düzeltme, düzelttiği sınıfın yeni bir vakasını üretebilir — ve EN SİNSİ BİÇİMİ,
+> DÜRÜST-`null`'UN YERİNE KISMİ-DOĞRU-SAYI KOYMAKTIR.**
+
+**`3b` · ⛔ LATENT-KUSUR ATEŞLENMESİ — `T-273` ailesine YENİ YÜZ, ve bir `W3` RİSK NOTU:**
+```
+GP tabanı TO'ya döndü → GP'ler NEGATİFE düştü → parser kusuru UYANDI
+```
+> ### **VERİ-SIFIR DÜNYADA YEŞİL OLAN HER ŞEY, İLK GERÇEK DEĞER-DAĞILIMINDA
+> ### YENİDEN SINANMAMIŞ DEMEKTİR.**
+
+⚠️ **`W3` (baseline-import) RİSK NOTU — şimdiden kayda:** baseline-import **ilk kez gerçek
+sayı dağılımları** getirecek; **parser/formül katmanı o gün İKİNCİ BİR ATEŞLEME DALGASI
+yaşayabilir.** *(`T-341` üstel gösterim kusuru bu dalganın **bilinen** ilk adayıdır.)*
+
+**`3c` · ÜÇ GERİ-ÇEKME, ÜÇÜ DE İZLİ — sistemin sağlık göstergesi ARTIK İSTİKRARLI:**
+```
+ajan  "conditional pinim AYIRT ETMİYORDU"        → şekli değiştirdi, mutasyonla doğruladı
+ajan  "basePromoSpend iddiam YANLIŞTI"           → savundu DEĞİL, SİLDİ
+TL    "hangi taraf sapmıştı varsayımım yanlıştı" → FE zaten kanonikti, sapan MOTORDU
+```
+
+### `§4` · SIRA
+```
+1  T-342 (Q7 kadran + S1 tanımlı-yokluk)   ← formül katmanı KAPANIŞI, küçük
+2  T-340 (evren türetmesi, doc işi)         → 49-listesi KESİNLEŞİR
+3  A1'in ŞART-6 kimlikleriyle PLANLAMA MASASI
+     W3-baseline AÇILMADAN ÖNCE: kalan formül işleri + baseline ÖNKOŞULLARI TEK GÖRÜNÜMDE
+     beklenti: ŞART-6'nın ÇOĞU T-334/T-342 ile kapanmış çıkar, W3'ün önü TEMİZ
+```

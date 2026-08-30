@@ -4926,3 +4926,48 @@ sayılamayan kalem, bir tur boyunca **sekiz hayalet slota** dönüştü (`28–3
 ⚠️ **Ve bu kural, kuralı VERENE de işler:** `Z65 §4`'te ürün sahibi *"evren `52`"* hükmü
 vermişti; `52` de **onbir başlığın toplamıydı**. Hükmü düzelten şey bir otorite değil,
 **kendi yasasının kendisine uygulanması** oldu (`Z67 §4`).
+
+---
+
+## **DENETLENEN DİZGE = DEĞERLENDİRİLEN DİZGE** (ZORUNLU — `§2.7`'nin en sıkı hâli)
+
+> **Bir kapı bir girdiyi onaylıyorsa, çalıştırılan şey ONAYLANAN GİRDİNİN TA KENDİSİ olmalıdır.**
+> **Aralarına bir dönüşüm girdiği an, kapı BAŞKA BİR ŞEYİ denetlemiş olur.**
+
+Ölçülmüş vaka (2026-08-30/31, `T-334` parser turu):
+```
+beyaz liste   sanitized  = expression.replace(/\s/g,'')     ← DENETLENEN
+new Function( expression )                                   ← DEĞERLENDİRİLEN
+girdi "1 // 2\n+ 5"   → sanitized "1//2+5" GEÇER → eval 6    ⛔ İFADENİN YARISI YORUM OLDU
+```
+Güvenlik **ihlal edilmedi** (harf/tırnak/backslash olmadan kod çalıştırılamaz) — **doğruluk**
+ihlal edildi: `null` (dürüst) yerine **kısmi bir sayı**.
+
+**Düzeltme şekli:** dönüşümü **kaldır**, yani denetlenen ile değerlendirileni **yeniden aynı
+yap** — burada yerine koymada `(${value})` sarmalaması, ve eval **yine `sanitized`** üzerinde.
+
+📌 **Ailedeki yeri:** `§2.7 #8` (*"test kontrolün kopyasını çalıştırıyor"*) bir **doğrulama**
+ayrışmasıydı; bu onun **üretim** tarafı — **kapının kendisi**, denetlediğinden başka bir şeyi
+çalıştırıyor.
+
+---
+
+## BİR DÜZELTME, EN SİNSİ HÂLİNDE **DÜRÜST-`null`'UN YERİNE KISMİ-DOĞRU-SAYI KOYAR** (ZORUNLU)
+
+> `Bir düzeltme, düzelttiği SINIFIN yeni bir vakasını üretebilir` kuralı zaten yazılıydı.
+> **Bu, o kuralın EN PAHALI biçimidir** — ve `T-334`'te ölçüldü.
+
+```
+ÖNCE   SyntaxError → catch → null        ← YANLIŞ, ama DÜRÜST: değer YOK, ve YOK diyor
+SONRA  "1 // 2\n+ 5" → 6                 ← DAHA YANLIŞ: değer VAR gibi görünüyor
+```
+
+`null` bir **alarmdır**: bağımlı KPI'lara yayılır, RAG'ı boşaltır, birileri sorar.
+Kısmi-doğru bir sayı **hiçbir şey sormaz** — tablolarda oturur, toplanır, karar besler.
+
+> ### **BİR DÜZELTMEYİ DEĞERLENDİRİRKEN SOR: HATA SINIFI DAHA MI SESSİZ OLDU?**
+> Daha sessizse, düzeltme **ileri değil geri** gitmiştir.
+
+📌 `§2.5`'in *"sessiz sıfır yasağı"* bir **kod yazma** kuralıydı; bu onun **düzeltme
+değerlendirme** kuralı. Ve `DISIPLIN`'in *"beklenen yöne yanılan hata daha tehlikelidir"*
+maddesiyle aynı aile: **tehlikeli olan yanlışlığın büyüklüğü değil, GÖRÜNÜRLÜĞÜNÜN azlığı.**
