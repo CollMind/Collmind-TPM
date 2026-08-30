@@ -5029,3 +5029,46 @@ bulamaz, ve **hükmü çöpe atar** *(ya da daha kötüsü: gerekçeyi doğru sa
 **Pratik:** bir mekanizmayı değiştiren turda sor — ***"bu mekanizmaya DAYANAN hangi hükümler
 var, ve gerekçeleri hâlâ ölçülebilir mi?"*** Ölçülemiyorsa hükmü **iptal etme** — gerekçesini
 **yeniden kur**.
+
+---
+
+## ⭐ HAYATTA KALMA HİYERARŞİSİ: **RAPOR < BELGE < KAPI < PİN** (ZORUNLU)
+
+> ### **BİLGİ, OKUNMASI KAÇINILMAZ OLAN KATMANA TAŞINDIKÇA YAŞAR.**
+
+Bu, `T-084` çözümünün (`RANDEVU-PİNİ`) **genel yasasıdır** — ve disiplinin **baştan beri
+omurgası**ydı; adı 2026-08-31'de kondu.
+
+| katman | okunma koşulu | ömür |
+|---|---|---|
+| **RAPOR** | biri **arayıp bulursa** | tur biter, rapor gömülür |
+| **BELGE** | biri **ilgili sayfayı açarsa** | atıf verildiği sürece |
+| **KAPI** | **her koşumda** — ama yalnız **kapsamındaysa** | kapsam boşalırsa **sessizce ölür** |
+| **PİN** | **kaçınılmaz** — kırıldığında **durdurur** | koşum var oldukça |
+
+**Bu oturumda ölçülen üç düşüş:**
+```
+T-100/T-114   KAPI  →  kapsam kendini boşalttı / sinyal sabitleşti  ⇒ kapı YOK
+B1 (money-float)     domain-a listesi elle yazılmış ⇒ modül HİÇ ölçülmemiş
+"beklenen-değişim listesi"  RAPORDA yaşıyordu  ⇒  RANDEVU-PİNİ ile PİNE taşındı
+```
+
+**Pratik:** bir bilgiyi kaydederken sor — ***"bu, okunması kaçınılmaz bir katmanda mı?"***
+Değilse **bir katman yukarı taşı**: rapordaki bir uyarı bir belge maddesine, belge maddesi
+bir kapıya, kapı bir pine. ⛔ **Ve taşınamıyorsa, taşınamadığını yaz** — `CLAUDE.md §4.2`:
+*"bağlanamıyorsa koşul **tavsiyeye düşürülür ve öyle işaretlenir**."*
+
+---
+
+## GEREKÇE-ÇÜRÜMESİ, STATÜ-ÇÜRÜMESİNDEN **TEHLİKELİDİR** (ZORUNLU)
+
+```
+STATÜ yanlışsa      engel GÖRÜNÜR      → biri takılır, sorar, düzelir
+GEREKÇE çürükse     hüküm MAKUL görünmeye DEVAM EDER   → çürüme SESSİZDİR
+```
+
+> **Bir hükmün doğruluğu onu korumaz; onu koruyan şey, gerekçesinin HÂLÂ ÖLÇÜLEBİLİR olmasıdır.**
+
+`BİR HÜKMÜN GEREKÇESİ, ALTINDAKİ MEKANİZMA DEĞİŞİNCE TAŞINMAZ — YENİDEN KURULUR`
+maddesinin **neden ayrı bir kayıt** olduğunun cevabı budur: statü-çürümesi bir **engel**
+üretir, gerekçe-çürümesi **hiçbir şey** üretmez.
