@@ -84,3 +84,27 @@ o ölçülebilir bir olgudur.
 
 Ve `CLAUDE.md §2.7`'nin *"bir DÜZELTME de bir iddiadır"* maddesinin en pahalı vakası
 buydu: sapma **bir uygunluk etiketi altında** koda girdi, ve etiket sorguyu kapattı.
+
+---
+
+## ⚠️ `F12` NOTU — **KALEM BÖLÜNDÜ** (2026-08-30, `Z66 §1`)
+
+> **Bu ADR'nin kararı GERİ ALINMADI — kapsamı DARALDI.**
+> *(Eski metin **silinmedi**; append-only iz.)*
+
+```
+BÜTÇE    TOTAL_PLANNED_SPEND    ← OLDUĞU GİBİ KALIR (LTA DAHİL)
+                                  zarf GERÇEK PARAYI rezerve eder ⇒ total DOĞRU
+ROI      INCR_PROMO_SPEND       ← AYRI KALEM (yalnız promo · LTA hariç · incremental)
+```
+
+**Gerekçe:** dört kayıt arasındaki çelişki *(canlı/BRD · Excel · `Z62 §6-3` · ölü kod)*
+**iki ekseni tek kaleme sıkıştırmaktan** doğuyordu — `(LTA dahil mi)` × `(total mı
+incremental mı)`. Bu ADR'nin `INCR_SPEND → TOTAL_PLANNED_SPEND` değişikliği **bütçe
+ihtiyacı için doğruydu ve öyle kalır**; yanlış olan **ROI'nin BÜTÇE kalemini okumasıydı**.
+
+⇒ **Finansal yayılım SIFIR:** bütçe yolu dokunulmuyor, yalnız ROI'nin **okuma adresi**
+değişiyor. Tanım **tek noktadan** okunur: `src/common/kpi/roi-denominator.ts` (`B4`).
+
+**Uygulama:** `T-334` (formül-kanon düzeltmesi).
+**Kaynak:** `docs/brd-v2/04_KARAR_KAYDI.md` `Z66 §1`.

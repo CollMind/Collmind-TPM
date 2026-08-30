@@ -6546,3 +6546,108 @@ Z65        KURAL DOĞRU ·  KOD EKSİK-EVRENİN ÇOCUĞU → kod kaynağa dönd�
 
 > ### **İKİSİNİN ORTAK YASASI:**
 > ### **ÇELİŞKİYİ ÇÖZEN ŞEY OTORİTE DEĞİL — KAYNAK-ZİNCİR + ÖLÇÜM.**
+
+---
+
+## `Z66` — `Q6`–`Q12` HÜKÜMLERİ: ROI paydası **BÖLÜNDÜ**, RAG **iki eksen**
+
+> **Tarih:** 2026-08-30 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `docs/research/A1_KPI_ESLEME.md` · `W2 DALGA-B` review · `B4` DUR kaydı
+
+### `§1` · ⭐ `Q6` — ROI PAYDASI: **DEĞERİ DEĞİL, OKUNAN KALEMİ DEĞİŞTİR**
+
+Dört kaydın çelişkisi **iki ekseni karıştırıyordu**:
+```
+eksen 1   LTA DAHİL Mİ?
+eksen 2   TOTAL mı INCREMENTAL mı?
+```
+
+| kalem | hüküm |
+|---|---|
+| **`TOTAL_PLANNED_SPEND`** | ⛔ **OLDUĞU GİBİ KALIR.** Bütçe rezervasyonu / `plan.totalSpend` onu besliyor ve **bütçe gerçekten TOTAL ister** — zarf **gerçek parayı** rezerve eder, LTA dahil. `ADR 0011`'in bilinçli değişikliği muhtemelen **bu ihtiyaçtandı ve o ihtiyaç için DOĞRU**. |
+| **ROI paydası** | **AYRI KALEMDİR.** Bugün yanlış olan şey **ROI'nin BÜTÇE kalemini okuması**. Yeni/ihya edilmiş **`INCR_PROMO_SPEND` sınıfı** bir kaleme bağlanır. |
+
+**Tanım — tek noktadan** (`B4`'ün hazırladığı `src/common/kpi/roi-denominator.ts`),
+**varsayılan `Z62 §6-3`:** *yalnız promo-spend · LTA hariç · **incremental***.
+
+> ⇒ **FİNANSAL YAYILIM SIFIR:** bütçe yolu **dokunulmamış**, yalnız ROI'nin
+> **OKUMA ADRESİ** değişmiş.
+
+📌 **Excel'in *"incremental-total-incl-LTA-delta"* tanımı** eşlemede **`F12` farkı**
+olarak kayda girer — **tenant-konfigür ekseni zaten yazılı**, Excel tanımı yarın bir
+tenant'ın **seçeneği** olur. *(Ürün sahibi sözü **güncel otoritedir**.)*
+
+⛔ **`ADR 0011`'e `F12` notu:** *"kalem BÖLÜNDÜ — bütçe `TOTAL` okur, ROI `INCR-PROMO` okur."*
+
+> ### **BİR ÇELİŞKİ, İKİ EKSENİN TEK KALEME SIKIŞMASINDAN DOĞABİLİR.**
+> **Çözüm bir DEĞER seçmek değil, KALEMİ BÖLMEKTİR** — `Z65`'in kavram-ayrıştırmasının
+> **ikinci vakası**, bu kez bir **okuma adresi** üzerinde.
+
+### `§2` · `Q7` — RAG: **İKİ-EKSEN KADRAN** (Excel kanonik)
+
+RAG'ın sorduğu soru **iki yarımlıdır**: *ciro arttı mı* (`iTO`) × *kâr etti mi* (`iGP`).
+```
+Red     iTO ≤ 0
+Amber   iTO > 0  ∧  iGP ≤ 0
+Green   ikisi de > 0
+```
+⛔ **Tek-eksen eşik bu iki yarıyı TEK SAYIYA EZER** ve **`Amber`'ın anlamını siler** —
+*"satış var, kâr yok"*, yani tam da bir **kategori yöneticisinin görmesi gereken** durum.
+
+⇒ Canlı tek-eksense **`eşleşen-sapmalı`** kovasına.
+⇒ **Fixture ŞİMDİDEN iki-eksenli kurulur: DÖRT kadran vakası, hücre başına bir.**
+⇒ `T-334` pini RAG renk değişimlerini **beklenen-değişim listesiyle** taşır.
+
+### `§3` · `Q8` — KALEM `22` **`T-334`'E GİRER**
+
+> **Paket gerekçesi *"iyimserlik"* DEĞİL, FORMÜL-KANON — ve kanon YÖN-AGNOSTİKTİR.**
+
+Aynı formül katmanında **ikinci bir migration turu açmak maliyetin kendisi**.
+
+⛔ **Ve karşı-örneğin varlığı hikâyeyi BOZMAZ, ölçümü OLGUNLAŞTIRIR:**
+`Z65 §6`'nın *"üç vaka tek yön"* kaydına **karşı-örnek satırı** eklenir, ve
+*"sistematik iyimserlik"* iddiası **"BASKIN YÖN"** olarak **yumuşar**.
+
+### `§4` · DÖRT KÜÇÜK
+
+| # | hüküm |
+|---|---|
+| `Q9` UOM | **`İlke 1`: tüketicisiz inşa YOK.** `Faz-2-aday` kovasında; Excel'de kullanıcı-UOM girişi **grid işine bağlı** ⇒ yerleşimi **o iş belirler** |
+| `Q10` kaynaksız-8 | adlar ürün sahibine listelenir, birlikte süzülür. Kural hazır: **kaynaksız kalem `Faz-2-ŞART` OLAMAZ** |
+| `Q11` `TOTAL_PLANNED_LTA` | **kaynağı varsa evrende KALIR** (LTA görünürlüğü **meşru** rapor kalemi); kaynaksızsa `Q10` süzgecine girer |
+| `Q12` `weighted_avg` | **`AD-BORCU` listesine.** Davranış **doğru** — `recomputeRatioFromChildren` ölçümü kanıtladı; **ad** yanıltıcı. ⛔ `T-334`'e **girmez**: ad-borcu paketi **eşleme-sonrası tek dokunuş** |
+
+### `§5` · İKİ KAYIT
+
+#### `5a` · ⛔ `B1`'İN DERSİ KAPI AİLESİNE GENELLENİR — **`G5`'in `money-float` hâli**
+
+```
+money-float'un DOSYA LİSTESİ  =  ELLE YAZILMIŞ EVREN
+G5 yasası:  yazılmış  <  taranmış  <  türetilmiş
+```
+⇒ **Kalıcı düzeltme listeye-ekleme DEĞİL, Alan A ÜYELİĞİNİN TÜRETİLMESİDİR.**
+`ADR 0007 E10` testi **zaten bir tanımdır** (*"para üreten dosya"*) ⇒ **grep-türetilebilir.**
+**`T-334` sonrası küçük task.**
+
+📌 **Ve *"kapıyı açan turun kendi kodu ilk yakalanan oldu"*** — kuralın **yazıldığı gün
+kendini doğrulaması**, sistemin **sağlığıdır**, bir utanç değil.
+
+#### `5b` · ⭐ BOŞ `Faz-3` KOVASI — **SÜZGEÇ DİSİPLİNİNİN NEGATİF KANITI**
+
+`A1`'in `YOK` yerleşimi: `Faz-2-ŞART 6` · `aday 5` · **`Faz-3` 0**.
+
+> ### **BİR KOVA, DOLDURULMAK İÇİN VAR DEĞİLDİR.**
+> **Bu, o cümlenin İLK ÖLÇÜLMÜŞ VAKASI:** *"ölçek-hazırlığı kalemi ÇIKMADI, UYDURULMADI."*
+
+📌 Bir süzgeç, **her kovasına en az bir kalem koyduğunda** süzgeç olmaktan çıkar;
+boş bir kova **süzgecin çalıştığının kanıtıdır**.
+
+### `§6` · SIRA
+```
+1  B-KAPANIŞ TURU (6 kalem)  →  PUSH
+2  T-334   Q6/Q7/Q8 hükümlü · 9+1 kalem · plans=0 PENCERESİ AÇIKKEN
+3  A1 çıktısının KOVA-YERLEŞİM SÜZGECİ (Q10 listesiyle birlikte ürün sahibine)
+```
+**Onaylı task'lar:** `S3` ebeveyn `agreements.status` kapısı · `S4` bağ tekilliği ↔
+`TERMINATED`/soft-delete · canlı yoldaki `?? 0` **yeniden kararı** *(`T-027`'nin bilinçli
+kararı ⇒ düz düzeltme DEĞİL)* · **çift LTA implementasyonu**.
