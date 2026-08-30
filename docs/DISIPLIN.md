@@ -4971,3 +4971,61 @@ Kısmi-doğru bir sayı **hiçbir şey sormaz** — tablolarda oturur, toplanır
 📌 `§2.5`'in *"sessiz sıfır yasağı"* bir **kod yazma** kuralıydı; bu onun **düzeltme
 değerlendirme** kuralı. Ve `DISIPLIN`'in *"beklenen yöne yanılan hata daha tehlikelidir"*
 maddesiyle aynı aile: **tehlikeli olan yanlışlığın büyüklüğü değil, GÖRÜNÜRLÜĞÜNÜN azlığı.**
+
+---
+
+## **RANDEVU-PİNİ**: BUGÜNÜ PİNLE, YARINI İŞARETLE (ZORUNLU — ve `T-084`'ün ÇÖZÜLMÜŞ FORMU)
+
+> **Bir sapmayı BUGÜNKÜ hâliyle pinle, ve düzeltme gününü ŞERHTE işaretle.**
+> **O gün kırılan test bir SÜRPRİZ değil, bir RANDEVUDUR.**
+
+**Üç vaka, üç ayrı turda (2026-08-30/31):**
+
+| # | pin | randevu |
+|---|---|---|
+| 1 | `lta-lifecycle…:436` `BASE_TO = GSV − on` | `T-334` kadranı ⇒ **kırıldı, dönüştürüldü** |
+| 2 | `formula-parser` üstel gösterim (`1e-7 → null`) | `T-341` ⇒ **bekliyor** |
+| 3 | dört kadran `liveRag` **literal** sabitleri | `T-342` ⇒ **bekliyor** |
+
+### ⭐ VE BU, `§7.1 T-084`'ÜN ÇÖZÜLMÜŞ FORMUDUR
+`T-084` şunu söylüyordu: ***"bir hatayı belgelemek, onu KORUMA ALTINA ALIR"*** — çünkü
+gelecekteki okuyucu yorumu görüp *"dokunma"* diye anlar.
+```
+ŞERH tek başına        →  belgeleme KORUR      (T-084 problemi)
+ŞERH + RANDEVU-PİNİ    →  belgeleme TARİHLER   (çözüm)
+```
+Fark **şerhin ikinci yarısında**: *"bu **BEKLENEN** bir değişimdir, bir regresyon DEĞİL"* +
+**beklenen yeni hâlin YAZILI olması**. Pin o zaman bir savunma değil, bir **teslim tarihi** olur.
+
+📌 **Ve bu, BEKLENEN-DEĞİŞİM LİSTESİNİN test katmanına gömülmüş hâlidir** — liste raporda
+yaşar ve okunmayabilir; randevu-pini **koşumda** yaşar ve **kaçınılmaz olarak** okunur.
+
+**Pratik:** bir sapmayı *"bu turun kapsamı değil"* diye bıraktığında sor —
+***"bugünkü hâlini pinledim mi, ve randevuyu yazdım mı?"*** İkisi yoksa sapma **kayıt değil,
+sadece bir cümledir**.
+
+---
+
+## BİR HÜKMÜN GEREKÇESİ, ALTINDAKİ MEKANİZMA DEĞİŞİNCE **TAŞINMAZ — YENİDEN KURULUR** (ZORUNLU)
+
+> **Katman notu — `BİR GEREKÇE, DAYANDIĞI ÖLÇÜMÜN TARİHİYLE YAŞAR` (`Z60`) kuralının
+> HÜKÜM katmanına genellemesi.**
+
+`Z60` bir **ölçümün** tarihlenmesiydi. Bu onun bir üst katmanı:
+
+> ### **MEKANİZMAYI DEĞİŞTİREN TUR, ÜSTÜNDEKİ HÜKÜMLERİN GEREKÇELERİNİ YENİDEN KURAR.**
+
+Ölçülmüş vaka (2026-08-31, `S1` ∥ `T-342`):
+```
+S1 hükmü verildiği gün    tetikleyici = GP_ROI_PCT null   (payda INCR_PROMO_SPEND, tam 0)
+T-342 kadranı inince      GP_ROI_PCT RAG'ın GİRDİSİ OLMAYACAK  → iTO / iGP olacak
+⇒ HÜKÜM aynı kalır ("tanımlı-yokluk"), GEREKÇESİ YENİDEN ÖLÇÜLMELİ
+```
+
+⛔ **Tehlike şudur:** hüküm doğru kalır, gerekçesi çürür, ve kimse fark etmez — çünkü
+**hükmün kendisi hâlâ makul görünür**. Bir gün biri gerekçeyi okur, mekanizmada karşılığını
+bulamaz, ve **hükmü çöpe atar** *(ya da daha kötüsü: gerekçeyi doğru sanıp yanlış yere uygular)*.
+
+**Pratik:** bir mekanizmayı değiştiren turda sor — ***"bu mekanizmaya DAYANAN hangi hükümler
+var, ve gerekçeleri hâlâ ölçülebilir mi?"*** Ölçülemiyorsa hükmü **iptal etme** — gerekçesini
+**yeniden kur**.

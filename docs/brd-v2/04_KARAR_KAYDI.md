@@ -6818,3 +6818,63 @@ TL    "hangi taraf sapmıştı varsayımım yanlıştı" → FE zaten kanonikti,
      W3-baseline AÇILMADAN ÖNCE: kalan formül işleri + baseline ÖNKOŞULLARI TEK GÖRÜNÜMDE
      beklenti: ŞART-6'nın ÇOĞU T-334/T-342 ile kapanmış çıkar, W3'ün önü TEMİZ
 ```
+
+---
+
+## `Z69` — DOSYA ADI HÜKMÜ: **AD DEĞİŞİR *VE* `F12` İÇERİDE KALIR**
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+
+### `§1` · HÜKÜM — ikisi arasında **seçim değil, İKİSİ BİRDEN**
+```
+KPI_EVRENI_52_GRUP_AGACI.md   →   KPI_EVRENI_GRUP_AGACI.md
+                                   + içeride F12 izi
+```
+
+**Gerekçe — *"engeli okuyan tur"* yasasının AD-UZAYI hâli:**
+> ### **BİR DOSYA ADI, İÇERİĞİ OKUNMADAN ÖNCE OKUNAN TEK SATIRDIR.**
+> `52`'yi taşıyan bir ad, `F12`'yi **asla göremeyecek** okuyuculara (**dizin listesi · link ·
+> atıf**) **düzeltilmemiş sayıyı beyan etmeye devam eder.**
+
+📌 *"Teslim edilmeyen manşet"* vakasının **dosya sistemi kopyası**.
+
+### `§2` · VE `Z67`'NİN KENDİ KURALI ADA DA İŞLER
+> `Z67`: *"sayısı **listeden türetilir**, hiçbir **başlıktan** alınmaz."*
+> ### **BİR DOSYA ADI DA BİR BAŞLIKTIR.**
+⇒ Ad **sayısız** yeniden doğar; sayı **içerikte**, **türetilmiş** ve **`F12` izli** yaşar.
+
+### `§3` · ŞEKİL
+```
+1  ad sayısız doğar          KPI_EVRENI_GRUP_AGACI.md
+2  eski adın atıfları taranır  rg -i  ⇒ ÖLÜ LİNK KALMAZ   (T-307 navigasyon dersi)
+3  içeride F12:  "önceki ad ..._52_... idi; 52 BAŞLIK-TOPLAMIYDI, Z67'yle düştü"
+```
+⇒ Gelecekte evren sayısı **bir daha değişirse** *(ve `T-340`'ın tam-metin okuması `49`'u da
+oynatabilir)* **ad bir daha yalan söylemez.**
+
+### `§4` · ÜÇ TEYİT
+
+**`4a` · RANDEVU-PİNİ** — adlandırma yerinde, üç-vakalık desen `DISIPLIN`'e yazıldı.
+`T-084`'ün **çözülmüş formu**: `şerh + randevu-pini` ⇒ **belgeleme artık KORUMUYOR, TARİHLİYOR.**
+
+**`4b` · `ragAmberThreshold`** — refleks doğru, sınır doğru (*"kaldırma bu turun işi değil"*).
+⛔ **Ve kadran inince alan ölü kalırsa bu, `§2.3`'ün DAYANDIĞI-ALAN DEĞİŞİMİ vakasıdır:**
+```
+KURAL yaşar        "hardcoded yasak, konfigürasyondan"
+NE'nin konfigüre edildiği DEĞİŞİR
+⇒ kadranın kendisi bir KONFİGÜRASYON SORUSU doğurur:
+   eşikler mi? · kadran SINIRLARI mı? · hiçbiri mi?
+```
+O soru, **tek-eksen alanının kaderiyle BİRLİKTE TEK TASK'ta** cevaplanır.
+**`İlke 3` gözüyle:** *"kadran kuralı konfigüre edilebilir olmalı mı?"* → **ürün sahibine,
+ÖLÇÜMDEN SONRA.**
+
+**`4c` · HÜKÜM-GEREKÇE KATMANI** — *"bir hükmün gerekçesi, altındaki mekanizma değişince
+taşınmaz, yeniden kurulur"* → `DISIPLIN`'e, **`Z60`'ın yanına katman notuyla** yazıldı.
+
+### `§5` · `W3` BRIEF'İNE ŞİMDİDEN İKİ SATIR
+```
+1  RİSK NOTU     veri-sıfır dünyada yeşil olan her şey, ilk gerçek değer-dağılımında
+                 YENİDEN SINANMAMIŞ demektir (Z68 §3b)
+2  T-341         üstel gösterim — ikinci ateşleme dalgasının BİLİNEN İLK ADAYI
+```
