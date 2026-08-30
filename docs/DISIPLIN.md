@@ -5101,3 +5101,65 @@ maddesinin **index tarafındaki** hâli.
 
 **Pratik:** commit'ten önce **`git diff --cached --stat`** — ve bir ajan koşarken
 `git commit -- <yol>` kullan.
+
+---
+
+## YANLIŞ ÖNCÜL, **DOĞRU TARAMAYI YANLIŞ EKSENE KİLİTLER** (ZORUNLU)
+
+> **Bir taramanın titizliği, ÖNCÜLÜNÜN doğruluğunu telafi etmez.**
+> **Yanlış öncül, taramayı kusursuz biçimde YANLIŞ YERDE yaptırır.**
+
+Ölçülmüş vaka (2026-08-31, `Z71 §0`):
+```
+ÖNCÜL   "AMBER İLK KEZ DOĞUYOR"            ← hüküm-şartı olarak YAZILDI
+ÖLÇÜM   GP_ROI_PCT rag_amber = 10          ⇒ eski model AMBER ÜRETİYORDU
+BEDEL   tüm A0 taraması "yeni bir rengin TANINMAMASI" ekseninde yapıldı
+GERÇEK  risk RED→AMBER değil  RED→GREEN'di — ve o eksende HİÇ TARAMA YOKTU
+```
+Tarama **kusursuzdu**: pozitif kontrollü, `default` dalları ayrı sayıldı, tip birleşiminde
+adı geçmek *"tanıma"* sayılmadı. **Hepsi doğru — ve hepsi yanlış eksende.**
+
+📌 **Ailedeki yeri:** `EVREN, DEĞİŞKENİN GEÇTİĞİ YERLERDEN TÜRETİLİR` **evreni** konu alıyordu;
+bu **ekseni** konu alıyor — evren doğru, **soru** yanlış.
+
+**Pratik:** bir taramayı başlatmadan önce **öncülü ÖLÇ**, özellikle *"ilk kez"* · *"hiç yok"* ·
+*"bugüne kadar"* biçimindeki cümleleri. ⛔ Ve öncülü **kim yazdıysa** o sorgulamayabilir —
+`Z71`'de öncülü **Team Lead ölçtü**, **ürün sahibi hüküm-şartı yaptı**, **ikisi de sorgulamadı**.
+
+---
+
+## UYARININ YERİNE **SESSİZLİK DEĞİL, KARŞI YÖNDE GÜVENCE** (ZORUNLU)
+
+`BEKLENEN YÖNE YANILAN HATA, TERS YÖNE YANILANDAN TEHLİKELİDİR` maddesinin **en pahalı biçimi**.
+
+```
+kayıp sanılan   uyarı → SESSİZLİK        ("bir şey eksik kaldı")
+gerçekte        uyarı → GÜVENCE          ("her şey yolunda" DENİYOR)
+```
+
+Ölçülmüş vaka (`T-342` review `B1`): kadran inişiyle `0 < ROI < 10` olan bir plan
+`RED` → **`GREEN`**. Submit uyarısı gitti, Finance'ın risk raporundan **düştü**, ve ekranda
+**"İYİ"** yazmaya başladı.
+
+> ### **BİR MODEL DEĞİŞİKLİĞİNİN GEÇİŞ MATRİSİ, YALNIZ *"NE KAYBOLDU"*YU DEĞİL
+> ### ***"YERİNE NE KONDU"*YU DA SAYMALIDIR.**
+
+⛔ Ve bu vakanın kanıtı **diff'in KENDİ fixture'larında ölçülü duruyordu**
+(`kpi-engine.service.spec.ts:259`, `:433` — ikisi de `AMBER→GREEN`), **sadece adı konmamıştı.**
+⇒ `BİR RATCHET, TAŞIDIĞINI ANLAMAZ` maddesinin **test tarafı**: bir fixture bir geçişi
+**ölçebilir** ve yine de **kimse onu bir DEĞİŞİM olarak okumamış** olabilir.
+
+---
+
+## ⭐ KAPI, KAPIYI YAZAN TURU DURDURUR — **ARTIK BİR DESEN** (ZORUNLU)
+
+| # | kapı | durdurduğu |
+|---|---|---|
+| 1 | `money-float` Alan A üyeliği | **açıldığı ilk koşumda** kapıyı açan turun **kendi kodunu** (`T-291`'in `Number()`'ı) |
+| 2 | `T-342` kabul ölçütü *"bir tüketici tanımıyorsa DUR"* | **yazıldığı dalgada** o dalganın **kendi push'unu** |
+
+> **Bir kuralın ilk kurbanı, çoğu zaman onu yazan turdur — ve bu bir UTANÇ değil,
+> kuralın ÇALIŞTIĞININ EN ERKEN KANITIDIR.**
+
+📌 `BİR KURALI YAZDIĞIN TUR, O KURALI EN ÇOK İHLAL ETTİĞİN TURDUR` maddesinin **olumlu
+yüzü**: orada ihlal **fark edilmeden geçiyordu**; burada kapı **onu yakalıyor**.

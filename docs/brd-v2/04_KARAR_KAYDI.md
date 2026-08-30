@@ -6904,6 +6904,16 @@ KADRAN SONRASI  iki farklı kötü-durum   ⇒  UYARI KATMANI DA O AYRIMI KONUŞ
 > Bu düzeltme `AMBER`'ı **tam amaçlandığı yere** koyar.
 
 ### `§1a` · ⛔ VE BİR GENELLEME TARAMASI ŞART (`D1` refleksi)
+
+> ⚠️ **`F12` — ÖNCÜL DÜZELTİLDİ (2026-08-31, `Z71 §0`).** Bu bölüm
+> ***"`AMBER` İLK KEZ DOĞUYOR"*** diyordu. **YANLIŞ.** Ölçüldü:
+> `main.kpis.GP_ROI_PCT` `rag_green=20 · rag_amber=10` ⇒ eski tek-eksen model
+> `10 ≤ ROI < 20` aralığında **`AMBER` ÜRETİYORDU.**
+> **Doğrusu:** *"**negatif ROI'den** `AMBER` — eşik modelinin **ÜRETEMEYECEĞİ** renk."*
+> ⛔ **Ve bedeli:** yanlış öncül, `T-342`'nin **tüm `A0` taramasını** yanlış eksene
+> kilitledi — gerçek risk `RED→AMBER` değil **`RED→GREEN`**'di.
+> *(Öncülü Team Lead ölçtü, ürün sahibi hüküm-şartı olarak yazdı; ikisi de
+> sorgulamadı. Eski metin **silinmedi** — append-only iz.)*
 > **`ragStatus === 'RED'` literali BAŞKA NEREDE OKUNUYOR?**
 
 Submit uyarısı **bir tüketiciydi**. Filtreler · raporlar · widget'lar aynı
@@ -6958,3 +6968,87 @@ yeni       tetikleyici = INCR_PROMO_SPEND === 0 — AÇIK BİR KAPI (mutasyonla 
 ```
 ⛔ **Ölçülmeseydi hüküm YANLIŞ BİR GEREKÇEYLE yaşayacaktı** — ve kadran onu **sessizce
 geçersiz kılmıştı**.
+
+---
+
+## `Z71` — `Q13`: KADRAN **TEK OTORİTE**, ama DÜŞÜK-ROI **SESSİZLEŞMEZ** — `TARGET-ROI` EKSENİNE TAŞINIR
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `T-342` review `B1`/`B2` · geçiş matrisi ölçümü (`GP_ROI_PCT green=20 · amber=10`)
+
+### `§0` · ⛔ ÖNCÜL HATASI — VE PAYLAŞILMIŞ SORUMLULUK
+```
+YAZILAN (Z68 §1a)   "AMBER İLK KEZ DOĞUYOR"
+ÖLÇÜM               GP_ROI_PCT rag_amber = 10   ⇒ eski model AMBER ÜRETİYORDU
+DOĞRUSU             "NEGATİF ROI'den AMBER — eşik modelinin ÜRETEMEYECEĞİ renk"
+```
+⛔ **Bedeli bir yazım hatası değil, bir EKSEN kilitlenmesiydi:** `T-342`'nin tüm `A0`
+taraması *"yeni bir rengin tanınmaması"* ekseninde yapıldı; **gerçek risk `RED→GREEN`**'di
+ve o eksende **hiç tarama yoktu.**
+
+> ### **YANLIŞ ÖNCÜL, DOĞRU TARAMAYI YANLIŞ EKSENE KİLİTLER.**
+
+📌 Öncülü **Team Lead ölçtü**, **ürün sahibi hüküm-şartı olarak yazdı**, **ikisi de
+sorgulamadı**. `Z68 §1a`'ya `F12` iziyle düzeltildi.
+
+### `§1` · HÜKÜM — `(c)`'nin KAPSAMI + `(a)`'nın KORUMASI, `(a)`'nın AD-HATASI OLMADAN
+
+⭐ **Anahtar yine `Q6` yasası:** *bir çelişki, **iki eksenin tek kaleme sıkışmasından** doğar.*
+```
+ESKİ RAG    YÖN (kazanıyor mu?)  ×  BÜYÜKLÜK (ne kadar?)   TEK RENGE SIKIŞMIŞTI
+            "zarar eden plan"  ile  "kârlı ama az kârlı plan"   AYNI RED'i giyiyordu
+```
+⛔ **Bu da bir BİLGİ KAYBIYDI — sadece ALARM YÖNLÜ olduğu için kimse şikâyet etmiyordu.**
+
+Kadran **yön eksenini** temiz aldı. **Büyüklük ekseni ZATEN SİSTEMDE VAR** ve adı
+**Target-ROI** — `ragGreenThreshold`'un **yaşayan tek tüketicisi** (`plan.service:2892`),
+ki bu `T-342 A0b` ölçümünde çıkmıştı.
+
+```
+RAG (kadran, TEK OTORİTE)   RED   "ciro kaybı"       → submit uyarısı + risk raporu
+                            AMBER "kârsız büyüme"    → submit uyarısı + risk raporu
+TARGET-ROI (AYRI EKSEN)     GREEN ∧ ROI < hedef      → "hedefin altında" uyarısı
+                                                       + risk raporunda AYRI kova/filtre
+```
+
+### `§1a` · GEÇİŞ MATRİSİNİN **ÜÇ SATIRI DA** KAPSANIYOR
+
+| dilim | ÖNCE | SONRA | yeni kapsama |
+|---|---|---|---|
+| `iGP ≤ 0` (ROI ≤ 0) | `RED` | `AMBER` | **Amber uyarısı** (yeni) + risk raporu |
+| `0 < ROI < 10` | `RED` | `GREEN` | **below-target uyarısı** + Finance kovası |
+| `10 ≤ ROI < 20` | `AMBER` | `GREEN` | **below-target uyarısı** + Finance kovası |
+
+> ### **HİÇBİR DİLİM SESSİZLEŞMİYOR — VE *"YANLIŞ YÖNDE SESLİ GÜVENCE"* ÖLÜYOR.**
+
+⭐ Ekran **`GREEN` + "hedefin altında"** rozetini **birlikte** gösterebilir — bu bir çelişki
+değil, **iki eksenin ayrı konuşmasıdır.** Tam `S1` deseninde: **üçüncü durum, tanımlı ve görünür.**
+
+`finance-reporting.service.ts:872` filtresi `['RED','AMBER']` **+ `belowTargetRoi`** olarak
+genişler ⇒ **Finance'ın evreni KÜÇÜLMEZ, DAHA DOĞRU ADLANIR.**
+
+### `§2` · `B2` HÜKMÜ — **MİGRATION AYNI DALGAYA**
+> ⛔ ***"Faz-1: yalnız grid"* notu tam `T-084` PROBLEMİ olurdu — yarım durumu
+> BELGELEYİP KORUMAK.**
+
+Ve `plans=0` penceresi **her e2e sonrası açılıyor** ⇒ kolon **bugün bedelsiz**.
+Üç yüzey (`PlanList` · `GrandTotals` · `finance-reporting`) **+ `approval-workflow`** ayrımı
+**bu dalgada tanır**. `T-342`'nin kendi kabul ölçütü (*"bir tüketici tanımıyorsa DUR"*)
+zaten bunu istiyor.
+
+### `§3` · `T-343` — HÜKÜM DEĞİŞMİYOR, **GEREKÇESİ GÜÇLENİYOR**
+| alan | yeni gerekçe |
+|---|---|
+| `ragAmberThreshold` | **YİNE ÖLÜR** — yeni dünyada *"düşük ROI"* **tek dilim**: hedefin altı. İkinci bir **ara eşik** `İlke 1` spekülatif; bir tenant **merdiven** isterse **olay-tetikli** |
+| `ragGreenThreshold` | **YAŞAR ve YENİDEN ADLANIR** → **`targetRoiThreshold`**. ⛔ **Artık AD-BORCU DEĞİL, BU DALGANIN PARÇASI** — çünkü **below-target uyarısının okuduğu kalem TAM O** |
+
+⇒ `T-343` **revize kapsamla** açılır: `amber ölümü` + `green→target yeniden adlandırma` +
+`below-target uyarı/kova inşası`. **`Q13`'ün uygulaması ile `T-343` AYNI İŞ ÇIKTI.**
+
+### `§4` · ÜÇ KAYIT
+**`4a`** *"Yanlış öncül, doğru taramayı yanlış eksene kilitler."*
+**`4b`** *"Beklenen yöne yanılan hata, ters yöne yanılandan tehlikelidir"* — **bu turun hâli:**
+**uyarının yerine SESSİZLİK değil, KARŞI YÖNDE GÜVENCE koyar.**
+**`4c`** ⭐ **REVIEW'UN `PUSH-EDİLEMEZ`'i KAYDA:** `T-342`'nin kabul ölçütü
+(*"tüketici tanımıyorsa DUR"*) **yazıldığı dalgada çalıştı** — **kapı, kapıyı yazan turu
+durdurdu.** ***Bu artık bir DESEN.***
