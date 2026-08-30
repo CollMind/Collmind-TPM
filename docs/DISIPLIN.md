@@ -4820,3 +4820,73 @@ kusur **kuralda değil, ARAÇTA**.
 > **Refleks üretmeyen bir kuralın çözümü, kuralı TEKRARLAMAK değildir — VARSAYILANI
 > DEĞİŞTİRMEKTİR.** *(`§4.2`'nin *"kuralı hatırlamak yerine ARACI çağır"* maddesinin
 > arama tarafı.)*
+
+---
+
+## BİR LİSTEDEN DÜŞEN KAVRAM **YOK OLMAZ** — BAŞKA BİR ADIN ÜSTÜNE OTURUR (ZORUNLU)
+
+> **Bir evren eksikse, eksik kavramın İHTİYACI ortadan kalkmaz.**
+> **İhtiyaç kodda doğar, ve listede karşılığı olmadığı için EN YAKIN ADI ELE GEÇİRİR.**
+
+Ölçülmüş zincir (2026-08-30, `Z65 §0` — bir **derleme-kaybının ilk ölçülmüş maliyeti**):
+```
+Section_05 derleme-kaybı  →  NIV grubu listeden DÜŞTÜ
+                          →  NIV İHTİYACI kodda DOĞDU (off-invoice tabanı için gerekliydi)
+                          →  listede NIV KAVRAMI YOKTU
+                          →  ihtiyaç TO'NUN ÜSTÜNE YAMANDI (migration 1781)
+                             gerekçe: "BRD NIV semantiği" — BRD'nin TURNOVER dediği yerde
+```
+
+**Bedel — üç kalem:**
+```
+1  bir KAVRAM-YAMALAMA migration'ı
+2  ÜÇ-YÜZEY çelişkisi   (DB · grid:218 · grid:561 — aynı kod, iki farklı sayı)
+3  GP/ROI İYİMSERLİĞİ   (beş kalem yanlış tabana bağlandı)
+```
+
+⛔ **VE YAMAYI YAPAN TUR KÖTÜ BİR TUR DEĞİLDİ — EKSİK-EVRENLE ÇALIŞAN BİR TURDU.**
+Gerekçesi kaynağa atıflıydı, ölçümü kendi içinde tutarlıydı, testleri yeşildi. Eksik olan
+tek şey **evrendi**.
+
+📌 **Ailedeki yeri:** `EVREN, DEĞİŞKENİN GEÇTİĞİ YERLERDEN TÜRETİLİR` maddesi bir taramanın
+evrenini konu alıyordu; bu onun **ürün** tarafı — **bir ÜRÜN TANIMININ evreni eksikse,
+kusur bir taramada değil ŞEMADA doğar.**
+
+**Pratik:** bir kavramı bir listeden düşürürken sor — *"bu kavrama duyulan İHTİYAÇ da
+düşüyor mu?"* Düşmüyorsa liste değil, **borç** kısaltılmıştır.
+
+### ⇒ VE TERS-YÖNLÜ TEŞHİS ARACI
+Bir kodda *"kaynağa atıfla ama kaynağın demediği bir şeyi yapan"* bir düzeltme
+bulduğunda, ilk hipotez **"o tur hatalıydı"** olmasın — **"o tur EKSİK BİR EVRENLE
+çalışıyordu"** olsun. İkincisi doğruysa, düzeltme *"geri-al"* değil
+**KAVRAM-AYRIŞTIRMA**dır: iki meşru kavram tek ada sıkışmıştır, ikisi de yaşamalıdır.
+
+---
+
+## SAPMALARIN **YÖNÜ** RASTGELE DEĞİLSE, SİSTEMATİK BİR BASINÇ VAR DEMEKTİR (ZORUNLU)
+
+> **Tek bir sapmanın yönü bir kazadır. ÜÇ sapmanın AYNI yöne bakması bir DESENDİR —
+> ve desen, tek tek düzeltmelerden BAŞKA bir şey ister.**
+
+Ölçülmüş vaka (2026-08-30, `Z65 §6`) — üç bağımsız sapma, **üçü de aynı yöne**:
+
+| # | sapma | yön |
+|---|---|---|
+| 1 | `T-291`: dört `\|\| 0` ⇒ eksik fiyat, LTA harcaması **küçük** | **ROI İYİMSER** |
+| 2 | GP tabanı `NIV` ⇒ off-invoice kârın **payına girmiyor** | **ROI İYİMSER** |
+| 3 | off-invoice tabanından `LTA_Off` düşülmesi ⇒ taban **küçük** | **ROI İYİMSER** |
+
+Üçü **farklı dosyalarda, farklı turlarda, farklı gerekçelerle** doğdu. Ortak yanları
+yalnız **yön**.
+
+⛔ **Ve yön, bu üründe TARAFSIZ DEĞİL:** ROI'yi iyimser gösteren bir hata, bir promosyonun
+**onaylanmasına** yol açar — ters yönlü hata yalnız gereksiz bir soruya. `DISIPLIN`:
+*"beklenen yöne yanılan hata, ters yöne yanılandan tehlikelidir"* — bu onun **toplu** hâli.
+
+**Pratik — bir sapma bulduğunda İKİ soru:**
+```
+1  bu sapma hangi YÖNE yanılıyor?        ← her zaman yaz
+2  önceki sapmalar hangi yöne yanılmıştı? ← ÜÇÜNCÜDE bir DESEN aranır
+```
+Desen çıkarsa teşhis artık *"üç bug"* değil, **bir BASINÇ** — ve çözümü tek tek düzeltme
+değil, o basıncı ölçen **kalıcı bir kapıdır**.

@@ -6232,6 +6232,11 @@ ve yanıltıcıdır**.
 
 ### ⭐ `§5` · YENİ GİRDİ — `DEMO_EXCEL_KPI_TACTIC_REFERANSI.md`
 
+> ⚠️ **`F12` — REVİZE EDİLDİ (2026-08-30, `Z65 §4`).** Bu bölüm karşılaştırma
+> tabanını *"Excel"* diye okutuyordu. **Doğrusu:** taban **BRD-`A1` `52`** (kalem
+> LİSTESİ buradan); **Excel = FORMÜL-KANIT KAYNAĞI, evren DEĞİL.**
+> *(Aşağıdaki metin **silinmedi** — append-only izi.)*
+
 **`W2` eşlemesi artık ÜÇ-KAYNAKLI:**
 ```
 Excel ~60 kalem (FORMÜLLÜ)  ↔  BRD §5.3  42  ↔  canlı ÜRÜN  24 aktif
@@ -6409,3 +6414,135 @@ atıflı) → **`§7` sınıfının İLK OLUMLU vakası**.
 (*"üçüncü ihlal yerleşimin kusurudur"*). Çözüm **kuralı tekrarlamak değil, VARSAYILANI
 DEĞİŞTİRMEK**: ilk tarama **her zaman** `rg -i`/`grep -i`; case-duyarlılık ancak
 **bilinçli gerekçeyle** kaldırılır.
+
+---
+
+## `Z65` — **FORMÜL-KANON HÜKMÜ**: `1781` bir SAPMA, ve kök-neden **DERLEME-KAYBI**
+
+> **Tarih:** 2026-08-30 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `docs/research/A0_KAVRAM_ESLEME_RAPORU.md` (`DALGA-A`) + Team Lead'in
+> birinci-elden doğrulaması (`1780`/`1781` metinleri · canlı `main.kpis` · frontend `:218`/`:561`)
+
+### `§0` · ⭐ KÖK-NEDEN ZİNCİRİ — beş soruyu **tek hikâyeye** bağlar
+
+```
+Section_05 DERLEME-KAYBI  →  NIV grubu listeden DÜŞTÜ            (§6-1'de kanıtlandı)
+                          →  NIV İHTİYACI KODDA DOĞDU            (off-invoice tabanı için GEREKLİYDİ)
+                          →  listede NIV KAVRAMI YOKTU
+                          →  ihtiyaç TO'NUN ÜSTÜNE YAMANDI       (1781, "BRD NIV semantiği")
+                             ⚠️ BRD'nin "Turnover" dediği yerde
+```
+
+⛔ **`1781` KÖTÜ BİR TUR DEĞİLDİ — EKSİK-EVRENLE ÇALIŞAN BİR TURDU.**
+
+> ### **BİR DERLEME-KAYBININ İLK ÖLÇÜLMÜŞ MALİYETİ**
+> ```
+> 1  bir KAVRAM-YAMALAMA migration'ı        (1781)
+> 2  bugünkü ÜÇ-YÜZEY çelişkisi             (DB · grid:218 · grid:561)
+> 3  GP/ROI İYİMSERLİĞİ                     (beş kalem NIV tabanlı)
+> ```
+> **Bir listeden düşen kavram yok olmaz — İHTİYAÇ hâlinde geri gelir ve BAŞKA BİR ADIN
+> ÜSTÜNE OTURUR.**
+
+### `§1` · `Q2` — `1781` **SAPMA**'dır, ama düzeltme **"geri-al" DEĞİL: KAVRAM-AYRIŞTIRMA**
+
+Kaynak-zincirin **üçü de** aynı şeyi söylüyor *(Excel formül sözlüğü · KPI-Library · BRD)*:
+```
+TO   =  GSV − TotalSpend(on+off)      ← iki AYRI kavram
+NIV  =  GSV − Spend_On                ← ikisi de MEŞRU, ikisi de GEREKLİ
+```
+
+| kalem | hüküm |
+|---|---|
+| **NIV** | **kendi kodlarıyla DOĞAR** — `BASE_NIV` · `PLANNED_NIV` · `INCR_NIV` *(`1781`'in yazdığı formüller **zaten bunlar**, yalnız **yanlış ada** yazılmış)* |
+| **TO** | **gerçek TO semantiğine DÖNER** — `1780`'in formülleri *(Excel'le **birebir** olduğu ölçüldü)* |
+| **frontend** | iki kopya **aynı dalgada** backend'e hizalanır |
+
+### `§1a` · ÜÇÜNCÜ-KOPYA SORUSU — **hüküm değil, KAYIT**
+> **Frontend formül HESAPLAMAZ; motor SONUCUNU gösterir.**
+
+Grid'in kendi formül-hesabı taşıması **temizlik-listesine SINIF-NOTU** olarak girer.
+Bugün bir hüküm verilmiyor — ama sınıf **adlandırıldı**.
+
+### `§1b` · ⛔ ACİLİYET GEREKÇESİ **ÖLÇÜMDE DURUYOR** — `plans = 0`
+```
+BUGÜN      kavram-ayrıştırma migration'ı BEDELSİZ
+           (dokunulacak plan-verisi YOK; yalnız kpi-TANIM tablosu)
+İLK GERÇEK MÜŞTERİ PLANI GİRDİĞİ GÜN
+           bu iş VERİ-MİGRATION'ına döner
+```
+> **VERİ-SIFIR PENCERESİ KAPANMADAN İNMELİ.**
+> *(`T-273` ailesinin **olumlu** yüzü: `0`-satır bir körlük kaynağıdır — ama bir
+> **fırsat penceresi** de olabilir, ve pencerenin kapanış tarihi **yazılabilir**.)*
+
+### `§2` · `Q1` — `AD-BORCU` **BU HÜKÜMLE KAPANIYOR**, *"ertele"* YOK
+Dört kalem `Q2`'nin kavram-ayrıştırmasının **içinde** çözülür.
+⛔ **Yeniden-adlandırma DEĞİL:** NIV'e **yeni kod**, TO'ya **anlam-iadesi**.
+Erteleme gerekçesi olabilecek tek şey **veri-maliyetiydi — sıfır**.
+
+### `§3` · `Q3` — GP TABANI **`TO`**'dur *(gerçek TO: on+off düşülmüş)*
+```
+Excel-kanonik   GP = Turnover − COGS
+iş-mantığı      off-invoice harcama GERÇEK PARADIR
+                kârın hesabına girmemesi ROI'yi YAPISAL-İYİMSER yapar
+ölçüm           beş GP/ROI kalemi BUGÜN NIV tabanlı
+```
+`Q2` ayrıştırması inince GP formülleri **`TO`'ya bağlanır**.
+⚠️ **RAG renkleri DEĞİŞECEK — bu bir DÜZELTMEDİR, regresyon değil**; pin bunu
+**"beklenen-değişim" listesiyle** taşır.
+
+### `§4` · `Q4` — EVREN **`52` (BRD-`A1`)** KALIR · `Z62 §5` tabanına **`F12`**
+
+> **`F12` DÜZELTMESİ** *(eski kayıt silinmez — üstüne yazılır)*:
+> `Z62 §5` karşılaştırma tabanını *"Excel"* diye okutuyordu. **Doğrusu:**
+> ```
+> TABAN          BRD-A1  52   ← kalem LİSTESİ buradan
+> Excel          FORMÜL-KANIT KAYNAĞI — EVREN DEĞİL, SEMANTİK REFERANS
+> ```
+> *(`§6-1` hükmü zaten verilmişti ve ürün sahibi teyitli; çelişki bu `F12` ile kapandı.)*
+
+**Kaynaksız-`8`** (`KPI 21-28`) evrenden **ATILMAZ** — `[KAYNAKTA YOK]` etiketiyle
+eşlemede **taşınır**, `YOK`-kova yerleşiminde süzgeç + ürün sahibi görüşüyle karara bağlanır.
+⛔ **Kaynaksız bir kalem `Faz-2-ŞART` OLAMAZ**: ya kaynağı bulunur, ya `Faz-3`/elenir.
+
+### `§5` · `Q5` — OFF-INVOICE TABANI **`NIV`**'dir · `LTA_Off` **DÜŞÜLMEZ**
+```
+Excel + BRD   HEMFİKİR:  CPPOff = NIV × pct   (NIV yalnız on-invoice düşer)
+kod           LTA_Off'u DA düşüyor  ⇒ taban KÜÇÜLÜYOR  ⇒ yine ROI-İYİMSER
+```
+⇒ **`T-291`'in kardeşi. KOD SAPMA.**
+
+### `§6` · ⛔ VE YÖN-DESENİ ARTIK **ÜÇ VAKADA AYNI**
+
+| # | sapma | yön |
+|---|---|---|
+| 1 | `T-291` dört `\|\| 0` (eksik fiyat ⇒ LTA harcaması küçük) | **ROI İYİMSER** |
+| 2 | GP tabanı NIV *(off-invoice kârın payına girmiyor)* | **ROI İYİMSER** |
+| 3 | off-invoice tabanından `LTA_Off` düşülmesi | **ROI İYİMSER** |
+
+> ### **SAPMALARIN YÖNÜ RASTGELE DEĞİLSE, SİSTEMATİK BİR İYİMSERLİK-BASINCI VAR DEMEKTİR.**
+> KPI-mühürleme işinin (`Faz-2-1i`) **çıkış gerekçesi zaten buydu** — şimdi **ölçülmüş
+> üç kanıtı** var.
+
+### `§7` · UYGULAMA SIRASI
+
+```
+1  B-DALGASI KOŞUYOR — DOKUNMA
+2  T-334  FORMÜL-KANON DÜZELTMESİ   ← Q2+Q3+Q5 TEK PAKET
+      B-kapanışı SONRASI kendi dalgasıyla
+      (B'nin LTA-taban-pini T-334'ün ZEMİNİNİ de hazırlıyor)
+   ⛔ ÜÇÜ AYRI İNERSE ÜÇ MİGRATION TURU — aynı formül-katmanı, TEK tur, TEK pin-seti
+3  A1 EŞLEMESİ ŞİMDİ KOŞABİLİR
+      eşleme "OLMASI GEREKEN"i (KANON) yazar
+      T-334'ün KAPSAMI da eşlemenin SAPMALI-KOVASINDAN doğar
+```
+
+### `§8` · ⭐ `K-2.2.8c` EMSALİNİN **İKİNCİ VAKASI** — ve **YÖN TERS**
+
+```
+K-2.2.8c   KOD DOĞRU  ·  KURAL YANLIŞ    → donmuş BRD ölçümle düzeltildi
+Z65        KURAL DOĞRU ·  KOD EKSİK-EVRENİN ÇOCUĞU → kod kaynağa döndürülür
+```
+
+> ### **İKİSİNİN ORTAK YASASI:**
+> ### **ÇELİŞKİYİ ÇÖZEN ŞEY OTORİTE DEĞİL — KAYNAK-ZİNCİR + ÖLÇÜM.**

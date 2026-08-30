@@ -446,3 +446,4 @@ status: active        # planned | active | closed
 - [[T-332]] Mock `findById` ↔ `findByIdForUpdate` **tek ayrımını siliyor** — unit katmanı `T-331` sınıfına **yapısal olarak kör**, ve **iki yönde birden** — `qa-engineer` — **todo**
 - [[T-329]] `getSpendTrend` **takvim-ayı** normalleştirme — ve `PREVIOUS_PERIOD` dalında **çift sayım** (2×) bulundu — **review**
 - [[T-333]] Yerel `getMonth()` ile `YYYY-MM` etiketi — **dokuz çağrı yeri**, TZ kayması; bugün ateşliyor mu **ölçülmedi** — **todo**
+- [[T-334]] **FORMÜL-KANON DÜZELTMESİ** — `TO`/`NIV` kavram-ayrıştırma + GP tabanı + off-invoice tabanı (`Z65`, **ÜÇ KALEM TEK PAKET**). ⛔ `plans=0` **penceresi**: bugün bedelsiz, ilk müşteri planıyla veri-migration'ına döner — **`W2 DALGA-B` kapanışı sonrası** — **blocked**
