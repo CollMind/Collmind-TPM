@@ -453,3 +453,4 @@ status: active        # planned | active | closed
 - [[T-338]] LTA taban formülünün **iki implementasyonu** — bu tur onları **eksik girdide ayrıştırdı** (biri fırlatıyor, biri `0`'lıyor) — **todo**
 - [[T-339]] **Alan A üyeliği TÜRETİLSİN** — `money-float`'un dosya listesi **elle yazılmış evren** (`G5`); `shared/lta` hiç ölçülmemişti — **blocked** (`T-334` sonrası)
 - [[T-340]] KPI evreni **adlı-kalem listesinden TÜRETİLSİN** — `"52"` onbir başlığın toplamıydı, `PSbM "(11)"` gerçekte **9** (Excel bağımsız teyit). ⛔ **kaynaksız-8 diye bir sınıf YOK** — hayalet slotlar (`Z67`) — **todo**
+- [[T-341]] Parser beyaz listesi **üstel gösterimi reddediyor** — `|v| < 1e-6` bir ara değere düştüğü an KPI **sessizce `null`** (`§2.5`). `T-334`'te **ölçüldü ve bugünkü hâliyle PİNLENDİ** — **todo**
