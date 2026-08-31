@@ -214,3 +214,63 @@ Kolonlar: `Current Fund · Selected Promotions' Planned Spend · Remaining Budge
 ---
 
 *Bu belge W2-eşleme dalgasının zorunlu okuma listesindedir. Eşleme çıktısı bu belgenin §6 sorularına cevap vermeden kapanmaz.*
+
+---
+
+## 8 · TTM ELIGIBILITY ENVANTERİ — özet (T-345, 2026-08-31)
+
+**Tam belge:** `docs/research/TTM_ELIGIBILITY_ENVANTERI.md` (dosya:satır kanıtlı).
+**Statü: DIŞ-GİRDİ.** TTM dondurulmuştur (`ADR 0001`); davranışı bir **girdidir**, kanıt değil
+(`CLAUDE.md §2.1.2`). Bu tur TTM'e **tek bayt yazmadı** (temizlik kanıtı: envanter `§8`).
+
+**Veri modeli.** Ayrı bir `kategori × CPL × tactic` eşleşme tablosu **YOK**. Uygunluk
+`tactic_definitions` satırının **kendi kolonlarında** taşınıyor: `cpl_id` (tekil) ·
+`applicable_channels[]` · `applicable_categories[]` — üçünde de `NULL`/boş = **wildcard**.
+Yazma yolu **iki tane** ve ikisi çelişiyor: **seed** üç uygunluk kolonuna **hiç dokunmuyor**,
+**admin CSV upsert** (`POST /admin/master-data/tactics/csv`) dokunuyor. Tekil CRUD ucu yok.
+
+**Grid kolonları.** Statik liste değil — DB'den türetiliyor: `tactic_definitions` →
+`show_in_grid` + kanal + kategori SQL filtresi → `GridTactic[]` → her tactic **bir kolon**.
+⛔ Ama **aynı uygunluk kuralının ALTI ayrı implementasyonu** var, **üç farklı eksen kümesiyle**;
+ikisi bayt-kopya. Plan-grid yolu `cpl_id`'yi **hiç sormuyor**, anlaşma yolu **reddediyor** —
+yani bir tactic grid'de kolon olarak çıkıp anlaşmada `TACTIC_NOT_ELIGIBLE_FOR_AGREEMENT` alabilir.
+
+**⛔ Mekanik değer girişi — `§2`/`§6-5` ile ÇELİŞİYOR.** Excel: değer **SKU-satırı**
+özniteliği (aynı mekanik R14'te 0.18, R15'te 0.16). TTM: değer **FU düzeyinde** yaşıyor;
+SKU satırında mekanik hücreleri **salt-okunur tire**. `tactic_values.sku_id` kolonu ve FK'si
+**duruyor ama hiç yazılmıyor** — şema hazır, yol açılmamış. CTPM de bugün FU düzeyinde
+(`editableAt: 'FU'`). **Hangisinin doğru olduğuna karar verilmedi** — `§6` kalem 5'in cevabı
+hâlâ ürün sahibindedir.
+
+**Çeviri.** ✅ *Deseni alınır:* wildcard uygunluk modeli · açık `…_NOT_ELIGIBLE…` **reddi**
+(sessiz filtreleme değil) · kolonların DB'den türetilmesi · CSV'nin satır-satır doğrulama+`errors[]`
+deseni. ⛔ *Mimarisi alınmaz:* calc-type'ı **kod sonekinden** türetmek (`endsWith('_LS')`) ·
+`calculation_type`ın yalnız frontend tipinde yaşaması · frontend'e gömülü fallback tactic katalogu ·
+**üç ayrı sessiz sıfır** (`?? 0`, ve `PLANNED_LTA_ON: 0` — bu belgenin `§1` "taban kuralı"nı
+çift yönlü bozar) · altı kopya · Next.js yapısı · ham-SQL/entity'siz katman.
+**KORUNUR:** KPI formüllerinin DB'den okunup değerlendirilmesi (TTM'de de böyle).
+
+**CTPM karşılığı — 19 kalem: 11 tam · 3 kısmi · 3 yok · 2 ölçülemedi.**
+Sözlük farkı: TTM'in tek `tactic_definitions` tablosu CTPM'de **`tactics` + `mechanics`** diye
+bölünmüş. CTPM şeması TTM'in **üst kümesi** (`applicableCpls` **çoklu**, `exclusionRules`,
+`mutuallyExclusiveWith`, `gridColumnOrder`/`groupHeader`, `MechanicCategory`).
+⇒ **Bu bir port değil, bir BAĞLAMA işi.**
+
+⛔ **İki repoda da AYNI kör nokta — "verinin yokluğu örter" (`CLAUDE.md §2.7`):**
+- TTM: hiçbir seed uygunluk kolonlarını yazmıyor ⇒ **UAT'de bu filtreler hiç ayırt etmedi.**
+- CTPM canlı DB: `main.mechanics` 6 satır · `main.tactics` 5 satır — `applicable_channels`,
+  `applicable_categories`, `applicable_cpls`, `exclusion_rules` **hepsi NULL.**
+- CTPM frontend: `getApplicable` ucu **tanımlı, çağıranı SIFIR**; planlama grid'i onun yerine
+  `getAll` çağırıp `// TODO: Implement applicability rules check` ile yalnız `isActive`
+  bakıyor, ve `catch { return [] }` ile hatayı yutuyor — *mekanizma var, yol yok.*
+
+⇒ Faz-2'de bu yolun kabul-kriteri bir **fixture**tır: uygunluğun **iki tarafında FARKLI**
+değer taşıyan veri. Aksi hâlde her ölçüm yeşil çıkar ve hiçbir şey kanıtlamaz.
+
+**Yeni senaryo-tohumları (`§7` listesine ek):**
+- **SC-elig-1:** CPL-X'e kısıtlı bir tactic, CPL-Y planında → grid'de kolon **çıkmamalı**
+  (AYIRT-EDİCİ: TTM'de çıkıyor, anlaşmada reddediliyor)
+- **SC-elig-2:** kategori adı farklı harf büyüklüğüyle → SQL tam-eşleşme ↔ istemci
+  case-insensitive (AYIRT-EDİCİ: aynı veri iki katmanda farklı sınıflanıyor)
+- **SC-elig-3:** wildcard (`NULL`) tactic ile kısıtlı tactic aynı planda → ikisi **farklı**
+  davranmalı (bugün her ikisi de wildcard olduğu için ayrım ölçülemiyor)
