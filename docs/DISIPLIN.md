@@ -5196,3 +5196,37 @@ dokümantasyon  → yorum eşleşmeleri SAYILMAZ ama F12 izi ister
 
 📌 `HAYATTA KALMA HİYERARŞİSİ`'nin (`RAPOR < BELGE < KAPI < PİN`) bir sonucu: **grep bir
 RAPOR, tam suite bir KAPIDIR.**
+
+---
+
+## GEREKÇENİN **ÇÜRÜMESİ** İLE **KARŞILANMASI** AYRI SINIFTIR (ZORUNLU)
+
+> `BİR HÜKMÜN GEREKÇESİ, ALTINDAKİ MEKANİZMA DEĞİŞİNCE TAŞINMAZ — YENİDEN KURULUR`
+> maddesinin **ikinci yüzü** — ve pratikte **daha sık** olanı.
+
+```
+ÇÜRÜME       gerekçe YANLIŞLANDI       → hüküm ZAYIFLAR   (dayanağı yok)
+KARŞILANMA   gerekçe YERİNE GETİRİLDİ  → hüküm TAMAMLANIR (koşulu gerçekleşti)
+```
+
+Ölçülmüş vaka (2026-08-31, `Z73 §2`): `ADR 0005 K2` — *"`/submit` doğrulama üst kümesini
+**ALMAZ**"* — gerekçesini **kendi metninde** taşıyordu:
+> *"ek doğrulama ayrı bir **ürün kararıdır** ve **UI'da karşılığı hazırlanmadan**
+> yapılmamalı."*
+
+⇒ Bu bir **KOŞULLU HÜKÜMDÜ**. İki koşul da karşılanınca (`Q13` ürün kararı + `Q14` UI
+karşılığı) hüküm **çürümedi** — **koşulu doldu**.
+
+⛔ **Neden ayrım önemli:**
+```
+"gerekçe çürüdü" diye kaydedilirse   → eski karar YANLIŞ görünür, veren taraf HAKSIZ çıkar
+                                       ve bir dahaki sefere o koşul YAZILMAZ
+"koşul karşılandı" diye kaydedilirse → eski karar DOĞRUYDU, koşulu da DOĞRUYDU
+                                       ve koşul yazma pratiği ÖDÜLLENDİRİLİR
+```
+
+> ### **BİR KOŞULLU HÜKÜM, KOŞULU DOLDUĞUNDA GERİ ALINMAZ — TAMAMLANIR.**
+
+📌 **Pratik:** bir hükmü revize ederken **gerekçesini oku ve sınıflandır** —
+*"bu gerekçe yanlış mıydı, yoksa bir KOŞUL muydu ve doldu mu?"* İkisi aynı `F12` iziyle
+yazılırsa **kayıt, koşul yazmayı cezalandırır**.

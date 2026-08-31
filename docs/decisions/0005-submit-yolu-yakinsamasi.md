@@ -80,10 +80,22 @@ Endpoint kaldırma → [[T-058]].
 doğrulama** koşuyor ve farklı hata sözleşmesi kullanıyor (200+`success:false` vs 400). Kaldırmayı
 canlı rotaya dokunan adımla aynı commit'e koymak riski toplardı.
 
-**K2 — `/submit` doğrulama üst kümesini ALMAZ.** Yakınsama yalnız **para yolunu** tekler;
-`/submit`'in bugünkü doğrulaması aynen kalır.
-*Gerekçe:* kullanıcının bugün submit edebildiği plan yarın da edebilmeli. Ek doğrulama ayrı bir
-ürün kararıdır ve UI'da karşılığı hazırlanmadan yapılmamalı.
+~~**K2 — `/submit` doğrulama üst kümesini ALMAZ.** Yakınsama yalnız **para yolunu** tekler;~~
+~~`/submit`'in bugünkü doğrulaması aynen kalır.~~
+~~*Gerekçe:* kullanıcının bugün submit edebildiği plan yarın da edebilmeli. Ek doğrulama ayrı bir~~
+~~ürün kararıdır ve UI'da karşılığı hazırlanmadan yapılmamalı.~~
+
+> ### ⛔ `F12` — **ÜST KÜME ALINIR** (2026-08-31, `Z73`)
+>
+> **Hüküm GERİ ALINMIYOR — GEREKÇESİ KARŞILANDIĞI İÇİN YENİDEN KURULUYOR.**
+>
+> | gerekçe | âkıbet |
+> |---|---|
+> | **1** — *"ek doğrulama ayrı bir **ürün kararıdır** ve **UI'da karşılığı hazırlanmadan** yapılmamalı"* | **KARŞILANDI** — karar `Q13`/`Z71`; UI karşılığı `Q14` dalgası (rozet + banner) |
+> | **2** — *"kullanıcının bugün submit edebildiği plan yarın da edebilmeli"* | **KORUNUR ve TAŞINIR** — tüm `Q13` katmanı `warnings`, **BLOKLAMAZ** (`K-2.2.7c`) |
+>
+> ⇒ `/submit` **`SubmissionResult`'ı ALIR**; `/submit-for-approval` **ÖLÜR**.
+> *(Eski metin **silinmedi** — üstü çizildi.)*
 
 **K3 — Bayat 0/0 spend kolonları: gürültülü red.** Planın on/off kolonları hesaplanmamış (0/0) ama
 `totalSpend > 0` ise submit **açık hata** ile reddedilir; kullanıcıya recalc tetiklemesi söylenir.

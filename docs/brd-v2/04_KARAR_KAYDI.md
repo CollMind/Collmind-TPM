@@ -7120,3 +7120,68 @@ E1  "bir alanı TAŞIYICI olarak kullanan kod, tüketici aramasında bulunmaz"  
 B1  "kapıyı TEK NOKTAYA koymak sınıfı kapatır — her çağıranın kendi Number()'ını
      yazması F8 ailesi, VE BİR ÇAĞIRAN UNUTTU"
 ```
+
+---
+
+## `Z73` — `Q15`: ROTA **ADINI KULLANICIDAN**, DAVRANIŞINI **ÜST KÜMEDEN** ALIR
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+
+### `§1` · HÜKÜM
+```
+/submit                 YAŞAR   — FE'nin çağırdığı, DOĞRU ADLI yüzey
+                        KAZANIR — SubmissionResult (validations + warnings)
+                                  ⇒ Q13 uyarıları CANLI YÜZEYE İLK KEZ BUGÜN ÇIKAR
+/submit-for-approval    ÖLÜR
+```
+
+**`(b)`'nin reddi iki satır:** FE değişikliği **+** etiket tersine çevirme = **iki dokunuş
+fazla**; ve `submit-for-approval` adı **zaten fazlalık taşıyor** —
+> **submit'in NE İÇİN olduğu ROTANIN işi, ADININ değil.**
+
+### `§1a` · ⭐ ÖLÇÜMÜN ASIL BULGUSU
+```
+                     /submit          /submit-for-approval
+yetki                MODES_SUBMIT     MODES_SUBMIT          ← AYNI
+version/CAS          ✅               ✅                    ← İKİSİ DE (ilk sanı yanlıştı)
+bütçe rezervasyonu   ✅               ✅
+ek doğrulamalar      ❌               ✅
+warnings             ❌               ✅ altı kalem
+FE kullanıyor        ✅               ❌ SIFIR
+etiket               "legacy"         "deprecated" + Deprecation header
+```
+> ### **İKİ ROTA BİRBİRİNİ DEPRECATED İLAN ETMİYOR — BİRİ DİĞERİNİN ÜST KÜMESİ,
+> ### VE **YANLIŞ OLANI** ÖLÜME YAZILMIŞ.**
+
+### `§2` · ⭐ `F12`'NİN SINIFI: **ÇÜRÜME DEĞİL, KARŞILANMA**
+
+`ADR 0005 K2`'ye `F12` işlendi *(eski metin **üstü çizili** kaldı)*.
+
+> ### **BU, `Z69 §4c` AİLESİNİN ÜÇÜNCÜ VAKASI — AMA İLK KEZ ÇÜRÜME DEĞİL KARŞILANMA.**
+```
+ÇÜRÜME       gerekçe YANLIŞLANDI      → hüküm yeniden kurulur, çünkü DAYANAĞI yok
+KARŞILANMA   gerekçe YERİNE GETİRİLDİ → hüküm yeniden kurulur, çünkü KOŞULU GERÇEKLEŞTİ
+```
+`K2` bir **KOŞULLU HÜKÜMDÜ** ve koşulunu **kendi metninde** taşıyordu:
+*"ek doğrulama ayrı bir **ürün kararıdır** ve **UI'da karşılığı hazırlanmadan** yapılmamalı."*
+İki koşul da bugün **karşılandı**: karar `Q13`/`Z71`, UI karşılığı `Q14` dalgası.
+
+⚠️ Ve `K2`'nin **ikinci** gerekçesi (*"bugün submit edilebilen yarın da edilebilmeli"*)
+**korunur ve taşınır** — tüm `Q13` katmanı `warnings`, **bloklamaz** (`K-2.2.7c`).
+
+⛔ **Kayıtta bu ayrım GÖRÜNMELİ: ikisi farklı sınıf.** Bir gerekçenin **yanlışlanması**
+hükmü zayıflatır; **karşılanması** hükmü **tamamlar**.
+
+### `§3` · DALGA PAKETİNE **DÖRT ŞART**
+
+| # | şart |
+|---|---|
+| **1** | **Ölen rotanın KONSOLİDASYON TARAMASI** — `submit-for-approval`'ın **tüm** çağıranları. FE-sıfır **ölçüldü**, ama **`test`/`script`/`doc` evreni de**: ⛔ `E1` dersi **taze** — *taşıyıcı kullanım aramada görünmez*. `rg -i` **TAM EVREN**, ölü-link/ölü-buton kalıntısı dahil (`T-307 m2` usulü) |
+| **2** | **`SubmissionResult` geçişi FE tarafında SÖZLEŞME-PİNLİ** — `PlanDetailPage:107`'nin yeni dönüş şeklini **okuduğu** (uyarıların **render edildiği**) bir test. ⛔ Yoksa uyarılar rotaya taşınır **ama ekranda yine ölü doğar**; bu dalganın **var-oluş cümlesi** *"uyarı kullanıcıya **ULAŞIR**"*, **pin de tam onu ölçmeli** |
+| **3** | **`B3` ölümü BEKLENEN-DEĞİŞİM LİSTELİ** — hardcode banner'ın bugün **yanlış** gösterdiği planlar (`null`-ROI'liler · `AMBER`/`RED`/`LTA_ONLY`'ler) yarın **banner-sız**. Bu bir **düzeltme** ama **görünür değişim**; ⚠️ Finance gözüyle *"uyarılar azaldı"* okunabilir — **listede adıyla dursun** |
+| **4** | **`S9` UI etiketi** — tanım genişlemesi **üç katmanda** görünür: liste + `Z` kaydı + **tooltip** (*"Risk = zarar + kârsız-büyüme + hedef-altı"*) |
+
+### `§4` · DALGA SONRASI
+`Q13`–`Q15` zinciri **tamam**, `W2`'nin **tüm artıkları kapalı** ⇒ **PLANLAMA MASASI**:
+`ŞART-6 × T-334/T-342 kesişimi` + `W3` önü + **kuyruk triyajı**
+(`T-335`…`T-341` · `T-333` · `T-325`).
