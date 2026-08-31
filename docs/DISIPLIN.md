@@ -5163,3 +5163,36 @@ gerçekte        uyarı → GÜVENCE          ("her şey yolunda" DENİYOR)
 
 📌 `BİR KURALI YAZDIĞIN TUR, O KURALI EN ÇOK İHLAL ETTİĞİN TURDUR` maddesinin **olumlu
 yüzü**: orada ihlal **fark edilmeden geçiyordu**; burada kapı **onu yakalıyor**.
+
+---
+
+## BİR ALANI **TAŞIYICI OLARAK** KULLANAN KOD, TÜKETİCİ ARAMASINDA **BULUNMAZ** (ZORUNLU)
+
+> **Yeniden-adlandırma evreni kuralının kalıcı eki.**
+
+Ölçülmüş vaka (2026-08-31, `T-343` `E1`): `rag_green_threshold → target_roi_threshold`
+yeniden adlandırması yapıldı, `src/` **tam tarandı**, canlı referans **sıfır** çıktı.
+Tam `e2e` yine de **kırmızı** verdi:
+```
+test/kpi-optimistic-locking.e2e-spec.ts:192
+  .send({ ragGreenThreshold: 50, version: 1 })       Expected 409  ·  Received 400
+```
+Testin **konusu** optimistic locking'di; eşik alanı yalnızca **bir PATCH gövdesi taşıyıcısıydı**.
+
+> ### **BİR ALANI KENDİ KONUSU İÇİN DEĞİL, TAŞIYICI OLARAK KULLANAN KOD,
+> ### *"BU ALANIN TÜKETİCİSİ KİM?"* DİYE ARANIRKEN BULUNMAZ** —
+> çünkü kimse *"optimistic locking testi bir EŞİK alanı mı okuyor?"* diye düşünmez.
+
+**Pratik — bir yeniden adlandırmanın evreni:**
+```
+src/          ✅ herkes bakar
+test/         ⛔ EN SIK ATLANAN — ve taşıyıcı kullanım BURADA yoğunlaşır
+seed/fixture  ⛔ aynı sınıf
+DTO/tip       ✅
+dokümantasyon  → yorum eşleşmeleri SAYILMAZ ama F12 izi ister
+```
+⛔ **Ve kapanış kanıtı bir grep değil, TAM SUITE'in YEŞİLİ olmalıdır** — bu vakada
+`src/` taraması *"temiz"* diyordu ve **yanlış değildi**; **eksikti**.
+
+📌 `HAYATTA KALMA HİYERARŞİSİ`'nin (`RAPOR < BELGE < KAPI < PİN`) bir sonucu: **grep bir
+RAPOR, tam suite bir KAPIDIR.**

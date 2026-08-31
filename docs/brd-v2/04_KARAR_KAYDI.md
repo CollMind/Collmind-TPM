@@ -7052,3 +7052,71 @@ zaten bunu istiyor.
 **`4c`** ⭐ **REVIEW'UN `PUSH-EDİLEMEZ`'i KAYDA:** `T-342`'nin kabul ölçütü
 (*"tüketici tanımıyorsa DUR"*) **yazıldığı dalgada çalıştı** — **kapı, kapıyı yazan turu
 durdurdu.** ***Bu artık bir DESEN.***
+
+---
+
+## `Z72` — `Q14`: **KAPSAM `(a)`, PUSH-BİRİMİ `(b)`** · ve `S9`: **TANIM GENİŞLEDİ**
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+
+### `§1` · `Q14` — **İKİ PUSH, TEK KARAR**
+```
+1  YEŞİL AĞAÇ ŞİMDİ PUSH EDİLİR      bu dalganın işi bitti; B2/B3 pre-existing ve KAYITLI
+2  Q14 DALGASI HEMEN ARDINDAN        (a)'nın TAM kapsamıyla:
+     B3 ÖLÜR  +  uyarılar CANLI YÜZEYE bağlanır  +  iki-rota konsolidasyonu (T-058)
+```
+
+**Gerekçe iki yönlü — ve ikisi de gerçek:**
+```
+yeşil ağacı BEKLETMEK    paralel-ajan çakışma yüzeyi (§4: "ağaç PAYLAŞILIR")
+B3'ü KUYRUĞA ATMAK       ⛔ B3 PASİF BİR EKSİK DEĞİL, AKTİF BİR YANLIŞ
+```
+> ### **HESAPLANAMAYAN PLANLARA *"HEDEFİN ALTINDA"* DİYEN, RENK-KÖR, HARDCODE-EŞİKLİ
+> ### BİR BANNER **BUGÜN CANLI** — `T-318` emsali sınıf: **CANLI-YANLIŞ ÖNCELİK ALIR.**
+
+⇒ **İkisinin çözümü PUSH'U BÖLMEK:** risk küçülür, yanlış-uyarı **bir dalga içinde** ölür.
+
+### `§1a` · ⛔ PUSH'UN TEK ÖN-ŞARTI — `T-058` NOTUNUN REVİZESİ **AYNI COMMIT'TE**
+Bugünkü not (*"submit-for-approval'ın ek doğrulamaları kaybolacak; bu bilinçli"*)
+`Z70`/`Z71`'den **ÖNCE** yazıldı ve **`Q13` uyarı katmanını SAYMIYOR.**
+Revize edilmeden push, **`T-084`'ün taze bir vakasını üretir**.
+✅ İşlendi: *"bu rota `Q13` uyarı katmanını taşıyor; konsolidasyon uyarıları canlı yüzeye
+taşımadan bu rota **ölemez**."*
+
+### `§2` · `Q14` DALGASININ ROTA KARARI — **ÖLÇÜMLE GELİR**
+İki rota **birbirini deprecated ilan ediyor**. Ölçülecek:
+```
+1  hangisinin DAVRANIŞI TAM     doğrulamalar · warnings · yetki kapıları
+2  FE'nin DÖNÜŞ MALİYETİ hangisinde düşük
+```
+**Öneri Team Lead'den, hüküm ürün sahibinden.**
+
+⛔ **TEK-DOĞRULUK-KAYNAĞI İLKESİ SABİT:** dalga sonunda **bir** submit yolu, **bir**
+below-target implementasyonu kalır — *konfigüre edilebilir · kadran-farkında ·
+`null → NOT_EVALUABLE`* olan.
+
+### `§3` · `S9` — **AD DOĞRU, TANIMI BÜYÜDÜ**
+`totalAtRisk` artık below-target harcamasını **da** içeriyor. `Z71`'in *"evren küçülmez"*
+hükmüyle **tutarlı** — ama **kayıtsız kalamaz**, çünkü bu bir **TANIM GENİŞLEMESİDİR**:
+> **`riskPercentage` AYNI ADLA FARKLI BİR SAYI üretiyor.**
+> **Finance dünden bugüne aynı grafikte BÜYÜMÜŞ bir "risk" görecek ve SEBEBİNİ BİLMEYECEK.**
+
+**Şart üçlü:**
+```
+1  beklenen-değişim listesine satır   "at-risk tanımı genişledi: RED + AMBER + below-target"
+2  Z-kaydına tek paragraf              (bu bölüm)
+3  UI ETİKETİNDE/TOOLTIP'TE TANIM GÖRÜNÜR
+     "Risk = zarar + kârsız-büyüme + hedef-altı"     ← Q14 dalgasında
+```
+⛔ **AD-BORCU DEĞİL** — ad **doğru**, tanımı büyüdü.
+> ### **GÖRÜNMEZ BÜYÜYEN BİR TANIM, SESSİZ-SÜRPRİZ SINIFIDIR.**
+
+### `§4` · KAYIT KALİTESİ — üç öz-çürütme + bir gerekçe
+```
+S1  "bir ölçüm, bir varsayılan değil" iddiam O DALDA YANLIŞTI
+S3  "komşuları görüp bunu atlamıştım" — ve sebebi: bu turun doğurduğu LTA_ONLY sınıfı
+    satırı YENİ ULAŞILABİLİR kıldı
+E1  "bir alanı TAŞIYICI olarak kullanan kod, tüketici aramasında bulunmaz"  → DISIPLIN'e
+B1  "kapıyı TEK NOKTAYA koymak sınıfı kapatır — her çağıranın kendi Number()'ını
+     yazması F8 ailesi, VE BİR ÇAĞIRAN UNUTTU"
+```
