@@ -457,3 +457,4 @@ status: active        # planned | active | closed
 - [[T-342]] **RAG iki-eksen kadran inişi** (`Q7`) + LTA-only planlarda **TANIMLI-YOKLUK** (`ragExclusionReason`) — ⛔ `AMBER` **İLK KEZ DOĞUYOR**, tüketici ön-ölçümü şart; migration YOK (`Z68`) — **in-progress**
 - [[T-343]] **`ragAmberThreshold` ÖLÜR** (tüketicisiz — ölçüldü) · `ragGreenThreshold` **AD-BORCU** alır (tüketicisi RAG değil **Target ROI**). ⛔ Kadran-RAG **işaret tabanlı**: *"sıfırdan büyük"* konfigüre edilecek değer değil, **kavramın kendisi** (`Z70`) — **todo**
 - [[T-344]] **`Q14` DALGASI** — `B3` ölümü (hardcode `%20`, renk-kör, `null→0`) + **uyarı taşıma** (`Q13` katmanı canlı yüzeye ilk kez) + **rota konsolidasyonu** (`/submit` yaşar, `SubmissionResult`'ı alır) + `S9` etiketi — **in-progress** (`Z73`)
+- [[T-345]] **TTM eligibility ENVANTERİ** — inceleme, taşıma DEĞİL. Dört çıktı: veri modeli · grid kolon türetimi · mekanik-değer girişi · çeviri notları. ⛔ **TTM'e YAZILMAZ** — **in-progress**
