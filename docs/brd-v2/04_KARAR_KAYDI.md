@@ -7460,3 +7460,222 @@ izole worktree · tam e2e Team Lead'de
 ⛔ **BEKLENEN-DEĞİŞİM LİSTESİ ŞİMDİDEN BİR SATIR TAŞIYOR:**
 > **REZERVASYONLAR ARTACAK** — `planVol`/`unitPrice` eksik planlar bugün **düşük rezerve**.
 > Düzeltme **Finance gözünde *"bütçe daha hızlı doluyor"*** okunur. **Adıyla listede.**
+
+---
+
+## `Z78` — `Q20` ÜÇ-SINIF SATIR · `Q21` STATÜ KÜMESİ KAYNAKTAN · `Q22` ÖMÜR-BOYU TEKİLLİK
+
+**Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Dalga:** `2a` kapanışı + `2c` inişi
+
+### `§1` · `Q20` — BOŞ SATIR: **`(c)`**, VE AYRIMI **SATIRIN OLGUSU** YAPAR
+
+```
+DOKUNULMAMIŞ  (tüm girdi-alanları NULL — VARSAYILAN DOĞUM HÂLİ)
+              = "planlanmadı" → spend-katkısı YOK (0 DEĞİL, KATILMIYOR)
+              → rezervasyonu BLOKLAMAZ
+KISMİ         (en az bir girdi dolu, gerekli biri eksik: planVol var / BPTT yok)
+              = NOT_EVALUABLE → rezervasyon REDDİ, ALAN ADIYLA — `Z77` AYNEN yaşıyor
+PLAN düzeyi   dolu-satır-sayısı 0 → submit-uyarısı "boş plan" (BLOKLAMAZ, `Q16` ailesi)
+```
+
+> ### **`Z77`'NİN KORUDUĞU TEHLİKE *GİRİLMİŞ-AMA-EKSİK* VERİNİN SESSİZ-`0`'A**
+> ### **DÜŞMESİYDİ. NULL-SATIR İSE *GİRİLMEMİŞ* — FARKLI OLGU.**
+
+⛔ **`(b)` REDDEDİLDİ ve reddi AYAKTA:** *dokunulmuş-eksik satır asla `0` sayılmaz.*
+Hükmün kendi cümlesi: plan düzeyi **yalnız uyarı katmanıdır**, ayrımı yapan **satırın
+olgusudur** — bir plan-bayrağı değil.
+
+**`1a` · EVRENİ ÖLÇÜM SEÇTİ, TERCİH DEĞİL** (Team Lead, 2026-08-31):
+```
+main.plan_skus              base_volume · planned_volume  → nullable, DEFAULT YOK
+                            diğer sayısal kolonlar        → NOT NULL DEFAULT 0 / türetilmiş
+main.plan_mechanic_values   plan_sku_id kolonu YOK — UNIQUE(plan_fu_id, mechanic_id)
+                            ⇒ SKU-düzeyi GİRİLEN mekanik bugün ŞEMADA YOK
+plan.service.ts:558         addSku(planFu.id, sku.id, tenantId, userId)  ⛔ hacim GEÇMİYOR
+⇒ HER SKU SATIRI base_volume=NULL, planned_volume=NULL DOĞAR
+```
+⇒ *"satırın girdi-alanları"* evreni **iki kolondur**. `BPTT`/`COGS` satırın alanı
+**değil**, SKU ana-verisinin alanı — planlayıcı onlara satırda dokunmaz.
+
+⚠️ **VE BU EVREN GENİŞLEYEBİLİR:** `Z74`'ün *"FU-varsayılan + SKU-override"* hükmünün
+SKU tarafı **henüz şemada yok**. Geldiği gün evren büyür ⇒ **tek bir yerde, adlandırılmış
+bir sabit** olarak tutulur. *(`DISIPLIN`: "veriye dayalı her erteleme, verinin değiştiği
+gün yeniden ölçülür" — burada erteleyen şey veri değil **şema**, ama şekil aynı.)*
+
+**`1b` · PIN ÜÇLÜSÜ — hüküm üç vakayı SAYIYLA verdi, üçü de TEST oldu:**
+```
+1  1-dolu + N-boş plan  → submit OLUR, rezervasyon YALNIZ dolu satırı taşır
+2  kısmi satır          → REDDEDİLİR, ALAN ADIYLA
+3  0-dolu               → UYARI, bloklamaz
+```
+⛔ Birincide **rezervasyon TUTARI ölçülür** — *"yalnız dolu satırı taşır"* bir **sayıdır**,
+bir cümle değil; `1-dolu` ile `2-dolu` **farklı** değer vermezse test ayırt etmiyordur
+(`§2.7 #6`).
+
+**Beklenen-değişim:** 19 e2e yeşile döner — **attribution zaten kanıtlıydı** (kapı devre
+dışı → `129/129`).
+
+### `§2` · `Q21` — `{APPROVED, ACTIVE}`: KAYNAKTAN, İCAT DEĞİL
+
+```
+docs/brd/01_Main_BRD/Section_04…:603
+  if (lta && lta.status !== 'ACTIVE' && lta.status !== 'APPROVED')
+```
+`L2` ve ADR'ler bu noktada **sessiz** — ve sessizlik *"kural yok"* değil,
+*"kaynak BRD'dir"* demek (`§2.2`'nin şekli).
+
+**`CLOSED` bilerek DIŞARIDA**, ve açık soru **koşul satırıyla** kayda:
+> **`CLOSED` anlaşmanın GEÇMİŞ-DÖNEM OKUMALARI ayrı sorudur (okuma-yolu, planlama-yazımı
+> değil) — İLK GERÇEK `CLOSED` VAKASI TETİKLER.**
+
+**`2a` · BEŞİNCİ KOPYA YAZILMADI — ve gerekçe ürün sahibince ONAYLANDI:**
+> **"DÖRDÜ AYNI *DEĞERİ* TAŞIYOR, AYNI *SORUYU* SORMUYOR."**
+
+⇒ Birleştirme **YAPILMAZ**: birleştirmek, birini değiştiren kararın diğer üçünü
+**sessizce kaydırması** olurdu. Ama hüküm bir **ek** getirdi:
+> ### **DÖRT KOPYAYA ÇAPRAZ-REFERANS YORUMU DÜŞÜLÜR —**
+> ### **BİRİ DEĞİŞİRSE DİĞER ÜÇÜNÜN *BİLEREK* DEĞİŞMEDİĞİ GÖRÜNÜR OLSUN.**
+
+📌 Bu, `F8` ailesinin (*"aynı sayı dört yerde dört farklı"*) **ikinci panzehiridir** ve
+birinciden farklıdır: birincisi *"tek kaynağa indir"*, bu ise *"indirilemeyeni
+**görünür** kıl"*. Kopya meşruysa, meşruiyeti **yazılı** olmalıdır.
+
+### `§3` · `Q22` — `(iii)`: "BİR EBEVEYN = BİR BAŞLIK, ÖMÜR BOYU" · İKİ INDEX TEK PAKET
+
+```
+alreadyBound   manager.findOne(LTAAgreement, {where:{tenantId, agreementId}})  withDeleted YOK
+findByCode     repository.findOne({where:{tenantId, agreementCode}})           withDeleted YOK
+DB             UQ_lta_agreements_agreement_id · IDX_lta_agreements_tenant_code
+               İKİSİ DE KISMİ DEĞİL ⇒ soft-delete edilmiş satır YERİ İŞGAL EDER
+⇒ soft-delete → yeniden bağlanma:  ham QueryFailedError → 500
+```
+**İniş:** iki ön-kontrole `withDeleted: true` ⇒ **`500 → 409`, doğru mesajla.**
+**MIGRATION YOK** — DB tarafı zaten ömür-boyu tekil; değişen tek şey ön-kontrolün onu
+**görmesi**.
+
+⛔ **`(c)` YOLU AÇIK KALIR ve TESTLE PİNLENİR:** `terminate → FARKLI ebeveyne yeni
+başlık → 201`. `PATCH` mesajı **tam bunu** öneriyor.
+
+**`3a` · `agreementCode` KARDEŞİ AYNI HÜKÜMLE, AYNI DALGADA** — kod da ömür-boyu tekil,
+aynı gerekçe. `§7.1`'in birebir şekli: *"kardeş yol etkilenmiyor" iddiası ölçülmeden
+yazılamaz* — burada ölçüldü ve **etkileniyordu**.
+
+**`3b` · `T-335` HİZASI, `(ii)`'NİN REDDİ:**
+> **YENİDEN MÜZAKERE EDİLEN ORAN, EBEVEYNİN ESKİ ONAYINI MİRAS ALMAZ.**
+
+### `§4` · ÜÇÜNCÜ PROPAGASYON VAKASI — PRATİĞİYLE BİRLİKTE ONAYLANDI
+
+`DISIPLIN` girdisi (`ÖNCÜL PROPAGASYONU — ÜÇ VAKA`) ürün sahibince **onaylandı**, ve
+mekanizması da:
+> **BİR REVIEW BULGUSU DA BİR İDDİADIR — BRIEF'E GİRDİĞİ AN *TAŞIYANIN* İDDİASI OLUR.**
+> **YA ÖLÇ, YA `[REVIEW İDDİASI — DOĞRULANMADI]` DİYE ETİKETLE.**
+
+⇒ Etiketlenmiş iddia **ajanın ilk işi** olur. *(İkinci kopya yazılmadı — kural
+`DISIPLIN.md` gövdesinde (*"ÖNCÜL PROPAGASYONU — ÜÇ VAKA, VE İKİSİ AYNI TAŞIYICIDAN"*); bu satır ona atıftır, `§2.1` şekli.)*
+
+### `§5` · ÜÇÜNCÜ EKSENİN DUR MADDESİ **ATEŞLENDİ** — ve ÇALIŞTI
+
+`Z78`'in iki şeridi paylaşılan ağaçta paralel koştu. Brief'lerdeki madde:
+> *"Senin OLMAYAN bir dosyada `tsc` hatası görürsen **DÜZELTME — DUR ve bildir.**"*
+
+**Ölçülmüş olay (`Q21`/`Q22` şeridi, 2026-08-31):** tur boyunca **iki kez**
+`plan.service.ts:2673/2677` `SpendInputResolution.ctx` derleme hatası gördü — paralel
+şeridin **ara durumu**. Şerit **düzeltmedi**, bekledi, yeniden ölçtü; hata kendiliğinden
+geçti (diğer şerit adımını tamamladı).
+
+```
+T-269 ∥ T-270 (2026-08-23)   yarım iş → diğerinin ÖLÇÜM ARACI bozuldu → tur KAYBEDİLDİ
+Z78 iki şerit (2026-08-31)   yarım iş → DUR maddesi → bekle → yeniden ölç → tur KAYBEDİLMEDİ
+```
+
+> ### **KURALIN İŞE YARADIĞININ KANITI, İHLALİN OLMAMASI DEĞİL —**
+> ### **TEHLİKENİN ATEŞLENİP *DURDURULMASIDIR*.**
+
+📌 Ve dikkat: şerit *"kırmızı gördüm, kendi işim bozuk"* diye **yanlış teşhis koymadı** —
+`§2.7`'nin en pahalı şekli olan **"kırmızı, ama kendi kodundan değil"** tam olarak burada
+elenmiş oldu. Madde brief'te **yazılı** olduğu için; `T-269`'da şansa kalmıştı.
+
+### `§6` · `Q22`'NİN YAYILMA YARIÇAPI ÖLÇÜLDÜ (`§7.1`) — ŞERİT SORMAMIŞTI
+
+`withDeleted: true` bir **okuma** yolunda da olabilirdi. Team Lead ölçtü:
+```
+ltaRepository.findByCode çağıranları:  lta-agreement.service.ts:106 · :250
+                                       İKİSİ DE TEKİLLİK KONTROLÜ — okuma yolu YOK
+```
+⇒ yarıçap tam olarak hedeflenen yer. ⚠️ **`findByCode` proje-genelinde bir İSİMDİR**
+(20+ repository'de var) — tarama `ltaRepository.` nitelemesiyle yapılmalıdır, yoksa
+`DISIPLIN`: *"kapsam maskelemesi — desen çalışır, evren yanlıştır"*.
+
+**Ve `§2`'nin sayısı ŞERİT TARAFINDAN DÜZELTİLDİ:** Team Lead brief'te *"dört kopya"*
+demişti; ölçüm **beş yer** dedi (kanonik `IN_FORCE_AGREEMENT_STATES` + **dört** satır-içi).
+Yorumlar *"BEŞ yerde"* yazıyor. ⇒ `DISIPLIN`: *"elle yazılmış üye-sayısı"* — **onda on.**
+
+### `§7` · REVIEW KALEMLERİ — BEŞİ KAPANDI, ÜÇÜ TASK'A
+
+`code-reviewer`, `2a`+`2b`+`2c` birleşik diff'inde **bloklayıcı bulmadı**. Kapananlar:
+
+**`7a` · `Q21`'İN YORUMLARI KENDİ ADRESLERİNİ BAYATLATTI** *(🟡-2 — ve sınıfın en
+saf örneği)*
+```
+yorumda yazan            diff ÖNCESİ   diff SONRASI (gerçek)
+reversal:17                  17 ✓           30
+settlement-close:62          62 ✓           75
+off-invoice:134             133 (kaymış)   144
+agreement.service:1035     1035 ✓         1045
+```
+> ### **YORUMLARIN KENDİSİ 10–13 SATIR EKLEDİ VE *KENDİ VERDİKLERİ ADRESLERİ* KAYDIRDI.**
+
+⇒ `Q21`'in **tek teslimatı** bu yorumlardı ve **doğdukları anda yanlıştılar**. Düzeltme:
+satır numarası **atıldı**, sembol adı kondu (`#REVIEW…_STATES`, `#validateRow`, `#cancel`)
+— **kanonik satır zaten öyle yazılmış ve bayatlamıyordu**, model oradaydı.
+
+⛔ **VE DÜZELTİRKEN AYNI SINIFA DÜŞÜLÜYORDU:** review `#validateOffInvoice` önerdi;
+**öyle bir metot YOK** (ölçüm: `validateRow` · `validateBatch`). Ölçülmeden taşınsaydı
+**bayat adres HAYALİ adresle** değişirdi — `§4`'ün kuralı (*"bir review bulgusu da bir
+iddiadır"*) **yazıldığı turda, yazan tarafından** sınandı ve tuttu.
+
+**`7b` · `calculateAllSpendsForFU` SÖZLEŞMEYİ İHLAL EDİYOR — SAPMA YAZILDI** *(🟡-1)*
+```
+plan.service (recalc)     kind !== 'UNTOUCHED' && ctx !== null ⇒ ÇAĞIRIR ⇒ taban zinciri KOŞAR
+calculateAllSpendsForFU   kind === 'NOT_EVALUABLE' ⇒ continue   ⇒ satırı TAMAMEN ATAR
+```
+`sku-spend-inputs.ts`'in *"`PLAN_VOL` yok, `BPTT` var ⇒ ctx VAR — taban zinciri koşar"*
+sözleşmesi **ihlal**. Marka her iki çağıranı resolver'a zorluyor ama **üç `kind`'ı aynı ele
+almaya zorlamıyor** — markanın ölçülmüş **sınırı**.
+
+**Düzeltilmedi, ve bu bir ERTELEME DEĞİL bir RANDEVU:** üretim çağıranı **SIFIR** ⇒ canlı
+para etkisi yok; metot `Z77 §3c`'nin **dokuzuncu adayı** (*"ya tüketici kazanır ya ölür,
+karar `W3` ile"*). O karar günü ayrışma da kapanır. Sapma **koda yazıldı**.
+> **Bir sapmayı YAZMAK onu doğru kılmaz; GÖRÜNÜR kılar** — ve `T-084`'ün dersi tam tersiydi
+> (*"bir hatayı belgelemek onu koruma altına alır"*). Fark: orada yorum *"dokunma"* diyordu,
+> burada **randevu tarihi** veriyor.
+
+**`7c` · GÜVENLİK BİR BAYRAKTAYDI** *(🟡-3)* — `--runInBand` `package.json` script'indeydi,
+`jest-e2e.json`'da **yoktu**. Bayraksız çağıran paralel worker alır ve seed mutasyonu
+yarışır ⇒ `"maxWorkers": 1` **konfigürasyona** kondu. `CLAUDE.md`: *"kuralı hatırlamak
+yerine ARACI çağır."*
+
+**`7d` · LOG MESAJI KOŞULU SÖYLEMİYORDU** *(🟡-4)* — *"BLOCKS reservation"* diyordu, ama
+kapı `locked.kind === 'USABLE'` **dalının içinde**: `NO_SPEND` bir planda hiç koşmuyor.
+`Z75 §7a` sınıfı (*"yorum kendi kodunun tersini söylüyor"*), **on satır yukarıdaki kendi
+gerekçesiyle** çelişiyordu.
+
+**`7e` · PIN AYIRT ETMİYORDU** *(🟢-2)* — `/ömür boyu tekil/` **her iki** mesajda da var
+⇒ ebeveyn-bağını kod-çakışmasından ayırmıyor (`§2.7 #6`). `/yeri tutar/` + constraint adı.
+
+**Task'a giden:** `🟡-5` `incrementalVolume`'ün üç türetimi (`§7.1`) · `🟡-7` `src/common/`
+→ `src/modules/` katman yönü · `🟢-1` ölü `SPEND_INPUT_FIELDS` export · `🟢-5` lumpsum
+`Number(...) || 0`.
+
+### `§8` · ÇÖZÜLMEMİŞ BİR SAYIM FARKI — VE ÇÖZÜLMEMİŞ OLARAK KAYDA GİRİYOR
+
+```
+Team Lead (önceki tur)   "19 e2e kırmızı"
+şerit A (ölçtü)          "16 kırmızı — hepsi role-journey.e2e"
+fark                     3
+olası kaynak             2c ARADA indi, formula-canon + lta-lifecycle e2e'lerine dokundu
+doğrulandı mı            ⛔ HAYIR — doğrulamak düzeltmeyi GERİ ALMAK demek
+```
+`DISIPLIN`: *"bir sayım farkı, farkın KAYNAĞI gösterilmeden yorumlanamaz."* Açıklama
+**makul** — ve tam bu yüzden tehlikeli: **ölçülmemiş makul açıklama**, `§4`'ün üç
+propagasyon vakasının da doğduğu yer. Bu satır bir **cevap değil, bir borçtur**.

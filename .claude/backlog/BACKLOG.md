@@ -447,9 +447,10 @@ status: active        # planned | active | closed
 - [[T-329]] `getSpendTrend` **takvim-ayı** normalleştirme — ve `PREVIOUS_PERIOD` dalında **çift sayım** (2×) bulundu — **review**
 - [[T-333]] Yerel `getMonth()` ile `YYYY-MM` etiketi — **dokuz çağrı yeri**, TZ kayması; bugün ateşliyor mu **ölçülmedi** — **todo**
 - [[T-334]] **FORMÜL-KANON DÜZELTMESİ** — `TO`/`NIV` kavram-ayrıştırma + GP tabanı + off-invoice tabanı (`Z65`, **ÜÇ KALEM TEK PAKET**). ⛔ `plans=0` **penceresi**: bugün bedelsiz, ilk müşteri planıyla veri-migration'ına döner — **`W2 DALGA-B` kapanışı sonrası** — **review** (`DALGA 0` 2026-08-31: dosya `review`, `Z65`/`Z66` indi)
-- [[T-335]] Ebeveyn `agreements.status` motorda **okunmuyor** — bağ yapısal, semantik değil (`S3`) — **todo**
-- [[T-336]] LTA bağ **tekilliği** ↔ `TERMINATED`/soft-delete: `PATCH` reddi **kendi önerdiği yolu kapatıyor** (`S4`) — **todo**
-- [[T-337]] CANLI spend yolunda sessiz sıfır — ⛔ `T-027`'nin **bilinçli** kararı ⇒ **yeniden karar**, düz düzeltme değil — **todo**
+- [[T-335]] Ebeveyn `agreements.status` motorda **okunmuyor** — bağ yapısal, semantik değil (`S3`) — **in-progress** · ⭐ `Q21`: küme `{APPROVED, ACTIVE}`, **BRD `Section_04:603`'ten ölçülmüş** (`Z78 §2`)
+- [[T-336]] LTA bağ **tekilliği** ↔ `TERMINATED`/soft-delete (`S4`) — **in-progress** · ⭐ `Q22`: aday **(iii)** *"bir ebeveyn = bir başlık, ömür boyu"*, `withDeleted:true`, **migration YOK** (`Z78 §3`)
+  - ⛔ ~~`PATCH` reddi "kendi önerdiği yolu kapatıyor"~~ **ÇÜRÜTÜLDÜ** (ölçüm: `terminate → FARKLI ebeveyn → 201`). Bir **review iddiası** indekse **ölçülmeden** girmişti — `DISIPLIN`: *"öncül propagasyonu"*, üçüncü vaka.
+- [[T-337]] CANLI spend yolunda sessiz sıfır — ⛔ `T-027`'nin **bilinçli** kararı ⇒ **yeniden karar**, düz düzeltme değil — **in-progress** · ⭐ `Q20`: **üç sınıf** (dokunulmamış / kısmi / plan-düzeyi uyarı) — `Z78 §1`
 - [[T-338]] LTA taban formülünün **iki implementasyonu** — bu tur onları **eksik girdide ayrıştırdı** (biri fırlatıyor, biri `0`'lıyor) — **todo**
 - [[T-339]] **Alan A üyeliği TÜRETİLSİN** — `money-float`'un dosya listesi **elle yazılmış evren** (`G5`); `shared/lta` hiç ölçülmemişti — **blocked** (`T-334` sonrası)
 - [[T-340]] KPI evreni **adlı-kalem listesinden TÜRETİLSİN** — `"52"` onbir başlığın toplamıydı, `PSbM "(11)"` gerçekte **9** (Excel bağımsız teyit). ⛔ **kaynaksız-8 diye bir sınıf YOK** — hayalet slotlar (`Z67`) — **review** (çıktı teslim: `docs/research/KPI_EVRENI_TURETILMIS_LISTE.md`)
