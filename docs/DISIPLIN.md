@@ -5390,3 +5390,31 @@ olarak** yazılmalı, ve ajan onları **ölçmeden uygulamamalıdır**.
 
 📌 Yan kazanç: bu vakada araç değişince *"kapıyı gevşetirken aynı titizlik gerekir"*
 uyarısı da **karşılandı** — genişleme **hiç olmadı**.
+
+---
+
+## ÖNCÜL PROPAGASYONU — **ÜÇ VAKA, VE İKİSİ AYNI TAŞIYICIDAN** (ZORUNLU)
+
+`BİR REVIEW BULGUSU DOĞRULANMADAN BRIEF'E TAŞINDIĞINDA, PROPAGATÖR ARTIK REVIEW DEĞİL
+TAŞIYANDIR` (`Z77 §3a`) kuralı **üçüncü vakasıyla** bir **desen** oldu:
+
+| # | öncül | kaynağı | nereye taşındı | gerçek |
+|---|---|---|---|---|
+| 1 | *"`AMBER` İLK KEZ doğuyor"* | Team Lead ölçümü | hüküm-şartı (`Z68 §1a`) | `rag_amber = 10` ⇒ **eski model üretiyordu** |
+| 2 | *"üretim çağıranı `approval-workflow:1011`"* | `DALGA-B` review | **üç brief** | dosya `SpendCalculationService`'i **enjekte bile etmiyor** |
+| 3 | *"ürün KENDİ ÖNERDİĞİ yolu kapatıyor"* | `T-342` review | `DALGA 2c` brief'i | `terminate → FARKLI ebeveyn → **201**` — yol **AÇIK** |
+
+⛔ **İkisi (2 ve 3) aynı taşıyıcıdan: review raporundan brief'e, DOĞRULANMADAN.**
+
+> ### **BİR REVIEW BULGUSU DA BİR ÖLÇÜM DEĞİL, BİR İDDİADIR** —
+> ### ve brief'e girdiği an **TAŞIYANIN İDDİASI OLUR.**
+
+📌 **Ve üçünün de bedeli aynı sınıf:** ajan **doğru** taramayı **yanlış eksende** yapar,
+ya da olmayan bir kusuru **aramaya** çıkar. `T-273`'ün yönsüz reprodüksiyon şartı
+(*"kusur var demek, kusur yok demek kadar bir iddiadır"*) tam bunun için var.
+
+**Pratik — brief yazarken:**
+```
+review bulgusunu AYNEN taşıma → ya ÖLÇ, ya "[REVIEW İDDİASI — DOĞRULANMADI]" diye ETİKETLE
+```
+⛔ Ve etiketlenmiş bir iddia, ajanın **ilk işi** olur: *"önce bunu ölç."*
