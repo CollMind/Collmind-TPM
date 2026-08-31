@@ -5275,3 +5275,32 @@ tarihi yazılı değildi**.
 **Pratik:** bir işi *"bugün veri yok"* diye ertelerken **ertelemenin KOŞULUNU yaz**
 (*"`ledger_entries > 0` olduğu gün yeniden ölç"*) — ve mümkünse o koşulu **bir kapıya bağla**.
 Yazılmamış bir koşul, **hatırlanmayan** bir koşuldur.
+
+---
+
+## BİR **COMMIT MESAJI** DA BİR NİYET BEYANIDIR (ZORUNLU — ve bir ÖLÇÜM EKSENİ çürüdü)
+
+> **`git log --grep="<task>"` bir işin inip inmediğini ÖLÇMEZ** — yalnız birinin o task'ın
+> adını **commit mesajına yazıp yazmadığını** ölçer.
+
+Ölçülmüş vaka (2026-08-31, `DALGA 0`):
+```
+git log --grep="T-318" --oneline -- src        →  0 commit
+GERÇEK                                          →  budget-tier-notification.service.ts CANLI
+                                                   createNotification 4 çağrı
+                                                   budget.service.ts:120 · :510
+                                                   budget-reservation.service.ts:324
+                                                   ⇒ ENJEKSİYON DEĞİL, ÇAĞRI ile bağlı
+```
+⛔ **Pozitif kontrol uygulanmasaydı ÇALIŞAN BİR MEKANİZMA *"yok"* İLAN EDİLECEKTİ.**
+
+📌 **Ailedeki yeri:** `status:` bir niyet beyanı · `@deprecated` bir niyet beyanı ·
+**ve şimdi commit mesajı da.** Üçü de **insanın yazdığı** izlerdir; **kod ve DB** ise
+**mekanizmanın kendisi**.
+
+> ### **BİR İŞİN İNDİĞİNİN KANITI, İNSANIN YAZDIĞI BİR İZDE DEĞİL,
+> ### MEKANİZMANIN KENDİSİNDE ARANIR.**
+
+**Pratik:** `git log --grep` bir **tarama başlangıcıdır**, bir kapanış kanıtı **değil**.
+Sonuç `0` ise ilk hipotez *"inmemiş"* olmasın — **mekanizmayı ara** (`rg -i` + çağrı yeri),
+ve `0`'ı ancak **mekanizma da bulunamazsa** raporla.
