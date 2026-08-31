@@ -7185,3 +7185,51 @@ hükmü zayıflatır; **karşılanması** hükmü **tamamlar**.
 `Q13`–`Q15` zinciri **tamam**, `W2`'nin **tüm artıkları kapalı** ⇒ **PLANLAMA MASASI**:
 `ŞART-6 × T-334/T-342 kesişimi` + `W3` önü + **kuyruk triyajı**
 (`T-335`…`T-341` · `T-333` · `T-325`).
+
+---
+
+## `Z74` — `S1` KAPANDI: MEKANİK DEĞER **FU-VARSAYILAN + SKU-OVERRIDE**
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `docs/research/TTM_ELIGIBILITY_ENVANTERI.md` (`T-345`) · referans belge `§2`/`§6-5`
+
+### `§1` · HÜKÜM
+```
+FU-DÜZEYİ VARSAYILAN  +  SKU-DÜZEYİ OVERRIDE
+```
+
+| kalem | hüküm |
+|---|---|
+| **`tactic_values.sku_id`** | **NULLABLE ANLAM KAZANIR**: `NULL` = **FU değeri geçerli** · dolu = **o SKU için EZME** |
+| **spend hesabı** | **SATIR düzeyinde ÇÖZÜMLENMİŞ** değeri okur |
+| **çözümleme kuralı** | SKU-override varsa **o**, yoksa **FU değeri** — ⛔ **TEK RESOLVER**, `targetRoi` deseni: **kapı tek noktada** |
+| **Excel davranışı** | **KORUNUR** — satır farklılaşması **mümkün** |
+| **TTM sadeliği** | **VARSAYILAN YOLDA YAŞAR** — planner **tek değer** girer, **gerektiğinde ezer** |
+
+### `§1a` · ⭐ VE `TTM`'İN ÖLÜ KOLONU **DİRİLDİ**
+> **`tactic_values.sku_id` kolonu + FK duruyordu, hiç yazılmıyordu.**
+> ### **ÖLÜ DOĞMUŞ DEĞİL — ERKEN DOĞMUŞ ÇIKTI.**
+
+📌 `T-345`'in envanteri onu *"ölü kolon"* diye kaydetmişti; hüküm ona **işini verdi**.
+⇒ **Bir yapının kullanılmıyor olması, yanlış olduğu anlamına gelmez** — `@deprecated`
+ailesinin **olumlu** yüzü: *bir niyet beyanı bir ölçüm değildir*, ve **ölçüm de bir hüküm değildir.**
+
+### `§1b` · `Q16` **ÇÖZÜLDÜ — bu modelle uyumlu**
+```
+"FU'da mekanik yok"  =  FU değeri DE YOK, override DA yok
+⇒ UYARI, BLOK DEĞİL          [hüküm verili]
+```
+⇒ `T-344`'ün muhafazakâr seçimi (`warnings.push`) **doğrulandı** — değişiklik gerekmiyor.
+
+### `§2` · BU KARAR **ÜÇ İŞİ KİLİTLEDİ**
+```
+1  W3-BASELINE veri şekli    mekanik değerler FU-ANA + SKU-İSTİSNA olarak taşınır
+2  T-346 ELIGIBILITY         grid uygun-tactic kolonlarını FU DÜZEYİNDE açar;
+                             SKU satırları OVERRIDE-EDİLEBİLİR hücre gösterir
+3  OMURGA SENARYO 5. adım    SC-mech-1 tohumunun KESİNLEŞMİŞ hâli — AYIRT EDİCİ:
+                             "FU'ya girilen oran SKU'larda GÖRÜNÜR;
+                              bir SKU'da EZİLİR; spend AYRIŞIR"
+```
+⛔ **Üçüncüsü bir senaryo değil, bir PİN sözleşmesidir** — `T-273` ailesine karşı:
+fixture **ezme olan ve olmayan SKU'yu birlikte** taşımalı, ve **spend'in ayrıştığını
+OKUYAN** bir assertion olmalı (`T-332`).
