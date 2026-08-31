@@ -116,7 +116,7 @@ status: active        # planned | active | closed
 | [[T-089]] | **Birleşik indirim tavanı PERCENT mekaniklerde HİÇ çalışmıyordu** — akümülatör string birleştiriyordu | P1 | debugger | review |
 | [[T-097]] | `DecimalTransformer` — NaN/Infinity **iki uçta da** reddediliyor; dört boşluk F4'e kayıtlı | P2 | backend-engineer | done |
 | [[T-098]] | Hata veri kılığından çıkarıldı — **üç** canlı rota + hata nesnesi + UI | P1 | backend-engineer | review |
-| [[T-099]] | `Number.isNaN(Infinity)===false` — **T-105'e devredildi**, iki nokta açık | P1 | debugger | blocked |
+| [[T-099]] | `Number.isNaN(Infinity)===false` — 1–4 `T-105`'te, **nokta 5 (parser) `DALGA 2b`'de KAPANDI**; açık: `budget-threshold:69` (`T-101` ile) | P1 | debugger | in-progress <!-- DALGA 2b 2026-08-31: `blocked_by: T-105` BAYATTI, kilit kaldırıldı — sağlayıcı ÖLÇÜLDÜ (numeric-text.ts + dört çağrı yeri bağlı) -->|
 | [[T-104]] | C1 — kanonik sayı ayrıştırma biçim sözleşmesi (kararlar alındı) | P1 | planner | done |
 | [[T-105]] | C2 — tek parser + dört çağrı yeri + `isFinite` | P1 | backend-engineer | review <!-- DALGA 0 2026-08-31: indeks `done` diyordu; TRİYAJ §7b ÖLÇTÜ — dosya `review`. Bu, [[T-099]]'un `blocked_by`sini BAYAT kılan kayıttı -->|
 | [[T-106]] | Frontend tr-TR gösterip en-US ayrıştırıyor — 37 çağrı yeri, `\|\| 0` sessiz sıfır | P1 | frontend-engineer | todo |
@@ -323,7 +323,7 @@ status: active        # planned | active | closed
 | [[T-109]] | satır-içi editörler silindi; düzenleme `EditableCell`'e devredildi (2a+2b) | P1 | frontend-engineer | review |
 | [[T-110]] | `formatForEdit` sessiz yuvarlama + fixture ayırt edemiyor | P2 | frontend-engineer | review |
 | [[T-111]] | Frontend money-float ratchet + self-test kuruldu — taban 20 dosya / 68 bulgu | P2 | frontend-engineer | review |
-| [[T-102]] | `formula-parser`: hata-null ile BRD'nin kural-null'ı ayırt edilemiyor | P2 | backend-engineer | todo |
+| [[T-102]] | `formula-parser`: hata-null ile BRD'nin kural-null'ı ayırt edilemiyor | P2 | backend-engineer | todo <!-- DALGA 2b 2026-08-31: ÖLÇÜLDÜ + DUR (§2.4). Ayrım TEŞHİS katmanında tohumlandı; dönüş değerine taşımak `plan.service.ts`'e (=DALGA 2a alanı) dokunuyor VE ad `Z77 NOT_EVALUABLE` sözleşmesine bağımlı -->|
 | [[T-103]] | `GET /on-invoice/entries` iç mesajı 4xx gövdesine koyuyor — T-098'in dönen ucu | P2 | backend-engineer | todo |
 | [[T-090]] | ~~ÖLÇÜM: transformer kökten çözüm mü?~~ → **hayır, üç sebeple**; beş faz önerildi, F3 ürün kararı bekliyor | P3 | architect | done |
 | [[T-085]] | `spend-validation` **dört** string-karşılaştırma kusuru — kaçan ihlal + her istekte false positive (canlı rota) | P1 | debugger | review |
@@ -453,9 +453,10 @@ status: active        # planned | active | closed
 - [[T-338]] LTA taban formülünün **iki implementasyonu** — bu tur onları **eksik girdide ayrıştırdı** (biri fırlatıyor, biri `0`'lıyor) — **todo**
 - [[T-339]] **Alan A üyeliği TÜRETİLSİN** — `money-float`'un dosya listesi **elle yazılmış evren** (`G5`); `shared/lta` hiç ölçülmemişti — **blocked** (`T-334` sonrası)
 - [[T-340]] KPI evreni **adlı-kalem listesinden TÜRETİLSİN** — `"52"` onbir başlığın toplamıydı, `PSbM "(11)"` gerçekte **9** (Excel bağımsız teyit). ⛔ **kaynaksız-8 diye bir sınıf YOK** — hayalet slotlar (`Z67`) — **review** (çıktı teslim: `docs/research/KPI_EVRENI_TURETILMIS_LISTE.md`)
-- [[T-341]] Parser beyaz listesi **üstel gösterimi reddediyor** — `|v| < 1e-6` bir ara değere düştüğü an KPI **sessizce `null`** (`§2.5`). `T-334`'te **ölçüldü ve bugünkü hâliyle PİNLENDİ** — **todo**
+- [[T-341]] Parser beyaz listesi **üstel gösterimi reddediyor** — `|v| < 1e-6` bir ara değere düştüğü an KPI **sessizce `null`** (`§2.5`). `DALGA 2b` KAPATTI: aday `(a)` (beyaz liste genişletme) ve `(b)-toFixed` **ölçülerek REDDEDİLDİ** (ikisi de sessiz sıfır üretiyor); yürürlükte **metinsel sabit-gösterim açılımı** — beyaz liste HİÇ genişlemedi, 5M örnekte kayıp 0. Randevu-pini **kırıldı ve yenilendi** — **review**
 - [[T-342]] **RAG iki-eksen kadran inişi** (`Q7`) + LTA-only planlarda **TANIMLI-YOKLUK** (`ragExclusionReason`) — ⛔ `AMBER` **İLK KEZ DOĞUYOR**, tüketici ön-ölçümü şart; migration YOK (`Z68`) — **review** (dosya `review`; `Z68`/`Z70` indi)
 - [[T-343]] **`ragAmberThreshold` ÖLÜR** (tüketicisiz — ölçüldü) · `ragGreenThreshold` **AD-BORCU** alır (tüketicisi RAG değil **Target ROI**). ⛔ Kadran-RAG **işaret tabanlı**: *"sıfırdan büyük"* konfigüre edilecek değer değil, **kavramın kendisi** (`Z70`) — **review** (`Z70` indi; dosya `review`)
 - [[T-344]] **`Q14` DALGASI** — `B3` ölümü (hardcode `%20`, renk-kör, `null→0`) + **uyarı taşıma** (`Q13` katmanı canlı yüzeye ilk kez) + **rota konsolidasyonu** (`/submit` yaşar, `SubmissionResult`'ı alır) + `S9` etiketi — **review** (`Z73` indi, commit `ff162b1`/`280035d`; dosya `review`)
 - [[T-345]] **TTM eligibility ENVANTERİ** — inceleme, taşıma DEĞİL. Dört çıktı: veri modeli · grid kolon türetimi · mekanik-değer girişi · çeviri notları. ⛔ **TTM'e YAZILMAZ** — **review** (çıktı **teslim**: `docs/research/TTM_ELIGIBILITY_ENVANTERI.md` 444 satır, `Z74`'ün **girdisi**)
 - [[T-346]] **Uygun-tactic kolonları GRID'de** — `Z74 §2`'nin bağladığı `W3` önkoşulu; FU-VARSAYILAN + SKU-OVERRIDE, ⛔ **TEK RESOLVER** (`targetRoi` deseni). `T-345 §7`'nin **beş açık sorusu** (`S2`–`S6`) devralındı; `S1` `Z74 §1` ile hükme bağlandı — `planner` — **todo** (`DALGA 0`'da AÇILDI)
+- [[T-347]] Formül beyaz listesi **blok yorumu (`/* */`) geçiriyor** — `INCR_GP/*+*/-BASE_GP` insana **bölme** gibi okunur, JS'e **çıkarma** ⇒ `10-4=6`, `isValid: true`. ⛔ `T-334`'ün `//` vakasıyla **aynı aile, FARKLI mekanizma**: bu **beyaz listenin KENDİSİNDEN** geliyor — **todo**
