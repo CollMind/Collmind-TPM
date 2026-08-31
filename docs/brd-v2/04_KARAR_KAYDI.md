@@ -7321,3 +7321,72 @@ ledger_entries  0 → 3 OLMUŞ        kayıt HÂLÂ "0" DİYORDU
 ```
 > ### **VERİYE DAYALI HER ERTELEME, VERİNİN DEĞİŞTİĞİ GÜN YENİDEN ÖLÇÜLÜR.**
 *"Örtü kalkar, kayıt kalkmaz"* — erteleme gerekçesinin **zaman ekseni**.
+
+---
+
+## `Z76` — `Q17`/`Q18`/`Q19` + `§2.3`'ün ÖLÇÜMLE KAPANMASI
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+
+### `§1` · `Q17` — **ÖNCE `(B)`**, `(A)` onun **ARTIĞINA** göre boyutlanır
+```
+(B) TÜREV   statü kolonu tek kaynaktan RENDER edilir
+            ⇒ M1 senkronsuzluk · M2 append-only okuma · M3 hücredeki `|`
+              ÜÇÜ DE VAR OLAMAZ  (render eden kod TEK, kaynak TEK)
+(A) TESPİT  KALAN yüzeye göre — muhtemelen yalnız M4 serbest metin + türetilemeyen ANLATI
+```
+> ### **`(A)`'YI ŞİMDİ YAZMAK, `(B)`'NİN ORTADAN KALDIRACAĞI SINIFLARA KAPI YAZMAK OLUR.**
+⇒ **Kapı-enflasyonu süzgecinin kendisi** bu sırayı dayatıyor.
+
+**Sıra:** `(B)` iner → **kalan yüzey ÖLÇÜLÜR** → `(A)` o **dar kapsamla** doğar.
+⛔ **`(A)`'nın sözleşmesine ŞİMDİDEN yazılı üç şart:**
+```
+T-212 deseni     liste-tabanlı ratchet baseline (15 çözülmemiş sürüklemeyle KIRMIZI DOĞMASIN)
+T-100 evren      HER ZAMAN tasks/*.md tamamı — ASLA git diff'ten
+self-test        yapay sürükleme → exit 1 · geri al → exit 0
+```
+📌 **Ajanın iki tuzağı ÖNCEDEN sayması tam doğru refleksti.**
+
+### `§2` · `Q18` — **ALTISI ÖLÜR** (`D1`'in GENİŞLETİLMİŞ gerekçesi)
+> **`cursor-not-allowed` `404`'ten DÜRÜST ama VAATTEN MASUM DEĞİL.**
+
+Altı kalem **adlarıyla bir rapor kataloğu vaat ediyor**, ve o adlar **`R` katmanı tasarımı
+yapılmadan** verilmiş. Dahası:
+> ⚠️ **Ürün gösterimi yaklaşırken, altı-tıklanamaz-kalemlik bir menü, demo'da
+> *"bitmemişlik"* sinyalinin EN GÖRÜNÜR hâli.**
+
+⇒ Kural aynı: **vaat kaldırılır, gerçek geldiğinde ADIYLA doğar.** `R` katmanı
+*(masada zaten **"müşteri değerinin merkezi"** diye kayıtlı)* tasarlandığında menü
+**gerçek rapor adlarıyla, çalışan linklerle** doğar.
+⛔ **Üst "Raporlar" başlığı da altı çocuğuyla BİRLİKTE gider — BOŞ BAŞLIK BIRAKILMAZ.**
+
+### `§3` · `Q19` — **DIALOG YAŞAR, ROTA ÖLÜR** (`Q15` emsali: **tek-yol ilkesi**)
+Kullanıcının **fiilen kullandığı** yol (`CustomersPage` dialog) **ad ve davranışça yeterli**;
+`/customers/new` **ikinci doğruluk kaynağı** ve **sürüklenme adayı** *(iki form ⇒ yarın
+**iki farklı validasyon**)*.
+⛔ **Ölürken KALINTI TARAMASI** (`T-307 m2`): linkler + testler + `rg -i 'customers/new'`.
+📌 **`E1` dersi:** *taşıyıcı kullanım aramada görünmez* ⇒ **evren geniş tutulur.**
+
+### `§4` · ⭐ `CLAUDE.md §2.3` — BELİRSİZLİK **ÖLÇÜMLE** KAPANDI
+```
+ESKİ   "sınır semantiği (>95 mi >=95 mi) ÇÖZÜLMEMİŞTİR … önce sor"
+ÖLÇÜM  budget-threshold.service.ts:228-230
+       percent >= critical → RED · >= warning → AMBER · else GREEN
+```
+⇒ **`>=`**. `ŞERİT A'` iki kopya-sapmayı (`critical`'ı `95` yerine **`100`** sanan) düzeltti.
+✅ `CLAUDE.md`'ye `F12` işlendi *(eski metin **üstü çizili**)*.
+> **Bir belirsizliğin TERCİHLE değil ÖLÇÜMLE kapanması — `§2.4`'ün istediği biçim.**
+
+### `§5` · `reserved_amount` BULGUSU — **beklenen değişim olarak KAYITLI**
+```
+budget_envelopes kolonları: allocated_amount · consumed_amount   ⛔ reserved_amount YOK
+⇒ /budget listesindeki utilization REZERVASYONLARI HİÇ SAYMIYORDU
+düzeltme ÖZDEŞLİK: used = allocated − available, ikisi de v_budget_summary'den
+```
+> ⚠️ **Finance gözü: SAYI BÜYÜDÜ ≠ REGRESYON** — `budget-variance` ile **HİZALANMA**.
+
+### `§6` · TURUN KALICI MİRASI
+> ### **`status:` bir niyet beyanı · `@deprecated` bir niyet beyanı · **COMMIT MESAJI DA**
+> ### — KOD ve DB **MEKANİZMANIN KENDİSİDİR**.**
+`git log --grep` vakasıyla `DISIPLIN`'e girdi.
+**İyi ki pozitif kontrol vardı: çalışan zil İKİNCİ KEZ *"yok"* ilan edilecekti.**

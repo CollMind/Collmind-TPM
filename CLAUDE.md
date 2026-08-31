@@ -262,8 +262,14 @@ PDF'ler farklı (ve süperseded) bir BRD'dir. Kaynak `docs/brd/01_Main_BRD/Secti
 - **KPI edge case:** division-by-zero → null, eksik veri → null, negatif ROI geçerlidir.
 - **RAG:** hardcoded threshold YASAK; sadece KPI konfigürasyonundan.
 - **Budget threshold:** %80 Warning, %95 Critical, %100+ Exceeded. On-Invoice / Off-Invoice ayrı değerlendirilir (ADR 0004).
-  ⚠️ **Bilinen belirsizlik:** sınır semantiği (`>95` mi `>=95` mi) çözülmemiştir ve bu eşikler
+  ~~⚠️ **Bilinen belirsizlik:** sınır semantiği (`>95` mi `>=95` mi) çözülmemiştir~~ ve bu eşikler
   bugün birçok dosyada hardcode'dur (BRD ihlali). Bu maddeye dayanarak kod yazma — önce sor.
+  > ⭐ **`F12` — ÖLÇÜMLE KAPANDI (2026-08-31, `Z76 §4`).** Sınır semantiği
+  > **`>=`**'dir — kanonik uygulama `budget-threshold.service.ts:228-230`:
+  > `percent >= critical → RED` · `>= warning → AMBER` · else `GREEN`.
+  > `ŞERİT A'` iki kopya-sapmayı (`critical`'ı `95` yerine `100` sanan) düzeltti.
+  > ⚠️ **Bir belirsizliğin TERCİHLE değil ÖLÇÜMLE kapanması** — `§2.4`'ün istediği biçim.
+  > *(Eski metin **silinmedi**, üstü çizildi.)*
   ⚠️ **Ve uyarı eksikti (T-101, ölçüldü):** sorun yalnız hardcode değil — **konfigürasyon
   üretimde ulaşılamaz.** `BudgetAlertConfiguration`'a dokunan sekiz dosyanın hiçbiri controller
   değil, seed dışında yazma yok, ve `TenantService.create` eşik satırı kurmuyor. Yani
