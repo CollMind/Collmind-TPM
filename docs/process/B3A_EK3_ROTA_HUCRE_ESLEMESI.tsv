@@ -143,7 +143,6 @@ src/modules/modes/planning-first/plan/plan.controller.ts	PATCH	plans/:id/fus/:fu
 src/modules/modes/planning-first/plan/plan.controller.ts	DELETE	plans/:id/fus/:fuId	-	MODES_PLAN_WRITE	Z35	CAP	MODES_PLAN_WRITE
 src/modules/modes/planning-first/plan/plan.controller.ts	PATCH	plans/:id/fus/:fuId/skus/:skuId/volume	-	MODES_PLAN_WRITE	Z35	CAP	MODES_PLAN_WRITE
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/submit	-	MODES_SUBMIT	Z35	CAP	MODES_SUBMIT
-src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/submit-for-approval	-	MODES_SUBMIT	Z35	CAP	MODES_SUBMIT
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/review	ADMIN,CATEGORY_MANAGER,FINANCE	MODES_APPROVE	YARGI	ROLES	-
 src/modules/modes/planning-first/plan/plan.controller.ts	POST	plans/:id/escalate-to-finance	ADMIN,CATEGORY_MANAGER	MODES_APPROVE	YARGI	ROLES	-
 src/modules/modes/planning-first/plan/plan.controller.ts	GET	plans/:id/approval-history	-	MODES_READ	MEKANIK	CAP	MODES_READ
