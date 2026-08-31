@@ -5304,3 +5304,36 @@ GERÇEK                                          →  budget-tier-notification.s
 **Pratik:** `git log --grep` bir **tarama başlangıcıdır**, bir kapanış kanıtı **değil**.
 Sonuç `0` ise ilk hipotez *"inmemiş"* olmasın — **mekanizmayı ara** (`rg -i` + çağrı yeri),
 ve `0`'ı ancak **mekanizma da bulunamazsa** raporla.
+
+---
+
+## `0` MEŞRU BİR DEĞER OLSAYDI, **VERİDE EN AZ BİR TANE OLURDU** (ZORUNLU)
+
+> **Sessiz-varsayılan tartışmalarının İLK ÖLÇÜMÜ bu sorgu şeklidir.**
+
+Bir `?? 0` / `|| 0` tartışmasında asıl soru şudur: bu `0` bir **çözülmüş değer** mi
+(*"LTA yok ⇒ harcama gerçekten `0`"*), yoksa bir **sessiz varsayılan** mı
+(*"veri eksik ⇒ `NOT_EVALUABLE` olmalı"*)? Ayrımın **en ucuz ve en kesin** kanıtı **şemada
+ve veride**:
+
+```sql
+SELECT count(*) FILTER (WHERE alan IS NULL),
+       count(*) FILTER (WHERE alan = 0),
+       count(*)
+FROM main.tablo;
+```
+
+Ölçülmüş vaka (2026-08-31, `K1` · `Z77 §3b`):
+```
+skus.cogs    NULL 166/170        cogs = 0 olan satır:  SIFIR
+```
+⇒ **`?? 0` hiçbir meşru `0`'ı KORUMUYOR — yalnız 166 EKSİK VERİYİ MASKELİYOR.**
+
+📌 **Mantık:** eğer `0` o alanda anlamlı bir iş değeriyse, **gerçek veride en az bir kez
+görünür**. Hiç görünmüyorsa, koddaki `0` bir **iş değeri değil, bir DOLGUDUR**.
+
+⚠️ **Ve tersi de bilgidir:** `0` veride **varsa**, `NOT_EVALUABLE`'a çevirmek **meşru bir
+sıfırı yok eder** — o zaman ayrım `null` ile `0` arasında yapılmalı, ikisini birden değil.
+
+**Pratik:** bir sessiz sıfır iddiasında bulunmadan önce **bu sorguyu koş**. Sonuç, tartışmayı
+çoğu zaman **tek satırda** bitirir.

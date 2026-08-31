@@ -7390,3 +7390,73 @@ düzeltme ÖZDEŞLİK: used = allocated − available, ikisi de v_budget_summary
 > ### — KOD ve DB **MEKANİZMANIN KENDİSİDİR**.**
 `git log --grep` vakasıyla `DISIPLIN`'e girdi.
 **İyi ki pozitif kontrol vardı: çalışan zil İKİNCİ KEZ *"yok"* ilan edilecekti.**
+
+---
+
+## `Z77` — `S1`: SUBMIT **DURMAZ**, REZERVASYON **REDDEDER** · `DALGA 2` AÇILDI
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `docs/research/K1_SESSIZ_SIFIR_OLCUM_TABLOSU.md`
+
+### `§1` · HÜKÜM — ve bu **yeni bir icat DEĞİL**
+> **`T-321`'in iki-eksen ayrımının VERİ-EKSİKLİĞİ hâli.**
+
+| katman | davranış | gerekçe |
+|---|---|---|
+| **SUBMIT** | **DURMAZ** — `NOT_EVALUABLE` + **görünür uyarı, alan ADIYLA** *("`PLAN_VOL` eksik: 3 SKU'da spend hesaplanamadı")* | `ADR 0005 K2`'nin **korunan gerekçesi** + `Q13` **`warnings` sözleşmesi** |
+| **REZERVASYON** | **REDDEDER** — açık hata kodu (`RESERVATION_INPUT_INCOMPLETE` sınıfı) | `§2.5`'in **tanım bölgesi**: para yoluna **sessiz `0` girmez**. Ve **ölçümün kendisi**: `0` rezervasyon **eşiği GEÇ ateşletir** ⇒ **sessiz-düşük rezervasyon, bütçe korumasının TERSİNE çalışır** |
+
+> ### **`NOT_EVALUABLE` BİR ZARFA `0` YAZMAZ — YAZMAYI REDDEDER.**
+
+### `§1a` · ⛔ İKİ RED SINIFI PİNDE **AYRI ADLANIR**
+```
+GİRDİ-EKSİKLİĞİ reddi   (bu hüküm)          ≠   T-321'in %100-BLOCKED EŞİK reddi
+```
+İkisi aynı *"RESERVE reddedildi"* yüzeyinden dönerse **ilk okuyucu karıştırır** ⇒
+**hata kodu + mesaj ayrımı** taşır.
+
+### `§2` · TEK-RESOLVER **ONAYLI** — ve desen artık **ADLI BİR AİLE**
+> **"Bir çağıran unutuldu ⇒ DERLEME HATASI olur, BÜTÇE SAPMASI değil."**
+
+`toFiniteNumber` *(`T-343`)* → `targetRoi` resolver *(`T-344`)* → **`resolveSkuSpendInputs`**:
+**desenin üçüncü uygulaması.**
+> ### **KAPI TEK NOKTADA, VE TİP ONU ZORLAR.**
+
+`SKUContext` **nesne literaliyle hiçbir yerde inşa edilemez**; `A`/`B` ayrımı
+**alan başına SABİT** taşınır.
+
+### `§3` · ÜÇ KAYIT
+
+**`3a` · ÖNCÜL PROPAGASYONU — kural artık İKİ VAKALI**
+```
+Z68 §1a   "AMBER İLK KEZ DOĞUYOR"    → ürün sahibi HÜKÜM-ŞARTI yaptı
+K1        "approval-workflow:1011"   → Team Lead ÜÇ BRIEF'E taşıdı
+```
+> ### **BİR REVIEW BULGUSU DOĞRULANMADAN BRIEF'E TAŞINDIĞINDA,
+> ### PROPAGATÖR ARTIK REVIEW DEĞİL **TAŞIYANDIR**.**
+
+⛔ Ve **üç yanlış-iddialı yorum/test** (`spend-calc:786` · `plan.service:2464` ·
+`role-journey.e2e:705/857`) **`T-084` koruması üretmeden BU DALGADA düzeltilir**.
+
+**`3b` · `166/170` KANITI — `A`/`B` AYRIMININ ŞEMA-KANITI**
+```
+skus.cogs   NULL 166/170        cogs = 0 olan satır:  SIFIR
+```
+> ### **`0` MEŞRU BİR DEĞER OLSAYDI, VERİDE EN AZ BİR TANE OLURDU.**
+⇒ Sessiz-varsayılan tartışmalarının bundan sonraki **ilk ölçümü bu sorgu şeklidir**.
+
+**`3c` · `calculateAllSpendsForFU` — DOKUZUNCU ADAY, `Z75 §4` kuralı işler**
+Ya **tüketici kazanır** *(`W3`'ün grid-hesap yolu **doğal aday** — ölmeden önce o soru
+cevaplanır)* ya **ölür**. Karar **`W3` tasarımıyla birlikte, KOŞUL SATIRIYLA**.
+
+### `§4` · `DALGA 2` AÇILDI
+```
+2a  T-027 YENİDEN KURULUŞ   tek-resolver + A/B alan-başına-sabit
+                            + canlı DÖRT `B`'nin ölümü + submit/rezervasyon ayrımı
+2b  parser                  T-341 + T-102 + T-099
+2c  LTA                     T-335 → T-336
+izole worktree · tam e2e Team Lead'de
+```
+⛔ **BEKLENEN-DEĞİŞİM LİSTESİ ŞİMDİDEN BİR SATIR TAŞIYOR:**
+> **REZERVASYONLAR ARTACAK** — `planVol`/`unitPrice` eksik planlar bugün **düşük rezerve**.
+> Düzeltme **Finance gözünde *"bütçe daha hızlı doluyor"*** okunur. **Adıyla listede.**
