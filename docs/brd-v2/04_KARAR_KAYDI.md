@@ -7233,3 +7233,91 @@ ailesinin **olumlu** yüzü: *bir niyet beyanı bir ölçüm değildir*, ve **ö
 ⛔ **Üçüncüsü bir senaryo değil, bir PİN sözleşmesidir** — `T-273` ailesine karşı:
 fixture **ezme olan ve olmayan SKU'yu birlikte** taşımalı, ve **spend'in ayrıştığını
 OKUYAN** bir assertion olmalı (`T-332`).
+
+---
+
+## `Z75` — `FAZ-2` İKİNCİ YARI: ALTI HÜKÜM · `DALGA 0` ∥ `ŞERİT A'` AÇILDI
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Statü:** yürürlükte
+> **Girdi:** `FAZ2_IKINCI_YARI_PLANLAMA_MASASI.md` · `KUYRUK_TRIYAJI.md` · `FRONTEND_DURUM_ENVANTERI.md`
+
+### `§1` · `K1` — `T-027` **YENİDEN AÇILIR**, ama *"geri alınır"* değil **"YENİDEN KURULUR"**
+> ### `Z69 §4c`'NİN DERS KİTABI VAKASI.
+```
+T-027'nin "bilinçli ?? 0" kararı  →  LTA motorunun BAĞLI OLMADIĞI ve
+                                     formül-kanonun ESKİ olduğu bir dünyada verildi
+T-293 / T-334                     →  O DÜNYAYI DEĞİŞTİRDİ
+⇒ gerekçe MEKANİZMASINI KAYBETTİ
+```
+⛔ **`T-337`'nin İLK ADIMI HÜKÜM DEĞİL ÖLÇÜM** — çağrı yeri başına:
+```
+bu `0` ÇÖZÜLMÜŞ DEĞER mi   (LTA yok ⇒ harcama GERÇEKTEN 0)
+      SESSİZ VARSAYILAN mı  (veri eksik ⇒ NOT_EVALUABLE olmalı)
+```
+📌 **Emsal `B1`'in `toFiniteNumber` deseni: ayrım TEK RESOLVER'DA yaşar, ÇAĞIRAN BAŞINA değil.**
+⇒ Ölçüm tablosu gelince hüküm verilir. **`DALGA 2`'nin kilidi böyle açılır.**
+
+### `§2` · `K2` — `plan.service:2915`'in `20.0`'ı **ÖLÜR** *(hüküm ZATEN VERİLİ)*
+İki tur önce: ***"sessiz-yirmi, sessiz-sıfırın kardeşi."***
+⛔ **Ve tekrar sorulmuş olması bir `DALGA 0` VAKASIDIR:**
+> ### **VERİLEN HÜKÜMLERİN DE İNDEKSİ SÜRÜKLENİYOR.**
+**İniş:** `2a` ailesiyle.
+
+### `§3` · `K3` — `EK_E` **GÜNCELLENİR**; envanter **kanonik olmaz, GİRDİ olur**
+> **İkilem yanlış kurulmuştu:** `EK_E` **yaşayan kayıt**, FE envanteri **ölçüm**.
+
+**Yapılacak:**
+```
+1  EK_E'ye İKİ YENİ EKSEN — 🔒 artık ÜÇ BOYUTLU:  arayüz / ROTA / ROL
+   kanıt: /finance — 8 widget CANLI · menü yolu YOK · READONLY GÖREMİYOR
+2  bayat sayımın F12'si
+3  kaynak satırı: "FE envanteri, 2026-08-30 ölçümü"
+```
+⚠️ `EK_E` **donmuş** listede ⇒ `Z1` gereği bu **kayıtlı bir değişikliktir** (bu bölüm).
+
+### `§4` · `K4` — `spend-calculation` uçları: **İKİ YOL KURALI**
+| küme | hüküm |
+|---|---|
+| **`K-2.1.8i` taşıyan uç** | **`Faz-2-ŞART`** — dağıtım görünürlüğü **ilk-müşteri-değeri** süzgecinden geçer; planner'ın spend dağılımını görmesi **omurga akışın 6. adımının parçası** ⇒ **KABLOLANIR** |
+| **kalan yedi uç** | ⛔ **`T-267` emsali: bir uç ya TÜKETİCİ KAZANIR ya ÖLÜR.** Sekiz uç **süresiz tüketicisiz duramaz** |
+
+**`W3` masasında uç-uç yerleşim:** hangileri **baseline/grid işinin doğal tüketicisini
+bekliyor** *(bekler — **koşul satırıyla**)*, hangisi **spekülatif doğmuş** *(ölür)*.
+
+### `§5` · `K5` — ÖLÜ KOD + UYDURMA VERİ: **EVET, ve SIRA KRİTİK**
+> ### **TEST ÖNCE ÖLÜR, KOMPONENT BİRLİKTE.**
+```
+1  ÖLÜM KANITI raporda       üretim çağrısı SIFIR + POZ. KONTROL
+2  komponent + testi AYNI DIFF'te ölür
+     test kalırsa      → yol "CANLI" görünmeye devam eder
+     komponent kalırsa → test onu DİRİLTME BAHANESİ olur
+3  dört ölü menü linki (404 üreten) AYNI temizlikte — `D1` emsali:
+   ⛔ VAAT KALDIRILIR — rapor/analytics gerçeği geldiğinde LİNKİYLE DOĞAR
+```
+
+### `§6` · `K6` — DALGA PLANI **ONAYLI**: `DALGA 0` ∥ `ŞERİT A'` **hemen ve paralel**
+```
+DALGA 0    kod YAZMIYOR (ölçüm/muhasebe)
+           ⛔ ve 65-review limbosunun 62-doğrulanmamışı TAM ÖLÇÜM DALGASI İŞİ —
+             "genelleme 3/65'ten kuruldu" DÜRÜSTLÜĞÜ, Dalga-0'ın VARLIK GEREKÇESİ
+ŞERİT A'   CANLI-YANLIŞ (T-318 emsali: KIRMIZI-GERÇEK her şeyi önceler)
+```
+**İki şart:** `A'` dalgaları **izole worktree** · **tam e2e Team Lead'de** *(yazılı)*.
+
+⛔ **VE `DALGA 0`'IN ÇIKTISINA BİR KALICILIK ÖNERİSİ EKLENİR:**
+> Sekiz vakalık `BACKLOG` ↔ dosya sürüklenmesi **bir daha ELLE yakalanmasın** —
+> ucuz bir **tutarlılık kontrolü** (`status` çapraz-grep, **kapı adayı**) `DALGA 0` **önerir**,
+> **kapı-enflasyonu süzgecinden** geçirip karar verilir.
+
+### `§7` · İKİ KAYIT
+**`7a` · `spend-validation`'ın dört sabiti** — `A'` **değil BORÇ**, ama ⛔ **yorum kirliliği
+HEMEN düzeltilir**: yorumu *"Configurable thresholds"* diyen bir hardcode,
+> **yanlış yorum `T-084` KORUMASI ÜRETİR.**
+Sabitlerin `§2.3` inşası **`B'` borç dalgasına**, `T-138` ölçümüyle.
+
+**`7b` · `T-240` vakası — `Z60` ailesinin EN TEMİZ YENİ ÜYESİ**
+```
+ledger_entries  0 → 3 OLMUŞ        kayıt HÂLÂ "0" DİYORDU
+```
+> ### **VERİYE DAYALI HER ERTELEME, VERİNİN DEĞİŞTİĞİ GÜN YENİDEN ÖLÇÜLÜR.**
+*"Örtü kalkar, kayıt kalkmaz"* — erteleme gerekçesinin **zaman ekseni**.

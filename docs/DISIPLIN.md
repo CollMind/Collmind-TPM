@@ -5230,3 +5230,48 @@ karşılığı) hüküm **çürümedi** — **koşulu doldu**.
 📌 **Pratik:** bir hükmü revize ederken **gerekçesini oku ve sınıflandır** —
 *"bu gerekçe yanlış mıydı, yoksa bir KOŞUL muydu ve doldu mu?"* İkisi aynı `F12` iziyle
 yazılırsa **kayıt, koşul yazmayı cezalandırır**.
+
+---
+
+## ÖLÜ BİR YOLU PİNLEMEK, ONU **CANLI SANMAYA** YOL AÇAR (ZORUNLU — `T-084`'ün TEST TARAFI)
+
+Ölçülmüş vaka (2026-08-31, FE envanteri `§3a`): `ProfitabilityChart` ve
+`RecentTransactions` **üretimde çağrılmıyor** — ama **testleri `dummyData`'yı ŞARTNAME
+olarak pinliyor.** Bir okuyucu testi görür, *"demek ki kullanılıyor"* diye okur.
+
+> ### **BİR TEST, ÖLÇTÜĞÜ ŞEYİN CANLI OLDUĞUNU İMA EDER — VE BU İMA YANLIŞ OLABİLİR.**
+
+⛔ **Temizlik SIRASI bu yüzden kritiktir** (`Z75 §5`):
+```
+1  ÖLÜM KANITI       üretim çağrısı SIFIR + POZİTİF KONTROL
+2  komponent + testi AYNI DIFF'te ölür
+     test kalırsa      → yol "CANLI" görünmeye DEVAM EDER
+     komponent kalırsa → test onu DİRİLTME BAHANESİ olur
+```
+
+📌 `T-084` (*"bir hatayı belgelemek onu koruma altına alır"*) **kod yorumları** içindi;
+bu onun **test** tarafı — ve **daha güçlü**, çünkü bir test yalnız *belgelemez*, **koşar**.
+
+---
+
+## VERİYE DAYALI HER ERTELEME, VERİNİN DEĞİŞTİĞİ GÜN **YENİDEN ÖLÇÜLÜR** (ZORUNLU)
+
+> `BİR GEREKÇE, DAYANDIĞI ÖLÇÜMÜN TARİHİYLE YAŞAR` (`Z60`) ailesinin **en temiz** üyesi.
+
+Ölçülmüş vaka (2026-08-31, `T-240`):
+```
+task:36   "Bugün fiili kusur YOK (ölçüldü: ledger_entries 0 satır, öksüz 0)"
+CANLI     ledger_entries = 3
+```
+Ölçüm **doğruydu**, yazıldığı gün. Veri değişti; **kayıt değişmedi**, ve erteleme
+**kendiliğinden geçersiz** hâle geldi — **kimse fark etmeden**.
+
+> ### **ÖRTÜ KALKAR, KAYIT KALKMAZ.**
+
+📌 `§2.7`'nin *"verinin yokluğu örter"* maddesinin **zaman ekseni**: orada `0`-satır bir
+**körlük** kaynağıydı; burada bir **erteleme gerekçesi**, ve gerekçenin **son kullanma
+tarihi yazılı değildi**.
+
+**Pratik:** bir işi *"bugün veri yok"* diye ertelerken **ertelemenin KOŞULUNU yaz**
+(*"`ledger_entries > 0` olduğu gün yeniden ölç"*) — ve mümkünse o koşulu **bir kapıya bağla**.
+Yazılmamış bir koşul, **hatırlanmayan** bir koşuldur.
