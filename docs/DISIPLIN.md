@@ -5337,3 +5337,56 @@ sıfırı yok eder** — o zaman ayrım `null` ile `0` arasında yapılmalı, ik
 
 **Pratik:** bir sessiz sıfır iddiasında bulunmadan önce **bu sorguyu koş**. Sonuç, tartışmayı
 çoğu zaman **tek satırda** bitirir.
+
+---
+
+## ÜÇÜNCÜ EKSEN: **DENETLENEN ≠ OKUNAN** (ZORUNLU)
+
+`DENETLENEN DİZGE = DEĞERLENDİRİLEN DİZGE` kuralı **iki** dizgeyi hizalıyordu. Ölçülmüş bir
+vaka **üçüncüsünü** ekledi (2026-08-31, `T-347`):
+
+```
+T-334  denetlenen ≠ DEĞERLENDİRİLEN     eval, beyaz listeden BAŞKA bir dizgeyi çalıştırıyordu
+       ⇒ KAPANDI (eşitlik geri kuruldu)
+T-347  denetlenen ≠ OKUNAN              eşitlik KORUNUYOR, ve yine de yanlış sonuç
+```
+```
+girdi   INCR_GP/*+*/-BASE_GP        (10 ve 4)
+insan   BÖLME okur                   →  beklenen ~2.5
+JS      YORUM okur                   →  10 − 4 = 6
+beyaz liste GEÇİRİR — çünkü `/` ve `*` MEŞRU OPERATÖRLER
+```
+
+> ### **BİR BEYAZ LİSTE, KARAKTERLERİ ONAYLAR — ANLAMLARINI DEĞİL.**
+
+📌 **Ve düzeltme yönü de bu eksenden çıkar:** yorumu **tanımak** anlamı **büyütür**;
+doğru olan **reddetmektir**.
+> **`denetlenen = değerlendirilen = OKUNAN` üçlüsü, ancak DİL KÜÇÜK TUTULARAK korunur.**
+
+**Pratik:** bir girdi dili tanımlarken sor — *"bu karakter kümesi, birleştiğinde
+BEKLEMEDİĞİM bir sözdizimi kurabilir mi?"* Karakter bazlı bir beyaz liste bu soruyu
+**cevaplamaz**; **dizi** bazlı bir red gerekir.
+
+---
+
+## BİR **ÖNERİ** DE, BİR BULGU GİBİ, DOĞRULANMADAN ARAÇ SEÇİMİNE DÖNÜŞMEZ (ZORUNLU)
+
+> `BİR REVIEW BULGUSU DOĞRULANMADAN BRIEF'E TAŞINDIĞINDA, PROPAGATÖR ARTIK REVIEW DEĞİL
+> TAŞIYANDIR` (`Z77 §3a`) kuralının **YAPICI yüzü**.
+
+Ölçülmüş vaka (2026-08-31, `DALGA 2b`): Team Lead brief'e *"TL görüşü: `(b)` en güvenli —
+**`toFixed`**"* yazdı. Ajan **fikri aldı, aracı ölçtü**:
+```
+(5e-324).toFixed(20) = "0.000…0"   ⇒ SESSİZ SIFIR  (düzeltmek istediği sınıfın KENDİSİ)
+(1e21).toFixed(2)    = "1e+21"     ⇒ BÜYÜK TARAF HİÇ DÜZELMİYOR
+⇒ araç DEĞİŞTİRİLDİ: metinsel açılım (String(v) round-trip garantili en kısa gösterim)
+   sonuç: beyaz liste HİÇ GENİŞLEMEDİ
+```
+
+> ### **BİR ÖNERİNİN YÖNÜ DOĞRU, ARACI YANLIŞ OLABİLİR — VE AYRIMI ÖLÇÜM YAPAR.**
+
+⛔ **Team Lead önerisi bir HÜKÜM DEĞİLDİR.** Brief'teki *"TL görüşü"* satırları **çürütülebilir
+olarak** yazılmalı, ve ajan onları **ölçmeden uygulamamalıdır**.
+
+📌 Yan kazanç: bu vakada araç değişince *"kapıyı gevşetirken aynı titizlik gerekir"*
+uyarısı da **karşılandı** — genişleme **hiç olmadı**.
