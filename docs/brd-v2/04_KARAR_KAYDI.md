@@ -8437,3 +8437,109 @@ acceptance    ACCEPTED/REJECTED — PENDING_REVIEW AÇILMADI (İlke 1: akış yo
 red kayıtları anahtarı çözülemeyen satır: bugün yalnız HTTP cevabında — KALICI EVİ YOK
               ⇒ AÇIK, BL-3'ün girdisi
 ```
+
+---
+
+## `Z87` — RED SATIRLARININ **KALICI EVİ**, VE İKİ METRİK İKİ AD
+
+> **Tarih:** 2026-09-02 · **Karar:** ürün sahibi · **Girdi:** `Z86` `§5`'in açık kalemi
+> ⛔ **HÜKÜM `BL-3`'TEN ÖNCE VERİLDİ** — gerekçe: *hükümsüz `BL-3` metriği **icat eder**,
+> `AD-BORCU` doğar.*
+
+### `§1` · HÜKÜM — AYRI TABLO, SORGULANABİLİR
+```
+TAŞIYICI      HTTP cevabı UÇUCU — kullanıcı sayfayı kapatınca "hangi satır NEDEN"
+              KAYBOLUR. BL-3'ün "%95'e neden ulaşamıyorum" sorusunun cevabı TAM BU
+              SATIRLAR; teşhis raporu FİLTRELENİR
+              (SKU_NOT_FOUND × CPL_NOT_FOUND × değer hatası) — jsonb bunu TAŞIMAZ
+DESTEKLEYİCİ  denetim izi: yüklenen-ama-REDDEDİLEN veri bir OLAYDIR, kaydı kalır
+              (ADR 0012 ruhu); ve BL-2'nin ölçütü zaten "SORGULANACAKSA TABLO"ydu
+```
+
+**ŞEKİL** (migration `1823000000000`, `T-358`):
+```
+batch_id FK RESTRICT · row_no · raw jsonb (hücre-ham)
+status ENUM(ACCEPTED, REJECTED)
+reason ENUM(SKU_NOT_FOUND, CPL_NOT_FOUND, INVALID_PERIOD, INVALID_VALUE, DUPLICATE)
+resolved_sku_id / resolved_cpl_id  NULLABLE — kabul edilende DOLU
+                                   ⇒ baseline_volumes'a KÖPRÜ
+GRANT  SELECT + INSERT · ⛔ UPDATE/DELETE YOK (satır IMMUTABLE)
+RLS    tenant_id + politika TANIMLI / ENABLE KAPALI  (BL-1 · Z85 §2 deseni)
+```
+
+### `§2` · ⛔ ŞART: **`ACCEPTED` SATIRLAR DA BURADA YAŞAR**
+> Yalnız red kaydedilirse **`sourceMatchRatio`'nun PAYDASI KAYBOLUR**, ve
+> *"kabul edilen satır **hangi kaynak satırdan** geldi"* izi **KOPAR**.
+Köprü: `baseline_volumes` ↔ `batch_id` + `row_no`.
+
+📌 Bu, `DISIPLIN`'in *"negatif bir kanıt, tetikleyen fixture olmadan kanıt değildir"*
+ailesinin **veri modeli** hâli: bir **oran** tutmak istiyorsan **paydayı da saklamalısın**.
+
+### `§3` · ⭐ İKİ METRİK, İKİ AD — **ŞİMDİ SABİTLENDİ** (`AD-BORCU` önlemi)
+```
+coverageRatio      = KABUL EDİLMİŞ baseline / KATALOG evreni     ⇒ BL-3 KAPISI (≥%95)
+sourceMatchRatio   = eşleşen satır / DOSYA satırı                ⇒ batch düzeyi, TEŞHİS
+```
+⛔ **İKİSİ KARIŞMAZ.** Ve ⛔ **ikisi de SORGUYLA türer — batch'te ÖZET KOLON YOK**
+(`INV-B-009`: senkron mekanizmasız kopya-kolon sınıfı; **batch immutable olsa bile
+TEK-KAYNAK ilkesi**).
+
+⚠️ Ve `coverageRatio` adı **zaten dolu**: `plans.coverage_ratio` bugün **KPI toplama
+kapsaması** (`kpi-engine.service.ts:572`). `BL` brief'i (`§4a`) bunu *"dalganın ilk kod
+işi"* diye kaydetmişti — **`BL-3`'te kapanır**: ayrım `EK_C`'ye yazılır ve **yeni alan
+AYRI adlanır**. *Aynı adı ikinci anlamla yüklemek `F8` ailesidir.*
+
+### `§4` · SIRA
+```
+BL-3 ADIM 1   import_batch_rows migration (plans=0 penceresi HÂLÂ AÇIK)
+BL-3 ADIM 2   ≥%95 kapısı — KATALOG paydasından, PİN 2'nin ÜSTÜNE
+BL-3 ADIM 3   teşhis raporu yüzeyi: batch → satırlar → NEDEN (yükleyenin gördüğü)
+⇒ BL-3 kapandığında D2/D4 (eşleme + coverage) BİTMİŞ; geriye BL-4 (yüzey) kalır
+```
+
+### `Z87 §F12` — ENUM REVİZE: **`BL-2`'NİN GERÇEK SÖZLÜĞÜ (7)**
+
+> **Tarih:** 2026-09-02 · **Tetikleyen:** `T-358` şeridinin bulduğu uyuşmazlık
+
+```
+~~reason ENUM(SKU_NOT_FOUND, CPL_NOT_FOUND, INVALID_PERIOD, INVALID_VALUE, DUPLICATE)~~
+YENİ (7):  SKU_NOT_FOUND · CPL_NOT_FOUND · INVALID_PERIOD · INVALID_VOLUME_FORMAT ·
+           NEGATIVE_VOLUME · MISSING_REQUIRED_FIELD · DUPLICATE_GRAIN
+⛔ INVALID_VALUE ve DUPLICATE ÖLÜR — HİÇ ÜRETİLMİYOR (İlke 1)
+```
+**TAŞIYICI:** teşhis raporu farklı **DÜZELTME EYLEMLERİNİ** ayırt etmeli —
+`NEGATIVE_VOLUME` (**veri**) ≠ `INVALID_VOLUME_FORMAT` (**format**). Birleştirmek raporu
+**körleştirirdi**. **DESTEKLEYİCİ:** `1823` push edilmedi, tablo boş ⇒ **maliyet sıfır**.
+
+**İKİ KANAL → TEK SÖZLÜK:** parser'ın `error_type`'ı ile servisin `reasonCode`'u **aynı
+enum'u** üretir; **ayrı ad-uzayı yaşamaz** (`F8`). Parser-özel kodlar enum'un **üyesi
+olarak** parser'dan çıkar — **servis çevirmez**.
+
+### ⛔ `§F12a` · VE YİNE **HÜKMÜ VERENİN HATASI** — İKİ VAKA, TEK YASA
+
+`Z87`'nin enum satırı **brief dilinden türetildi**, `BL-2`'nin **fiilen ürettiği kodlar
+okunmadan**. Ölçüm:
+```
+ORTAK        3    SKU_NOT_FOUND · CPL_NOT_FOUND · INVALID_PERIOD
+YALNIZ Z87   2    INVALID_VALUE · DUPLICATE            ← HİÇ ÜRETİLMİYOR
+YALNIZ BL-2  4    INVALID_VOLUME_FORMAT · NEGATIVE_VOLUME ·
+                  MISSING_REQUIRED_FIELD · DUPLICATE_GRAIN   ← ENUM'A YAZILAMAZ
+```
+
+> ### **`AD-BORCU`'YU ÖNLEMEK İÇİN VERİLEN **ÖLÇÜMSÜZ** HÜKÜM,**
+> ### **`AD-BORCU`'NUN **KENDİSİNİ** ÜRETTİ.**
+> ### **ERKEN OLMAK YETMİYOR — ÖLÇÜLÜ OLMAK GEREKİYOR.**
+
+**AYNI HAFTA, İKİ VAKA, TEK ORTAK YASA:**
+```
+Z86   hüküm HÜCRENİN ADIYLA verildi     →  UÇ LİSTESİ okunmadı    →  11 e2e durdurdu
+Z87   hüküm SÖZLÜĞÜ ADLANDIRDI          →  MEVCUT SÖZLÜK okunmadı →  ADIM 1 şeridi durdurdu
+```
+> ### **HÜKÜM BİR **ADI** DEĞİL, ADIN TAŞIDIĞI **LİSTEYİ** KARARA BAĞLAR.**
+> ### **LİSTE ÖLÇÜLMEDEN HÜKÜM YAZILMAZ.**
+
+⛔ **Ve bundan sonra bir DAMGA:** hüküm metninde bir **enum / hücre / liste** geçiyorsa,
+o listenin **`[ÖLÇÜLDÜ]` damgası hükmün PARÇASIDIR** — **damgasız liste TASLAKTIR.**
+
+📌 İkisini de **kapı/şerit** yakaladı, hükmü veren değil. `DISIPLIN`'in *"kapı, hükmü veren
+turu da durdurur"* kanadı **iki kez** ateşledi — ve ikinci kez **aynı hafta**.

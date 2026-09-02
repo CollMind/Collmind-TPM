@@ -6099,3 +6099,103 @@ açardı** ve hiçbir yerde **hüküm olarak** yazılı olmazdı.
 > **BİR TESTİ HÜKME UYDURMADAN ÖNCE SOR: TEST Mİ ESKİDİ, HÜKÜM MÜ YANLIŞ YERE VERİLDİ?**
 
 📌 Bu, *"ölçmeden hüküm yok"* kuralının **hükmü verene de işlediğinin** kaydı.
+
+---
+
+## HÜKÜM BİR **ADI** DEĞİL, ADIN TAŞIDIĞI **LİSTEYİ** KARARA BAĞLAR (ZORUNLU — hüküm katmanı)
+
+> ### **LİSTE ÖLÇÜLMEDEN HÜKÜM YAZILMAZ.**
+> ### **HÜKÜM METNİNDE BİR ENUM / HÜCRE / LİSTE GEÇİYORSA, O LİSTENİN `[ÖLÇÜLDÜ]`**
+> ### **DAMGASI HÜKMÜN PARÇASIDIR — DAMGASIZ LİSTE **TASLAKTIR**.**
+
+**İki ölçülmüş vaka, aynı hafta, aynı yasa:**
+
+| | hüküm neyi adlandırdı | okunmayan | yakalayan |
+|---|---|---|---|
+| `Z86` | `MASTER_DATA_WRITE` **hücresi** | hücrenin **UÇ LİSTESİ** (KPI · mekanik · SKU · CPL · tactic …) | **11 e2e** |
+| `Z87` | `reason` **enum'u** | `BL-2`'nin **fiilen ürettiği** kodlar | **`ADIM 1` şeridi** |
+
+**`Z86`:** *"baseline'ı FINANCE de yükleyebilsin"* → `FINANCE` **KPI formülü** de yazabilir
+hâle geldi.
+**`Z87`:** `AD-BORCU`'yu **önlemek için** erken verilen hüküm, mevcut sözlüğü ölçmediği
+için **`AD-BORCU`'nun kendisini üretti**:
+```
+ORTAK 3 · YALNIZ HÜKÜMDE 2 (hiç üretilmiyor) · YALNIZ KODDA 4 (enum'a yazılamaz)
+```
+
+> ### **ERKEN OLMAK YETMİYOR — ÖLÇÜLÜ OLMAK GEREKİYOR.**
+
+📌 **İkisini de kapı/şerit yakaladı, hükmü veren değil** — *"kapı, hükmü veren turu da
+durdurur"* kanadı **iki kez** ateşledi, ve ikincisi **aynı hafta**.
+
+**Pratik — hüküm yazarken:**
+```
+1  metinde bir AD geçiyorsa (hücre · enum · liste · küme) → o adın BUGÜN TAŞIDIĞINI ÖLÇ
+2  ölçümü hükmün YANINA yaz: "[ÖLÇÜLDÜ: <n> üye — <kaynak:satır>]"
+3  damgasız bir liste TASLAKTIR: uygulanabilir ama BAĞLAYICI DEĞİL
+```
+⚠️ Ve ölçüm **hükmü verenin** işidir, uygulayanın değil — uygulayan onu **düzeltirse**
+bu bir **başarıdır** (iki vakada da öyle oldu), ama **düzeltmek zorunda kalmamalıydı**.
+
+---
+
+## HER `CHECK`'İN NEGATİF KONTROLÜNDE BİR **`NULL` GİRDİ** VAKASI ZORUNLUDUR (ZORUNLU)
+
+> ### **POSTGRES, BİR `CHECK`'İN `NULL` SONUCUNU **GEÇERLİ** SAYAR.**
+> ### **ÜÇ-DEĞERLİ MANTIĞIN `CHECK` HÂLİ — SESSİZ SIFIRIN SQL KUZENİ.**
+
+**Ölçülmüş vaka (2026-09-02, `T-358`):** `OR` zincirli bir `CHECK`
+```sql
+reason = 'X' OR reason = 'Y' OR ...
+```
+`status='REJECTED' AND reason IS NULL` satırını **KABUL EDİYORDU**:
+```
+reason = 'X'   NULL girdide  →  NULL   (FALSE DEĞİL)
+tüm OR zinciri               →  NULL
+CHECK sonucu NULL            →  Postgres GEÇERLİ sayar  ⇒ SATIR GİRİYOR
+```
+⚠️ **Pozitif kontroller `18/19` GEÇİYORDU ve hata GÖRÜNMÜYORDU** — yalnız
+`REJECTED + reason IS NULL` **negatif** vakası gösterdi.
+
+**Kural:**
+```
+1  her CHECK'in negatif kontrol setinde EN AZ BİR `NULL` GİRDİ vakası olur
+2  OR zincirli hiçbir CHECK NULL'da FALSE üretmez → nested CASE üretir
+   (eşleşmeyen/NULL girdide KESİN FALSE)
+```
+⛔ **Ve mevcut `CHECK`'ler bu gözle YENİDEN TARANIR:** `1821`/`1822`'nin `CHECK`'lerinde
+`OR` zinciri varsa **aynı tuzak** oradadır. *(`BL-3 ADIM 2`'nin ilk maddesi.)*
+
+### ⚠️ VE ÖLÇÜM YÜZÜ: `INSERT 0 0` **"HATA YOK" DEĞİL, "ÖLÇÜLMEDİ"DİR**
+Aynı turda Team Lead `CHECK`'i sınamak için bir `INSERT ... SELECT` yazdı; kaynak tablo
+**boştu** ⇒ `INSERT 0 0` ⇒ **`CHECK` hiç değerlendirilmedi**. Çıktıda **hata yoktu** ve
+*"geçti"* diye okunabilirdi.
+> **KONTROL HİÇ DEĞERLENDİRİLMEDİYSE SONUÇ *"HATA YOK"* DEĞİL, *"ÖLÇÜLMEDİ"*DİR** —
+> üç meşru çıktı yasası, **satır sayısı sıfırken**.
+⇒ Bir kısıt sınarken **etkilenen satır sayısını da oku**: `0` ise deney **kurulmamıştır**.
+
+---
+
+## `CHECK` **KODDAN** KURULUR, **SİMETRİDEN** DEĞİL (ZORUNLU)
+
+Kısıtlar, mekanizmanın **gerçek üretim desenlerinden** türer — `G5`'in
+(*türetilmiş > taranmış > yazılmış*) **kısıt katmanındaki** hâli.
+
+**Ölçülmüş vaka (`T-358`):** `SKU_NOT_FOUND` ve `CPL_NOT_FOUND` *"simetrik"* görünüyor.
+**Değiller** — kod okunduğunda:
+```
+SKU_NOT_FOUND  ⇒ İKİSİ DE NULL     (CPL lookup'a HİÇ ULAŞILMIYOR)
+CPL_NOT_FOUND  ⇒ YALNIZ cpl NULL   (SKU ZATEN BULUNMUŞ)
+```
+> **Simetrik GÖRÜNEN iki kod, üretim sırası yüzünden simetrik DEĞİLDİR.**
+
+### VE AYIRAMIYORSAN **GEVŞEK BIRAK + GEREKÇE**
+`MISSING_REQUIRED_FIELD` kodu **iki farklı aşamada**, **ters anahtar durumlarıyla**
+üretiliyordu (eksik alan SKU kodu **ya da** hacim olabilir) ⇒ `reason` **tek başına**
+ayırt edemiyor.
+```
+seçenek A  bir CHECK UYDUR         ⛔ YANLIŞ BİR İNVARYANT
+seçenek B  UNCONSTRAINED + gerekçe ✅ satır numaralarıyla belgelenmiş
+```
+> ### **UYDURMA BİR KISIT, KISITSIZLIKTAN KÖTÜDÜR** — çünkü bir invaryant **iddiası**
+> ### taşır, ve o iddia **yanlışsa** okuyucu ona **güvenir**.
