@@ -302,6 +302,14 @@ if [ "${PUSH_ORDER_SELFTEST_DONE:-0}" != "1" ]; then
   run_gate "backend · lint-ratchet --ratchet" "$ROOT/collmind.backend"  bash scripts/guards/lint-ratchet.sh --ratchet
   run_gate "frontend · type-check"            "$ROOT/collmind.frontend" npm run type-check
   run_gate "frontend · vitest"                "$ROOT/collmind.frontend" npx vitest run
+  # `Z83` adım 3 — FE ratchet'leri listeye SONRADAN kondu, ve SIRA bilinçliydi:
+  # önce BORÇ ödendi (3aeb0cb kod + 2f0546c baseline), SONRA kapı — bu yüzden
+  # kapı YEŞİL DOĞDU. Ters sırada "geçici olarak atla" baskısı üretirdi, ve o baskı
+  # kapının ÖLÜM BİÇİMİDİR (T-113: hep-kırmızı kapı hiçbir şey ayırt etmez).
+  # ⛔ Bu iki satırın YOKLUĞU EN AZ İKİ OTURUM sürdü ve FE borcu görünmeden birikti —
+  #   "kapı listesinin kapsam maskelemesi" (Z83 §3).
+  run_gate "frontend · money-float --ratchet"  "$ROOT/collmind.frontend" bash scripts/guards/money-float.sh --ratchet
+  run_gate "frontend · lint-ratchet --ratchet" "$ROOT/collmind.frontend" bash scripts/guards/lint-ratchet.sh --ratchet
   run_gate "meta · scripts/run-all.sh"        "$ROOT"                   bash scripts/run-all.sh
 
   echo "-- koşulmadı: TAM E2E (Team Lead'de — T-325 kilidi, dakikalarca sürer, push-order'a KONMADI)"
