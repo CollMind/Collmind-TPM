@@ -5585,3 +5585,40 @@ gerçek çıktı          ✖ 17 problems (15 errors, 2 warnings)
 2  EVREN aynı mı?        (aynı dosya kümesi · aynı filtre · NULL dâhil mi)
 3  ANCAK SONRA: kim değiştirdi?   ⇒ git log, tahmin DEĞİL
 ```
+
+---
+
+## HÜKÜM YAZIM FORMATI: **TAŞIYICI** ve **DESTEKLEYİCİ** DAYANAK AYRI SATIRDIR (ZORUNLU)
+
+> ### **DAYANAKLARI AYRI YAZMAK, HÜKMÜ KISMİ ÇÜRÜTMEYE DAYANIKLI KILAR.**
+> ### **TEK GEREKÇELİ HÜKÜM YA BÜTÜNÜYLE YAŞAR YA BÜTÜNÜYLE ÖLÜR;**
+> ### **ÇOK GEREKÇELİ HÜKÜM *DARALIR*.**
+
+**Ölçülmüş vaka (2026-09-02, `Z80 §5`):** `BOTH` enum'unun ölümü **iki** dayanakla yazıldı
+ve etiketlendi:
+```
+TAŞIYICI      Excel KANONU — her tactic tek spending-type; çift-iş = İKİ tactic
+DESTEKLEYİCİ  bugünkü veride BOTH = 0  (⚠️ ve bunun TOHUM verisi olduğu YAZILIYDI)
+```
+İki tur sonra Team Lead **kendi öncülünü çürüttü** (*"zarf karşılığı yok"* — yanlıştı;
+`spend_type` NULLABLE, `NULL = UNSPLIT` birleşik havuz). **Düşen gerekçe düştü, hüküm
+kalan dayanakla ayakta kaldı ve DARALDI** — yeniden açılmadı.
+
+⛔ **Tek gerekçeyle yazılsaydı hüküm ÇÖKERDİ** ve o kod **yeniden tartışılırdı**.
+
+### Format — her hükümde
+```
+TAŞIYICI      hükmü TEK BAŞINA ayakta tutan dayanak
+DESTEKLEYİCİ  onu güçlendiren, ama düşerse hükmü öldürmeyen dayanak
+              ⚠️ ve KOŞULU: "bu VERİ ölçümüdür / bu TOHUM verisidir / bu bir TUR eskidir"
+```
+
+📌 **Ve bir dayanağın hangi sınıfta olduğunu ÖLÇÜM belirler, sıra değil:** veri ölçümleri
+neredeyse her zaman **destekleyicidir** (veri değişir); kanon, şema kısıtı ve ürün kararı
+**taşıyıcı** olabilir. Bir veri ölçümünü taşıyıcı yapmak, `DISIPLIN`'in *"veriye dayalı her
+erteleme, verinin değiştiği gün yeniden ölçülür"* kuralını **hükme** taşır — ve hüküm o gün
+çöker.
+
+`Z69 §4c`'nin (*"gerekçe mekanizmasını kaybetti"*) **önleyici** hâli: orada tek gerekçe
+mekanizmasını kaybedince karar **yeniden kurulmak zorunda kaldı**; burada gerekçe düştü ve
+karar **yerinde daraldı**.

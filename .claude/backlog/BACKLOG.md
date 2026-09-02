@@ -463,7 +463,7 @@ status: active        # planned | active | closed
 - [[T-347]] Formül beyaz listesi **blok yorumu (`/* */`) geçiriyor** — `INCR_GP/*+*/-BASE_GP` insana **bölme** gibi okunur, JS'e **çıkarma** ⇒ `10-4=6`, `isValid: true`. ⛔ `T-334`'ün `//` vakasıyla **aynı aile, FARKLI mekanizma**: bu **beyaz listenin KENDİSİNDEN** geliyor — **todo**
 - [[T-348]] `plan_mechanic_values.plan_sku_id` — `S1`/`Z74`'ün **taşıyıcısı** (FU-varsayılan + SKU-override) — **todo** · `Z79 §2` · migration **1821** · ⛔ `NULLS NOT DISTINCT` + `plans=0` penceresi
 - [[T-349]] ✅ FE'nin **40 sessiz sıfırı** — ⛔ `Q20`'nin işi **görüntü katmanında geri alınıyor** — **todo** · `Z79 §8` (`8b` ÖNCE)
-- [[T-350]] `calculateAllSpendsForFU` **ÖLÜR** — dokuzuncu aday, **tüketici kazanmadı** — **todo** · `Z79 §7`
+- [[T-350]] ✅ `calculateAllSpendsForFU` **ÖLÜR** — dokuzuncu aday, **tüketici kazanmadı** — **todo** · `Z79 §7`
 - [[T-351]] Altı **yazarsız** `*_spend` kolonu — `T-270` kuralı: ya yazar kazanır ya ölür; **ikisi OKUNUYOR** — **todo** · `Z79 §8`
 - [[T-352]] `ŞART-6` kalanı — dört kalem *"canlıda hesaplanıyor, KPI olarak **doğmuyor**"*; ⛔ **task'ları YOKTU** — **todo**
 - [[T-353]] ✅ Frontend suite **YÜK ALTINDA KARARSIZ** — aynı ağaç iki farklı cevap veriyor (`5↔6` failed, izole `0`) — **todo** · ⛔ teşhis YAPILMADI
