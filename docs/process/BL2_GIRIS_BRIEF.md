@@ -10,8 +10,15 @@
 ## `§0` · BU ADIMIN SINIRI
 
 ```
-BL-1  ✅ TZ ölçümü + dönem etiketleri UTC'ye        KAPANDI
-BL-2  ⬅ UPLOAD UCU + PARSE                          BU BELGE
+⚠️ F12 — ADLANDIRMA DÜZELTMESİ (2026-09-02, BL-2 şeridi yakaladı)
+~~"BL-1 ✅ TZ ölçümü — KAPANDI"~~  YANLIŞTI ve BU BELGENİN İLK HÂLİNDE YAZILIYDI.
+`BL_BASELINE_HATTI_BRIEF`'in §1'i (GÜNDEM maddesi: T-333 TZ ölçümü) ile
+BL-1 (ADIM: ŞEMA) AYRI ŞEYLER. Karıştırıldı ⇒ BL-2 hedef tablosu OLMADAN açıldı.
+⛔ `W3`'ün dört adı vakasının (Z79 §1) TEKRARI — hükmü veren taraf tarafından.
+
+ön iş  ✅ T-333 TZ ölçümü + dönem etiketleri UTC'ye        KAPANDI (676ff7f)
+BL-1   ⬅ ŞEMA — baseline tablosu (D3), grain KİLİTLENDİ    Z84
+BL-2     UPLOAD UCU + PARSE                                 BU BELGE, BL-1'i BEKLER
 BL-3     DOĞRULAMA (D2 SKU eşleme + D4 kapsam kapısı)
 BL-4     YÜZEY
 ```

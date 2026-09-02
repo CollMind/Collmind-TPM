@@ -8181,3 +8181,88 @@ kapı **doğduğu turda** kendi yazarının borcunu buldu.
 📌 Ve bu bir espri değil bir **tasarım ölçütü**: yeni bir kapı, **ilk koşumunda hiçbir şey
 bulmuyorsa** ya evren dar ya eşik gevşek — *"temiz doğan kapı"* bir başarı değil, bir
 **şüphe** sebebidir.
+
+---
+
+## `Z84` — `BL-1` ŞEMA HÜKMÜ: `Faz-2`'nin İLK GERÇEK-VERİ TABLOSU
+
+> **Tarih:** 2026-09-02 · **Karar:** ürün sahibi · **Girdi:** `BL-2` şeridinin bloke raporu
+> **Ne:** Excel'in *"Base Volume · Master Data · piece"* satırının **CTPM karşılığı**.
+
+### `§1` · GRAIN VE KOLONLAR
+```
+GRAIN         tenant × SKU × CPL × period      UNIQUE
+              ⛔ DÖRT ANAHTAR DA NOT NULL ⇒ kısmi-tuple YOK
+              ⇒ NULLS NOT DISTINCT GEREKMİYOR
+period        Date DEĞİL — periyot ANAHTARI, mevcut periodLabel konvansiyonuyla BİREBİR
+              ⛔ 'YYYY-MM' char(7) mi int mi → TÜKETİCİLERİ ÖLÇ + CHECK
+base_volume   numeric · PIECE
+              ⛔ UOM DÖNÜŞÜMÜ BU TABLODA YAŞAMAZ (gösterim/import katmanı, Excel deseni)
+META          import_batch_id FK · source_type ENUM(IMPORT, COMPUTED) ·
+              acceptance_status (ACCEPTED/REJECTED + reason) ·
+              imported_at timestamptz  ⛔ GERÇEK ZAMAN-NOKTASI — YALNIZ BURADA
+FK            skus · cpls · tenants → RESTRICT   (denetim/iz ailesi, ADR 0012 ruhu)
+RLS           tenant_id taşıyor ⇒ yeni-tablo-RLS kapısının evrenine girer
+```
+
+**`1a` · ⭐ `NULLS NOT DISTINCT`'İN TERS VAKASI**
+`Z79 §2`'de (`plan_mechanic_values.plan_sku_id`) **kısmi tuple vardı** ⇒ `NULLS NOT
+DISTINCT` **şarttı**. Burada **dört anahtar da `NOT NULL`** ⇒ **gerekmiyor**.
+> **Aynı ailenin iki vakası, iki farklı cevap — ve ayrımı yapan şey GRAIN'in kendisi.**
+📌 `K-2.2.8c` bir **refleks değil**, bir **soruya verilen cevap**: *"bu tuple'ın parçası
+`NULL` olabilir mi?"*
+
+**`1b` · ⛔ KAPSAM DIŞI, VE GEREKÇESİ BİR SINIF**
+```
+kanal      CPL'den TÜRER      ⇒ KOLON YOK
+kategori   SKU'dan TÜRER      ⇒ KOLON YOK
+```
+> **TÜRETİLEBİLİR ALAN TUTMAK = `INV-B-009` KOPYA-KOLON SINIFI.**
+*"Sorgu kolaylığı"* gerekçesi **yeterli değildir** — gerekiyorsa **view**.
+
+### `§2` · İKİ ŞART
+1. **`BL-2`'nin ilk import'undan ÖNCE iner.** *(Tablo yeni doğuyor ⇒ `plans=0` penceresi
+   sorunu yok; ama sıra bağlayıcı.)* Numara **`1822000000000`**.
+2. ⛔ **`acceptance_status`'ün ADI ve ENUM DEĞERLERİ BUGÜN doğar, YARIN yeniden ADLANMAZ**
+   — **AD-BORCU önlemi**. `D4`'ün `≥%95` kapısı buradan okur, ve hüküm (`Z79 §4`):
+   > **coverage paydası TOPLAM EVREN — REDDEDİLEN SATIR *"EKSİK"*TİR.**
+
+### `§3` · KAYIT: `date` KOLONU BORCU — VE `Z81`'İN SINIRI
+```
+TL ölçtü (üç TZ, pg driver doğrudan, ROLLBACK'li):
+                   date[UTC]   date[local]   timestamptz[UTC]   metin
+Europe/Istanbul    2026-01 ✗   2026-02 ✓     2026-02 ✓          ✓
+UTC                2026-02 ✓   2026-02 ✓     2026-02 ✓          ✓
+America/New_York   2026-02 ✓   2026-02 ✓     2026-02 ✓          ✓
+```
+> ### ⛔ **`Z81`'İN *"HER YERİ UTC-GETTERS'A TAŞI"* KARARI, DTO'DAN GELEN TAZE `Date` İÇİN**
+> ### **DOĞRU — AMA BİR `date` KOLONUNDAN OKUNAN DEĞER İÇİN **TAM TERSİ** GEREKİR.**
+
+`T-333` bunu **yapmadı** çünkü kapsamı **dardı** (yalnız taze `Date`'ler). Genelleştirilseydi
+**`date` kolonu okuyan ilk kod canlı bir ay kayması üretecekti** — bugün, bu makinede.
+⇒ **Dar kapsam bir eksiklik değil, bir KORUMAYMIŞ.**
+
+`plans.start_date` / `agreements.start_date` bugün `date` ⇒ **`T-333` ailesinden bir borç,
+okuyucuları ölçülecek.** Yeni tablo bu riski **taşımıyor**: `period` bir **dizge anahtarı**.
+
+### `§4` · `BL-2`'NİN KABUL ÇEKİRDEĞİ **YER DEĞİŞTİRDİ**
+```
+ESKİ  import → DB → oku → aynı tarih (round-trip pini)
+YENİ  kaynak-hücre → period-etiketi ÇEVRİMİ, ÜÇ TZ'de AYNI ETİKET
+      (Istanbul · UTC · New_York) — Excel serial-date DAHİL
+```
+📌 Çünkü `period` artık bir **`Date` değil**: round-trip riski **şema kararıyla ortadan
+kalktı**, ve geriye kalan risk **çevrimin kendisi**.
+> **Bir riski ölçmek, bazen onu düzeltmek yerine ŞEMAYLA ORTADAN KALDIRMAYA yol açar.**
+
+### `§5` · VE BİR ADLANDIRMA HATASI — `W3` VAKASININ TEKRARI
+`BL2_GIRIS_BRIEF §0`'a *"`BL-1` ✅ TZ ölçümü — KAPANDI"* yazılmıştı. **Yanlıştı:**
+`BL_BASELINE_HATTI_BRIEF`'in **`§1`**'i (GÜNDEM maddesi) ile **`BL-1`** (ADIM: ŞEMA)
+**ayrı şeyler**. ⇒ `BL-2`, **hedef tablosu olmadan** açıldı.
+
+> ### **`Z79 §1`'İN (*"her dalga benzersiz önek alır"*) TEKRARI — VE HÜKMÜ VEREN TARAFÇA.**
+
+`F12` iziyle brief'te düzeltildi. 📌 `DISIPLIN`'in *"bir kuralı yazdığın tur…"* maddesi
+**bir tur GECİKMELİ** de vurabiliyor ⇒ madde **tek turla sınırlı değil**.
+⭐ Ve yakalayan şey bir **ajanın kaynağa dönüp okuması** oldu: brief'i değil, brief'in
+**kaynağını** okudu.

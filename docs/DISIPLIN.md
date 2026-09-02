@@ -5841,3 +5841,58 @@ yazarının** borcunu buldu (frontend'de 4 ihlal + 7 stale, **iki oturumdur aç�
 **Pratik:** bir kapı yazdıktan sonra *"temiz geçti"* diyorsan, **kasten bir ihlal üret ve
 yakalandığını gör** (mutasyon şartı). Yakalamıyorsa kapı yok; yakalıyor ama gerçek kod
 temizse **evreni genişlet** ve bir daha bak.
+
+---
+
+## YENİ KAPI, **BİLİNEN BİR KIRMIZIYI GÖRMEDEN** *"ÇALIŞIYOR"* İLAN EDİLMEZ (ZORUNLU)
+
+*"Temiz doğan kapı bir ŞÜPHE sebebidir"* kuralının **doğum anı** hâli — ve pozitif-kontrol
+kuralının (`§ negatif sonuç POZİTİF KONTROLSÜZ raporlanamaz`) **kapı tarafı**.
+
+> ### **BİR KAPI, YAKALAMASI GEREKEN BİR ŞEYİ *FİİLEN YAKALAYARAK* DOĞAR.**
+
+**Bu oturumda ÜÇ kanıt — ve üçü de farklı bir *"temiz"* biçimi:**
+
+| vaka | kapı neden *"temiz"*ti | gerçek |
+|---|---|---|
+| `money-float` LTA körlüğü | **EVREN DAR** — `shared/lta` Alan A listesinde **yoktu** | dizin hiç taranmıyordu |
+| `improved`-kapısı | **KOŞULMAMIŞTI** — `improved` yalnız bir NOT basıyordu | iki kez ihlal, görünmez |
+| FE ratchet boşluğu | **LİSTEDE YOKTU** — `push-order`'ın FE evreninde hiç ratchet yok | **iki oturum** birikim |
+
+⇒ Üçünde de kapı **exit 0** veriyordu ve **hiçbiri bir şey ölçmüyordu.**
+
+**Pratik — bir kapı doğduğunda üç soru, sırayla:**
+```
+1  EVREN     kapının baktığı küme, korumak istediğin sınıfın TAMAMI mı?
+2  KOŞUM     bu kapı FİİLEN çağrılıyor mu — hangi script, hangi adımda?
+3  YAKALAMA  bilinen bir ihlali KASTEN üret: yakaladı mı?  (mutasyon şartı)
+```
+⛔ `3` olmadan `1` ve `2` yetmez: doğru evrende, koşan, **ama eşiği gevşek** bir kapı da
+**exit 0** verir.
+
+---
+
+## BİR BEYAN ÜÇ DEĞER TAŞIR: **YEŞİL · KIRMIZI · KOŞULMADI** (ZORUNLU)
+
+Kapının **üç meşru çıktısı** (`geçti` · `kaldı` · `ölçemedim`) vardır — ve bu, **beyan
+katmanına** da yansır.
+
+**Ölçülmüş vaka (2026-09-02, `Z82 §2`):** `push-order` artık kapıları **kendisi koşuyor**
+ve çıktısı **üç değerli**:
+```
+-- [backend · npm run guards] YEŞİL
+-- [frontend · vitest] YEŞİL
+-- koşulmadı: TAM E2E (Team Lead'de — T-325 kilidi, dakikalarca sürer, KONMADI)
+```
+
+> ### **BİR KAPININ KOŞULMADIĞI DA BEYANIN PARÇASIDIR.**
+> ### **İKİ DEĞERLİ BİR BEYAN, *KOŞULMAYANI* SESSİZCE *YEŞİL* SAYAR.**
+
+📌 Bu, Borç `A`'nın (*"backend `guards`'ı koşmadım ama 'kapılar yeşil' dedim"*) **yapısal**
+cevabı: rapor **yanlış değildi, EKSİKTİ** — ve iki değerli bir dilde **eksiklik ile
+başarı aynı görünür**.
+
+⛔ Ve beyanı **elle yazan** taraf bu ayrımı yapamaz: *"koşulmadı"* satırını yazabilmek
+için **hangi kapıların var olduğunu** bilmek gerekir — ki tam olarak bu, `push-order`'ın
+FE evreninde **iki oturum boyunca** eksik kalan şeydi.
+> **Beyanı üreten şey, kapıları KOŞAN şey olmalı.**

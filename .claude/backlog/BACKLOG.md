@@ -470,3 +470,4 @@ status: active        # planned | active | closed
 - [[T-354]] Sessiz sıfırın **PLAN ekseni** + beş dosya daha — `8b`'nin **ölçtüğü ama kapsamadığı** kalan — **todo**
 - [[T-355]] ✅ `mergeConfig` `setupFiles`'ı **birleştiriyor** — `setup.ts` iki kez ⇒ `server.use()` **sessizce ölüyor**; ⭐ `§2.7 #4`'ün **canlı** vakası — **todo**
 - [[T-356]] ✅ `roleEnumContract` **kardeş dizin** şart koşuyor ⇒ FE süiti **izole worktree'de doğrulanamıyor**; ⛔ `T-269∥T-270`'ten doğan kuralı **fiilen kırıyor** — **todo**
+- [[T-357]] **`BL-1` ŞEMA** — baseline hacim tablosu (`D3`): grain `tenant × SKU × CPL × period` **KİLİTLENDİ** (`Z84`) · migration **1822** · ⛔ `BL-2`'den ÖNCE — **todo** `P0`
