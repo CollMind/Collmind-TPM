@@ -5520,3 +5520,68 @@ Hüküm istenecek şey **bugünün sorusu** olmalı, dünün sorusu değil — y
 
 📌 `Z75 §2`'nin (*"verilen hükümlerin indeksi sürükleniyor"* — **hüküm → task** boşluğu)
 **kardeşi ve ters yönü**: burada **ölçüm → soru** boşluğu. Aynı aile.
+
+---
+
+## `NULL` BİR ENUM DEĞERİ DEĞİL, **ÜÇÜNCÜ BİR DURUMDUR** (ZORUNLU)
+
+*"Bir yokluk iddiası için üçüncü soru: **HANGİ BÖLÜM**"* kuralının **şema tarafı**.
+
+**Ölçülmüş vaka (2026-09-02, `Z80 §5`):** Team Lead üç enum'u karşılaştırdı ve yazdı:
+```
+agreements_spend_type_enum   ON_INVOICE | OFF_INVOICE | BOTH
+budget_spend_type_enum       ON_INVOICE | OFF_INVOICE          ⛔ "BOTH YOK"
+⇒ iddia: "BOTH bir tactic'in ZARF KARŞILIĞI YOK ⇒ sessiz eşleşmeme"
+```
+**Gerçek:** `budget_envelopes.spend_type` **NULLABLE**, ve `NULL` = **UNSPLIT = birleşik
+havuz** (`ADR 0004 §5.5`, kodda **adıyla** yazılı). Canlı **4/4** zarf o durumda.
+⇒ Karşılık **vardı**, ve **tam da bugünkü tek durumdu**.
+
+> ### **ENUM TAM LİSTEYDİ — EVREN EKSİKTİ.**
+> ### **BİR KOLONUN DEĞER KÜMESİ, ENUM ETİKETLERİ + `NULL`'DIR.**
+
+📌 Tehlike şekli: `pg_enum` sorgusu **doğru** çalışır ve **eksiksiz** görünür; `NULL`
+oradan **hiç görünmez**, çünkü bir enum değeri değil bir **kolon özelliğidir**. Yani
+ölçüm hatalı değil — **yanlış katalogda** yapılmıştır (`§4.2`'nin *"bir katalogdaki
+yokluk, yokluk değildir"* kuralının **enum** yüzü).
+
+**Pratik:** bir enum'un değer kümesini raporlarken **`is_nullable`'ı da sor**:
+```sql
+SELECT c.is_nullable, e.enumlabel
+FROM information_schema.columns c
+LEFT JOIN pg_type t   ON t.typname = <enum adı>
+LEFT JOIN pg_enum e   ON e.enumtypid = t.oid
+WHERE c.table_schema='main' AND c.table_name=<tablo> AND c.column_name=<kolon>;
+```
+Ve `NULL`'ın **anlamı** varsa (burada *"birleşik havuz"*), o anlam **enum'un dışında bir
+yerde** yazılıdır — kodda, ADR'de, yorumda. **Ara.**
+
+---
+
+## BİR SAYIM FARKI **BİRİMDEN** DE GELEBİLİR (ZORUNLU — sayım-farkı kuralına ek)
+
+*"Bir SAYIM FARKI, farkın KAYNAĞI gösterilmeden yorumlanamaz"* kuralı vardı. Bu, ona
+**bir boyut** ekliyor: fark **sayıda değil, BİRİMDE** olabilir.
+
+**Ölçülmüş vaka (2026-09-02, `T-346` turu):**
+```
+8b ajanı bildirdi     "15" — ESLint ERRORS (ve ayrıca "2 yeni WARNING ekledim")
+T-346 ajanı ölçtü     "17" — ESLint PROBLEMS
+gerçek çıktı          ✖ 17 problems (15 errors, 2 warnings)
+```
+İki ölçüm de **doğruydu**. Fark **iki birim** arasındaydı, ve `T-346` ajanı farkı
+**paralel bir şeride** (`T-353`) yükledi — ki o şerit o dosyaya **hiç dokunmamıştı**
+(`git log` ile doğrulandı).
+
+> ### **DOĞRU ÖLÇÜM, YANLIŞ TEŞHİS — VE SUÇLANAN YER,**
+> ### **EN KOLAY SUÇLANABİLECEK YERDİ: PARALEL ŞERİT.**
+
+⛔ Paralel çalışırken *"diğer şerit yapmıştır"* **en ucuz açıklamadır** ve tam da bu yüzden
+**ölçülmeden yazılamaz**: `git log -- <dosya>` bir saniyelik iştir.
+
+**Pratik — bir sayım farkı gördüğünde SIRAYLA:**
+```
+1  BİRİM aynı mı?        (errors ↔ problems · satır ↔ eşleşme · tablo ↔ kayıt)
+2  EVREN aynı mı?        (aynı dosya kümesi · aynı filtre · NULL dâhil mi)
+3  ANCAK SONRA: kim değiştirdi?   ⇒ git log, tahmin DEĞİL
+```

@@ -7953,3 +7953,51 @@ task** boşluğu, burada **ölçüm → soru** boşluğu. Aynı aile, ters yön.
 ```
 T-346 şeridi (hükümlü zemin)  ∥  T-353   →   W7 ölümü   →   BL
 ```
+
+---
+
+## `Z80 §5` — **REVİZE (`F12` izli, 2026-09-02)**: HÜKÜM **DARALDI, ÖLMEDİ**
+
+> **Karar:** ürün sahibi · **Tetikleyen:** TL'in kendi öncülünü çürüten ölçümü
+> ⛔ **Hüküm YENİDEN AÇILMADI** — açılacak bir şey yok. Bu, `Z69 §4c`'nin **mekanizması**:
+> *gerekçeler ayrı yazılmıştı; düşen gerekçe düşer, hüküm **kalan dayanakla yeniden kurulur**.*
+
+**`5a` · DÜŞEN GEREKÇE**
+> ~~*"zarf karşılığı yok ⇒ sessiz eşleşmeme"*~~ — **YANLIŞTI.**
+```
+main.budget_envelopes.spend_type   NULLABLE
+NULL = UNSPLIT = BİRLEŞİK HAVUZ    (ADR 0004 §5.5 · T-270/Z21 ile pinli
+                                    finance-reporting.service.ts:304-312)
+canlı                              4/4 zarf TAM OLARAK bu durumda
+```
+⇒ **`BOTH` bir tactic'in karşılığı VAR**, ve bugün **tüm** zarflar o durumda.
+
+**`5b` · `(b)` DARALIR**
+```
+BOTH × UNSPLIT zarf   MEŞRU EŞLEŞME — havuz ikisini de alır
+BOTH × SPLIT zarf     AÇIK HATA — "hangi zarfa?" cevapsız
+```
+⛔ **Sessizlik bugün YOK** — **SPLIT zarf doğduğu gün doğar**; hata yolu **o gün için**
+inşa edilir. *(`DISIPLIN`: veriye dayalı bir erteleme değil — **bugünkü durumun dürüst
+tarifi** + yarının yolu.)*
+
+**`5c` · `BOTH` ENUM'UNUN ÖLÜMÜ **AYAKTA**, TEK DAYANAKLA**
+> **Excel KANONU: her tactic TEK spending-type; çift-iş = İKİ TACTIC.**
+
+`UNSPLIT` havuz bununla **uyumlu** — iki tactic'in harcaması **aynı havuza** gider,
+`BOTH`'a gerek kalmaz. **Ölçüm şartı duruyor:** canlıda `BOTH` taşıyan kayıt var mı →
+**yoksa ölür, varsa İKİ TACTIC'E AYRIŞTIRILIR** (dağıtım değil).
+
+### `5d` · ⭐ MEKANİZMA İŞLEDİ — ve dört basamağı da ayrı ayrı çalıştı
+```
+1  AJAN SORDU, GENİŞLETMEDİ     "S6'nın hedefi başka dosyada mı?" — yanlış guard kurmadı
+2  TL ÖLÇTÜ, KENDİ ÖNCÜLÜNÜ ÇÜRÜTTÜ   "zarf karşılığı yok" TL'in cümlesiydi
+3  DAYANAKLAR AYRI YAZILMIŞTI   Z80 §5 "taşıyıcı KANON · destekleyici VERİ" diyordu
+4  HÜKÜM ZAMANINDA DARALDI      kod yazılmadan
+```
+> ### **DÜŞEN GEREKÇENİN HÜKMÜ ÖLDÜRMEMESİ BİR ŞANS DEĞİL — `§3`'ÜN DAYANAKLARI**
+> ### **AYRI YAZMA DİSİPLİNİNİN ÜRÜNÜ.** Tek gerekçeyle yazılsaydı hüküm çökerdi.
+
+📌 Ve `§7`'nin (*"soru listesi ölçümle tazelenen belgedir"*) **kardeşi**: bir **hükmün
+gerekçesi** de ölçümle tazelenir. Fark: soru **değişir**, gerekçe **düşer** — ve hüküm
+kalan dayanakla ayakta kalabiliyorsa **daralır**, yeniden açılmaz.
