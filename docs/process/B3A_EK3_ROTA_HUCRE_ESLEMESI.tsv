@@ -21,6 +21,9 @@ src/modules/customer/customer.controller.ts	POST	customers/:id/deactivate	-	CUST
 src/modules/customer/customer.controller.ts	GET	customers/:id/stats	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
 src/modules/customer/customer.controller.ts	GET	customers/cpl/list	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
 src/modules/customer/customer.controller.ts	POST	customers/import	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
+src/modules/master-data/baseline-volume/baseline-volume.controller.ts	POST	master-data/baseline-volumes/upload	-	BASELINE_WRITE	F12	CAP	BASELINE_WRITE
+src/modules/master-data/baseline-volume/baseline-volume.controller.ts	GET	master-data/baseline-volumes/batches/:batchId	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
+src/modules/master-data/baseline-volume/baseline-volume.controller.ts	GET	master-data/baseline-volumes/batches/:batchId/rows	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
 src/modules/master-data/brand/brand.controller.ts	POST	master-data/brands	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE
 src/modules/master-data/brand/brand.controller.ts	GET	master-data/brands	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
 src/modules/master-data/brand/brand.controller.ts	GET	master-data/brands/:id	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ

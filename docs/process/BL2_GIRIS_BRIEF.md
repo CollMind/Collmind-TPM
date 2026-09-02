@@ -17,8 +17,10 @@ BL-1 (ADIM: ŞEMA) AYRI ŞEYLER. Karıştırıldı ⇒ BL-2 hedef tablosu OLMADA
 ⛔ `W3`'ün dört adı vakasının (Z79 §1) TEKRARI — hükmü veren taraf tarafından.
 
 ön iş  ✅ T-333 TZ ölçümü + dönem etiketleri UTC'ye        KAPANDI (676ff7f)
-BL-1   ⬅ ŞEMA — baseline tablosu (D3), grain KİLİTLENDİ    Z84
-BL-2     UPLOAD UCU + PARSE                                 BU BELGE, BL-1'i BEKLER
+BL-1   ✅ ŞEMA — main.baseline_volumes + _import_batches   İNDİ (d6c83e7, Z84+Z85)
+          grain tenant × sku × cpl × period · period VARCHAR(7)+CHECK · dört CHECK
+          RLS: gerçek fail-closed politika TANIMLI, ENABLE/FORCE YAZILMADI (Z85 §2)
+BL-2   ⬅ UPLOAD UCU + PARSE                                 BU BELGE
 BL-3     DOĞRULAMA (D2 SKU eşleme + D4 kapsam kapısı)
 BL-4     YÜZEY
 ```
@@ -47,41 +49,36 @@ yazıyor (`T-121`/`T-328` emsali). `BL-1` üç parser'ı da bu açıdan **temiz*
 
 ---
 
-## `§2` · ⛔ ROUND-TRIP PİNİ — `Z82 §3`, BU ADIMIN EN KRİTİK MADDESİ
+## `§2` · ⛔ KABUL ÇEKİRDEĞİ — **İKİ PİN** (`Z85` sonrası, `F12` izli)
 
-`BL-1` şunu ölçtü ve `Z81` şunu kaydetti: **`pg` driver, session `TZ` `Etc/UTC` olsa bile
-`date`/`timestamp` değerlerini process'in YEREL takvim bileşenleriyle parse ediyor.**
-```
-'2026-02-01'::date  →  JS Date 2026-01-31T21:00:00Z      (node +03)
-                       getUTCMonth()=0  ·  getMonth()=1
-```
-`Z81` *"bugün dokuz çağrı yerinin hiçbiri kolon round-trip'i yapmıyor"* dedi ve **doğruydu**.
+> ⚠️ **`F12` — BU BÖLÜM DEĞİŞTİ.** İlk hâli *"round-trip pini"*ni kabul çekirdeği ilan
+> ediyordu. **`BL-1` (`Z84`) `period`'u bir `Date` DEĞİL, bir DİZGE ANAHTARI yaptı**
+> ⇒ round-trip riski **şemayla ortadan kalktı**.
+> > **Bir riski ölçmek, bazen onu düzeltmek yerine ŞEMAYLA ORTADAN KALDIRMAYA yol açar.**
+> Geriye kalan risk **çevrimin kendisi** — ve yanına **ikinci bir pin** eklendi.
 
-> ### ⛔ **AMA `BL` TAM BUNU YAPACAK:**
-> ### **import edilen tarih → DB → OKUMA → driver YEREL parse → AY KAYMASI.**
-> ### **BU, *"VERİ-SIFIR YEŞİLİ"* RİSKİNİN **TARİH YÜZÜ** — İLK GERÇEK VERİYLE CANLANIR.**
+### `2a` · PİN 1 — KAYNAK HÜCRE → PERIOD ETİKETİ, **ÜÇ `TZ`'DE AYNI**
+```
+kaynak hücre (metin · Excel SERIAL · ISO dizge)  →  'YYYY-MM'
+⛔ TZ=UTC · TZ=Europe/Istanbul · TZ=America/New_York  →  AYNI ETİKET
+⛔ EXCEL SERIAL-DATE DÂHİL (excelSerialToIsoDate — KOPYALAMA, ÇAĞIR)
+```
+**Reprodüksiyon:** pin'i yazmadan önce **kaymayı ÜRET** (`T-333`'ün probu: yerel
+`getMonth()` ile bir ay kayması **görülmüş** olmalı). Göremiyorsan **yaz**.
 
-**ZORUNLU PİN:**
+### `2b` · ⛔ PİN 2 — KATALOG PAYDASI TÜRETMESİ (**kolay unutulan**)
+`Z85 §3`: coverage paydası **tablodan değil KATALOGDAN** türer.
 ```
-import → DB → OKU → AYNI TARİH
-ve AYNI test TZ=America/New_York altında da GEÇMELİ
-(T-333'ün TZ probu deseni: TZ=UTC ↔ TZ=America/New_York, AYNI sonuç)
+payda  =  aktif-SKU × aktif-CPL × 12-period          [G5: TÜRETİLMİŞ evren]
+pay    =  baseline_volumes'taki KABUL EDİLMİŞ satır
 ```
-⛔ **Reprodüksiyon şartı:** pin'i yazdıktan sonra **kaymayı ÜRETEBİLDİĞİNİ göster**
-(yanlış tip/okuma ile) — üretemiyorsan pin **hiçbir şey kanıtlamıyor** olabilir.
-
-### `2a` · KOLON TİPİ **BU ADIMIN ŞEMA SORUSU** — hüküm ÖLÇÜMLE
+⛔ **İKİ-GİRDİ-İKİ-ÇIKTI ile pinlenir:**
 ```
-date            TZ'siz ama driver yerel-parse ediyor (ölçüldü)
-timestamptz     mutlak an; ama baseline bir GÜN, bir an değil
-metin ISO       'YYYY-MM-DD' — driver hiç Date üretmez
+PASİF bir SKU/CPL   →  paydaya GİRMEZ
+REDDEDİLEN satır    →  tabloda YOK ⇒ paydada "EKSİK" GÖRÜNÜR
 ```
-⛔ **Seçme, ÖLÇ ve ÜRÜN SAHİBİNE GETİR.** Üçünün de round-trip davranışını **ampirik**
-ölç (salt-okuma ya da `ROLLBACK` içinde). ⚠️ `main.plans.start_date` / `agreements.start_date`
-bugün **`date`** — yeni tablo onlarla **tutarlı olmak zorunda değil**, ama **sapıyorsa
-gerekçesi yazılır**.
-
----
+> ### **BU PİN `BL-2`'DE DOĞAR Kİ `BL-3` *"PAYDA NEREDEN"* SORUSUNU BİR DAHA SORMASIN.**
+`BL-3`'ün `≥%95` kapısı **bunun üstüne** kurulacak.
 
 ## `§3` · IMPORT OLGUSU — `Z79 §3`, ÜÇLÜ **DÖRDE ÇIKMAZ**
 
@@ -133,6 +130,46 @@ NULL = FU değeri geçerli · dolu = o SKU için EZME
 
 ⛔ **Migration'ı `data-engineer` yazar** (`CLAUDE.md §3`) — `BL-2`'nin parser işiyle
 **aynı ajan değil**. Numara **`1821000000000`**, `MIGRATION_SEQUENCE`'te kayıtlı.
+
+---
+
+## `§5b` · ⛔ `acceptance_status` VE RED-KAYIT EVİ — **ÖLÇÜMLE, AMA ÖLÇÜT ŞİMDİDEN**
+
+`Z85 §3b`: tabloya **yalnız kabul edilmiş satır** girebiliyor (dört anahtar `NOT NULL` +
+dört `CHECK`) ⇒ kolonun anlamı **daraldı**.
+
+```
+tabloya YALNIZ geçerli satır girebiliyorsa  →  KOLON SADELEŞİR
+   ⛔ durum TAŞIMAYAN bir durum kolonu = ÖLÜ VAAT (`tier_roles` sınıfı)
+PENDING_REVIEW ancak GERÇEK BİR ÜRÜN AKIŞI varsa doğar
+   ("import edildi ama planner ONAYLAMADI")
+   ⇒ o akış ÜRÜN SAHİBİNİN HÜKMÜ; kolon onu BEKLEYEREK DOĞMAZ  (İlke 1)
+```
+
+**Red kayıtlarının evi:**
+```
+SORGULANACAKSA  →  AYRI TABLO   (teşhis raporu satır-bazlı filtrelenir — MUHTEMELEN evet)
+yalnız GÖSTERİLECEKSE  →  jsonb
+```
+⛔ **Ölç ve seç** — ve seçimini **hangi tüketiciye** dayandırdığını yaz.
+
+---
+
+## `§5c` · ⛔ PARSER UYARLAMASI — `W2` TUZAĞININ **PARSER HÂLİ**
+
+*"Yeni parser yazılmaz"* (`§1`) doğru, ama **yetersiz**:
+
+> ### **`off-invoice-parser`'IN KENDİ VARSAYIMLARI — KOLON DÜZENİ · TARİH FORMATI · UOM —**
+> ### **BASELINE DOSYASINA **SESSİZCE** TAŞINMASIN.**
+
+```
+UYARLAMA =  PAYLAŞILAN ÇEKİRDEK          +   DOSYA TİPİ ŞEMASI
+            (hücre okuma · serial-date        (kolon düzeni · zorunlu alanlar ·
+             · red raporu kanalı)              tarih/sayı formatı · UOM)
+            ⇒ ORTAK                          ⇒ AYRI
+```
+⛔ **Bir parser iki dosya tipini TEK ŞEMAYLA okumaya başlarsa, ikisinden birinin sapması
+ötekini KIRAR.** `W2` tuzağının (*"aynı taşıyıcı, iki farklı soru"*) parser tarafı.
 
 ---
 

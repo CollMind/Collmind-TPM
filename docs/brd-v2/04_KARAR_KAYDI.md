@@ -8355,3 +8355,85 @@ girebiliyor ⇒ kolon ya **sadeleşir** ya bir **ara durum** taşır (`PENDING_R
 **Örnek kalitesinde:** dört `CHECK` **±kontrolle** sınandı · `down()` `pg_dump` diff'i
 **byte-birebir** · `fiscal_periods` FK reddi **`F8` gerekçeli** · guard kusuru **scratch
 kopyada** doğrulanıp dosyaya **dokunulmadı**.
+
+---
+
+## `Z86` — `BL-2` KAPANIŞI: `BASELINE_WRITE` · ve **HÜKMÜ VEREN YANILDI, KAPI DURDURDU**
+
+> **Tarih:** 2026-09-02 · **Karar:** ürün sahibi · **Girdi:** `BL-2` üç şerit + `11` kırmızı e2e
+
+### `§1` · ⛔ ÖNCEKİ HÜKÜM **GERİ ALINDI** (`F12`)
+```
+~~MASTER_DATA_WRITE: {ADMIN} → {ADMIN, FINANCE}~~     GERİ ALINDI
+BASELINE_WRITE      YENİ hücre {ADMIN, FINANCE}       ← baseline YAZMA ucu buna bağlı
+MASTER_DATA_WRITE   {ADMIN} olarak KALDI
+okuma uçları        MASTER_DATA_READ'te DEĞİŞMEDİ
+scope kovası        C (tenant-genel, kapsam eksensiz) — DEĞİŞMEDİ
+```
+
+**Kök neden — ürün sahibinin kendi kaydı:**
+> **Hükmü HÜCRENİN ADIYLA verdim, TAŞIDIĞI UÇ LİSTESİYLE değil** — *"`MASTER_DATA_WRITE`"*
+> adını *"baseline-yazma"* sanıp rol ekledim.
+
+```
+NİYET   FINANCE baseline YÜKLEYEBİLSİN
+SONUÇ   FINANCE  KPI TANIMI · mekanik · SKU · CPL · tactic · brand · channel · FU
+        hepsini YAZABİLİR
+```
+⛔ `KPI` özellikle ağır (`CLAUDE.md §2.3`: *"KPI/ROI = **Admin tanımlı** dinamik formül"*)
+— `FINANCE`'a açılması **ayrı ve verilmemiş** bir hüküm olurdu, üstelik aynı turun
+**kurmak istediği görev ayrılığını ARKADAN DELEREK**.
+
+📌 `Z64 A0'`'nün (*"bir AD eşleşmesi, bir KAVRAM eşleşmesi değildir"*) **RBAC hâli** — ve
+bu kez yanılan **hükmü veren**.
+
+### `§2` · ⭐⭐ DESENİN ÜÇÜNCÜ KANADI: KAPI **HÜKMÜ VEREN TURU** DURDURDU
+```
+1  kapıyı YAZAN turu durdurur     money-float lta körlüğü · improved-kapısı · FE ratchet
+2  dalgayı YAZAN turu durdurur    new-table-rls → BL-1'in ilk gerçek RLS tablosu
+3  HÜKMÜ VEREN turu durdurur      11 e2e → MASTER_DATA_WRITE hücre değişimi   ← YENİ
+```
+> ### **ÜÇÜNCÜSÜ EN DEĞERLİSİ: BİR KAPI, *KARAR KATMANINI* DA ÖLÇEBİLİR.**
+
+`11` e2e *"FINANCE → 403 (`MASTER_DATA_WRITE` yalnız ADMIN)"* diyordu ve **iddiaları
+DOĞRUYDU**. Kolay yol *"testleri güncelle"* olurdu — o yol `KPI` formül yetkisini
+**sessizce** açar ve **hiçbir yerde hüküm olarak yazılı olmazdı**.
+> **BİR TESTİ HÜKME UYDURMADAN ÖNCE SOR: TEST Mİ ESKİDİ, HÜKÜM MÜ YANLIŞ YERE VERİLDİ?**
+
+⇒ **`11` e2e dosyasına TEK KARAKTER dokunulmadı** (`git status` boş) — yeşile dönmeleri
+düzeltmenin **kanıtı**; dosyayı değiştirmek o kanıtı **yok ederdi**.
+
+### `§3` · VE ŞERİT **TEAM LEAD'İN İKİ SAYISINI ÖLÇÜMLE DÜZELTTİ**
+```
+brief "hücre 26 → 27"          gerçek: HEAD'de 25 anahtar; önceki tur bir DEĞERİ
+                               değiştirmişti, ANAHTAR SAYISINI değil  ⇒ 25 → 26
+brief "206 değişmemiş (3 satır)" gerçek: YALNIZ 1 veri satırı değişti
+                               (POST upload: MASTER_DATA_WRITE → BASELINE_WRITE);
+                               üç baseline satırı ÖNCEKİ regenerate'te eklenmişti
+```
+📌 Her ikisi de `DISIPLIN`'in *"bir sayım farkı BİRİMDEN/EVRENDEN de gelebilir"* ailesi —
+ve şerit **sessizce kabul etmedi, raporladı**.
+
+### `§4` · KOVA EŞLEMESİ — `C`, VE BAŞLIĞINI **GENİŞLETEREK**
+Üç rota `scope-c.txt`'ye girdi (`104 → 107`). ⚠️ Ama `C`'nin başlığı *"kapsam ekseni yok
+(gerekçeli — **VERİ SINIFINDAN** türer)"* diyor; burada **veri CPL ekseni TAŞIYOR**
+(grain: `tenant × sku × CPL × period`).
+> ### **VERİ-EKSENİ ≠ ERİŞİM-EKSENİ:** bir eksenin **veride** olması, o uçta
+> ### **kapsam filtresi** olması demek **değildir**.
+⇒ Bu ayrım kovaya **gerekçe olarak yazıldı**; `C`'nin başlık formülü tek vakayı
+varsayıyordu, artık iki türetim yolu var.
+
+### `§5` · `BL-2` TESLİMİ
+```
+parser        off-invoice emsali UYARLANDI — çekirdek ÇAĞRILDI, kopyalanmadı
+              dosya-tipi şeması AYRI (W2 tuzağının parser hâli)
+PİN 1         child-process (execFileSync) — harness ÖNCE kendi duyarlılığını kanıtladı
+              (UTC=0 · Istanbul=-180 · NY=300); mutasyon ÜÇ TZ'de de KIRMIZI
+              sınır: ay sınırı · AY SONU · DST × 2 · SAAT TAŞIYAN serial · 1900 ARTIK-YIL
+PİN 2         katalog paydası — pasif SKU/CPL girmez, reddedilen "eksik" görünür
+GRANT         ölçülmüş minimal: SELECT+INSERT · UPDATE YOK (upsert yolu ölçüldü, YOK)
+              DELETE ASLA (ADR 0012) · enum USAGE gerçek DML ile doğrulandı (TL)
+acceptance    ACCEPTED/REJECTED — PENDING_REVIEW AÇILMADI (İlke 1: akış yok, kolon beklemez)
+red kayıtları anahtarı çözülemeyen satır: bugün yalnız HTTP cevabında — KALICI EVİ YOK
+              ⇒ AÇIK, BL-3'ün girdisi
+```

@@ -5838,6 +5838,23 @@ yazarının** borcunu buldu (frontend'de 4 ihlal + 7 stale, **iki oturumdur aç�
 `DISIPLIN`'in *"bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur"* maddesinin
 **araç tarafı**.
 
+### ⭐ VE ARTIK BİR İSTATİSTİK — DÖRT VAKA, DÖRDÜ DE AYNI TUR
+```
+money-float      Alan A listesi DAR      → lta körlüğü, listeyi YAZAN tur buldu
+improved-kapısı  ilk koşumda FE borcu    → kapıyı YAZAN turun KENDİ borcu
+FE ratchet       push-order listesinde YOK → listeyi ELLE YAZAN taraf iki oturum görmedi
+new-table-rls    'true' ≠ 't'            → kapıyı yazan tur DEĞİL, ama guard'ın
+                                            İLK GERÇEK KOŞUMU onu buldu
++ Z85 turu       KADEME 2 sayacı subshell'de kayboldu (0/46) → AJAN KENDİ İŞİNDE buldu
+```
+> ### **KAPI YAZAN TURUN İLK AVI YİNE KENDİSİDİR — VE BU ARTIK BİR TESADÜF DEĞİL,**
+> ### **BİR ORAN.**
+
+📌 Sebebi yapısal: bir kapıyı yazan taraf, o kapının **evrenini** de tanımlar — ve
+evreni tanımlayan **kendi varsayımlarıdır**. Kapı ilk koştuğunda **ilk sınadığı şey o
+varsayımlardır**. ⇒ *"Benim tarafım temiz"* beklentisi, **kapıyı yazan için en zayıf
+beklentidir.**
+
 **Pratik:** bir kapı yazdıktan sonra *"temiz geçti"* diyorsan, **kasten bir ihlal üret ve
 yakalandığını gör** (mutasyon şartı). Yakalamıyorsa kapı yok; yakalıyor ama gerçek kod
 temizse **evreni genişlet** ve bir daha bak.
@@ -5953,3 +5970,132 @@ gerekçeleri en az sorgulananlardır"** uyarısının **tam hedefi** — çünk�
 aktivasyon **tek anahtarla** (taşıyıcı + `ENABLE`+`FORCE` **birlikte**) yapılır.
 ⇒ *bugün sahte-yeşil yok · gerçek şekil hazır · baseline hilesi yok · aktivasyon günü
 sıfır değişiklik.*
+
+---
+
+## KURULUM, ÖLÇMEK İSTEDİĞİ DURUMU **HİÇ KURAMIYORSA** TEST YİNE YEŞİLDİR (ZORUNLU)
+
+`§2.7 #4` (*"kanıt kurulumu ölçtüğün durumu DEĞİŞTİRMESİN"*) bir **değiştirme** hatasıdır.
+Bu, onun **tersi ve daha sessiz** olanı:
+
+> ### **KURULUM O DURUMU **HİÇ KURAMAZ**, TEST YİNE GEÇER — VE HİÇBİR ŞEY ÖLÇMEZ.**
+
+**Ölçülmüş vaka (2026-09-02, `BL-2` `PİN 1`):** bir spec üç saat dilimini gezmek için
+`process.env.TZ`'yi test içinde atıyordu.
+```
+Jest içinde   process.env.TZ='America/New_York' → önce=2 sonra=2   ETKİLİ=false
+düz node'da   aynı atama                        → önce=1 sonra=0   ETKİLİ=true
+```
+`V8` süreç başında çözdüğü `TZ`'ye **kilitleniyor**.
+> **Test üç `TZ`'yi ölçtüğünü sanıyor; ORTAM `TZ`'sini ÜÇ KEZ ölçüyor.**
+
+**Mutasyonla kanıtlandı:**
+```
+TZ=UTC              exit 0   ⛔ mutasyon YAKALANMADI
+TZ=Europe/Istanbul  exit 0   ⛔ YAKALANMADI  ← `npm test` bu makinede BUNU koşuyor
+TZ=America/New_York exit 1   ✅ yakalandı
+```
+⇒ Ortam sonucu **belirliyorsa**, testin kendi kurulumu **inert**tir.
+
+### ⚠️ VE BU TEST *"İNANDIRICI"* GÖRÜNÜYORDU — ÇÜNKÜ İKİ PARÇASI DOĞRUYDU
+```
+ay-sınırı fixture'ı   VAR   (2026-03-01 — kayabilecek tek değer)
+ayırt edicilik        VAR   (mutasyon o fixture'da yakalanıyor)
+EKSİK OLAN TEK ŞEY    kurulumun KURULAMAMASI
+```
+> **Doğru fixture + doğru assertion + KURULAMAYAN ortam = SESSİZ YEŞİL.**
+Sessiz-yeşilin **yeni bir mekanizması**, ve en zor görüleni: kusur ne fixture'da ne
+assertion'da — **ikisinin arasındaki boşlukta**.
+
+**Pratik:** ortam kuran her testte (`TZ` · `LANG` · `NODE_ENV` · locale · saat) sor:
+> *"Bu kurulum GERÇEKTEN kuruldu mu?"* — ve cevabı bir **ölçüm** olsun: kurulumdan
+> **sonra** okunan bir değer, kurulumdan **önce** okunandan **farklı** mı?
+⛔ Farklı değilse test **ortamı ölçüyordur**, senin kurduğun durumu değil.
+✅ Çözüm şekli: ortamı **child-process** ile kur (`spawnSync`/`execFileSync` + `env`),
+süreç içi atamayla değil.
+
+---
+
+## UYARI **KOMŞU DOSYADA YAZILIYDI** — VE YİNE OKUNMADI (ZORUNLU)
+
+`BL-2`'nin parser'ı `src/common/date/` ailesini **çağırıyor**. O ailenin spec'leri bu tuzağı
+**ölçmüş, adlandırmış ve yazmıştı**:
+
+```
+excel-serial-date.spec.ts:28-42
+  "...does NOT reliably change what new Date(...).getTimezoneOffset() returns...
+   A TEST BUILT ON THAT (BROKEN) PREMISE WOULD REPORT THREE DIFFERENT ZONES
+   WHILE SECRETLY MEASURING THE SAME ONE THREE TIMES"
+period-month.spec.ts:5-13
+  DOĞRU DESENİ gösteriyor: TZ probu SCRIPT'LERİN DIŞINDA (TZ=… npx jest …) koşulur
+```
+⇒ `T-333`'ün kanıtı bu yüzden **geçerli** (ortam değişkeniyle koştu); `BL-2`'nin pini
+**kör** (süreç içi atamayla koştu). **Aynı kod tabanı, aynı hafta, zıt sonuç.**
+
+> ### **BİR UYARININ *ÇAĞIRDIĞIN DOSYANIN SPEC'İNDE* OLMASI, OKUNACAĞININ GARANTİSİ DEĞİLDİR.**
+
+📌 *"Kendi düzeltmesini taşıyan belge"* kuralının **kardeşi**, ve ondan **daha sinsi**:
+orada uyarı **aynı dosyanın altındaydı**; burada **komşu dosyada** — yani okuyucunun
+oraya bakması için **bir sebebi bile yoktu.**
+
+**Pratik:** bir yardımcıyı çağırmadan önce **spec'ine bak** — spec, yardımcının
+*"nasıl kullanılır"*ından çok **"nasıl yanlış kullanılır"**ını yazar. Ve bir tuzağı ölçen
+tur, uyarısını **yardımcının kendi JSDoc'una** da düşürsün: spec'i okumayan çağıranı
+**imza** yakalar.
+
+---
+
+## BİR YETENEĞE ROL EKLEMEDEN ÖNCE **HÜCRENİN UÇ LİSTESİ** OKUNUR (ZORUNLU — hüküm katmanı)
+
+> ### **AD BİR TAŞIYICIDIR. HÜCREYE ROL EKLEMEK, TAŞIDIĞI *HER UCA* ROL EKLEMEKTİR.**
+> ### **HÜKÜM **UÇ LİSTESİYLE** VERİLİR, **ADIYLA** DEĞİL.**
+
+**Ölçülmüş vaka (2026-09-02, `BL-2`):** *"baseline'ı `FINANCE` de yükleyebilsin"* hükmü
+`MASTER_DATA_WRITE: {ADMIN} → {ADMIN, FINANCE}` olarak uygulandı.
+```
+NİYET    FINANCE  baseline YÜKLEYEBİLSİN
+SONUÇ    FINANCE  KPI TANIMI · mekanik · SKU · CPL · tactic · brand · channel · FU
+                  hepsini YAZABİLİR
+```
+⛔ Ve `KPI` özellikle ağır: `CLAUDE.md §2.3` *"KPI/ROI = **Admin tanımlı** dinamik
+formül"* ⇒ `FINANCE`'a açılması **ayrı ve verilmemiş** bir hükümdü — üstelik aynı turun
+**kurmak istediği görev ayrılığını arkadan delerek**.
+
+**Düzeltme:** `BASELINE_WRITE` **yeni hücre** `{ADMIN, FINANCE}`; `MASTER_DATA_WRITE`
+`{ADMIN}` olarak **kaldı**.
+
+📌 `Z64`'ün `A0'` dersinin (*"bir AD eşleşmesi, bir KAVRAM eşleşmesi değildir"*) **RBAC
+hâli** — ve bu kez yanılan **hükmü veren**.
+📌 Ve *"bir AD, koruduğu SINIFTAN **dar** olabilir"* kuralının **ters yüzü**: bir ad,
+koruduğu sınıftan **GENİŞ** de olabilir. İkisi de aynı hatayı üretir: **ada bakıp sınıfa
+bakmamak.**
+
+**Pratik — bir hücreye rol eklemeden önce:**
+```
+1  o hücreye BAĞLI TÜM UÇLARI listele  (route-cell-map / cell_for türevi)
+2  her biri için sor: "bu rolün BURAYI da yazması İSTENİYOR MU?"
+3  cevap bir uçta bile HAYIR ise  →  YENİ HÜCRE, mevcut hücreye ekleme YOK
+```
+⚠️ `3`'ün maliyeti düşük görünür ama **hücre enflasyonu** da bir borçtur — o yüzden
+hüküm, hücrenin **genişliğini** de bir tasarım sorusu olarak kayda alır.
+
+---
+
+## KAPI, **HÜKMÜ VEREN TURU** DA DURDURUR — DESENİN ÜÇÜNCÜ KANADI (ZORUNLU)
+
+*"Kapı yazan turun ilk avı yine kendisidir"* artık üç kanatlı ve **üçü de ölçüldü**:
+```
+1  kapıyı YAZAN turu durdurur        money-float lta körlüğü · improved-kapısı · FE ratchet
+2  dalgayı YAZAN turu durdurur       new-table-rls: BL-1'in ilk gerçek RLS tablosunu yakaladı
+3  HÜKMÜ VEREN turu durdurur         11 e2e: MASTER_DATA_WRITE hücre değişimini yakaladı
+```
+> ### **ÜÇÜNCÜSÜ EN DEĞERLİSİ: BİR KAPI, *KARAR KATMANINI* DA ÖLÇEBİLİR.**
+
+**Ölçülmüş vaka:** `11` e2e *"FINANCE → 403 (`MASTER_DATA_WRITE` yalnız ADMIN)"* diyordu.
+Hüküm hücreyi genişletince **kırmızıya döndüler** — ve iddiaları **doğruydu**.
+⛔ Kolay yol *"testleri güncelle"* olurdu; o yol **`KPI` formül yazma yetkisini sessizce
+açardı** ve hiçbir yerde **hüküm olarak** yazılı olmazdı.
+
+> **BİR TESTİ HÜKME UYDURMADAN ÖNCE SOR: TEST Mİ ESKİDİ, HÜKÜM MÜ YANLIŞ YERE VERİLDİ?**
+
+📌 Bu, *"ölçmeden hüküm yok"* kuralının **hükmü verene de işlediğinin** kaydı.
