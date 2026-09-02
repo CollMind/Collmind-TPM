@@ -139,3 +139,119 @@ köprü        ACCEPTED satır izi kopmuyor
 kapılar      tsc · unit · TAM e2e (TL'de) · guards · ratchet'ler — ADLA + exit kodu
 ```
 *"Ölçemedim"* meşru bir çıktıdır; **"flaky" değildir.**
+
+---
+
+# `ADIM 2-3` BRIEF — `≥%95` KAPISI + TEŞHİS YÜZEYİ
+
+> **Yazıldı:** 2026-09-03, **push'lu `HEAD`'den** (`eeda8b3` / `df6bebf`) — *yarım-devir
+> yasası: brief, çalışma ağacını değil **push'lu `HEAD`'i** okur.*
+> **Ön koşul:** `ADIM 1` indi — `baseline_volume_import_batch_rows` canlı, enum **7 üye**.
+
+## `§A` · ⛔ İLK MADDE — `1821`/`1822` `CHECK`'LERİNİN **`NULL` TARAMASI**
+
+`ADIM 1`'in dersi: `OR` zincirli bir `CHECK`, `NULL` girdide **`NULL`'a collapse olur** ve
+Postgres onu **geçerli sayar** ⇒ satır **girer**. Orada **pozitif kontroller `18/19`
+geçiyordu** ve hata **görünmüyordu**.
+
+```
+1  1821 · 1822'nin TÜM CHECK'lerini listele (pg_constraint, ŞEMA NİTELENDİRİLMİŞ)
+2  HER BİRİ için NULL-girdi negatif vakası FİİLEN INSERT EDİLİR (BEGIN … ROLLBACK)
+   ⛔ "OR zinciri yok" diye STATİK OKUMAYLA GEÇİLMEZ
+3  her vakada ETKİLENEN SATIR SAYISI BASILIR
+   ⛔ INSERT 0 0 ⇒ "hata yok" DEĞİL, "ÖLÇÜLMEDİ" — deney KURULMAMIŞTIR
+4  NULL'da FALSE üretmeyen her CHECK nested CASE'e çevrilir
+```
+⚠️ Bulgu **çıkmayabilir** — o da bir sonuçtur, ama **ölçülerek** yazılır.
+
+---
+
+## `§B` · `≥%95` KAPISI — KATALOG PAYDASI, VE **ÜÇ ÇIKTI**
+
+```
+coverageRatio  =  KABUL EDİLMİŞ baseline / KATALOG evreni
+                                            aktif-SKU × aktif-CPL × 12-period
+                                            [G5: TÜRETİLMİŞ]
+```
+**Sınır semantiği `[F12 İLE ÖLÇÜLDÜ]`:** **`>=`** — `budget-threshold.service.ts:228-230`
+kanonik uygulaması (`CLAUDE.md §2.3`). ⛔ **Aynı semantiği kullan**, ikinci bir eşik
+karşılaştırması **yazma** (`F8`).
+
+### ⛔ KAPININ **ÜÇ ÇIKTISI** — ve üçüncüsü brief'in kalbi
+```
+YEŞİL       coverageRatio >= 0.95
+KIRMIZI     coverageRatio <  0.95   → TEŞHİS RAPORUNA link (§C)
+ÖLÇEMEDİM   KATALOG EVRENİ BOŞ (aktif-SKU × aktif-CPL = 0 ⇒ 0/0)
+            ⛔ "TEMİZ" DEĞİL — "ÖLÇEMEDİM"
+```
+> ### **`0/0` BİR ORAN DEĞİLDİR. BOŞ EVRENDE `%100` DE `%0` DA YANLIŞTIR.**
+
+📌 `T-273` körlüğünün **kapı hâli** — ve `plans=0` dünyasında **ilk koşum tam bunu
+görecek**. Kapının bugünkü ilk cevabı **`ÖLÇEMEDİM` olmalı**; *"yeşil"* dönerse kapı
+**kör** demektir.
+⇒ **PİN:** boş katalog → `ÖLÇEMEDİM` · dolu katalog + eksik baseline → `KIRMIZI` ·
+dolu + tam → `YEŞİL`. **Üçü de aynı koşumda ayrışmalı.**
+
+### `B1` · `coverage_ratio` AD ÇAKIŞMASI — **BU ADIMDA KAPANIR**
+`plans.coverage_ratio` bugün **KPI toplama kapsaması** (`kpi-engine.service.ts:572`),
+`D4` kapsam kapısı **DEĞİL**. ⇒ ayrım `EK_C`'ye yazılır, **yeni alan AYRI adlanır**.
+*Aynı adı ikinci anlamla yüklemek `F8` ailesidir.*
+
+---
+
+## `§C` · TEŞHİS YÜZEYİ — `batch → satırlar → NEDEN`
+
+⛔ **Yedi enum üyesinin HER BİRİ ayrı bir DÜZELTME EYLEMİ cümlesi taşır** — raporun
+**taşıyıcı gerekçesi** buydu (`Z87 §F12`):
+```
+SKU_NOT_FOUND           SKU kodu katalogda yok — kodu düzelt ya da SKU'yu tanımla
+CPL_NOT_FOUND           CPL kodu katalogda yok — kodu düzelt ya da CPL'i tanımla
+INVALID_PERIOD          dönem hücresi okunamadı — 'YYYY-MM' ya da geçerli tarih ver
+INVALID_VOLUME_FORMAT   hücre BİÇİMİ sayı değil — hücreyi düzelt
+NEGATIVE_VOLUME         DEĞER negatif — değeri düzelt
+MISSING_REQUIRED_FIELD  zorunlu hücre boş — doldur
+DUPLICATE_GRAIN         aynı tenant×SKU×CPL×dönem İKİ KEZ — birini kaldır
+```
+⛔ **`NEGATIVE_VOLUME` ("değeri düzelt") ≠ `INVALID_VOLUME_FORMAT` ("biçimi düzelt")** —
+bu ayrım `Z87 §F12`'nin **enum'u 7'ye çıkarma gerekçesiydi**; cümleler **ayrışmazsa
+gerekçe boşa gider**.
+
+### `C1` · İKİ METRİK **EKRANDA DA KARIŞMAZ**
+```
+sourceMatchRatio   BATCH BAŞLIĞINDA   (eşleşen satır / dosya satırı — TEŞHİS)
+coverageRatio      AYRI YERDE          (kabul edilmiş / KATALOG evreni — KAPI)
+```
+⛔ Aynı ekranda yan yana **iki oran** varsa hangisinin **kapı** olduğu **yazılı** olmalı.
+
+---
+
+## `§D` · RBAC
+```
+okuma uçları     MASTER_DATA_READ        (mevcut, DEĞİŞMEZ)
+yazma            BASELINE_WRITE          (Z86, {ADMIN, FINANCE})
+```
+⛔ **YENİ HÜCRE GEREKİRSE DUR VE BİLDİR** — `Z86` refleksi: *hüküm **uç listesiyle**
+verilir, **adıyla** değil.*
+⚠️ Yeni rota eklersen `scope-ratchet` **kova kararı** ister (`T-266`: guard ürün kararını
+**kendi vermez**) ⇒ o da **DUR**.
+
+---
+
+## `§E` · DUR LİSTESİ (`§6`'ya EK)
+```
+⛔ MIGRATION: yeni gerekirse DUR — numara Team Lead'in
+⛔ 1821/1822/1823'e DOKUNMA (CHECK düzeltmesi GEREKİRSE yeni migration ⇒ DUR ve bildir)
+⛔ elle kapı koşumu için: bash scripts/gate.sh <be|fe|meta> <komut>
+  (dizini KENDİ seçer, pwd'yi BASAR — cwd kayması bu oturumda ÜÇ KEZ ölçümü bozdu)
+⛔ TZ kuran her test CHILD-PROCESS ile kurar (baseline-volume-file-parser.service.spec.ts emsali)
+⛔ her CHECK negatif kontrolünde bir NULL-girdi vakası ZORUNLU
+```
+
+## `§F` · KANIT
+```
+§A  her CHECK için NULL-girdi vakası + ETKİLENEN SATIR SAYISI basılmış
+§B  kapının ÜÇ çıktısı aynı koşumda ayrışıyor (boş / eksik / tam)
+    >= semantiği: %94.9 RED · %95.0 GEÇER
+§C  yedi enum, yedi AYRI düzeltme cümlesi — ikisi aynı cümleyi taşımıyor
+kapılar  gate.sh ile, ADLA + exit kodu · TAM e2e Team Lead'de
+```

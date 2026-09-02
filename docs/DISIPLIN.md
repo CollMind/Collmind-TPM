@@ -6199,3 +6199,54 @@ seçenek B  UNCONSTRAINED + gerekçe ✅ satır numaralarıyla belgelenmiş
 ```
 > ### **UYDURMA BİR KISIT, KISITSIZLIKTAN KÖTÜDÜR** — çünkü bir invaryant **iddiası**
 > ### taşır, ve o iddia **yanlışsa** okuyucu ona **güvenir**.
+
+---
+
+## `[ÖLÇÜLDÜ]` DAMGASI **BOŞLUK İDDİASI** İÇİN DE GEREKİR (ZORUNLU — hüküm/brief katmanı)
+
+*"Hüküm bir ADI değil, adın taşıdığı LİSTEYİ karara bağlar"* kuralının **eksik yarısı**:
+
+> ### **BOŞLUK İDDİASI, DOLULUK İDDİASI KADAR ÖLÇÜM İSTER.**
+
+**Ölçülmüş vaka (2026-09-03, `Z88 §3`):** `BL-3` brief'ine *"bugün `plans=0` dünyasındayız
+⇒ coverage kapısının ilk cevabı **`ÖLÇEMEDİM`** olmalı"* yazıldı — ve bu bir **kabul
+ölçütüydü**.
+```
+gerçek   katalog evreni = aktif-SKU × aktif-CPL × 12 dönem   ⇒ PLANLARDAN BAĞIMSIZ
+         170 × 29 × 12 = 59.160   ⇒   BOŞ DEĞİL
+kapının doğru cevabı: 0 / 59.160 = %0  ⇒  KIRMIZI (ÖLÇEMEDİM DEĞİL)
+```
+⛔ **`plans=0`** ile **"katalog boş"** karıştırıldı: küme **adlandırıldı**, **sayılmadı**.
+⚠️ Ve hatayı **ürün sahibi ile Team Lead AYNI ANDA** yaptı — yani *"ikinci bir çift göz"*
+bu sınıfı **yakalamıyor**; yakalayan şey **sorgu**.
+
+📌 `§4.2`'nin (*"bir DB nesnesinin YOKLUĞUNU iddia etmeden önce iki katalogu da sorgula"*)
+**brief katmanındaki** hâli — orada şema, burada **evren**.
+
+**Pratik:**
+```
+"X boş" · "bugün hiç yok" · "sıfır satır" · "henüz kimse yüklemedi"
+  → hepsi bir SORGU ister, ve sorgu BRIEF'E yazılır
+  ⛔ "boş olduğu için ..." ile başlayan her KABUL ÖLÇÜTÜ, ölçümsüzse TASLAKTIR
+```
+
+---
+
+## BRIEF'E YAZILAN HER **KİMLİK** KAYNAĞINDAN **KOPYALANIR**, HATIRLANMAZ (ZORUNLU)
+
+**Ölçülmüş vaka (aynı tur):** brief *"`1821`/`1822` `CHECK`'lerini tara"* dedi.
+`1821` **`T-348`**'in numarası (`plan_mechanic_values`) — **tahsisli ama yaratılmamış**,
+baseline'la **ilgisiz**. Gerçek çift **`1822`/`1823`**.
+
+```
+migration numarası   → MIGRATION_SEQUENCE.md'den KOPYALA
+dosya:satır          → grep çıktısından KOPYALA
+enum/hücre üyesi     → kaynaktan KOPYALA   (bkz. "liste ölçülmeden hüküm yazılmaz")
+commit hash          → git log'dan KOPYALA
+```
+⛔ **Hiçbiri hatırlanmaz.** Bir kimlik yazarken *"sanırım şuydu"* diyorsan, o kimlik
+**taslaktır** — ve brief'ler taslak kimlikle **uygulanır**, çünkü ajan onu **bağlayıcı**
+sanar.
+
+📌 Bu turda ajan **doğrusunu ölçüp düzeltti ve bildirdi** — üçüncü kez. Ama
+`DISIPLIN`'in kendi kuralı geçerli: **düzeltmek zorunda kalmamalıydı.**

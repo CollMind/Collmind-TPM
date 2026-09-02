@@ -8543,3 +8543,93 @@ o listenin **`[ÖLÇÜLDÜ]` damgası hükmün PARÇASIDIR** — **damgasız lis
 
 📌 İkisini de **kapı/şerit** yakaladı, hükmü veren değil. `DISIPLIN`'in *"kapı, hükmü veren
 turu da durdurur"* kanadı **iki kez** ateşledi — ve ikinci kez **aynı hafta**.
+
+---
+
+## `Z88` — `BL-3 ADIM 4`: DALGANIN **DONE TANIMI**, VE İLK GERÇEK KAPI SAYISI
+
+> **Tarih:** 2026-09-03 · **Karar:** ürün sahibi
+
+### `§1` · `ADIM 4` `BL-3`'ÜN İÇİNDE — `BL-4`'E DEVREDİLEMEZ
+```
+BL-3 = D2 + D4 = kapı + coverage + TEŞHİS
+teşhis raporunun KALICI EVİ Z87'nin hükmüydü (import_batch_rows)
+⇒ YAZARI YOKSA BL-3 KAPANMIŞ SAYILMAZ
+```
+> ### **`T-249` SINIFI (*"tablo var, yazar yok"*) BİR DALGANIN**
+> ### **DONE TANIMINI **KARŞILAMAZ.**
+> ### **DEVREDİLİRSE *"KAPATILMIŞ GÖRÜNEN YARIM"* OLUR.**
+
+`BL-4` bir **yüzey** dalgasıdır; **yazar bağlama yüzey değil, VERİ YOLUDUR.**
+**Sıra bağlayıcı: `2` → `1`** — önce **tek sözlük**, sonra **satır yazarı**; *yanlış
+`reasonCode`'lar **kalıcılaşmadan**.*
+
+### `§2` · ⭐ `FAZ-2`'NİN İLK GERÇEK KAPI ÇIKTISI
+```
+coverageRatio = 0 / (170 aktif SKU × 29 CPL × 12 dönem = 59.160) = %0  ⇒  KIRMIZI
+```
+> **Ve DOĞRU olan tam bu:** evren **DOLU**, pay **SIFIR**. `UNMEASURABLE` dalı **pinli**
+> ama bugün **ateşlemiyor** — **mekanizma var, beklenti yanlıştı.**
+
+### `§3` · ⛔ VE BEKLENTİ **İKİ TARAFIN DA** HATASIYDI — `Z87` DERSİNİN ÜÇÜNCÜ VAKASI
+`BL-3` brief'ine *"bugün `plans=0` dünyasındayız ⇒ kapının ilk cevabı `ÖLÇEMEDİM`
+olmalı"* yazıldı — **hem ürün sahibi hem Team Lead** aynı cümleyi kurdu.
+```
+gerçek   katalog evreni = SKU × CPL × dönem  ⇒  PLANLARDAN BAĞIMSIZ
+         aktif SKU 170 · CPL 29  ⇒  evren 59.160, BOŞ DEĞİL
+```
+⇒ **`plans=0` ile *"katalog boş"* karıştırıldı.** Küme **adlandırıldı**, **sayılmadı**.
+
+> ### **ORTAK YASAYA EK: `[ÖLÇÜLDÜ]` DAMGASI, BİR KÜMENİN **BOŞ OLDUĞU** İDDİASI**
+> ### **İÇİN DE GEREKİR — BOŞLUK İDDİASI, DOLULUK İDDİASI KADAR ÖLÇÜM İSTER.**
+
+📌 `§4.2`'nin (*"bir DB nesnesinin yokluğunu iddia etmeden önce iki katalogu da sorgula"*)
+**brief katmanındaki** hâli.
+
+**`3a` · Aynı ailenin ikinci üyesi — MIGRATION NUMARASI**
+Brief *"`1821`/`1822` `CHECK`'lerini tara"* dedi; `1821` **`T-348`**'in
+(`plan_mechanic_values`) numarası, **tahsisli ama yaratılmamış**, baseline'la **ilgisiz**.
+Gerçek çift: **`1822`/`1823`**.
+> **BRIEF'E YAZILAN HER KİMLİK `MIGRATION_SEQUENCE`'TEN KOPYALANIR — HATIRLANMAZ.**
+
+### `§4` · ŞERİDİN İKİ DOĞRU SINIRI
+```
+controller'a BAĞLAMADI      yeni rota scope-ratchet KOVA KARARI ister (T-266) ⇒ DUR
+iki bulguyu BİLEREK yapmadı üç ÖLÇÜLMÜŞ gerekçeyle, ve ADIYLA bildirdi
+```
+Ve `CHECK` taramasının **negatif sonucu doğru gramerle** yazıldı:
+> *"`1822`'nin dördü `IS NULL`/`IS NOT NULL` predikatı kullanıyor ⇒ inherently NULL-safe;
+> **ölçüm bunu DOĞRULADI, statik okumaya güvenilmedi. Bulgu çıkmadı — bu da ölçülmüş bir
+> sonuç.**"*
+
+### `Z88 §5` · `BL-3` KAPANDI — TESLİM VE İKİ AÇIK
+
+```
+ADIM 1  import_batch_rows          eeda8b3   red/kabul satırlarının kalıcı evi
+ADIM 2-3  coverage kapısı + yedi cümle
+ADIM 4  tek sözlük + satır yazarı   53984c5
+⇒ D2 (eşleme) + D4 (coverage) BİTTİ. Geriye BL-4 (YÜZEY) kalır.
+```
+
+**`5a` · GERÇEK BİR BUG DÜZELDİ — `INVALID_PERIOD` YUTULUYORDU**
+Parser onu üretiyordu; servis `missing.push('period')` ile **yutuyor** ve **her zaman**
+`MISSING_REQUIRED_FIELD` basıyordu ⇒ enum'da üye var, **üreticisi yok**.
+📌 `Z87 §F12` enum'u **7'ye çıkarırken** bu üyeyi *"`BL-2` üretiyor"* diye eklemişti —
+ölçüm **parser kanalını** görmüş, **servis kanalını** görmemişti. *"İki kanal → tek
+sözlük"* hükmü bu yüzden vardı, ve `ADIM 4` onu **uyguladı**.
+
+**`5b` · AJANIN `ÖLÇEMEDİM`'İNİ TEAM LEAD KAPATTI**
+Ajan `CHECK` uyumunu **yalnız kod okuyarak** eşledi ve bunu **adıyla bildirdi**. TL
+**dokuz şekli** gerçek `CHECK`'e karşı `ROLLBACK`'li sınadı ⇒ **dokuzunun dokuzu geçti**.
+> **"Kod okuma ile eşledim" bir HİPOTEZDİ; artık bir ÖLÇÜM.**
+📌 Ve bu, `ÖLÇEMEDİM`'in **doğru kullanımının** örneği: ajan **uydurmadı**, **adlandırdı**,
+ve **kapatılabilir** bıraktı.
+
+**`5c` · İKİ AÇIK — `BL-4`'ÜN GİRDİSİ**
+```
+1  coverage servisi CONTROLLER'A BAĞLI DEĞİL — yeni rota scope-ratchet KOVA KARARI
+   ister (T-266, ürün sahibinin); ajan DOĞRU davrandı ve DUR dedi
+2  sourceMatchRatio SORGUSU yazılı ama SERVİSE bağlı değil — referans sorgu raporda
+```
+⛔ İkisi de **yüzey** işi ⇒ `BL-4`'e ait, `BL-3`'ün done tanımını **bozmuyor**
+(`Z88 §1`'in ayrımı: **yazar bağlama veri yolu, rota bağlama yüzey**).
