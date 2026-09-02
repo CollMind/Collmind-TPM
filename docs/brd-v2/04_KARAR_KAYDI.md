@@ -8266,3 +8266,92 @@ kalktı**, ve geriye kalan risk **çevrimin kendisi**.
 **bir tur GECİKMELİ** de vurabiliyor ⇒ madde **tek turla sınırlı değil**.
 ⭐ Ve yakalayan şey bir **ajanın kaynağa dönüp okuması** oldu: brief'i değil, brief'in
 **kaynağını** okudu.
+
+---
+
+## `Z85` — ÜÇ HÜKÜM: GUARD İKİ KADEME · RLS `(c)` · COVERAGE **KATALOGDAN**
+
+> **Tarih:** 2026-09-02 · **Karar:** ürün sahibi · **Girdi:** `BL-1` (`T-357`) raporu
+
+### `§1` · GUARD — `CASE` TEK TEMSİL + SELF-TEST **CANLI KATALOĞA**
+```
+⛔ "iki temsili KABUL ET"  →  iki temsili YAŞATIR
+✅ SQL'de CASE WHEN ... THEN 't' ELSE 'f' END  →  TEK temsile indirir
+```
+**Ama asıl düzeltme self-test'te:** mock sabit `"t"` döndürüyordu, gerçek SQL `true`.
+> ### **"BİR MOCK, TAKLİT ETTİĞİ ŞEYİN TİPİNE BAĞLANMALI" KURALININ KANONİK İHLALİ.**
+
+⇒ Self-test bundan sonra **mock'lu değil CANLI KATALOGDAN** koşar, **iki-girdi-iki-çıktı**:
+`baseline_volumes` **bilinen-yeşil** + sentetik RLS'siz tablo **bilinen-kırmızı**.
+
+**`1a` · VE KAYIT — *"temiz doğan kapı"* KURALININ EN SAF VAKASI**
+```
+main'de RLS açık tablo: 2/50 — ikisi de BU TURDA doğdu
+⇒ guard 2026-08-28'den beri KOŞULUN HİÇ SAĞLANMADIĞI bir evrende YEŞİL kaldı
+⇒ karşılaştırma BOZUKTU ama GÖZLENEMEZDİ
+```
+⚠️ **Hata yönü TERS olduğu için zararsızdı** (*doğruyu bloklar, yanlışı geçirmez*) —
+**ama aynı mekanizma ters yönde de doğabilirdi**, ve o zaman guard **sessizce fail-open**
+olurdu. Zarar görmemiş olmak, mekanizmanın sağlam olduğu anlamına gelmez.
+
+### `§2` · RLS — **`(c)`**: GERÇEK POLİTİKA TANIMLI, RLS **KAPALI** DOĞAR
+
+**`USING(true)` REDDEDİLDİ:**
+> **Fail-open RLS — tam olarak *"kapının harfini sağlayıp ruhunu sağlamamak"*.**
+> Ve bir **SAHTE GÜVENLİK SİNYALİ**: `relrowsecurity=t` gören okuyucu tabloyu *"izole"*
+> sanır — **`1/3-doğru-iddia` sınıfının ŞEMA HÂLİ.**
+> *"Güvenlik için ENABLE bugünden"* gerekçesi de `DISIPLIN`'in **"güvenlik gerekçeleri en
+> az sorgulananlardır"** uyarısının **hedefi**.
+
+**`(b)` (RLS'siz doğ + baseline'a bilinen-borç) DE REDDEDİLDİ:** `T-113` tuzağı — kapı
+**hep-kırmızı doğar**.
+
+```
+migration     GERÇEK, FAIL-CLOSED politikayı YAZAR (Z50 şekli)  ·  ENABLE+FORCE YAZMAZ
+aktivasyon    dalgası TEK ANAHTARLA açar: SET-LOCAL taşıyıcı + ENABLE+FORCE BİRLİKTE
+```
+⇒ **bugün sahte-yeşil YOK · gerçek şekil HAZIR · baseline hilesi YOK · aktivasyon günü
+tablo SIFIR DEĞİŞİKLİKLE açılır.**
+
+**`2a` · KAPI İKİ KADEMELİ**
+```
+KADEME 1 (BUGÜN AKTİF)   tenant_id taşıyan yeni tablo POLİTİKA-TANIMSIZ DOĞAMAZ
+KADEME 2 (ASKIDA)        ENABLE+FORCE çifti — aktivasyon dalgasıyla açılır
+```
+📌 Ve askıda oluşu **çıktıda GÖRÜNÜR** — `DISIPLIN`: *"bir beyan üç değer taşır:
+yeşil · kırmızı · **koşulmadı**"*. Askıdaki bir kademe **sessiz** olamaz.
+
+### `§3` · COVERAGE PAYDASI — **TABLODAN DEĞİL, KATALOGDAN TÜRER**
+> ### **GERİLİM ÇÖZÜLDÜ — VE HÜKÜM DAHA GÜÇLÜ KARŞILANIYOR.**
+```
+Z79 §4'ün "TOPLAM EVREN"i  =  import satırları DEĞİL, OLMASI GEREKEN evren
+                              aktif-SKU × aktif-CPL × 12-period    [G5: TÜRETİLMİŞ evren]
+pay                        =  baseline_volumes'taki KABUL EDİLMİŞ satır
+⇒ reddedilen satır tabloda OLMADIĞI İÇİN evrende ZATEN EKSİK görünür
+```
+📌 `G5`'in (*"evren-kaynağı hiyerarşisi: **türetilmiş** > taranmış > yazılmış"*) doğrudan
+uygulaması — ve `BL-1`'in *"dört anahtar `NOT NULL`"* kilidi bir **kusur değil**, paydayı
+**kataloğa taşıyan** şey olduğu ortaya çıktı.
+
+**`3a` · ANAHTARI ÇÖZÜLEMEYEN KAYNAK SATIR — AYRI METRİK**
+*"SKU eşleşmedi"* **kataloğun dışında bir iddiadır** ⇒ coverage'ı **düşürmez**; ayrı bir
+**kalite metriği** (kaynak-dosya uyumu: eşleşmeyen satır sayısı) olarak **import-batch
+raporunda** yaşar.
+```
+BL-3 TEK YERDEN okur:  tablo + katalog
+batch raporu           TEŞHİSTİR, kapı girdisi DEĞİL
+```
+
+**`3b` · ⇒ `BL-2`'YE SONUÇ: `acceptance_status`'ÜN ANLAMI DARALIR**
+Dört-anahtar-`NOT NULL` + dört `CHECK` varken tabloya **yalnız kabul edilmiş satır**
+girebiliyor ⇒ kolon ya **sadeleşir** ya bir **ara durum** taşır (`PENDING_REVIEW`).
+**Red kayıtlarının evi** batch-satır raporudur (ayrı tablo mu `jsonb` mi — **`BL-2` ölçümle**).
+⛔ **AD-BORCU DOĞMADAN karar** — `Z84 §2`'nin şartı burada işledi.
+
+### `§4` · `import_batches` İSKELETİ
+`BL-2`'de genişler — **onay**; ve ajanın bunu **varsayım olarak bildirmesi doğru davranış**.
+
+### `§5` · `BL-1` DEĞERLENDİRMESİ
+**Örnek kalitesinde:** dört `CHECK` **±kontrolle** sınandı · `down()` `pg_dump` diff'i
+**byte-birebir** · `fiscal_periods` FK reddi **`F8` gerekçeli** · guard kusuru **scratch
+kopyada** doğrulanıp dosyaya **dokunulmadı**.

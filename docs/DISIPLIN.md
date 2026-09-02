@@ -5896,3 +5896,60 @@ başarı aynı görünür**.
 için **hangi kapıların var olduğunu** bilmek gerekir — ki tam olarak bu, `push-order`'ın
 FE evreninde **iki oturum boyunca** eksik kalan şeydi.
 > **Beyanı üreten şey, kapıları KOŞAN şey olmalı.**
+
+---
+
+## KAPI DOĞUM KURALI: **BİLİNEN-YEŞİL *VE* BİLİNEN-KIRMIZI** (ZORUNLU)
+
+> ### **BİR KAPI, EVRENİNDE BİLİNEN-YEŞİL **VE** BİLİNEN-KIRMIZI GÖRMEDEN**
+> ### ***"ÇALIŞIYOR"* İLAN EDİLMEZ.**
+
+*"Temiz doğan kapı bir şüphe sebebidir"* kuralının **tamamlanmış** hâli: tek yönlü kanıt
+yetmez. Bir kapı yalnız kırmızı görürse **hep-kırmızı** olabilir (`T-113`); yalnız yeşil
+görürse **kör** olabilir.
+
+**Ölçülmüş vaka (2026-09-02, `Z85 §1`):** `new-table-rls` guard'ı `2026-08-28`'den beri
+koşuyordu ve **hiç ihlal bulmamıştı**. Sebep **doğruluk değildi**:
+```
+main'de RLS açık tablo   2/50 — ikisi de guard'dan AYLAR SONRA doğdu
+karşılaştırma            [ "$enable" = "t" ]   ↔   gerçek SQL: "true"
+                         (boolean||text implicit cast'i 'true'/'false' üretir)
+self-test mock'ları      sabit "t"/"f" — GERÇEK ÇIKTIYI HİÇ TAKLİT ETMİYOR
+```
+⇒ Guard **koşulun hiç sağlanmadığı bir evrende** yeşil kaldı; **ilk gerçekten uyumlu
+tablo** doğduğunda onu **ihlal saydı**.
+
+⚠️ **Hata yönü TERS olduğu için zararsızdı** — *doğruyu bloklar, yanlışı geçirmez*. **Ama
+aynı mekanizma ters yönde de doğabilirdi**, ve o zaman guard **sessizce fail-open** olurdu.
+> **ZARAR GÖRMEMİŞ OLMAK, MEKANİZMANIN SAĞLAM OLDUĞU ANLAMINA GELMEZ.**
+
+### Pratik — bir kapı doğduğunda **iki fixture** zorunlu
+```
+BİLİNEN YEŞİL    gerçekten uyumlu bir örnek  → guard TEMİZ demeli
+BİLİNEN KIRMIZI  kasten bozuk bir örnek      → guard İHLAL demeli
+⛔ İKİSİ DE AYNI KOŞUMDA AYRIŞMALI (§2.7 #6)
+```
+⛔ Ve **mock'la yapılmaz**: `Z85 §1`'in kusuru tam olarak **mock ile gerçeğin ayrışması**ydı.
+Fixture **gerçek yüzeyden** gelir (canlı katalog, geçici şema, `ROLLBACK`'li sentetik kayıt).
+> **Bir self-test, sınadığı şeyin GERÇEK ÇIKTISINI görmüyorsa, kendi varsayımını sınıyordur.**
+
+---
+
+## ŞEMA KATMANINDA **SAHTE GÜVENLİK SİNYALİ** (ZORUNLU)
+
+`USING(true)` bir RLS politikası **fail-open**'dır — ve asıl zararı erişimi açması değil,
+**okuyucuya yalan söylemesi**dir:
+```
+relrowsecurity = t  gören okuyucu  →  "bu tablo İZOLE"  sanır
+gerçek                             →  politika HİÇBİR ŞEYİ kısıtlamıyor
+```
+> ### **`1/3-DOĞRU-İDDİA` SINIFININ ŞEMA HÂLİ:** *bayrak doğru, anlam yanlış.*
+
+⛔ Ve *"güvenlik için bugünden `ENABLE` edelim"* gerekçesi, `DISIPLIN`'in **"güvenlik
+gerekçeleri en az sorgulananlardır"** uyarısının **tam hedefi** — çünkü kimse bir güvenlik
+önlemini *"fazla mı?"* diye sorgulamaz.
+
+**Doğru şekil (`Z85 §2`):** **gerçek, fail-closed politika TANIMLI · RLS KAPALI** doğar;
+aktivasyon **tek anahtarla** (taşıyıcı + `ENABLE`+`FORCE` **birlikte**) yapılır.
+⇒ *bugün sahte-yeşil yok · gerçek şekil hazır · baseline hilesi yok · aktivasyon günü
+sıfır değişiklik.*
