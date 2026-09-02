@@ -466,3 +466,5 @@ status: active        # planned | active | closed
 - [[T-350]] `calculateAllSpendsForFU` **ÖLÜR** — dokuzuncu aday, **tüketici kazanmadı** — **todo** · `Z79 §7`
 - [[T-351]] Altı **yazarsız** `*_spend` kolonu — `T-270` kuralı: ya yazar kazanır ya ölür; **ikisi OKUNUYOR** — **todo** · `Z79 §8`
 - [[T-352]] `ŞART-6` kalanı — dört kalem *"canlıda hesaplanıyor, KPI olarak **doğmuyor**"*; ⛔ **task'ları YOKTU** — **todo**
+- [[T-353]] Frontend suite **YÜK ALTINDA KARARSIZ** — aynı ağaç iki farklı cevap veriyor (`5↔6` failed, izole `0`) — **todo** · ⛔ teşhis YAPILMADI
+- [[T-354]] Sessiz sıfırın **PLAN ekseni** + beş dosya daha — `8b`'nin **ölçtüğü ama kapsamadığı** kalan — **todo**

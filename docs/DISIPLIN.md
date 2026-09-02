@@ -5455,3 +5455,68 @@ YAZAN    düzeltmeyi EN ÜSTE de işaretle — F12 deseni gövdede kalır ama
 📌 Yazan tarafı yeni: `F12` *"eski kayıt silinmez"* der ve **doğrudur**; ama sessiz kalan
 şey **nereden okunmaya başlanacağıdır**. Append-only bir belge, **başlıksız** kaldığında
 ilk paragrafını en yetkili paragraf gibi sunar.
+
+---
+
+## ÜÇÜNCÜ KASKAD — *"VARSAYILAN + İSTİSNA"* BİR MİMARİDİR, TESADÜF DEĞİL (ZORUNLU)
+
+Üç ayrı alan, üç ayrı turda, **aynı şekil**:
+
+```
+FU → SKU                    Z74    mekanik DEĞERİ      (FU varsayılan · SKU ezme)
+kanal → CPL                 Z80    UYGUNLUK            (kanal varsayılan · CPL ezme)
+kategori/kanal → politika   K-2.2.8  BÜTÇE POLİTİKASI  (genel varsayılan · özel ezme)
+```
+
+> ### **ÜÇÜ DE *VARSAYILAN + İSTİSNA*, VE ÜÇÜ DE **TEK RESOLVER** İSTER.**
+
+**Bir desenin üçüncü vakası bir tesadüf değil, bir mimaridir** — ve o noktadan sonra
+dördüncüsü **icat edilmez, uygulanır**.
+
+### Kaskadın ZORUNLU dört parçası
+
+```
+1  TAŞIYICI          NULL = varsayılan geçerli · dolu = EZME
+                     ⛔ UNIQUE kısıtı NULLS NOT DISTINCT ile (K-2.2.8c dersi)
+2  TEK RESOLVER      "en spesifik kayıt kazanır" — kademe sırası AÇIK,
+                     ⛔ GİZLİ TIE-BREAK YOK (§2.5)
+3  NEGATİF YARI      ⛔ EN ÇOK UNUTULAN PARÇA:
+                     bir kısıt TANIMLIYSA ve girdi o listede DEĞİLSE,
+                     bir ÜST kademe uygun olsa BİLE UYGUN DEĞİLDİR.
+                     > KISIT-DIŞI ≠ KISIT-YOKLUĞU
+3b TANIMLI-WILDCARD  kısıt HİÇ tanımlanmamışsa "tümüne uygun" — ve bu bir
+                     FAIL-OPEN DEĞİL, bir KARARDIR: yüzeyde "kısıtsız" GÖRÜNÜR
+4  SORULABİLİRLİK    çağıran kademeyi BİLMEZ ama SORABİLİR
+                     (tooltip/denetim: "hangi kademeden geldi")
+```
+
+⛔ **`3` ve `3b` birbirinin zıddıdır ve karıştırılırsa kural TERSİNE çalışır:**
+*"listede yok"* ile *"liste yok"* aynı şey değildir. Birincisi **red**, ikincisi **kabul**.
+
+📌 Ve `3b`'nin adı bir turda **düzeltildi**: Team Lead onu *"fail-open varsayılan"* diye
+adlandırmıştı; ürün sahibi **tanımlı-wildcard** dedi. Fark ürün-anlamlı — *fail-open* bir
+**kaza**dır, *tanımlı-wildcard* bir **karardır**, ve kararın **görünür bir etiketi** olur.
+> **Bir davranışa verdiğin ad, onun bir KUSUR mu bir KARAR mı olduğunu belirler.**
+
+---
+
+## BİR SORU LİSTESİ, ÖLÇÜMLE TAZELENEN BİR BELGEDİR (ZORUNLU)
+
+> ### **CEVAPLANMAMIŞ OLMASI, HÂLÂ DOĞRU SORU OLDUĞU ANLAMINA GELMEZ.**
+
+**Ölçülmüş vaka (2026-09-02, `T-346` `S2`–`S6`):** beş açık soru bir tur bekledi; hüküm
+öncesi ölçüm şunu buldu:
+```
+2 soru DEĞİŞTİ            S2 "kaç boyutlu"        → "HANGİ TABLO SAHİBİ" (İKİ sözlük ölçüldü)
+                          S4 "nereden yönetilir"  → "KİM DOLDURACAK"    (yazma yüzeyi ZATEN var)
+2 soru KODDA CEVAPLIYDI   S3 (return false ⇒ düşer) · S5 (enum var, 6/6 dolu)
+1 doğrulandı              S6 (üç enum karşılaştırıldı — budget'ta BOTH yok)
+```
+⇒ Beşte **dördü**, sorulduğu hâliyle **artık geçerli değildi**.
+
+**Pratik:** bir soru listesini ürün sahibine götürmeden önce **her maddeyi yeniden ölç**.
+Hüküm istenecek şey **bugünün sorusu** olmalı, dünün sorusu değil — yoksa ürün sahibi
+**var olmayan bir ikilem** hakkında karar verir.
+
+📌 `Z75 §2`'nin (*"verilen hükümlerin indeksi sürükleniyor"* — **hüküm → task** boşluğu)
+**kardeşi ve ters yönü**: burada **ölçüm → soru** boşluğu. Aynı aile.

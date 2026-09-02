@@ -7824,3 +7824,132 @@ kalan dördün kaderi                                →  ÖLÇÜMLE
 ```
 8b-FE dalgası  ∥  T-346        →        BL
 ```
+
+---
+
+## `Z80` — `T-346` HÜKÜM PAKETİ: `S2`–`S6` + `S4` KASKADI
+
+> **Tarih:** 2026-09-02 · **Karar:** ürün sahibi · **Girdi:** TL aday-metinleri (ölçümlü)
+
+### `§1` · `S2` — SAHİP **`mechanics`** `(a)`, ve `tactics` **ÖLMEZ**
+```
+grid kolonu mechanic'ten türüyor        (ölçüldü: PlanningGridEnhanced :854)
+tactics.applicable_*  tüketicisi VAR    (agreement.service.ts:1242)
+sorusu FARKLI: "anlaşmada geçerli mi" ≠ "grid'de uygulanabilir mi"
+⇒ Q21 DESENİ: aynı DEĞER, farklı SORU — birleştirme YOK, ÇAPRAZ-REFERANS yorumu
+```
+📌 `Q21`'in deseni **üçüncü kez** iş gördü ve artık bir **refleks**: iki yapı aynı değeri
+taşıyorsa önce *"aynı soruyu mu soruyorlar"* diye bakılıyor, birleştirme **varsayılan değil**.
+
+⛔ **ŞART — brief'in İLK SATIRI (`S2` hükmünün ön koşulu):**
+> **CTPM'in *"mechanic"*i ↔ Excel `Sayfa5` hangi DÜZEY?**
+> ```
+> Excel   tactic = KULLANICI-GÖRÜNÜR (9)   ·   mechanic = AİLE (6)
+>         CPP-Off% ve Price-Support AYNI AİLEDE (CPPOFF)
+> CTPM    6 mechanic — AİLE düzeyindeyse UYGUNLUK YANLIŞ GRANÜLERLİKTE
+> ```
+> **ÖLÇ, SONRA BAĞLA.** *(Sayı eşleşmesi — `6` ↔ `6` — bir kavram eşleşmesi değildir;
+> `Z64`'ün `A0'` keskinleştirmesi.)*
+
+### `§2` · `S3` — `(c)` DÜŞER **+ BOŞSA GÖRÜNÜR MESAJ**, ve `length>0` YENİDEN ADLANDIRILDI
+> ### **`length > 0` MUHAFIZI *"FAIL-OPEN"* DEĞİL, TANIMLI-WILDCARD'DIR:**
+> ### **"KISIT TANIMLANMAMIŞ = TÜMÜNE UYGUN" — VE ADMİN YÜZEYİNDE *"KISITSIZ"* GÖRÜNÜR.**
+
+⇒ TL aday-metni bunu *"fail-open varsayılan"* diye adlandırmıştı; hüküm **düzeltti**.
+Fark ürün-anlamlı: fail-open bir **kaza**dır, tanımlı-wildcard bir **karar** — ve kararın
+**görünür bir etiketi** olur.
+
+**Bugünün gerçeği kayda:** `0/6` dolu ⇒ **ilk tohum girilene kadar `SC-O2` ayırt-edicisi
+ÜRETİLEMEZ** — `T-273` körlüğü, **adıyla**.
+**`catch { return [] }` ÖLÜR:** *"yüklenemedi"* ≠ *"bu eşleşmede tanımlı değil"*.
+
+### `§3` · `S4` — `(a)` FORM/API + TOHUM · CSV **OLAY-TETİKLİ** · ÇÖZÜMLEME KURALI
+```
+1  CPL tanımı VARSA  → YALNIZ O karar verir
+                       CPL listede DEĞİLSE → UYGUN DEĞİL, kanala DÜŞÜLMEZ
+                       ⛔ KISIT-DIŞI ≠ KISIT-YOKLUĞU
+2  CPL tanımı yoksa  → bağlı KANALIN tanımı
+3  ikisi de yoksa    → TANIMLI-WILDCARD (§2)
+```
+> ### **KURALIN KALBİ `1`'İN NEGATİF YARISIDIR:** *bir CPL listesi VARSA ve o CPL içinde
+> ### DEĞİLSE, kanal uygun olsa BİLE uygun değildir.*
+
+**Sözlüğe:** **`CPL` = PLANLAMA BİRİMİ, müşteri DEĞİL** *(bakkallar 1 CPL, Migros 1 CPL)*.
+**Taşıyıcı hazır** (`applicable_cpls` + `applicable_channels`); inşa edilen şey
+**RESOLVER SIRASI** + `1`'in negatif yarısı. **Tek resolver**; çağıran kademeyi **bilmez
+ama SORABİLİR** (tooltip/denetim: *"CPL tanımından mı, kanal tanımından mı"*).
+
+⛔ **PİN DÖRTLÜSÜ:**
+```
+1  CPL tanımlı ve UYGUN
+2  CPL tanımlı, DEĞİL — KANAL UYGUN OLSA BİLE   ← NEGATİF YARI, KURALIN KALBİ
+3  CPL yok, kanal tanımlı
+4  ikisi de yok → wildcard
+```
+
+### `§4` · `S5` — `MechanicCategory` KANONİK `(a)`, ikinci `calcType` alanı **YOK** (`F8`)
+`Sayfa5` eşlemesi **referans belgeye tek tablo**:
+```
+LUMPSUM_SPEND          = Lumpsum
+PER_UNIT_SUPPORT       = per-unit rate
+ON/OFF_INVOICE_DISCOUNT = %-rate
+LONG_TERM_AGREEMENT    = LTA
+spending-type          ZATEN ayrı enum
+```
+
+### `§5` · `S6` — `BOTH`: AÇIK HATA `(b)` bugün · **VE ÖLÇÜM `BOTH`'U ÖLDÜRÜYOR**
+
+**TL ölçtü (2026-09-02):**
+```
+main.tactics     OFF_INVOICE 4 · ON_INVOICE 1 · BOTH 0
+main.agreements  OFF_INVOICE 5 ·                BOTH 0
+```
+⇒ **Canlıda `BOTH` taşıyan kayıt YOK.** Hüküm gereği: **`BOTH` enum değeri ÖLÜR**, ve
+`(a)`-dağıtım-oranı sorusu **hiç doğmaz**.
+
+⚠️ **VE DAYANAĞI AYIRIYORUM — ikisi aynı ağırlıkta değil:**
+```
+TAŞIYICI GEREKÇE   Excel KANONUNDA BOTH YOK — her tactic TEK spending-type;
+                   "hem on hem off" iş = İKİ TACTIC (Drive/TPR-On% + TPR-Lumpsum emsali)
+DESTEKLEYİCİ       bugünkü veride 0 — ama bu TOHUM verisi (5 tactic · 5 agreement),
+                   müşteri verisi DEĞİL
+```
+📌 Ayrım önemli: bir enum değerini **veriye bakarak** öldürmek `DISIPLIN`'in *"veriye dayalı
+her erteleme, verinin değiştiği gün yeniden ölçülür"* kuralına takılırdı. **Kanona bakarak**
+öldürmek takılmaz — ve gerçek dayanak **kanon**.
+`(c)` elendi, gerekçesiyle: **bir tutar iki zarfta olamaz.**
+
+### `§6` · ⭐ ÜÇÜNCÜ KASKAD — ORTAK DESEN ADINI ALDI
+```
+FU → SKU          Z74     mekanik değeri
+kanal → CPL       BU      uygunluk
+kategori/kanal → politika  K-2.2.8
+```
+> ### **ÜÇÜ DE *"VARSAYILAN + İSTİSNA"*, ÜÇÜ DE **TEK RESOLVER**.**
+
+⇒ `DISIPLIN`'e. Bir desenin **üçüncü** vakası artık bir tesadüf değil, bir **mimari**.
+
+### `§7` · SORU LİSTESİ DE SÜRÜKLENEN BİR BELGEDİR
+`T-346`'nın beş sorusu bir tur eskiydi ve TL ölçümü şunu gösterdi:
+```
+2 soru DEĞİŞTİ    S2 "kaç boyutlu" → "HANGİ TABLO SAHİBİ"  (iki sözlük ölçüldü)
+                  S4 "nereden yönetilir" → "KİM DOLDURACAK" (yazma yüzeyi ZATEN var)
+2 soru KODDA CEVAPLIYDI   S3 (return false ⇒ düşer) · S5 (enum var, 6/6 dolu)
+1 soru ÖLÇÜMLE DOĞRULANDI S6 (budget'ta BOTH yok — üç enum karşılaştırıldı)
+```
+> ### **BİR SORU LİSTESİ, ÖLÇÜMLE TAZELENEN BİR BELGEDİR.**
+> **Cevaplanmamış olması, HÂLÂ DOĞRU SORU olduğu anlamına gelmez.**
+
+📌 `Z75 §2`'nin (*"verilen hükümlerin indeksi sürükleniyor"*) **kardeşi**: orada **hüküm →
+task** boşluğu, burada **ölçüm → soru** boşluğu. Aynı aile, ters yön.
+
+### `§8` · `8b` VE KAPI
+`(b)` — commit **şimdi**; kırmızı kapı ve **üç atıf sayısı** mesaja yazıldı.
+**`T-353`: `P1`, teşhis ŞART** — *"flaky/ortam"* **yasaklı**; kapanana dek **FE exit kodu =
+`ÖLÇEMEDİM`**. Ön şart: **Team Lead koşumu + ARDIŞIK İKİ KOŞUM TUTARLILIĞI.**
+`T-354`: onaylı, **`F8` şartıyla** (yardımcı **genişletilir**, ikinci aile doğmaz).
+
+### `§9` · SIRA
+```
+T-346 şeridi (hükümlü zemin)  ∥  T-353   →   W7 ölümü   →   BL
+```
