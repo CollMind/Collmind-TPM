@@ -7679,3 +7679,148 @@ doğrulandı mı            ⛔ HAYIR — doğrulamak düzeltmeyi GERİ ALMAK de
 `DISIPLIN`: *"bir sayım farkı, farkın KAYNAĞI gösterilmeden yorumlanamaz."* Açıklama
 **makul** — ve tam bu yüzden tehlikeli: **ölçülmemiş makul açıklama**, `§4`'ün üç
 propagasyon vakasının da doğduğu yer. Bu satır bir **cevap değil, bir borçtur**.
+
+---
+
+## `Z79` — `BL` DOĞDU, `W3` ÖLDÜ: SEKİZ HÜKÜM + OMURGA GÖVDESİ
+
+> **Tarih:** 2026-08-31 · **Karar:** ürün sahibi · **Girdi:** `W3_BASELINE_PLANLAMA_MASASI.md`
+
+### `§1` · `W1` — ADLANDIRMA: **`BL`** (Baseline Hattı) · **`W`-SERİSİ KAPANDI**
+```
+kanonik    BL          iç adımlar BL-1..n · brief/rapor başlıkları BL
+tarihî     "W3"        yalnız Faz-2-brief'inin SIRA REFERANSI olarak yaşar (F12 notuyla)
+           B3-RBAC'ın W'leri  TARİHSEL
+```
+⛔ **VE GENEL KURAL:** bundan sonra **her dalga BENZERSİZ ÖNEK alır**.
+> ### **AYNI HARFİN DÖRT İŞİ, BU MASANIN İLK BULGUSU OLACAK KADAR PAHALIYDI.**
+`F8` ailesinin (*"aynı sayı dört yerde dört farklı"*) **ad tarafı** — ve ilk kez bir
+**adlandırma disiplini** olarak kapatıldı, tek tek düzeltmeyle değil.
+
+### `§2` · `W2` — VERİ ŞEKLİ: **`(a)`** `plan_mechanic_values` + nullable `plan_sku_id`
+```
+plan_sku_id NULL  = FU değeri geçerli
+plan_sku_id dolu  = o SKU için EZME
+çözümleme          TEK RESOLVER — SKU satırı varsa O, yoksa FU  (targetRoi deseni)
+```
+**İki şart, ikisi de bağlayıcı:**
+1. ⛔ **UNIQUE kısıtı `K-2.2.8c` dersiyle** (`L2_01:561-569`): kısmi-tuple eşitliği
+   **düşünülmüş** olsun — **`NULLS NOT DISTINCT`** + resolver'da **açık öncelik**,
+   **gizli tie-break YOK** (`§2.5`).
+2. ⛔ Migration **`plans=0` penceresinde** iner. *(Pencere kapanırsa iş bir **veri taşıma**
+   işine dönüşür — ve o BAŞKA bir karardır.)* Numara **`1821000000000`** tahsis edildi.
+
+**Reddedilen iki aday, gerekçeleriyle kayda:**
+| aday | red gerekçesi |
+|---|---|
+| `plan_fus.tactics` jsonb | **tipsiz** — `SKUContext` markasıyla kurduğumuz **tip-zorlaması ailesine aykırı** |
+| `mechanic_spend_breakdown` | eksen **hazırdı** (`UNIQUE(plan_sku_id, mechanic_id)`) — **ve tuzak buydu** |
+
+> ### ⛔ ÇIKTI TABLOSUNA GİRDİ KOYMAK, BİR SATIRI **HEM KAYNAK HEM SONUÇ** YAPAR.
+> **`DISIPLIN`'in *"denetlenen ≠ okunan"* ekseninin VERİ HÂLİ** — ve TL'nin teşhisi
+> ürün sahibince *"doğru"* bulundu. Bir eksenin **hazır olması**, o eksenin **doğru yer**
+> olduğu anlamına gelmez.
+
+### `§3` · `W3` — IMPORT OLGUSU: **ÜÇLÜ DÖRDE ÇIKMAZ**
+> ### **IMPORT BİLİNÇLİ BİR VERİ-GETİRME EYLEMİDİR;**
+> ### **GRID'İN *"HENÜZ GİRİLMEDİ"* ARA-DURUMU ORADA YOKTUR.**
+```
+tam satır                → DOLU olgu
+zorunlu alanı eksik satır → SATIR REDDİ, import raporuna SATIR + ALAN adıyla
+                            ⛔ plana HİÇ girmez — YARIM SATIR İTHAL EDİLMEZ
+```
+⇒ `Q20` üçlüsü **değişmeden** kalır, ve `NOT_EVALUABLE` **import yoluyla üretilmez** —
+yalnız **grid girişiyle** doğabilir. *(Masanın `1c` sorusu: cevabı bir dördüncü olgu değil,
+bir **sınır** çıktı.)*
+
+### `§4` · `W4` — KISMİ KABUL: **EVET**, ve `D4` etkileşimi TEK CÜMLEYLE ÇÖZÜLDÜ
+```
+satır düzeyi kabul/red + ADLI hata raporu
+coverage kapısı  TOPLAM EVREN üzerinden sayılır — REDDEDİLEN SATIR "EKSİK"TİR
+```
+> ### **YOKSA *"KÖTÜ SATIRLARI ATIP KABUL-EDİLENLERİN %95'İ"* OYUNU DOĞAR.**
+> **Kapı tanımı teşviki doğru yöne koyar: `%95`'e ulaşmanın TEK YOLU SATIRLARI DÜZELTMEK.**
+
+📌 Bu, `§2.7`'nin *"kapsam maskelemesi"* ailesinin **metrik tarafı**: paydayı daraltmak,
+oranı ölçmeyi bırakıp **oranı üretmek** olur.
+
+### `§5` · `W5` — OMURGA GÖVDESİ (`1-4`), KABUL-ÇERÇEVESİ FORMATINDA
+```
+SC-O1 PLAN DOĞUMU    ROL Planner · ay+CPL+kategori → plan · detayda kategorinin
+                     aktif SKU'ları FU-hiyerarşisiyle
+                     AYIRT-EDİCİ: farklı kategori → farklı liste;
+                                  boş kategori → GÖRÜNÜR MESAJ
+                                  ⛔ BOŞ-AÇIKLAMASIZ GRID YASAK
+SC-O2 ELIGIBILITY    kategori×CPL'de tanımlı tactic'ler KOLON olur; tanımsız HİÇ görünmez
+                     AYIRT-EDİCİ: aynı kategori İKİ CPL'de FARKLI kolon kümesi;
+                                  eligibility-boş → "bu eşleşmede tactic tanımlı değil"
+                                  ⛔ catch{return[]} ÖLÜR (T-346)
+SC-O3 HACİM GİRİŞİ   SKU'ya adet; dokunulmamış satır BLOKLAMAZ,
+                     kısmi satır ALAN ADIYLA reddedilir  [Q20]
+                     AYIRT-EDİCİ: 1-dolu + 51-boş plan submit OLUR,
+                                  rezervasyon YALNIZ dolu satırı taşır
+SC-O4 MEKANİK GİRİŞİ FU'ya oran → SKU'larda GÖRÜNÜR → bir SKU'da EZİLİR  [S1/Z74]
+                     AYIRT-EDİCİ: override'lı SKU FARKLI spend üretir;
+                                  FU değeri SİLİNİRSE SKU-override YAŞAR MI →
+                                  resolver testinde
+5-6                  KPI-kanon + submit uyarıları — T-334/Q13 zinciriyle KAPALI;
+                     mevcut pinlere ATIFLA bağlanır, YENİDEN YAZILMAZ
+```
+⇒ Masanın `§6` bulgusu (*"ölçüt var, metni yok"*) **kapandı** — ve gövde bir senaryo değil,
+**dört ayırt-edici** taşıyor. `SC-O4`'ün son satırı bir **açık soruyu** da doğuruyor
+(FU silinince override yaşar mı) ve adresi **resolver testi**.
+
+### `§6` · `W6` — SIRA: **`T-346` ÖNCE, `BL` SONRA** — sıralı, paralel DEĞİL
+```
+ürün sırası     omurga adım-3 eligibility → adım-4 öncesi baseline
+ASIL gerekçe    DENEYİM: BL kullanıcının İLK GERÇEK VERİSİNİ getirecek
+```
+> ### **O VERİYİ ELIGIBILITY'SİZ YARIM GRID'E DÖKMEK,**
+> ### **İLK-GERÇEK-AN'I BİTMEMİŞ YÜZEYE KURMAK OLUR.**
+
+⛔ **VE `touches:` KURALINI AŞAN BİR HÜKÜM:** grid'e iki dokunuş **farklı bölgelere**
+(kolon-türetme ↔ satır-veri); *"`touches:` ölçümü çakışma derse **bile** sıra değişmez,
+kesişen dosya ikinci dalgada **rebase edilir**."*
+📌 `CLAUDE.md §4`'ün kesişim kuralı **paralelliği** yasaklar, **sırayı** belirlemez —
+sırayı **ürün** belirler. Bu ayrım ilk kez adıyla kondu.
+
+### `§7` · `W7` — `calculateAllSpendsForFU`: **ÖLÜM** (dokuzuncu aday)
+```
+ölçüm       BL'nin ihtiyacı YOK (recalc FU-toplu hesabı zaten yapıyor) · tüketici SIFIR
+zamanlama   sözleşme ayrışmasının canlıya çıkma anı BL  ⇒  BL-ÖNCESİ ÖLÜR
+kapsam      metot + testleri + üç yanlış-iddialı yorum kalıntısı (2a'da düzelmediyse)
+            ⇒ TEK KÜÇÜK TEMİZLİK COMMIT'İ
+```
+`Z75 §4` kuralı işledi: **tüketici kazanmadı, öldü.** ⇒ `Z78 §7b`'nin *"randevu"*su
+**kapandı** — sapma yazılıydı, tarihi geldi.
+
+### `§8` · `W8` — **`8b` ÖNCE**, `8a` `BL` İÇİNDE AMA KARAR TABLOSUYLA
+
+**`8b` (FE'nin 40 sessiz sıfırı) `BL`-öncesi kendi dalgasında iner:**
+> `Q20`'nin **görüntü katmanı geri-alımı**, ve *"veri-sıfır yeşili"* riskinin **UI yüzü**.
+> `NOT_EVALUABLE` ekranda **`—` / "hesaplanamadı"** olur (`targetRoi` emsali) ⇒ gerçek
+> eksik-veri geldiğinde **kullanıcının ilk gördüğü şey DÜRÜST olur.**
+
+**`8a` (altı yazarsız kolon) `BL` dalgasının İÇİNDE, ama önce karar tablosuyla:**
+```
+altı kolonun HER BİRİ T-270 kuralından geçer: YA YAZAR KAZANIR YA ÖLÜR
+okunan ikili (finance-reporting'in spendOf'ları)  →  YAZAR KAZANMAK ZORUNDA
+kalan dördün kaderi                                →  ÖLÇÜMLE
+```
+
+### `§9` · İKİ EK KAYIT
+1. **`§2a` vakası** (*"kendi düzeltme geçmişini taşıyan belge, erken duran okuyucuyu hâlâ
+   yanıltır"* — **üçüncü** tekrar, ilk ikisi insan, üçüncüsü ajan) ⇒ `DISIPLIN`'e yazıldı,
+   **iki yönlü pratikle** (okuyan: sona kadar bak · yazan: başlığa düzeltme satırı düş).
+2. **`T-333` `TZ` ölçümü** dördüncü turdan **kuyruğa değil, `BL` ÖN-KOŞULUNA** bağlanır:
+   > *"baseline-import **tarih/dönem** işleyecek; temsil hatası **tam o katmanda**
+   > ateşlenir."*
+   ⇒ Ölçümü (**çalışma zamanı `TZ` + etiket tüketicileri**) `BL` brief'inin **ilk maddesi**.
+   📌 Dört tur *"ölçemedim"* kalmış bir kalem, bir **kuyruk satırı** olarak çözülmedi;
+   **bir dalganın ön koşulu** olunca çözülür. `DISIPLIN`: *"bir `improved` satırı bir bilgi
+   değil, o turun KAPANMAMIŞ İŞİDİR"* — aynı şeklin ölçüm tarafı.
+
+### `§10` · SIRA
+```
+8b-FE dalgası  ∥  T-346        →        BL
+```

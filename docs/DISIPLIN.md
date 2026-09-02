@@ -5418,3 +5418,40 @@ ya da olmayan bir kusuru **aramaya** çıkar. `T-273`'ün yönsüz reprodüksiyo
 review bulgusunu AYNEN taşıma → ya ÖLÇ, ya "[REVIEW İDDİASI — DOĞRULANMADI]" diye ETİKETLE
 ```
 ⛔ Ve etiketlenmiş bir iddia, ajanın **ilk işi** olur: *"önce bunu ölç."*
+
+---
+
+## KENDİ DÜZELTMESİNİ TAŞIYAN BELGE, ERKEN DURAN OKUYUCUYU **HÂLÂ** YANILTIR (ZORUNLU)
+
+`Bir kuralın FAZ TABLOSU varsa, YÜRÜRLÜKTEKİ satır okunur` kuralının kardeşi — ve ondan
+**daha sinsi**, çünkü orada tablo **görünür**; burada düzeltme **aşağıda**.
+
+**Ölçülmüş vaka (2026-08-31, `BL` masası):** bir ölçüm şeridi `T-024.md`'yi okudu ve
+*"`≥%95` ↔ `%80` — iki kaynak birbirini yalanlıyor, ÇÖZÜLMEMİŞ"* diye raporladı.
+
+```
+T-024.md:50-58   MVB kademeleri tablosu        ← ajan BURADA DURDU
+T-024.md:78      ⚠️ DÜZELTME — "%80 kanonik DEĞİL"
+T-024.md:99      ✅ ÇÖZÜLDÜ — %95 KAPI, %80 R3-mitigation ⇒ hedef+contingency
+```
+
+⛔ **Ve dosya okuyucusunu İSİM İSİM uyarıyordu:**
+> *"Bu task **iki kez** düzeltildi: önce 'kapı %80' (tek kaynak genellemesi), sonra
+> 'çelişki' (**üçüncü kaynağı aramadan**). Doğrusu bu."*
+
+⇒ Ajan, dosyanın **adıyla tarif ettiği hatayı** yeniden üretti. Sınıfın **üçüncü** tekrarı
+(turu 10 · turu 16 · bu tur) — ve ilk ikisi **insan**, üçüncüsü **ajan**.
+
+> ### **BİR BELGENİN DÜZELTME GEÇMİŞİNİ TAŞIMASI, OKUNACAĞININ GARANTİSİ DEĞİLDİR.**
+> ### **DÜZELTME AŞAĞIDAYSA, YUKARISI HÂLÂ YANLIŞ CEVAP VERİR.**
+
+**Pratik — iki yön:**
+```
+OKUYAN   bir belgede "çelişki buldum" demeden önce DOSYANIN SONUNA KADAR bak;
+         "DÜZELTME" · "ÇÖZÜLDÜ" · "REVİZE" · "geri alındı" ara
+YAZAN    düzeltmeyi EN ÜSTE de işaretle — F12 deseni gövdede kalır ama
+         BAŞLIĞA bir satır düşer: "⚠️ bu belge N kez düzeltildi, yürürlükteki hüküm §X"
+```
+📌 Yazan tarafı yeni: `F12` *"eski kayıt silinmez"* der ve **doğrudur**; ama sessiz kalan
+şey **nereden okunmaya başlanacağıdır**. Append-only bir belge, **başlıksız** kaldığında
+ilk paragrafını en yetkili paragraf gibi sunar.
