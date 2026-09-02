@@ -8001,3 +8001,77 @@ tarifi** + yarının yolu.)*
 📌 Ve `§7`'nin (*"soru listesi ölçümle tazelenen belgedir"*) **kardeşi**: bir **hükmün
 gerekçesi** de ölçümle tazelenir. Fark: soru **değişir**, gerekçe **düşer** — ve hüküm
 kalan dayanakla ayakta kalabiliyorsa **daralır**, yeniden açılmaz.
+
+---
+
+## `Z81` — `T-333` HÜKMÜ: HER İKİ ALT-DESEN **UTC'YE**, TEK YARDIMCIYLA
+
+> **Tarih:** 2026-09-02 · **Karar:** ürün sahibi · **Girdi:** `BL-1` ölçüm raporu
+> ⭐ **`Z79 §…`'nin yeni hüküm formatı ilk kez uygulanıyor:** dayanaklar
+> **`TAŞIYICI` / `DESTEKLEYİCİ`** etiketli **ayrı satırlar**.
+
+### `§1` · ÖNCE HANGİSİ — **`(B)`**, bugün canlı olan alt-desen
+```
+TAŞIYICI      8/9 çağrı yeri ANAHTAR: yanlış etiket = VERİ EŞLEŞMESİ BOZULUR
+              (§2.5 sınıfı, GÖSTERİM değil). Canlı alt-desen bugün
+              YANLIŞ ANAHTAR ÜRETİYOR OLABİLİR.
+DESTEKLEYİCİ  (A) yalnız UTC BATISINDA ateşler   [ORTAM ölçümü — deploy'da DEĞİŞİR]
+```
+📌 Destekleyicinin koşulu **yazılı** — ve tam da bu yüzden `(A)`'nın çözümü ertelenmiyor.
+
+### `§2` · ⛔ `(A)`'NIN ÇÖZÜMÜ **DEPLOY EŞİĞİNE DEĞİL, BU DALGAYA**
+> ### **DOĞRU DÜZELTME *"container `TZ=UTC` PİNLE"* DEĞİLDİR.**
+> ### **TZ'YE BAĞLI DOĞRULUK KIRILGANDIR.**
+
+`T-328`'de **aynı karar** verilmişti: aritmetik **tamamen UTC'ye** taşındı.
+⇒ **Her iki alt-desen AYNI YARDIMCIYLA UTC'ye taşınır.**
+```
+sıra    (B) ÖNCE (canlı)  ·  (A) AYNI PAKETTE (aynı yardımcı)
+eşik listesine yalnız:  "TZ=UTC pin + UTC-BATISI probe" DOĞRULAMA satırı
+                        ⛔ SAVUNMA DEĞİL, KANIT
+```
+📌 Ayrım ince ve önemli: `TZ` pin'i bir **düzeltme** olsaydı, doğruluk **ortam
+konfigürasyonuna** bağlanırdı — ve `DISIPLIN`'in *"güvenlik bir MEKANİZMADA yaşar,
+çağıranın hatırlamasında değil"* kuralı ihlal edilirdi. Pin **kanıt tarafında** duruyor.
+
+### `§3` · `#8` AYRI MI — **ÖLÇÜT VERİLDİ, HÜKÜM RAPORA BAĞLI**
+> **Görmediğime hüküm vermem.**
+```
+aynı yardımcıyla düzeliyorsa        → PAKETTE
+kendi semantiği varsa               → AYRI TASK
+(farklı katman / farklı format)
+```
+⇒ Rapor `#8`'in **ne olduğunu göstersin**, karar **tek satır**.
+*(`#8` = `agreement-transaction.service.ts` `fiscalPeriod` — öncelik-3 fallback,
+ama devreye girdiğinde **doğrudan bir bütçe düşüm zarfı** seçiyor.)*
+
+### `§4` · `#9` — **RED**, uyarı değil
+```
+TAŞIYICI  KARIŞIK = ANAHTAR YARISI VAR; anahtar yarısı olan her yol §2.5: SESSİZ OLAMAZ
+```
+> ### **UYARI, *"GÖSTERİM YARISI DA VAR"* DİYE YUMUŞATILMAZ —**
+> ### **YARIM ANAHTAR, TAM ANAHTAR KADAR YANLIŞ EŞLEŞİR.**
+
+📌 Ve `BL-1` ölçümü riski iki yönlü göstermişti: **sahte uyarı** (tutarlı satır
+*"tutmuyor"*) ya da **kaçırılan uyarı** (tutarsız satır sessiz geçer). İkincisi
+`DISIPLIN`'in *"beklenen yöne yanılan hata, ters yöne yanılandan tehlikelidir"* sınıfı.
+
+### `§5` · PG DRIVER — **EVET, PAKET ÖNCESİ ÖLÇÜM** (ucuz)
+```
+ölç   timestamp ↔ timestamptz kolonları
+      driver'ın Date-parse'ının SESSION TZ'sine bağlılığı
+```
+> ### **ÖLÇÜLMEDEN *"8 ANAHTAR"* DÜZELTMESİ YARIM KALIR:**
+> ### **KOD UTC'YE GEÇER, DRIVER YEREL PARSE EDERSE**
+> ### **AYNI SINIF BAŞKA KATMANDA YAŞAR.**
+
+`T-328` dersi: **karışım HER KATMANDA AYRI ÖLÇÜLÜR.**
+
+### `§6` · KAYITLAR
+**`6a`** `T-355`'in **65 override / 14 dosya** envanteri + **19 test kırılması**:
+> **O 19 test, bugüne kadar NEYİ YEŞİL SANIP GEÇİRDİĞİNİN ÖLÇÜSÜDÜR** — kapsam
+> ölçümü, merak değil.
+
+**`6b`** `T-325` doğrulamasının **dört denemesi** ve **üç ihlali** `DISIPLIN`'e yazıldı
+(*"mekanizma mı bozuk, yol mu atlıyor"* + *"üç ihlal tek turda, üçü de aynı yöne"*).
+⇒ **Kurtaran şey AYRIMDI**, ve o ayrım artık **kalıcı bir pratik**.

@@ -5729,3 +5729,44 @@ genellikle **hiçbir şey ölçmez**, ve *"hiçbir şey"* **başarısızlığa b
 ⚠️ `3`'ün en sinsi hâli: süreç **temiz** ölürse (`release` çağırarak) geriye **hiç iz
 kalmaz** — ne `STALE` uyarısı ne artık dosya. **Temiz ölüm, kaza ölümünden daha az
 görünürdür.**
+
+---
+
+## BİR KAPIYI KOŞMAMAK, ONU YOK SAYMAKTIR — VE HATAYI BİR SONRAKİ TUR BULUR (ZORUNLU)
+
+**Ölçülmüş vaka (2026-09-02):** Team Lead `T-325` paketini üç repoya push etti. Kapı
+listesinden **backend `npm run guards`** koşulmadı — yerine tam e2e ve meta `run-all.sh`
+koşuldu, ve *"kapılar yeşil"* denildi.
+
+```
+gerçek   test/e2e-preflight-baseline-cleanup.ts
+         "NEW file with 1 problems — yeni kod LINT-TEMİZ DOĞMALI"
+         ⇒ lint-ratchet BLOKLUYORDU, ve kırmızıyı BİR SONRAKİ TUR (T-333) buldu
+```
+
+> ### **KOŞULMAYAN BİR KAPI, GEÇİLMİŞ SAYILMAZ — ATLANMIŞ SAYILIR.**
+> ### **VE ATLANAN KAPININ BEDELİ, ONU BULAN TURUN ÜSTÜNE KALIR.**
+
+📌 Sinsi tarafı: **koşulan kapılar gerçekten yeşildi**, yani rapor **yanlış değildi** —
+**eksikti**. `DISIPLIN`'in *"kapsam maskelemesi"* ailesinin **kapı listesi** yüzü: desen
+çalıştı, **evren eksikti**.
+
+**Pratik:** *"kapılar yeşil"* cümlesi **hangi kapıların** koşulduğunu **saymadan**
+yazılmaz. Sayıyla değil, **adla**:
+```
+✅ tsc · unit · TAM e2e · npm run guards · money-float --ratchet · lint-ratchet --ratchet
+⛔ "kapılar yeşil"        ← hangi kapılar?
+```
+
+### VE KARDEŞİ: `improved` SATIRI BİR **UYARI**, KAPI DEĞİL
+
+Aynı turda ikinci bir borç ölçüldü: `W7`'nin silmesi üç `(dosya,kural)` çiftinde
+iyileşme üretti, **baseline aynı commit setinde düşürülmedi** — çünkü `improved`
+satırları **bloklamıyor**, yalnız bir **not** olarak basılıyor. Ratchet o üç çiftte
+**bir tur kör** kaldı.
+
+⛔ Ve kural **zaten yazılıydı** (*"sonrayı kim yapacak: İYİLEŞTİREN TUR"*), tam da **11
+`improved` satırının 11 turda biriktiği** ölçüldüğü için. **Yazılı olması yetmedi.**
+
+> ### **BİR KURALI HATIRLAMAK, ONU BİR KAPIYA BAĞLAMANIN YERİNİ TUTMAZ —**
+> ### **VE BU CÜMLE, O KURALIN KENDİ İHLALİYLE İKİNCİ KEZ KANITLANDI.**
