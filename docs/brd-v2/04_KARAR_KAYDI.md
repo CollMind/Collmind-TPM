@@ -8633,3 +8633,53 @@ ve **kapatılabilir** bıraktı.
 ```
 ⛔ İkisi de **yüzey** işi ⇒ `BL-4`'e ait, `BL-3`'ün done tanımını **bozmuyor**
 (`Z88 §1`'in ayrımı: **yazar bağlama veri yolu, rota bağlama yüzey**).
+
+### `Z87 §F12b` · ENUM BOŞLUĞUNUN **İKİNCİ YARISI** — VE `ADIM 4` ONU KAPATTI
+
+`§F12`'nin ölçümü **eksikti**: `BL-2`'nin ürettiği kodlar sayılırken **parser kanalı**
+görüldü, **servis kanalı** görülmedi.
+```
+INVALID_PERIOD   parser'da ÜRETİLİYOR (error_type)
+                 servise HİÇ ULAŞMIYOR — missing.push('period') ile YUTULUYOR
+                 ⇒ enum'a "BL-2 üretiyor" diye eklendi, ama ÜRETİCİSİ YOKTU
+```
+📌 Hükmün *"iki kanal → tek sözlük"* satırı **boşluğu adlandırmıştı** — ve `ADIM 4` onu
+**kapattı** (dal ayrıştırıldı, öncelik açık, gizli tie-break yok).
+> **Bir hükmün eksik ölçümü, aynı hükmün İKİNCİ satırı tarafından yakalanabilir —
+> ama ancak o satır YAZILMIŞSA.**
+
+---
+
+## `Z89` — `BL-4` KOVA KARARI: `C`, VE İLK MADDE **ÖLÇÜLEREK KAPANDI**
+
+> **Tarih:** 2026-09-03 · **Karar:** ürün sahibi
+
+### `§1` · KOVA — `C` (tenant-genel, kapsam eksensiz)
+```
+coverage kapısı (GET) + teşhis raporu (GET batch/rows)
+  →  BL-2'nin ÜÇÜYLE AYNI KOVA
+```
+**TAŞIYICI:**
+> **Coverage TENANT-GENEL bir ölçümdür.** *"FINANCE kendi kapsamının coverage'ını görür"*
+> diye bir şey **yok** — kapı **tenant'ın** planlamaya hazır olup olmadığını söyler,
+> **kişinin** değil.
+> ⇒ **`VERİ-EKSENİ ≠ ERİŞİM-EKSENİ`** (`Z85 §4`) — **ikinci uygulaması**.
+
+**DESTEKLEYİCİ:** teşhis **yükleyenin yüzeyi**; ayrı kovaya konursa *"yükledi, coverage'ını
+göremiyor"* doğar.
+
+### `§2` · ⭐ İLK MADDE: ŞART **ÖLÇÜLDÜ**, VE `Z86` REFLEKSİ TETİKLENMEDİ
+Hüküm bir **şart** taşıyordu: *"`PLANNER` bu yeteneği taşıyor mu — ÖLÇ."*
+```
+PLANNER    MASTER_DATA_READ: true   | BASELINE_WRITE: false
+FINANCE    MASTER_DATA_READ: true   | BASELINE_WRITE: true
+ADMIN      MASTER_DATA_READ: true   | BASELINE_WRITE: true
+```
+⇒ **Yeni hücre GEREKMİYOR**; `BASELINE_READ` **açılmaz**. `D2`'nin planner anlamı
+(*"baseline hazır mı, planlayabilir miyim"*) **bugün karşılanıyor**.
+
+📌 **Ve hüküm bu kez ŞARTIYLA verildi** — *"ölç, çıkmazsa DUR"*. `Z86`/`Z87`'nin dersi
+(**liste ölçülmeden hüküm yazılmaz**) hükmün **kendi metnine** taşındı:
+> **Ölçülemeyen bir kısmı olan hüküm, o kısmı BİR ŞART olarak yazar —
+> ve şart sağlanmazsa hüküm DEĞİL, DUR üretir.**
+Bu, `Z86`'nın *"hücreye ad-düzeyi rol ekleme"* hatasının **yapısal panzehiri**.

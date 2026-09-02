@@ -6250,3 +6250,34 @@ sanar.
 
 📌 Bu turda ajan **doğrusunu ölçüp düzeltti ve bildirdi** — üçüncü kez. Ama
 `DISIPLIN`'in kendi kuralı geçerli: **düzeltmek zorunda kalmamalıydı.**
+
+---
+
+## ÖLÇÜLEMEYEN BİR KISMI OLAN HÜKÜM, ONU **BİR ŞART** OLARAK YAZAR (ZORUNLU — hüküm katmanı)
+
+> ### **ŞART SAĞLANMAZSA HÜKÜM DEĞİL, **DUR** ÜRETİR.**
+
+`Z86` (*hücrenin uç listesi okunmadı*) ve `Z87` (*mevcut sözlük okunmadı*) hatalarının
+**yapısal panzehiri**: hüküm veren, ölçemediği kısmı **varsaymak** yerine **şarta bağlar**.
+
+**Ölçülmüş vaka (2026-09-03, `Z89 §2`):** kova hükmü şu satırı taşıyordu —
+> *"okuma yetkisi `MASTER_DATA_READ`. ⛔ **ŞART:** `PLANNER` bu yeteneği taşıyor mu — **ÖLÇ**.
+> Taşımıyorsa `Z86` refleksi: **DUR**, yeni hücre **HÜKÜMLE** (uç listesi okunarak);
+> **ad-düzeyi ekleme YASAK**."*
+
+```
+ölçüm    PLANNER → MASTER_DATA_READ: true
+sonuç    şart SAĞLANDI ⇒ hüküm yürürlükte, yeni hücre AÇILMADI
+```
+⇒ Şart sağlanmasaydı çıktı bir **hüküm** değil, bir **DUR** olacaktı — ve o DUR,
+`Z86`'nın tekrarını **yapısal olarak** engellerdi.
+
+**Pratik — hüküm yazarken:**
+```
+1  metinde ölçmediğin bir şey var mı?
+2  varsa: VARSAYMA — "⛔ ŞART: <şu> ölç; çıkmazsa DUR" diye YAZ
+3  şartın SONUCUNU da yaz: sağlanırsa ne, sağlanmazsa ne
+```
+📌 Fark ince ama belirleyici: *"muhtemelen taşıyordur"* bir **varsayım**, *"taşıyorsa şu,
+taşımıyorsa DUR"* bir **hükümdür** — ve ikincisi yanlış çıkarsa **iş durur**, yanlış
+uygulanmaz.
