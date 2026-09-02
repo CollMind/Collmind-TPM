@@ -472,3 +472,4 @@ status: active        # planned | active | closed
 - [[T-356]] ✅ `roleEnumContract` **kardeş dizin** şart koşuyor ⇒ FE süiti **izole worktree'de doğrulanamıyor**; ⛔ `T-269∥T-270`'ten doğan kuralı **fiilen kırıyor** — **todo**
 - [[T-357]] ✅ **`BL-1` ŞEMA** — baseline hacim tablosu (`D3`): grain `tenant × SKU × CPL × period` **KİLİTLENDİ** (`Z84`) · migration **1822** · ⛔ `BL-2`'den ÖNCE — **todo** `P0`
 - [[T-358]] **`BL-3` ADIM 1** — `import_batch_rows`: red/kabul satır tablosu · `Z87` · migration **1823** · ⛔ ACCEPTED satırlar DA burada (payda korunur) — **todo** `P0`
+- [[T-359]] `app-runtime-grants` self-test: `printf | grep -q` → **Broken pipe** ⇒ **SAHTE KIRMIZI** (push durdu) · mekanizma ADLANDIRILDI, reprodüksiyon **ÖLÇEMEDİM** — **todo** `P1`
