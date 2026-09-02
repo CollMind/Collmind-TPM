@@ -73,10 +73,18 @@
 #                                  self-test.sh'ın iç çağrılarına ÖZELDİR.
 #                                  ELLE "1" SET ETME: gerçek bir push'un
 #                                  güvenilirlik kanıtını atlamış olursun.
+#                                  (Z82 iş 2) Aynı bayrak, aşağıdaki pre-push
+#                                  KAPI ZİNCİRİNİ de atlar — self-test'in
+#                                  izole bare-repo harness'inde ne
+#                                  collmind.backend/frontend'in package.json'ı
+#                                  ne de node_modules'ü vardır.
 #
 # ÇIKIŞ KODLARI
 #   0  hepsi push edildi ve origin'de doğrulandı (meta dahil, atlanmadıysa)
-#   1  bir push ya da doğrulama BAŞARISIZ oldu — sıra durdu
+#   1  (Z82 iş 2) pre-push KAPI ZİNCİRİ kırmızı — PUSH HİÇ BAŞLAMADI, ya da
+#      bir push/doğrulama BAŞARISIZ oldu — sıra durdu. İkisi de exit 1 ama
+#      stderr'deki etiket ayırt eder ("kapı zinciri KIRMIZI" vs "[label]
+#      push BAŞARISIZ" / "doğrulama başarısız").
 #   2  KURULUM/GİRDİ hatası: push-order-self-test.sh BAŞARISIZ (S-2 — gerçek
 #      push hiç BAŞLAMADI) · commit edilmemiş değişiklik (DUR) · detached
 #      HEAD · meta pointer submodule'ün doğrulanan commit'iyle uyuşmuyor
@@ -243,6 +251,69 @@ push_and_verify() {
   echo "-- [$label] doğrulandı: ${local_sha:0:12} $REMOTE/$branch'te görülüyor"
   return 0
 }
+
+# --- pre-push kapı zinciri (Z82 iş 2) ----------------------------------------
+# NEDEN VAR: "kapılar yeşil" beyanı elle koşulan komutların hafızada tutulan
+# bir özetiydi — Z82 §2 bunu SCRIPT ÇIKTISI yapmayı istiyor. Beyanı üreten şey
+# artık kapıları FİİLEN KOŞAN bu blok.
+#
+# NEDEN self-test/harness'te ATLANIYOR: push-order-self-test.sh kendi izole
+# bare-repo üçlüsünü kurar (PUSH_ORDER_ROOT bir /tmp scratch dizinidir, orada
+# ne package.json ne de node_modules vardır). O senaryolar push SIRASINI
+# sınar, ürün kapılarını değil — gates orada koşarsa her senaryo "dizin
+# bulunamadı" ile KIRMIZI döner ve self-test'in kendisi anlamsızlaşır.
+# PUSH_ORDER_SELFTEST_DONE=1 hem self-test'in kendi iç çağrılarına HEM de
+# self-test'i başlatan dış kapının (satır ~116) çocuk sürecine taşınıyor —
+# yani gerçek, üst-seviye bir `bash scripts/push-order.sh` çağrısında bu
+# değişken 0/unset'tir ve kapılar KOŞAR.
+#
+# TAM E2E BURAYA KONMADI: dakikalarca sürer ve T-325 kilidiyle çakışır — yeri
+# Done tanımı ve Team Lead'dir. Ama koşulmadığı da beyanın parçası olsun diye
+# aşağıda AÇIKÇA basılıyor (DISIPLIN: "koşulmayan bir kapı GEÇİLMİŞ sayılmaz,
+# ATLANMIŞ sayılır").
+GATE_FAIL=0
+run_gate() { # <etiket> <dizin> <komut...>
+  local label="$1" dir="$2"; shift 2
+  echo "--- kapı: $label ---"
+  if [ ! -d "$dir" ]; then
+    echo "!! [$label] dizin bulunamadı: $dir — KIRMIZI" >&2
+    GATE_FAIL=1
+    echo
+    return
+  fi
+  local rc
+  ( cd "$dir" && "$@" )
+  rc=$?
+  if [ "$rc" -eq 0 ]; then
+    echo "-- [$label] YEŞİL"
+  else
+    echo "!! [$label] KIRMIZI (exit $rc)" >&2
+    GATE_FAIL=1
+  fi
+  echo
+}
+
+if [ "${PUSH_ORDER_SELFTEST_DONE:-0}" != "1" ]; then
+  echo "=== push-order: pre-push kapı zinciri (Z82 iş 2) ==="
+  echo
+
+  run_gate "backend · npm run guards"         "$ROOT/collmind.backend"  npm run guards
+  run_gate "backend · money-float --ratchet"  "$ROOT/collmind.backend"  bash scripts/guards/money-float.sh --ratchet
+  run_gate "backend · lint-ratchet --ratchet" "$ROOT/collmind.backend"  bash scripts/guards/lint-ratchet.sh --ratchet
+  run_gate "frontend · type-check"            "$ROOT/collmind.frontend" npm run type-check
+  run_gate "frontend · vitest"                "$ROOT/collmind.frontend" npx vitest run
+  run_gate "meta · scripts/run-all.sh"        "$ROOT"                   bash scripts/run-all.sh
+
+  echo "-- koşulmadı: TAM E2E (Team Lead'de — T-325 kilidi, dakikalarca sürer, push-order'a KONMADI)"
+  echo
+
+  if [ "$GATE_FAIL" -ne 0 ]; then
+    echo "!! pre-push kapı zinciri KIRMIZI — PUSH YAPILMADI (exit 1)" >&2
+    exit 1
+  fi
+  echo "=== pre-push kapı zinciri: hepsi YEŞİL ==="
+  echo
+fi
 
 echo "=== push-order: $SUBMODULES (sırayla), sonra meta ==="
 echo

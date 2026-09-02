@@ -8075,3 +8075,109 @@ TAŞIYICI  KARIŞIK = ANAHTAR YARISI VAR; anahtar yarısı olan her yol §2.5: S
 **`6b`** `T-325` doğrulamasının **dört denemesi** ve **üç ihlali** `DISIPLIN`'e yazıldı
 (*"mekanizma mı bozuk, yol mu atlıyor"* + *"üç ihlal tek turda, üçü de aynı yöne"*).
 ⇒ **Kurtaran şey AYRIMDI**, ve o ayrım artık **kalıcı bir pratik**.
+
+---
+
+## `Z82` — `improved` BİR **KAPI**DIR: hatırlatmanın yerini ARAÇ alır
+
+> **Tarih:** 2026-09-02 · **Karar:** ürün sahibi · **Girdi:** `Z81`'in iki borç kaydı
+
+### `§1` · HÜKÜM
+```
+TAŞIYICI      kural İKİ KEZ ihlal edildi, ve İHLAL GÖRÜNMEZDİ
+DESTEKLEYİCİ  11 turda 11 `improved` satırı birikmişti  [ölçüm — Z75 turu]
+```
+> ### **ÜÇÜNCÜ İHLAL YERLEŞİM KUSURUDUR** — eşik aşıldı.
+> ### **HATIRLATMANIN YERİNİ ARAÇ ALIR.**
+
+**Şekil:**
+```
+guard `improved` görürse  →  exit 1 + TEK SATIR TALİMAT:
+                             "baseline'ı düşür — AYRI commit'te, BU commit'ten SONRA"
+yerleşim                  →  push-order, PUSH ÖNCESİ koşar
+```
+**Maliyet dengesi ölçülü:** kırmızının düzeltmesi **30 saniye** (baseline düşürme) ⇒ kapı
+maliyeti **sıfıra yakın**; **kör tur** maliyeti **iki vakada ölçüldü**.
+
+📌 Kuralın kendi tarihi hükmün gerekçesi oldu: **11/11 birikim** yüzünden yazıldı,
+yazıldıktan **sonra ikinci kez** ihlal edildi. Bir kural kendi ihlal sayısıyla
+**kapıya terfi ediyor** — bu, `DISIPLIN`'in *"kuralı hatırlamak yerine aracı çağır"*
+maddesinin **terfi mekanizması**.
+
+### `§2` · `"KAPILAR YEŞİL"` BEYANI **ELLE YAZILMAZ**
+Borç `A`'nın kalıcı cevabı: beyan bir **hafıza** değil, bir **script çıktısı** olur.
+```
+push-order KENDİ koşar ve TAM LİSTEDEN türetir:
+  backend guards · FE gates · meta run-all · TAM e2e · improved-kapısı
+```
+> **Rapor yanlış değildi — EKSİKTİ.** Kapı listesinin **kapsam maskelemesi**.
+⇒ Beyanı üreten şey, kapıları **koşan** şey olmalı.
+
+### `§3` · `pg` DRIVER ÜÇÜNCÜ KATMANI — KAYIT YETMEZ, **`BL` RİSK SATIRI**
+`Z81`'de *"bugün dokuz çağrı yerinin hiçbiri kolon round-trip'i yapmıyor"* denildi ve
+**doğruydu**. ⛔ **Ama `BL` TAM BUNU YAPACAK:**
+```
+import edilen date kolonu → DB → okuma → driver YEREL parse
+'2026-02-01'::date → 2026-01-31T21:00Z  ⇒ AY KAYMASI
+İLK GERÇEK BASELINE VERİSİYLE CANLANIR
+```
+> ### **BU, *"VERİ-SIFIR YEŞİLİ"* RİSKİNİN **TARİH YÜZÜ**.**
+
+⇒ **`BL-2`'nin doğrulama katmanı bir ROUND-TRIP PİNİ taşır:**
+`import → DB → oku → AYNI TARİH`, ve **`TZ=America/New_York` altında da** —
+`T-333`'ün `TZ` probu deseniyle.
+**Kolon tipi kararı** (`date` ↔ `timestamptz` ↔ metin-ISO) **`BL-2`'nin şema sorusudur**;
+hüküm **ölçümle**.
+
+### `§4` · `BL-1` DEĞERLENDİRMESİ
+`TZ` probu **iki yönlü**, **üç katman ayrı** ölçüldü, ve format **ilk kullanımda işledi**:
+> *"koşul yazılıydı, bu yüzden `(A)` ertelenmedi"* — `Z81`'in **sessiz kazancı**.
+
+---
+
+## `Z83` — SIRA HÜKMÜ: **ÖNCE BORÇ, SONRA KAPI** · ve `improved`-kapısının İLK AVI
+
+> **Tarih:** 2026-09-02 · **Karar:** ürün sahibi
+
+### `§1` · `(a)`-SIRALI — ve gerekçe bir **ölüm biçimi**
+```
+1  improved-kapısı + push-order listesi   ŞİMDİ (kendi kapılarıyla tam)
+2  FE BORÇ ŞERİDİ                          4 ihlal + 2 baseline (ayrı commit'ler)
+3  FE ratchet'leri push-order listesine    kapı YEŞİL DOĞAR
+```
+> ### **KAPI DOĞDUĞU GÜN KIRMIZI DOĞARSA, *"GEÇİCİ OLARAK ATLA"* BASKISI ÜRETİR —**
+> ### **VE O BASKI, KAPININ ÖLÜM BİÇİMİDİR.**
+
+`T-113` tuzağının (**hep-kırmızı doğan kapı — hiçbir şey ayırt etmez**) **pratik kuralı**:
+önce borç ödenir, **sonra** kapı o borcu **bir daha biriktiremeyeceği yere** konur.
+
+### `§2` · İLK AV: KAPININ **KENDİ YAZARI**
+```
+FE lint-ratchet   4 GERÇEK İHLAL + 5 stale improved
+FE money-float    2 stale improved
+```
+**Atıf ölçüldü:** `AgreementsPage 2→3` · `PlansPage 5→6` (`3e056c7`, *"Yakında"* ölümleri) ·
+`Sidebar 2→3` (`c52253d`, `ŞERİT A'`) — **önceki oturumlardan**;
+`PlanningGridEnhanced 15→16` (`3ea7b89`/`7467503`) — **Team Lead'den**.
+
+📌 İroni tutarlı: *"Yakında"* sınıfını **öldüren** commit'ler **lint artığı bıraktı** —
+**temizlik de temizlik kapısından geçer.**
+
+### `§3` · ⛔ BOŞLUK **EN AZ İKİ OTURUMDUR AÇIK** — ve kanıtladığı şey
+`push-order`'ın FE evreni **hiç ratchet içermiyordu**.
+> ### **BU, *"KAPI LİSTESİNİN KAPSAM MASKELEMESİ"*NİN OTURUM ÖLÇEKLİ HÂLİ.**
+
+Ve Borç `A`'nın kalıcı cevabının **neden liste değil SCRIPT TÜREVİ** olması gerektiğinin
+kanıtı:
+> **Liste ELLE yazıldığında, FE yarısı İKİ OTURUM BOYUNCA KİMSENİN AKLINA GELMEDİ.**
+
+⇒ `Z82 §2`'nin *"beyanı üreten şey, kapıları KOŞAN şey olmalı"* hükmü burada **ölçülmüş
+bir gerekçe** kazandı.
+
+### `§4` · *"BİR KURALI YAZDIĞIN TUR…"* — YENİ VAKA, VE ARTIK BEKLENEN
+`DISIPLIN`'in *"bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur"* maddesi:
+kapı **doğduğu turda** kendi yazarının borcunu buldu.
+> **Kapının ilk avının kendi yazarı olması artık ŞAŞIRTICI DEĞİL — BEKLENEN.**
+📌 Ve bu bir espri değil bir **tasarım ölçütü**: yeni bir kapı, **ilk koşumunda hiçbir şey
+bulmuyorsa** ya evren dar ya eşik gevşek — *"temiz doğan kapı"* bir başarı değil, bir
+**şüphe** sebebidir.

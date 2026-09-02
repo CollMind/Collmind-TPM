@@ -5770,3 +5770,74 @@ satırları **bloklamıyor**, yalnız bir **not** olarak basılıyor. Ratchet o 
 
 > ### **BİR KURALI HATIRLAMAK, ONU BİR KAPIYA BAĞLAMANIN YERİNİ TUTMAZ —**
 > ### **VE BU CÜMLE, O KURALIN KENDİ İHLALİYLE İKİNCİ KEZ KANITLANDI.**
+
+---
+
+## ÜÇÜNCÜ İHLAL **YERLEŞİM KUSURUDUR** (ZORUNLU — kuralların terfi eşiği)
+
+Bir kural ihlal edildiğinde ilk soru *"kim unuttu"* değil, **"neden unutulabiliyor"**dur.
+Ve bir eşik vardır:
+
+```
+1. ihlal   kaza olabilir            → kuralı YAZ
+2. ihlal   kural YETMİYOR olabilir  → gerekçesini GÜÇLENDİR, örneği EKLE
+3. ihlal   ⛔ KURALIN YERİ YANLIŞ   → HATIRLATMANIN YERİNİ ARAÇ ALIR
+```
+
+**Ölçülmüş vaka (2026-09-02, `Z82`):** *"iyileştiren tur baseline'ı aynı commit setinde
+düşürür"* kuralı, **11 turda 11 `improved` satırı biriktiği** ölçüldüğü için yazıldı.
+Yazıldıktan sonra **ikinci kez** ihlal edildi — ve **ihlal görünmezdi**, çünkü `improved`
+satırı **bloklamıyordu**, yalnız bir **not** basıyordu.
+⇒ Hüküm: **`improved` artık bir KAPI** (`exit 1` + tek satır talimat), ve yerleşimi
+**push-order** — push öncesi.
+
+> ### **BİR KURAL, KENDİ İHLAL SAYISIYLA KAPIYA TERFİ EDER.**
+
+📌 **Terfi kararının ölçüsü maliyet dengesidir, öfke değil:**
+```
+kapı maliyeti   kırmızının düzeltmesi 30 saniye    → SIFIRA YAKIN
+kör tur maliyeti İKİ VAKADA ölçüldü               → ratchet o çiftlerde KÖR
+```
+Düzeltmesi pahalı bir kırmızı, kapı olmaya **hazır değildir** — önce ucuzlatılır.
+
+⚠️ Ve **terfi edilen şey kuralın METNİ değil, YERİDİR**: metin aynı kalır, **çağıran**
+değişir — insandan araca.
+
+---
+
+## ÖNCE BORÇ, SONRA KAPI — **KIRMIZI DOĞAN KAPI ÖLÜR** (ZORUNLU)
+
+Yeni bir kapı, **mevcut borcu kırmızıya çeviriyorsa**, sırası bağlayıcıdır:
+```
+1  BORÇ ÖDENİR      (düzeltme + baseline, ayrı commit'ler)
+2  KAPI KONUR       ve o gün YEŞİL DOĞAR
+```
+> ### **KAPI DOĞDUĞU GÜN KIRMIZI DOĞARSA *"GEÇİCİ OLARAK ATLA"* BASKISI ÜRETİR,**
+> ### **VE O BASKI KAPININ ÖLÜM BİÇİMİDİR.**
+
+`T-113`'ün ölçülmüş hâli: **hep kırmızı bir kapı, hiçbir şey ayırt etmez** — ve bir süre
+sonra **koşulmaz** olur. *"Sinyal sabitse, sinyal değildir."*
+
+⚠️ **Ters sıranın cazibesi gerçektir:** kapıyı önce koymak *"borcu görünür kılar"* gibi
+durur. Ama görünürlük **kapıyı yaşatmaz**; kapıyı yaşatan şey **geçilebilir olmasıdır**.
+
+---
+
+## TEMİZ DOĞAN KAPI BİR BAŞARI DEĞİL, BİR **ŞÜPHE** SEBEBİDİR (ZORUNLU)
+
+Yeni bir kapı **ilk koşumunda hiçbir şey bulmuyorsa**, iki açıklamadan biri doğrudur ve
+**ikisi de kapıyı zayıflatır**:
+```
+EVREN DAR      kapsam yanlış seçilmiş (bkz. "kapsam maskelemesi")
+EŞİK GEVŞEK    kapı yakalaması gerekeni yakalamıyor
+```
+
+**Ölçülmüş vaka (2026-09-02, `Z83 §4`):** `improved`-kapısı doğduğu turda **kendi
+yazarının** borcunu buldu (frontend'de 4 ihlal + 7 stale, **iki oturumdur açık**).
+> **Kapının ilk avının kendi yazarı olması ŞAŞIRTICI DEĞİL — BEKLENEN.**
+`DISIPLIN`'in *"bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur"* maddesinin
+**araç tarafı**.
+
+**Pratik:** bir kapı yazdıktan sonra *"temiz geçti"* diyorsan, **kasten bir ihlal üret ve
+yakalandığını gör** (mutasyon şartı). Yakalamıyorsa kapı yok; yakalıyor ama gerçek kod
+temizse **evreni genişlet** ve bir daha bak.
