@@ -5622,3 +5622,110 @@ erteleme, verinin değiştiği gün yeniden ölçülür"* kuralını **hükme** 
 `Z69 §4c`'nin (*"gerekçe mekanizmasını kaybetti"*) **önleyici** hâli: orada tek gerekçe
 mekanizmasını kaybedince karar **yeniden kurulmak zorunda kaldı**; burada gerekçe düştü ve
 karar **yerinde daraldı**.
+
+---
+
+## PARALELLİK, ÖLÇÜMÜN KENDİSİNİ BOZAR — **İKİ KATMAN** (ZORUNLU)
+
+Bir sınıf, iki ayrı katmanda **ayrı ayrı** ölçüldü:
+
+```
+BE   aynı DB'yi paylaşan İKİ e2e suite'i eşzamanlı  →  T-047 satır-sayısı invaryantı KIRILDI
+     (2026-09-02, W7 turu — ajanın KENDİ ölçüm hatası, ve BİLDİRDİ)
+FE   fork çekişmesi / BELLEK baskısı                →  5↔6 test kırmızı, KÜME DEĞİŞKEN
+     (2026-09-02, T-353 — kök neden: pool:'forks' + maxForks YOK)
+```
+
+⛔ **İkisinde de kod REGRESYONU YOKTU.** Kırmızı **gerçekti** ve **yanıltıcıydı** — çünkü
+sebebi ölçülen şey değil, **ölçme biçimiydi**.
+
+> ### **PAYLAŞILAN AĞAÇ, PAYLAŞILAN DB VE PAYLAŞILAN BELLEK**
+> ### **ÜÇ AYRI KANALDIR VE ÜÇÜ DE AYNI SONUCU VERİR:**
+> ### **KIRMIZI, AMA KENDİ KODUNDAN DEĞİL.**
+
+📌 Üçüncü kanal (**paylaşılan ağaç**) `T-269 ∥ T-270`'te ölçülmüştü ve `DUR` maddesini
+doğurdu; o madde `Z78 §5`'te **ateşlendi ve çalıştı**. Diğer ikisi bu turda adlandırıldı.
+
+**Pratik:**
+```
+1  bir e2e koşumu başlatmadan önce: BAŞKA BİR KOŞUM VAR MI?     ⇒ kilit (T-325)
+2  bir kırmızı gördüğünde ATIF ÖLÇ: aynı şey İZOLE de kırmızı mı?
+3  "flaky" bir çıktı DEĞİLDİR — ya mekanizma, ya "ölçemedim"
+```
+⚠️ Ve `2`'nin ucuz hatası: *"paralel şerit yapmıştır"* — **en kolay suçlanabilecek yer**.
+`git log -- <dosya>` bir saniyelik iştir (bkz. *"bir sayım farkı BİRİMDEN de gelebilir"*).
+
+---
+
+## `F12`'NİN SINIRI: **KAPANMIŞ RANDEVUNUN İZİ, "KAPANDI" DAMGASIYLA KORUNUR** (ZORUNLU)
+
+`F12` *"eski kayıt silinmez, üstüne iziyle yazılır"* der ve **doğrudur**. Ama bir izin
+**iki türü** vardır ve karıştırılırsa `F12` zarar verir:
+
+```
+AÇIK BORÇ         "şu sapma var, şu gün kapanacak"      ⇒ okuyucu ONU ARAR — DOĞRU
+KAPANMIŞ RANDEVU  "şu sapma vardı, şu gün KAPANDI"      ⇒ okuyucu ONU ARAMAZ — DOĞRU
+KAPANMIŞ AMA
+AÇIK GİBİ DURAN   ⛔ okuyucu VAR OLMAYAN BİR BORCU arar — YANLIŞ
+```
+
+**Ölçülmüş vaka (2026-09-02, `T-350`):** `sku-spend-inputs.ts`, `calculateAllSpendsForFU`'nun
+sözleşme sapmasını anlatan bir blok taşıyordu (`Z78 §7`, **bilerek yazılmış açık borç**).
+Metot **silinince** o blok **ölü** oldu — ama silinmeseydi *"açık borç"* gibi durmaya devam
+edecekti. Silme turu bloğu **`"T-350 ile KAPANDI"` notuyla değiştirdi**, tamamen silmedi.
+
+> ### **`T-084`'ÜN TERSİ:** ORADA BİR HATAYI BELGELEMEK ONU **KORUMA ALTINA ALMIŞTI**
+> ### (*"must not be fixed"*); BURADA KAPANMIŞ BİR RANDEVUNUN İZİ **YANLIŞ YÖNLENDİRİRDİ**.
+
+**Pratik:** bir sapmayı/borcu kapatan tur, **izini de damgalar**. Damga iki şey taşır:
+**kapandığı** ve **neyle kapandığı** (`T-350` · `Z79 §7`). İz kalır; **çağrısı** kalmaz.
+
+---
+
+## MEKANİZMA MI BOZUK, YOL MU ATLIYOR — **İKİ AYRI DENEY** (ZORUNLU)
+
+> ### **BİR MEKANİZMA *"ÇALIŞMIYOR"* GÖRÜNÜYORSA:**
+> ### **ÖNCE MEKANİZMAYI İZOLE ET, SONRA YOLU. İKİSİ AYRI ÖLÇÜLMEDEN HÜKÜM YOK.**
+
+**Ölçülmüş vaka (2026-09-02, `T-325` doğrulaması):** yeni e2e kilidi *"bloklamıyor"*
+görünüyordu — gerçek e2e, kilit tutuluyorken 62 suite koştu.
+
+```
+DENEY 1 — MEKANİZMA İZOLE   ayrı process'ten acquireLock()
+          → REDDEDİLDİ ("pid … hâlâ koşuyor")            ⇒ helper SAĞLAM
+DENEY 2 — YOL İZOLE         gerçek e2e, kilit CANLI tutuluyorken
+          → 10 dk BEKLEDİ, SIFIR suite                   ⇒ yol da SAĞLAM
+```
+⇒ Kusur **ne mekanizmada ne yoldaydı** — **ölçümdeydi**. Biri olmasa *"kilit bozuk"*
+raporu gidecekti ve **çalışan bir kapı sökülecekti**.
+
+---
+
+## ÜÇ İHLAL TEK TURDA — VE ÜÇÜ DE **AYNI YÖNE** YANILDI (ZORUNLU)
+
+*"Kanıt kurulumu ölçtüğün durumu değiştirmesin"* (`§2.7 #4`) aynı turda **üç ayrı biçimde**
+ihlal edildi — ve ihlal eden **Team Lead**'di:
+
+| # | ihlal | mekanizma | yanlış sonuç |
+|---|---|---|---|
+| 1 | **ARAÇ YOK** | macOS'ta `timeout` komutu yok ⇒ `exit 127` | *"bloklandı"* diye okunabilirdi |
+| 2 | **PENCERE KAYMIŞ** | ilk koşum bu arada bitti ⇒ eşzamanlılık yok | *"kilit devredildi"* |
+| 3 | **KOŞULU KENDİM ÖLDÜRDÜM** | tutucu `&` ile atıldı ⇒ tool dönüşünde öldü ⇒ **temiz `release`** ⇒ kilit **silindi** ⇒ e2e `wx` ile temiz aldı, **`STALE` mesajı YOK** | *"dışlayıcılık yok"* |
+
+> ### **ÜÇÜNÜN DE YANLIŞ SONUCU AYNI YÖNDEYDİ:**
+> ### **ÇALIŞAN BİR KAPIYI *BOZUK* İLAN ETMEK.**
+
+📌 `§2.7`'nin üç mutasyon vakasıyla (**`replace(…,1)` yoruma düştü** · **hedef iki kez
+geçiyordu** · **`\Q..\E` interpolasyonu**) **aynı yön**: hepsi *"çalışan bir kontrolü kör
+ilan et"* diyordu. **Bu sınıfın yanılma yönü rastgele değil** — çünkü bozuk bir ölçüm
+genellikle **hiçbir şey ölçmez**, ve *"hiçbir şey"* **başarısızlığa benzer**.
+
+**Pratik — bir kapıyı *"bozuk"* ilan etmeden önce üç soru:**
+```
+1  kullandığım ARAÇ bu makinede VAR MI?        (timeout · gtimeout · flock · realpath)
+2  ölçüm PENCERESİ gerçekten örtüşüyor mu?     (ikisi de AYNI ANDA canlı mıydı — ps ile)
+3  kurulumum ölçtüğüm KOŞULU YAŞATIYOR MU?     (arka plan süreci tool dönüşünde ölür mü)
+```
+⚠️ `3`'ün en sinsi hâli: süreç **temiz** ölürse (`release` çağırarak) geriye **hiç iz
+kalmaz** — ne `STALE` uyarısı ne artık dosya. **Temiz ölüm, kaza ölümünden daha az
+görünürdür.**

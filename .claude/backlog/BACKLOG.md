@@ -435,7 +435,7 @@ status: active        # planned | active | closed
 - [[T-319]] Dört kabul pini — `P1` **ilişki-pini** · `P2` şablon · `P3` tekrar-bastırma · `P4b` **bildirim-yolu-canlılığı** (uçtan uca) — `qa-engineer` — **review** (dosya `review`; `T-318` blokajı **kalktı**)
 - ~~[[T-321]] `K-2.2.7a` **`%100 BLOCKED` hiç uygulanmamış** … — **blocked**~~ ⛔ **BAYAT SATIR** (`DALGA 0`, 2026-08-31): aynı id için **aşağıda** güncel satır var (`review`). `F12` — silinmedi, üstü çizildi.
 - [[T-324]] `T-047` invariant evreni **hâlâ yetki-filtreli** — 48 tablodan **39**; kör kalan 9`da `claims` ailesi (**açık port-adayı**). Körlüğün sebebi bir zorunluluk değil, **geçerliliğini yitirmiş bir gerekçe** (`Z60 §1`'in aynı gün, aynı dosyadaki ikinci vakası) — **hüküm bekler**
-- [[T-325]] e2e için **tek-çalıştıran kilidi** (`flock` sınıfı) — paralel koşum riski **ikinci kez** görüldü; kapanışı bloklamaz — **todo**
+- [[T-325]] ✅ e2e için **tek-çalıştıran kilidi** (`flock` sınıfı) — paralel koşum riski **ikinci kez** görüldü; kapanışı bloklamaz — **todo**
 - [[T-326]] Denetim ekranı — **API hazır, sayfa stub**; ölçüt-4'ün **GÖRME yarısı**. `justification`-paketi + `sözlük Madde 2` ile **aynı pakette** — `frontend-engineer` — **todo**
 - [[T-327]] `W0` KPI temizliği — `kpi_group=Test` **0 satır**, üreteç zaten sağlammış (artıklar **kesintili** koşumdan) — **review**
 - [[T-328]] cash-flow **ay-gün taşması** — `addMonthsClamped` (UTC, mutasyonsuz), e2e **811/811** — **review**
@@ -468,5 +468,5 @@ status: active        # planned | active | closed
 - [[T-352]] `ŞART-6` kalanı — dört kalem *"canlıda hesaplanıyor, KPI olarak **doğmuyor**"*; ⛔ **task'ları YOKTU** — **todo**
 - [[T-353]] ✅ Frontend suite **YÜK ALTINDA KARARSIZ** — aynı ağaç iki farklı cevap veriyor (`5↔6` failed, izole `0`) — **todo** · ⛔ teşhis YAPILMADI
 - [[T-354]] Sessiz sıfırın **PLAN ekseni** + beş dosya daha — `8b`'nin **ölçtüğü ama kapsamadığı** kalan — **todo**
-- [[T-355]] `mergeConfig` `setupFiles`'ı **birleştiriyor** — `setup.ts` iki kez ⇒ `server.use()` **sessizce ölüyor**; ⭐ `§2.7 #4`'ün **canlı** vakası — **todo**
-- [[T-356]] `roleEnumContract` **kardeş dizin** şart koşuyor ⇒ FE süiti **izole worktree'de doğrulanamıyor**; ⛔ `T-269∥T-270`'ten doğan kuralı **fiilen kırıyor** — **todo**
+- [[T-355]] ✅ `mergeConfig` `setupFiles`'ı **birleştiriyor** — `setup.ts` iki kez ⇒ `server.use()` **sessizce ölüyor**; ⭐ `§2.7 #4`'ün **canlı** vakası — **todo**
+- [[T-356]] ✅ `roleEnumContract` **kardeş dizin** şart koşuyor ⇒ FE süiti **izole worktree'de doğrulanamıyor**; ⛔ `T-269∥T-270`'ten doğan kuralı **fiilen kırıyor** — **todo**
