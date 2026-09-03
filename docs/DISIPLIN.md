@@ -6346,3 +6346,156 @@ yanlış tarafı sorar. HTTP'den gelen **değerdir** ⇒ `Object.values`.
 📌 Aile: *"`LEFT JOIN` + `IS NULL` bir YOKLUK testi DEĞİLDİR"* — **doğru görünen bir
 operatör, sorulandan BAŞKA bir soruyu cevaplıyor.** Ve *"bir kapı, durdurmuyorsa doğrulama
 değildir"*: burada kapı vardı, **geçirgendi**, ve geçirgenliğini **kendi yorumu örtüyordu**.
+
+---
+
+## *"KAYNAK BEYAN EDİYOR, ORTAM UYGULAMADI"* — YENİ KÖRLÜK SINIFI (ZORUNLU)
+
+> **Bir kapı iki tarafı karşılaştırıyorsa ve İKİSİ DE KODSA, koşan sistemi hiç ölçmemiştir.**
+
+Ölçülmüş vaka (2026-09-03, `T-362`):
+
+```
+kaynak A   route'tan erişilebilen entity'lerin TABLO adları     ← KOD
+kaynak B   02-runtime-grants.sql'in GRANT verdiği tablolar      ← KOD (SQL DOSYASI)
+kontrol    A \ B = ∅            →  guard YEŞİL
+psql çağrı sayısı                  0
+canlı DB   app_runtime → SIFIR ayrıcalık
+SET ROLE app_runtime; SELECT …  →  permission denied
+```
+
+⇒ `tsc` + unit + **tüm guard zinciri YEŞİL** iken `POST /…/upload` **her çağrıda `500`**.
+
+> ### **YEŞİL KAPI ZİNCİRİ, ÇALIŞMAYAN ÜRÜN.**
+
+📌 Bu, *"canlı ortam betikten üretilebilmelidir"* (`Z51`) kuralının **ayna yarısıdır**:
+**betik canlıyı TARİF etmelidir.** Birinci yarı bir **kurulum** disiplinidir; ikincisi bir
+**kapı** ister — ve o kapı ancak **koşan sisteme bakarsa** kapıdır.
+
+⚠️ Ve guard **tam bu sınıfı yakalamak için** doğmuştu (`T-249`: *"kod doğru · rota canlı ·
+tablo var · izin yok"*). İki sınırı **yazılıydı** (kolon düzeyi · `SELECT`↔`INSERT`);
+üçüncüsü yazılı değildi — ve **yazılı olsaydı da vaka geçerdi** (`T-084`: *belgelemek
+korur*). **Sınırlar dokümanda değil, ÖLÇÜMDE kapanır.**
+
+**Kural — hüküm veren yer neresiyse, kapının evreni orasıdır:**
+```
+GRANT hükmünü  DB verir       ⇒ GRANT guard'ı DB'ye BAKAR
+şema hükmünü   DB verir       ⇒ şema guard'ı katalogu sorgular
+tip hükmünü    tsc verir      ⇒ tip guard'ı derleyiciyi koşar
+```
+Bir kapının kaynakları arasında **hükmü veren taraf yoksa**, kapı **niyeti** ölçüyordur,
+**sonucu** değil. Ve DB'ye ulaşılamadığında çıktı **`ÖLÇEMEDİM` (exit 2)** olmalıdır —
+**sessiz yeşil DEĞİL** (`§`: *"bir kapının üç meşru çıktısı vardır"*).
+
+---
+
+## BİR AJAN RAPORU DA BİR İDDİADIR — HAKEMLİK ÖLÇÜMLE (ZORUNLU)
+
+*"Bir review bulgusu da bir iddiadır"* kuralı **ajan raporlarının tamamı** için geçerlidir —
+bulgular kadar **SEBEP ATIFLARI** için de.
+
+Ölçülmüş vaka (2026-09-03, aynı tur): iki ajan aynı kırmızıya **iki farklı sebep** verdi.
+
+| ajan | atfettiği sebep | ölçüm |
+|---|---|---|
+| `backend-engineer` | `lint-ratchet`, komşu şeridin dosyaları | ✅ **doğru** |
+| `qa-engineer` | `app-runtime-grants` self-test'i (`T-359`) | ⛔ **yanlış** — o guard `0 bulgu`, self-test *"fixture matrisi tutuyor"* |
+
+📌 İkinci atıf **inandırıcıydı**, çünkü `T-359` **gerçek** ve **açık** bir task. Bir ajan
+kırmızıyı **hatırladığı bir kusura** bağladı, **ölçtüğü** bir kusura değil.
+
+> ### **BİR SEBEP ATFI, BULGUNUN KENDİSİ KADAR ÖLÇÜM İSTER —**
+> ### **VE AÇIK BİR TASK, HAZIR BİR YANLIŞ SEBEPTİR.**
+
+---
+
+## BİR HALKAYI KAPATMAK, BORCU BİR SONRAKİNE TAŞIYABİLİR (ZORUNLU)
+
+> **Done tanımı ZİNCİR UZUNLUĞUNDADIR — ve her halka AYRI bir vakadır.**
+
+```
+enum'da ÜYE var, ÜRETİCİ yok        ← birinci borç   (Z91 §3)
+üretici geldi, TÜKETİCİ yok         ← borç YER DEĞİŞTİRDİ   (Z94 §3)
+```
+
+Ölçülmüş vaka (2026-09-03): bir enum üyesine üretici bağlandı, bütün kapılar yeşil geçti —
+ve **kullanıcı etkisi sıfır** kaldı, çünkü tüketici (frontend sözlüğü) o üyeyi tanımıyordu.
+Push edilseydi *"indi"* cümlesi **yalan** olurdu: mekanizma tam, **yol yok**.
+
+📌 `Z88 §1`'in (*"tablo var, yazar yok"*) **üçüncü halkaya uzatılmış** hâli; ve
+*"mekanizma var, ona giden yol yok"* sınıfının **zaman eksenli** üyesi — burada yol
+**kapatılırken** bir sonraki halkada **yeniden açıldı**.
+
+**Pratik — bir zincir halkası kapatılırken üç soru:**
+```
+1  bu halkanın BİR ÖNCEKİ ucu bağlı mı        ← çoğu tur bunu sorar
+2  bu halkanın BİR SONRAKİ ucu bağlı mı        ← BU UNUTULUYOR
+3  zincirin SONUNDA bir kullanıcı yüzeyi var mı, ve o yüzey bu değeri GÖRÜYOR mu
+```
+Üçüncüsünün cevabı bir **ölçüm** olmalı — bir sözlük araması, bir render testi — bir
+sezgi değil.
+
+---
+
+## SINIRLAR ÇATIŞMAZ, ÖRTÜŞMEZ — ÖNCE OLGULARI AYIR (ZORUNLU)
+
+İki kural aynı anda doğru görünmüyorsa, ilk hipotez *"biri yanlış"* **olmamalıdır**.
+Daha sık olan: **iki kural iki FARKLI olguya bakıyor** ve aradaki sınır **yazılmamış**.
+
+Ölçülmüş vaka (2026-09-03, `Z94 §1`):
+```
+kapsama kuralı   "KISMİ veriyle 'değerlendirme dışı' demek yanlıştır"
+Z90 §2           "baseline yoksa SEBEP GÖRÜNÜR"
+görünen          ÇATIŞMA
+gerçek           "kısmi" = 0 < c < 1   ·   Z90'ın vakası = c = 0 (TAM YOKLUK)
+                 ⇒ AYRI OLGULAR, ikisi de aynen geçerli
+```
+
+> ### **KURAL DELİNMEDİ — SINIRI NETLEŞTİ.**
+
+⚠️ Ve bu ayrım **ölçülebilir olmalıdır**: `c = 0` tek başına yetmez (*"hiçbir SKU'da eksen
+hesaplanamadı"* başka sebeplerden de olur); ayırt edici **ikinci bir sinyal** gerekir.
+Bir sınır, **iki koşulun birlikte arandığı** bir yerdeyse, o birlikteliğin **neden şart
+olduğu** yazılır.
+
+**Pratik:** bir çatışma raporunda önce *"bu iki kural aynı olguyu mu konuşuyor?"* diye sor.
+Cevap hayırsa iş bir **karar** değil, bir **sınır yazımı**dır — ve `F12` ile eski metnin
+üstüne çizilir, silinmez.
+
+---
+
+## BİR PİN, KORUDUĞU KURALIN İKİNCİ BİR SEVİYEDE YENİDEN UYGULANMASINI GÖRMEZ (ZORUNLU)
+
+> **Pin yeşil kaldı ve KORUMADI — ihlal edilmedi, ATLANDI.**
+
+Ölçülmüş vaka (2026-09-03, `Z94 §1`): bir sebep önceliği (*"kapsam yargısı veri yargısını
+yutar"*) bir testle pinlendi ve bir brief'e *"bu bir PİN'dir, bozma"* diye yazıldı. Bir
+sonraki tur aynı kuralı **bir üst seviyede** (SKU → FU/plan rollup) yeniden uygulamak
+zorundaydı ve **atladı**:
+
+```
+SKU     resolveRagQuadrant çağrılıyor  →  KAPSAM yargısı önce  →  LTA_ONLY kazanıyor
+FU/PLAN yeni dal doğrudan dönüyor      →  resolveRagQuadrant HİÇ ÇAĞRILMIYOR
+                                       ⇒  aynı olguya İKİ FARKLI CEVAP
+pin     SKU seviyesini ölçüyor         →  YEŞİL   (ve hiçbir şey korumadı)
+```
+
+📌 Ajan pini **bozmadı**. Ne pin ne brief, kuralın **ikinci bir yerde de geçerli olduğunu**
+söylüyordu. Ve pini yazan taraf, brief'i de yazan taraftı.
+
+> ### **BİR KURALIN KAÇ YERDE UYGULANDIĞINI PİN SÖYLEMEZ — PİNİ YAZAN SÖYLER.**
+
+**Pratik — bir davranışı pinlerken:**
+```
+1  bu kural KAÇ seviyede/yolda geçerli    ← SKU · FU · plan · rollup · toplu uç …
+2  pin bunların KAÇINI ölçüyor
+3  ölçmediklerini pin'in ADINDA ya da bir yorumda YAZ
+```
+Bir pin *"bu kural her seviyede geçerlidir, bu test yalnız X'i ölçer"* demiyorsa, sonraki
+tur onu **atlayabilir ve pin yeşil kalır** — `§2.7`'nin *"yeşil olmak ayırt ettiği anlamına
+gelmez"* ailesinin **kapsam** tarafındaki üyesi.
+
+⚠️ Ve rollup'a taşınan her yargı için ek bir soru: **bir TOPLAMIN değeri, o toplamın
+KAPSAMASI tam değilken bir yargıya girdi olamaz.** Ölçülmüş vaka (aynı tur): kısmen dolu
+bir alt kümenin `SUM`'ı tesadüfen `0`'a düşebilir; `0`'ı *"yok"* diye okumak `§2.5`
+ihlalidir. Kapsama koşulu **yargının yanına** yazılır.

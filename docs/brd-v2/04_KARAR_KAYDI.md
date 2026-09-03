@@ -8866,3 +8866,197 @@ sorar; sorulan şey **ÜYELİK**tir, ve JavaScript'te ikisi aynı şey **değild
 
 📌 Aile: `LEFT JOIN + IS NULL bir YOKLUK testi DEĞİLDİR` ile **aynı sınıf** — *doğru
 görünen bir operatör, sorulandan BAŞKA bir soruyu cevaplıyor.*
+
+---
+
+## `Z93` — YEŞİL KAPI ZİNCİRİ, ÇALIŞMAYAN ÜRÜN: *"kaynak beyan ediyor, ortam uygulamadı"*
+
+> **Tarih:** 2026-09-03 · **Karar:** ürün sahibi (2 kalem) · **Ölçüm:** Team Lead
+> ⭐ **Bu turda BİR düzeltme İKİ kusur açtı — ve ikisi de birinciyle ÖRTÜLÜYORDU.**
+
+### `§1` · ÖLÇÜM — `T-249`'u yakalamak için doğan guard, o sınıfın vakasını KAÇIRDI
+
+```
+02-runtime-grants.sql:724  GRANT SELECT, INSERT ON …batch_rows TO app_runtime;   BEYAN VAR
+canlı DB                   app_runtime → SIFIR ayrıcalık                          UYGULANMAMIŞ
+app-runtime-grants         0 bulgu                                                YEŞİL
+psql çağrı sayısı          0                                                      ⛔ SEBEP
+SET ROLE app_runtime; SELECT …  →  permission denied                              NEDENSELLİK
+```
+⇒ `tsc` + unit + **tüm guard zinciri yeşil** iken `POST /…/upload` **her çağrıda `500`**.
+
+> ### **İKİ KAYNAK DA KODDU. HİÇBİRİ KOŞAN SİSTEM DEĞİLDİ.**
+
+📌 `Z51`'in (*"canlı ortam betikten üretilebilmelidir"*) **ayna yarısı**: **betik canlıyı
+TARİF etmelidir.** Birincisi bir **kurulum** disiplini; ikincisi bir **kapı** ister.
+
+### `§2` · KARAR 1 — UZLAŞTIRMA KOŞULDU, **SNAPSHOT ŞARTIYLA**
+
+Ürün sahibi: *"`REVOKE ALL`'un elle verilmiş hakları düşürmesi bir risk değil, **AMAÇ**:
+kayıtsız sapma ölmeli."*
+
+```
+TABLO DÜZEYİ  530 → 532      KOLON DÜZEYİ  6966 → 6994
+KAYBOLAN      SIFIR          ⇒ bu ortamda KAYIT-DIŞI elle verilmiş hak YOKTU
+EKLENEN       tam olarak eksik olan iki satır (+28 kolon, hepsi AYNI tablo)
+```
+Kanıt: `docs/verification/GRANT_UZLASTIRMA_2026-09-03.md`.
+📌 **`REVOKE ALL`'un etkisiz kalması bir SONUÇTUR** — `Z51`'in şartı bu ortamda **zaten
+sağlanıyormuş**; eksik olan tek şey **betiğin uygulanmamış olmasıydı**.
+
+### `§3` · KARAR 2 — `T-362` **(a)**: TEK KAPI, ÜÇ KAYNAK
+
+```
+kod-ihtiyacı  (entity/repository ifade kümesi)
+SQL-beyanı    (02-runtime-grants)
+canlı DB      (role_table_grants)          ← EKSİK OLAN
+kontrol       ÜÇ YÖNLÜ uyum · uyumsuzluk ADIYLA kırmızı · DB yoksa ÖLÇEMEDİM (yeşil DEĞİL)
+```
+`T-314`'ün GRANT-drift kapısının **vaka tetiklemesi**.
+
+**`(b)` reddi** *(ayrı ikinci guard)*: aynı sınıfı ölçen iki kapı **evreni böler** —
+*"ihlal hangisinde?"* sorusu doğar.
+**`(c)` reddi** *(sınırı yaz, uygulamayı başka yere bağla)*: `T-084` — **belgelemek korur**;
+üçüncü sınır **yazılı olsaydı da vaka geçerdi**.
+
+> ### **SINIRLAR DOKÜMANDA DEĞİL, ÖLÇÜMDE KAPANIR.**
+> ### **HÜKÜM VEREN YER NERESİYSE, KAPININ EVRENİ ORASIDIR —**
+> ### **VE `GRANT` HÜKMÜNÜ **DB** VERİR.**
+
+### `§4` · ⭐ DÜZELTME İKİ KUSUR AÇTI — İKİSİ DE BİRİNCİYLE ÖRTÜLÜYORDU
+
+```
+1  e2e suite'i TEMİZLİK YAPMIYORDU
+   örten: upload 500 veriyordu ⇒ hiçbir satır yazılmıyordu ⇒ invaryant GEÇİYORDU
+2  fixture SABİT period kullanıyordu (UNIQUE çakışması)
+   örten: aynı sebep — ikinci koşum hiç satır yazamıyordu
+```
+⇒ **`Tests: 870 passed` · `exit 1`** (globalTeardown `T-047` invaryantı) — *"`Tests: passed`
+satırı tek başına sinyal değildir"* kuralının **canlı** doğrulaması.
+
+> ### **AJANIN `[T-047] PASS` RAPORU YANLIŞ DEĞİLDİ — ÖZELLİK KIRIKKEN ALINMIŞTI.**
+> ### **KURULUMU ENGELLEYEN ŞEY, KUSURUN KENDİSİYDİ.**
+
+### `§5` · HAKEMLİK — bir ajan raporu da bir İDDİADIR
+
+| ajan | kırmızıya verdiği sebep | ölçüm |
+|---|---|---|
+| `backend-engineer` | `lint-ratchet`, komşu şeridin dosyaları | ✅ **doğru** |
+| `qa-engineer` | `app-runtime-grants` self-test'i (`T-359`) | ⛔ **yanlış** |
+
+📌 İkinci atıf **inandırıcıydı** çünkü `T-359` **gerçek ve açık** bir task.
+> ### **AÇIK BİR TASK, HAZIR BİR YANLIŞ SEBEPTİR.**
+
+---
+
+## `Z94` — ÇATIŞMA GERÇEK DEĞİLDİ: **`c = 0` ile `0 < c < 1` AYRI OLGULAR** · ve *"borç YER DEĞİŞTİRDİ"*
+
+> **Tarih:** 2026-09-03 · **Karar:** ürün sahibi (2 hüküm) · **Bulan:** `code-reviewer`
+
+### `§1` · HÜKÜM A — ÜÇ DÜNYA (`(b)` + BİR KADEME)
+
+`code-reviewer` bir **çatışma** raporladı: `Z90 §2` *"sebep GÖRÜNÜR"* diyordu, kapsama
+kuralı *"kısmi veride sebep YAZILMAZ"*. Ürün sahibi çatışmayı **çözmedi — ELEDİ**:
+
+> ### **İKİ KURAL İKİ FARKLI OLGUYA BAKIYOR.**
+> ### **KAPSAMA KURALININ *"KISMİ"*Sİ `0 < c < 1`'DİR.**
+> ### **`Z90`'IN KORUDUĞU VAKA `c = 0` — *TAM YOKLUK*.**
+
+```
+TÜM SKU baseline NULL (c = 0)   → plan-düzeyi BASELINE_MISSING MEŞRU
+                                  tam yokluk BİR SEBEPTİR, "değerlendirilemedi"yi GİZLEMEZ
+KARIŞIK (0 < c < 1)             → RAG_NOT_APPLICABLE, sebep YAZILMAZ (kural AYNEN)
+                                  uyarı SKU-LİSTESİNDEN: "N SKU baseline'sız"
+TÜM DOLU (c = 1)                → kadran
+```
+
+📌 **Kapsama kuralı DELİNMEDİ — SINIRI NETLEŞTİ.** `JSDoc`'a `F12`: *"kısmi = `0 < c < 1`;
+`c = 0` AYRI bir olgudur"*.
+
+⛔ **`(a)` reddi** *(plan'a bir toplayıcı kolon)*: **`N` sorguyla TÜRER, `plans`'a YAZILMAZ** —
+türetilebilir alan = **`INV-B-009` kopya-kolon sınıfı**.
+⛔ **`(c)` reddi** *(`blocked-unreachable` işaretle)*: **ürün-sahibi-onaylı bir vaadin
+ERTELENMESİ** olurdu.
+
+### `§2` · HÜKÜM B — TÜKETİCİ `BL-4b`'NİN **İÇİNDE**
+
+```
+frontend  ragCoverage.ts:71   raw === 'LTA_ONLY' ? 'LTA_ONLY' : null
+                              ⇒ BASELINE_MISSING SESSİZCE null'a DÜŞÜYOR
+kullanıcı "Hesaplanmadı" görüyor — üretilen sebep GÖRÜNMÜYOR
+```
+`§2.5` sessiz-varsayılan yasağının **UI tarafındaki** hâli.
+
+> ### ⛔ **VE DOSYA KENDİ UYARISINI YAZMIŞTI:**
+> ### *"backend yeni bir üye eklediğinde bu dosya da güncellenmelidir"* — **OKUNMADI.**
+> ### *"UYARI KOMŞU DOSYADA YAZILIYDI"* SINIFININ **ÜÇÜNCÜ** VAKASI.
+
+### `§3` · ⭐ KAYIT — **BORÇ YER DEĞİŞTİRDİ**
+
+```
+Z91 §3 borcu   enum'da ÜYE var, ÜRETİCİ yok
+BL-4b turu     üretici GELDİ
+yeni borç      üreticiye TÜKETİCİ yok
+```
+
+> ### **DONE TANIMI ZİNCİR UZUNLUĞUNDADIR: `enum → üretici → tüketici`.**
+> ### **HER HALKA AYRI BİR VAKADIR — VE BİR HALKAYI KAPATMAK,**
+> ### **BORCU BİR SONRAKİNE TAŞIYABİLİR.**
+
+📌 `Z88 §1`'in (*"tablo var, yazar yok bir dalganın done tanımını karşılamaz"*) **üçüncü
+halkaya uzatılmış** hâli. Ve push edilseydi *"`BL-4b` indi"* cümlesi **yalan** olurdu:
+mekanizma tam, **kullanıcı etkisi sıfır**.
+
+### `§4` · KAPI ADAYI — `T-356`'NIN GENELLEŞTİRİLMESİ
+
+```
+sınıf   "backend üye ekledi, FE görmedi"
+vaka 1  roleEnum        (T-356 ile kapatıldı — meta-enum-sözleşme kapısı, ÜÇ kaynak)
+vaka 2  ragExclusion    (BUGÜN)
+araç    ÜÇÜNCÜ vakada — T-356'nın kapısı GENELLEŞTİRİLİR, ikinci bir kapı DEĞİL
+```
+📌 `T-362`'nin `(b)` reddiyle **aynı ilke**: *aynı sınıfı ölçen iki kapı EVRENİ BÖLER.*
+
+### `§5` · ÜÇ KÜÇÜK KAYIT
+- **Gizli tie-break pinlendi** (`baseVol === null ∧ incrPromoSpend === 0 ⇒ LTA_ONLY`) —
+  `K-2.2.8c` refleksi (*"en spesifik kayıt kazanır"*) burada **sebep önceliği** olarak doğru
+  işledi. Kodda vardı, yazılı değildi, testi yoktu ⇒ **`§2.5` gizli tie-break**.
+- **`T-360` sınırı dürüstçe kaydedildi:** yeni çapraz-doğrulama testi payı **servisle aynı
+  şekilde** türetiyor ⇒ `§2.7 #8` — *test, kontrolün KOPYASINI çalıştırıyor*; `ratio > 1`
+  günü geldiğinde **yeşil kalır**.
+- **`ölçemedim` yine bir çıktı oldu:** `code-reviewer` bir jest uyarısını
+  (*"worker process failed to exit gracefully"*) **hiçbir dosyaya atfetmedi**.
+
+### `Z94 §6` · ⭐ HÜKMÜN UYGULANIŞI BİR ASİMETRİ ÜRETTİ — VE PİN GÖRMEDİ
+
+`§1`'in `c = 0` dalı ilk yazımında **kapsama kapısından önce** ama **LTA yargısından da
+önce** kondu. Sonuç, seviyeler arasında **ters öncelik**:
+
+```
+SKU      resolveRagQuadrant → KAPSAM önce → LTA_ONLY
+FU/PLAN  yeni dal doğrudan döner          → BASELINE_MISSING
+⇒ baseline'sız bir LTA-only plan: hücre "yapacak bir şey yok", satır "baseline gir"
+```
+
+**Yakalayan:** Team Lead'in düz-akış okuması (`promo` yalnız VARLIK için okunuyordu).
+**Doğrulayan:** `PİN F` — `Expected: "LTA_ONLY", Received: "BASELINE_MISSING"`, ve diğer
+tüm PİN'ler o hâlde de **yeşildi** ⇒ mutasyon doğru dalı hedefledi.
+
+> ### ⛔ **VE `§5`'İN TİE-BREAK PİNİ YEŞİL KALDI — İHLAL EDİLMEDİ, *ATLANDI*.**
+> ### **PİN SKU SEVİYESİNİ ÖLÇÜYORDU; KURAL BİR ÜST SEVİYEDE YENİDEN UYGULANMIŞTI.**
+
+**Düzeltilmiş sıra:** `[promo TAM-KAPSAMALI LTA?] → [BASE_VOL c=0?] → [kapsama kapısı] → [kadran]`
+
+⚠️ **Ve `promo`'nun KENDİ kapsaması sorulmak zorundaydı:** FU/plan'da `INCR_PROMO_SPEND` de
+`SUM`'lanır; **kısmen dolu bir alt kümenin toplamı tesadüfen `0`'a düşebilir** ve bunu
+*"promosyon yok"* saymak `§2.5` ihlalidir. Kontrol testi bunu ayrı bir dünya olarak
+ölçüyor: `c = 0.5 ∧ toplam = 0` ⇒ **ne `LTA_ONLY` ne `BASELINE_MISSING`**, sebepsiz
+`RAG_NOT_APPLICABLE`.
+
+📌 **`F8` önlemi korundu:** ikinci bir `incrPromoSpend === 0` **literali yazılmadı** — yeni
+dal yalnız **yönlendirir**, yargıyı hâlâ `resolveRagQuadrant` verir.
+
+**Yedi dünya, aynı koşumda:** `A` (c=0 ⇒ BASELINE_MISSING) · `B` (0<c<1 ⇒ sebepsiz) ·
+`C` (c=1 ⇒ kadran) · `D` (BASE_VOL dolu, başka eksen c=0 ⇒ yanlış atıf YOK) ·
+`E` (`N` `plans`'a yazılmadı) · `F` (LTA ∧ baseline yok ⇒ **üç seviyede de** `LTA_ONLY`) ·
+`G` (baseline yok ∧ promo>0 ⇒ **üç seviyede de** `BASELINE_MISSING`) · kontrol (`promo` kısmi).

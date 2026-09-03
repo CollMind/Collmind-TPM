@@ -475,3 +475,4 @@ status: active        # planned | active | closed
 - [[T-359]] `app-runtime-grants` self-test: `printf | grep -q` → **Broken pipe** ⇒ **SAHTE KIRMIZI** (push durdu) · mekanizma ADLANDIRILDI, reprodüksiyon **ÖLÇEMEDİM** — **todo** `P1`
 - [[T-360]] `coverage` payı ile paydası **AYNI EVRENİ KONUŞMUYOR** — pay dönem/aktiflik filtresiz, payda `aktif SKU × aktif CPL × 12` ⇒ **ratio > 1** ve sahte `GREEN` mümkün · bugün pay `0` olduğu için **görünmüyor** (`T-273` körlüğü) — **todo** `P1`
 - [[T-361]] `getBatchRows` **SINIRSIZ** — sayfalama yok, her satırın `raw` JSONB'si dönüyor, yazma yolu `CHUNK_SIZE=500` ile binlerce satır bekliyor — **todo** `P2`
+- [[T-362]] ⛔ `app-runtime-grants` guard'ı **KAYNAK ↔ KAYNAK** karşılaştırıyor (`psql` çağrısı **0**) — `02-runtime-grants.sql:724` GRANT'i **beyan ediyor**, canlı DB'de `app_runtime` **sıfır ayrıcalık**, guard **YEŞİL** · `T-249`'u yakalamak için doğdu, **tam o sınıfın vakasını kaçırdı** — **todo** `P0`
