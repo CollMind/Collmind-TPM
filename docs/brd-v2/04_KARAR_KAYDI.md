@@ -8683,3 +8683,186 @@ ADMIN      MASTER_DATA_READ: true   | BASELINE_WRITE: true
 > **Ölçülemeyen bir kısmı olan hüküm, o kısmı BİR ŞART olarak yazar —
 > ve şart sağlanmazsa hüküm DEĞİL, DUR üretir.**
 Bu, `Z86`'nın *"hücreye ad-düzeyi rol ekleme"* hatasının **yapısal panzehiri**.
+
+---
+
+## `Z90` — COVERAGE **BLOK DEĞİL, KARAR DESTEĞİ** · TANIMLI-YOKLUK · `0` ≠ `NULL`
+
+> **Tarih:** 2026-09-03 · **Karar:** ürün sahibi
+> ⭐ **Ve bu hüküm, `BL-4` brief'inin BİR VARSAYIMINI UYGULANMADAN yakaladı.**
+
+### `§1` · COVERAGE KAPISI **BLOKLAMAZ** — `K-2.2.7c` ÇİZGİSİ
+```
+TAŞIYICI      Wella pilotu BASELINE'SIZ çalıştı; anlaşma/settlement/claim/defter
+              zinciri baseline'a BAKMAZ   [KANIT: agreements=5 · baseline_volumes=0]
+DESTEKLEYİCİ  bugün servis controller'a BAĞLI DEĞİL, hiçbir yol BLOKLANMIYOR
+```
+> ### ~~*"PLANLAMA KAPISI KAPALI"*~~ **ÖLDÜ.**
+> ### **BASELINE'SIZ PLANLAMA: incremental KPI'lar `NOT_EVALUABLE`, sebep**
+> ### **`BASELINE_MISSING` GÖRÜNÜR; KAPI BLOKLAMAZ.**
+
+**`İŞ 1`'in ürün cümlesi — `RED`'in dili:**
+> *"uplift/ROI **%X'lik evren** için anlamlı"*
+⇒ `RED` bir **yasak** değil, bir **KAPSAM BEYANI**.
+
+### `§2` · TANIMLI-YOKLUK — `LTA_ONLY` DESENİ, AYNI ENUM AİLESİ
+```
+baseline YOK (NULL)  ⇒  iVol · iTO · iGP · uplift · ROI = NOT_EVALUABLE
+                     +  ragExclusionReason: BASELINE_MISSING
+ETKİLENMEZ           GSV · spend · bütçe REZERVASYONU · settlement
+                     (hepsi PLANNED-VOLUME tabanlı)
+```
+⛔ **MIGRATION GEREKMİYOR** `[TL ÖLÇTÜ]`: kolon **`varchar`**, **`CHECK` YOK** — `1819`
+bunu **bilerek** yaptı: *"sınıfın tek kanonik yeri TypeScript tarafıdır; iki yerde iki liste
+`F8` ailesi olurdu."*
+📌 **Bir yıl önceki bir `F8` önlemi, bugün bir migration'ı gereksiz kıldı** — kural
+katmanının **bileşik faizi**.
+
+### `§3` · ⛔ baseline **SIFIR** ≠ baseline **YOK** — `Z77`'NİN TERSİ
+```
+0     MEŞRU DEĞER — yeni ürün ⇒ uplift = PLANLANAN HACMİN TAMAMI
+NULL  YOKLUK       ⇒ NOT_EVALUABLE
+```
+> ### **`Z77` SESSİZ `0` *ÜRETMEYİ* YASAKLIYORDU;**
+> ### **BU, GERÇEK BİR `0`'I `NULL` *SANMAYI* YASAKLIYOR.**
+> ### **AYNI AYRIMIN İKİ YÖNÜ — VE İKİSİ DE MEŞRU SIFIRI KORUR.**
+
+Import'ta `0` satırı **KABUL**, incremental **hesaplanır**; **eksik** satır
+`NOT_EVALUABLE`. Resolver'da ayrım **`null` ↔ `0`**.
+
+### `§4` · TENANT POLİTİKASI — **OLAY TETİKLİ** (`K-2.2.8` ailesi)
+*"Baseline'sız submit yasak"* bir tenant politikası **olabilir** — **bugün varsayılan blok
+YOK** (`Q16` emsali: uyarı evet, blok hayır).
+
+### `§5` · ⭐ KAYIT — HÜKMÜN ÜRÜN SONUCU **UYGULANMADAN** YAKALANDI
+`BL-4` brief'i *"yükle → kabul/red → coverage → **planlama kapısı**"* diyordu.
+```
+brief DİLİ    "kapı"        →  BİR VARSAYIM TAŞIYORDU (bloklar)
+gerçek        karar desteği →  hiçbir şey bloklamaz
+yakalayan     ÜRÜN SAHİBİNİN SORUSU — kod yazılmadan
+```
+> ### **`Z71 §0` SINIFI: BİR HÜKMÜN ÜRÜN SONUCU, HÜKÜM VERİLİRKEN GÖRÜLMEYEBİLİR.**
+> ### **BURADA UYGULANMADAN GÖRÜLDÜ — VE BEDELİ BİR `F12` SATIRI OLDU,**
+> ### **BİR DALGA DEĞİL.**
+
+📌 Ve mekanizma **dil**di: *"kapı"* kelimesi bir **mekanizma adı** (coverage gate) ile bir
+**ürün davranışını** (bloklama) aynı sözcükte topluyordu. `DISIPLIN`'in *"bir AD, koruduğu
+sınıftan geniş olabilir"* kuralının **brief katmanındaki** hâli.
+
+---
+
+## `Z91` — `BL-4` **İKİYE AYRILDI**: yüzey indi, **üretici açık** · ve *"enum'da üye var, üretici yok"* **İKİNCİ VAKA**
+
+> **Tarih:** 2026-09-03 · **Karar:** ürün sahibi (3 kalem) · **Ölçüm:** Team Lead
+
+### `§1` · KAPANIŞ ≠ PUSH — `BL-4a` İNER, `BL-4b` AÇIK KALIR
+
+```
+BL-4a  YÜZEY          coverage-kapısı + teşhis-raporu + getBatchRows BUG-FIX
+       → PUSH'LANIR   kendi kapılarıyla TAM; bug GERÇEK ve bekletilmez
+BL-4b  ÜRETİCİ        BASELINE_MISSING'i ATAYAN resolver (plan recalc)
+       → AÇIK         Z90-§2/§3'ün vaadi HENÜZ DAVRANIŞ DEĞİL
+```
+
+> ### ⛔ ***"UÇTAN UCA CANLI"* CÜMLESİ `BL-4b` OLMADAN KURULMAZ.**
+
+📌 **Yeni ayrım — `kapanış` ile `push` aynı şey değil.** Bugüne kadar bu proje bir dalgayı
+*"kapandı"* diye anıp push ediyordu; burada **tersi**: iş push edilir ama **statü açık
+kalır**. Gerekçe: bekletmenin bedeli, **gerçek bir bug'ı üretimde tutmak** olurdu.
+
+### `§2` · ⭐ VE BUG GERÇEKTİ — *"RAPOR, VAR OLMA SEBEBİNİ GÖREMİYORDU"*
+
+```
+getBatchRows  →  baseline_volumes  okuyordu             ⛔ YANLIŞ TABLO
+gerçek        →  baseline_volume_import_batch_rows
+sonuç         key-unresolved satırlar (SKU_NOT_FOUND · CPL_NOT_FOUND)
+              TEŞHİS RAPORUNDA HİÇ GÖRÜNMÜYORDU
+```
+
+`Z87` red-satırlarının **evini** kurdu; yüzey **eski evi** okuyordu.
+> ### **BİR DALGANIN KAZANDIĞINI, BİR SONRAKİ DALGA TESLİM EDER —**
+> ### **VE ARADA TESLİMATIN KENDİSİ KAYBOLABİLİR.**
+
+⚠️ Ve sınıf tanıdık: `T-273` körlüğünün **yüzey tarafı** — tablo doluyordu, okuyan yanlış
+yere bakıyordu, ve **hiçbir kapı bunu görmüyordu** çünkü her iki tablo da vardı ve her iki
+sorgu da **başarılı** dönüyordu. Kırmızı yok, **boş liste** var.
+
+### `§3` · ⛔ İKİNCİ VAKA — *"ENUM'DA ÜYE VAR, ÜRETİCİ YOK"* `[TL ÖLÇTÜ]`
+
+```
+tanımlı   rag-quadrant.ts:104        BASELINE_MISSING = 'BASELINE_MISSING'
+tanınan   parseRagExclusionReason    ✅  (sessiz veri kaybı riski KAPALI)
+ATAYAN    0                          ⛔  hiçbir üretim yolu YAZMIYOR
+```
+
+**Aynı oturumda ikinci:** `INVALID_PERIOD` (`Z87 §F12b`) → `BASELINE_MISSING`.
+
+> ### **`İlke 1`'İN EN SİNSİ BİÇİMİ — ÇÜNKÜ TİP SİSTEMİ**
+> ### **TÜKETİCİYİ ZORLAR, ÜRETİCİYİ ZORLAMAZ.**
+
+Bir `switch`/`parse` her üyeyi ele almak **zorundadır** (derleyici sorar); hiçbir şey
+*"bu üyeyi kim yazıyor?"* diye **sormaz**. Yani enum bir **sözleşme** gibi görünür, ama
+**yarısı boştur** — ve o yarı **çalışma zamanında hiç ortaya çıkmaz**.
+
+**Hüküm:** ⛔ **Bir enum üyesi ekleyen tur, üreticisini AYNI TURDA bağlar — ya da DUR.**
+
+### `§4` · KAPI ADAYI (inşa DEĞİL — **kayıt**)
+
+```
+ad        enum-üye × atayan taraması
+şekil     STATİK, ucuz: her üyenin ≥1 ÜRETİM atayanı var mı → yoksa KIRMIZI
+tetik     ÜÇÜNCÜ VAKA   ("iki vaka bir tesadüf, üç vaka bir desen" — G4 çizgisi)
+```
+
+📌 `DISIPLIN`'in *"kuralı hatırlamak yerine ARACI çağır"* çizgisi — ama **erken araç da bir
+maliyettir**; bu yüzden adaylık **kayda geçer, bugün inşa edilmez**.
+
+---
+
+## `Z92` — `in` OPERATÖRÜ **PROTOTİP ZİNCİRİNİ** TARAR: bir doğrulama, KENDİ JSDoc'unu çürütüyordu
+
+> **Tarih:** 2026-09-03 · **Bulan:** `code-reviewer` · **Bağımsız ölçüm:** Team Lead
+
+### `§1` · ÖLÇÜM
+
+`baseline-volume.controller.ts` iki `@Query` parametresini `if (!(param in Enum))` ile
+doğruluyordu. Ölçüldü (`node -e`, düz obje):
+
+| girdi | `k in E` | `Object.values(E).includes(k)` | `E[k]` tipi |
+|---|---|---|---|
+| `toString` | **true** ⛔ | `false` | `function` |
+| `constructor` | **true** ⛔ | `false` | `function` |
+| `__proto__` | **true** ⛔ | `false` | `object` |
+| `SKU_NOT_FOUND` | `true` ✅ | `true` | `string` |
+| `ZZZ` | `false` ✅ | `false` | `undefined` |
+
+⇒ `?reason=toString` **`400` ALMIYORDU** ve `where.reason`'a bir **`Function`** giriyordu.
+
+### `§2` · ⛔ VE METODUN KENDİ JSDoc'u BUNUN TERSİNİ İDDİA EDİYORDU
+
+```
+JSDoc     "Tanınmayan bir reason/status SESSİZCE yok sayılmaz — 400 (§2.5)"
+gerçek    beş girdi sınıfı için doğrulamayı GEÇİYOR
+```
+
+> ### **BİR DOĞRULAMA, İDDİASINI TAŞIYAN YORUMU KENDİ DAVRANIŞIYLA ÇÜRÜTÜYORDU —**
+> ### **VE YORUM, OKUYANI DENETLEMEKTEN ALIKOYUYORDU.**
+
+📌 `DISIPLIN`'in *"YORUM KİRLİLİĞİ iki yönde birden yanıltır"* kuralının **en pahalı**
+biçimi: yorum yanlış değildi, **niyeti** doğruydu; **kod niyeti karşılamıyordu**, ve yorum
+tam da o yüzden kimseyi ölçmeye sevk etmiyordu.
+
+⚠️ **Ve `§2.5` çerçevesi doğru sorulmuştu, yanlış cevaplanmıştı:** yazar *"sessiz varsayılan
+olmasın"* diye bir kapı koydu; kapının **kendisi geçirgendi**. `DISIPLIN` → *"bir kapı,
+durdurmuyorsa doğrulama değildir"*.
+
+### `§3` · DÜZELTME + KURAL
+
+`Object.values(E).includes(param)` — **yalnız gerçek üyeler**. `in` bir **anahtar VARLIĞI**
+sorar; sorulan şey **ÜYELİK**tir, ve JavaScript'te ikisi aynı şey **değildir**.
+
+> ### ⛔ **BİR ENUM/SÖZLÜK ÜYELİĞİ `in` İLE SORULMAZ — `Object.values(...).includes(...)`**
+> ### **İLE SORULUR. `in` HER ZAMAN `Object.prototype`'ı DA SAYAR.**
+
+📌 Aile: `LEFT JOIN + IS NULL bir YOKLUK testi DEĞİLDİR` ile **aynı sınıf** — *doğru
+görünen bir operatör, sorulandan BAŞKA bir soruyu cevaplıyor.*

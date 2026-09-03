@@ -1,5 +1,5 @@
 # T-283 · rota→hücre eşlemesi · üretim: collmind.backend/scripts/analysis/route-cell-map.py
-# ölçüm: 2026-08-27 · T-307-m2 / Z46 §1 (tenant yaşam-döngüsü uçları POST/DELETE/GET-liste kaldırıldı) sonrası · ⛔ BU SATIRA SAYI/AYRIŞTIRMA YAZMA — sayım AŞAĞIDAKİ SATIRLARDAN türer (elle yazılan ayrıştırma bu repoda dokuzda dokuz bayatladı; Faz-B review S5: "5 rota göçü" doğruydu ama parantez içi 7 kalem sayıyordu ve biri hiçbir TSV satırına karşılık gelmiyordu) · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
+# ölçüm: 2026-09-03 · BL-4 (Z90, docs/process/BL4_YUZEY_BRIEF.md) sonrası — GET master-data/baseline-volumes/coverage eklendi (MEKANIK → MASTER_DATA_READ) · ⛔ BU SATIRA SAYI/AYRIŞTIRMA YAZMA — sayım AŞAĞIDAKİ SATIRLARDAN türer (elle yazılan ayrıştırma bu repoda dokuzda dokuz bayatladı; Faz-B review S5: "5 rota göçü" doğruydu ama parantez içi 7 kalem sayıyordu ve biri hiçbir TSV satırına karşılık gelmiyordu) · @Roles sütunu: "-" = yok (göçtü) · "?" = ÇÖZÜLEMEDİ (kusur)
 # ⚠️ SAYI YAZMA: hücre/kaynak dağılımı üreticinin MUTABAKAT çıktısındadır (stderr).
 #dosya	YÖNTEM	yol	@Roles	hücre	kaynak	kapsam	beyan
 src/modules/admin/admin-audit.controller.ts	GET	admin/audit-log	-	ADMIN_READ	MEKANIK	CAP	ADMIN_READ
@@ -22,6 +22,7 @@ src/modules/customer/customer.controller.ts	GET	customers/:id/stats	-	CUSTOMER_R
 src/modules/customer/customer.controller.ts	GET	customers/cpl/list	-	CUSTOMER_READ	MEKANIK	CAP	CUSTOMER_READ
 src/modules/customer/customer.controller.ts	POST	customers/import	-	CUSTOMER_WRITE	MEKANIK	CAP	CUSTOMER_WRITE
 src/modules/master-data/baseline-volume/baseline-volume.controller.ts	POST	master-data/baseline-volumes/upload	-	BASELINE_WRITE	F12	CAP	BASELINE_WRITE
+src/modules/master-data/baseline-volume/baseline-volume.controller.ts	GET	master-data/baseline-volumes/coverage	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
 src/modules/master-data/baseline-volume/baseline-volume.controller.ts	GET	master-data/baseline-volumes/batches/:batchId	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
 src/modules/master-data/baseline-volume/baseline-volume.controller.ts	GET	master-data/baseline-volumes/batches/:batchId/rows	-	MASTER_DATA_READ	MEKANIK	CAP	MASTER_DATA_READ
 src/modules/master-data/brand/brand.controller.ts	POST	master-data/brands	-	MASTER_DATA_WRITE	MEKANIK	CAP	MASTER_DATA_WRITE

@@ -473,3 +473,5 @@ status: active        # planned | active | closed
 - [[T-357]] ✅ **`BL-1` ŞEMA** — baseline hacim tablosu (`D3`): grain `tenant × SKU × CPL × period` **KİLİTLENDİ** (`Z84`) · migration **1822** · ⛔ `BL-2`'den ÖNCE — **todo** `P0`
 - [[T-358]] **`BL-3` ADIM 1** — `import_batch_rows`: red/kabul satır tablosu · `Z87` · migration **1823** · ⛔ ACCEPTED satırlar DA burada (payda korunur) — **todo** `P0`
 - [[T-359]] `app-runtime-grants` self-test: `printf | grep -q` → **Broken pipe** ⇒ **SAHTE KIRMIZI** (push durdu) · mekanizma ADLANDIRILDI, reprodüksiyon **ÖLÇEMEDİM** — **todo** `P1`
+- [[T-360]] `coverage` payı ile paydası **AYNI EVRENİ KONUŞMUYOR** — pay dönem/aktiflik filtresiz, payda `aktif SKU × aktif CPL × 12` ⇒ **ratio > 1** ve sahte `GREEN` mümkün · bugün pay `0` olduğu için **görünmüyor** (`T-273` körlüğü) — **todo** `P1`
+- [[T-361]] `getBatchRows` **SINIRSIZ** — sayfalama yok, her satırın `raw` JSONB'si dönüyor, yazma yolu `CHUNK_SIZE=500` ile binlerce satır bekliyor — **todo** `P2`

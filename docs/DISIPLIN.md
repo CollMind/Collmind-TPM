@@ -6281,3 +6281,68 @@ sonuç    şart SAĞLANDI ⇒ hüküm yürürlükte, yeni hücre AÇILMADI
 📌 Fark ince ama belirleyici: *"muhtemelen taşıyordur"* bir **varsayım**, *"taşıyorsa şu,
 taşımıyorsa DUR"* bir **hükümdür** — ve ikincisi yanlış çıkarsa **iş durur**, yanlış
 uygulanmaz.
+
+---
+
+## BİR ENUM ÜYESİ EKLEYEN TUR, ÜRETİCİSİNİ AYNI TURDA BAĞLAR (ZORUNLU)
+
+> **Tip sistemi TÜKETİCİYİ zorlar, ÜRETİCİYİ zorlamaz.**
+
+Bir `switch`, bir `parse`, bir eşleme tablosu — hepsi yeni enum üyesini ele almak
+**zorundadır**; derleyici sorar, CI kırmızı yanar, geliştirici yazar. Ama hiçbir mekanizma
+*"bu üyeyi **kim yazıyor**?"* diye **sormaz**.
+
+Sonuç: enum bir **sözleşme gibi görünür**, tüketici tarafı **eksiksizdir**, ve üye
+**hiçbir zaman üretilmez**. Kusur çalışma zamanında **ortaya çıkmaz** — çünkü ortaya
+çıkması için bir değerin var olması gerekir, ve değer yoktur.
+
+**İki ölçülmüş vaka, AYNI OTURUMDA (2026-09-02/03):**
+
+| üye | tanımlı | tanınan | ATAYAN |
+|---|---|---|---|
+| `INVALID_PERIOD` | ✅ | ✅ | **0** |
+| `BASELINE_MISSING` | ✅ | ✅ (`parseRagExclusionReason`) | **0** |
+
+📌 `İlke 1`'in (*"bugün ihtiyacı ölçülmemiş esneklik yazılmaz"*) en sinsi biçimi: burada
+esneklik **bir tip içinde** saklanır ve `grep` ile *"kullanılıyor"* görünür — çünkü
+**okunuyor**. **Okunmak, üretilmek değildir.**
+
+⚠️ Ve `ENJEKSİYON kullanım değildir` kuralının **tip katmanındaki** kardeşi: orada bağ
+kuruluydu ama çağrı yoktu; burada **tüketici** kuruludur ama **üretici** yoktur.
+
+**Pratik — bir enum üyesi eklerken üç şey yazılır:**
+
+```
+1  üyeyi kim ATAYACAK          ← üretim yolu, dosya:satır
+2  o yol BUGÜN koşuyor mu      ← koşmuyorsa T-273 körlüğü
+3  koşmuyorsa ne zaman         ← bir TASK, bir yorum DEĞİL
+```
+
+Üçü de yoksa üye **yazılmaz** — ya da statü açıkça *"üreticisi yok"* diye kayda geçer.
+**Kapı adayı:** enum-üye × atayan taraması (statik, ucuz); **üçüncü vakada** inşa edilir.
+
+---
+
+## BİR ÜYELİK SORUSU `in` İLE SORULMAZ (ZORUNLU)
+
+> **`in` bir ANAHTAR VARLIĞI sorar. Sorulan şey ÜYELİKtir. İkisi aynı değildir.**
+
+`k in E` **`Object.prototype`'ı da sayar**: `toString`, `constructor`, `valueOf`,
+`hasOwnProperty`, `__proto__` — hepsi **`true`** döner, hiçbiri enum üyesi değildir.
+
+Ölçülmüş vaka (2026-09-03, `Z92`): bir controller `@Query` doğrulamasını
+`if (!(param in Enum)) throw 400` ile kuruyordu. Beş girdi sınıfı **doğrulamayı geçti** ve
+`where` cümlesine bir **`Function`** sızdırdı. Metodun **kendi JSDoc'u** *"sessizce yok
+sayılmaz — `400` (§2.5)"* diyordu.
+
+**Doğru şekil:**
+```ts
+if (!(Object.values(Enum) as string[]).includes(param)) throw new BadRequestException(...)
+```
+
+⚠️ Ve `Object.keys(...).includes(...)` de doğrudur, ama **anahtar ≠ değer** olan enum'larda
+yanlış tarafı sorar. HTTP'den gelen **değerdir** ⇒ `Object.values`.
+
+📌 Aile: *"`LEFT JOIN` + `IS NULL` bir YOKLUK testi DEĞİLDİR"* — **doğru görünen bir
+operatör, sorulandan BAŞKA bir soruyu cevaplıyor.** Ve *"bir kapı, durdurmuyorsa doğrulama
+değildir"*: burada kapı vardı, **geçirgendi**, ve geçirgenliğini **kendi yorumu örtüyordu**.

@@ -4,7 +4,14 @@
 > yasası: brief çalışma ağacını değil **push'lu `HEAD`'i** okur.*
 > **Girdiler:** `Z79 §4` · `Z85 §3` · `Z86` · `Z87` + `§F12` · `Z88`
 > **Kapandığında:** baseline hattı **uçtan uca canlı** —
-> `yükle → kabul/red → coverage → planlama kapısı`. **İlk gerçek dosya o gün.**
+> `yükle → kabul/red → coverage → KARAR DESTEĞİ`. **İlk gerçek dosya o gün.**
+>
+> ```
+> ⚠️ F12 (2026-09-03, Z90) — BU BELGENİN İLK HÂLİ "planlama KAPISI" DİYORDU.
+> ~~"yükle → kabul/red → coverage → planlama kapısı"~~   ⛔ VARSAYIM TAŞIYORDU
+> Coverage BLOK DEĞİL, KARAR DESTEĞİDİR (K-2.2.7c çizgisi) — bkz. §1a.
+> Brief dili bir hükmü ima etti; ürün sahibinin sorusu onu UYGULANMADAN yakaladı.
+> ```
 
 ---
 
@@ -44,6 +51,68 @@ ADMIN      MASTER_DATA_READ: true   | BASELINE_WRITE: true
 
 ---
 
+## `§1a` · ⛔ COVERAGE **BLOK DEĞİL, KARAR DESTEĞİ** (`Z90`, ürün sahibi)
+
+```
+TAŞIYICI      Wella pilotu BASELINE'SIZ çalıştı; anlaşma/settlement/claim/defter
+              zinciri baseline'a BAKMAZ  [KANIT: agreements=5 · baseline_volumes=0]
+DESTEKLEYİCİ  bugün servis controller'a BAĞLI DEĞİL, hiçbir yol BLOKLANMIYOR
+```
+> ### **~~"PLANLAMA KAPISI KAPALI"~~ ÖLDÜ.**
+> ### **BASELINE'SIZ PLANLAMA: incremental KPI'lar `NOT_EVALUABLE`, sebep**
+> ### **`BASELINE_MISSING` **GÖRÜNÜR**; kapı **BLOKLAMAZ**.**
+
+**`İŞ 1`'in ÜRÜN CÜMLESİ** — `RED`'in dili budur:
+> *"uplift/ROI **%X'lik evren** için anlamlı"*
+
+⇒ `RED` bir **yasak** değil, bir **kapsam beyanıdır**.
+
+---
+
+## `§1b` · TANIMLI-YOKLUK — `LTA_ONLY` DESENİ, AYNI ENUM AİLESİ
+
+```
+baseline YOK (NULL)  ⇒  iVol · iTO · iGP · uplift · ROI  =  NOT_EVALUABLE
+                     +  ragExclusionReason: BASELINE_MISSING
+ETKİLENMEYENLER      GSV · spend · bütçe REZERVASYONU · settlement
+                     (hepsi PLANNED-VOLUME tabanlı — baseline'a bakmaz)
+```
+⛔ **MIGRATION GEREKMİYOR** `[TL ÖLÇTÜ]`: `plans.rag_exclusion_reason` **`varchar`** ve
+**`CHECK` YOK** — `1819` bunu **bilerek** yaptı (*"sınıfın tek kanonik yeri TypeScript
+tarafıdır; iki yerde iki liste `F8` ailesi olurdu"*).
+⇒ Yeni üye **`src/common/kpi/rag-quadrant.ts#RagExclusionReason`**'a eklenir; DB'ye
+dokunulmaz.
+
+---
+
+## `§1c` · ⛔ baseline **SIFIR** ≠ baseline **YOK** (`Z77`'nin TERSİ)
+
+```
+0     MEŞRU DEĞER — yeni ürün ⇒ uplift = PLANLANAN HACMİN TAMAMI
+NULL  YOKLUK       ⇒ NOT_EVALUABLE
+```
+**Import'ta `0` satırı KABUL** edilir, incremental **hesaplanır**; **eksik** satır
+`NOT_EVALUABLE`. Resolver'da ayrım **`null` ↔ `0`**.
+> ### **`Z77`'NİN TERSİ KURALI: MEŞRU SIFIR YOK EDİLMEZ.**
+*(`Z77` sessiz `0` üretmeyi yasaklıyordu; bu, gerçek bir `0`'ı `NULL` sanmayı yasaklıyor —
+aynı ayrımın iki yönü.)*
+
+⛔ **PİN:**
+```
+0-baseline satırı     →  uplift = plannedVolume            (hesaplanır)
+NULL-baseline satırı  →  NOT_EVALUABLE + BASELINE_MISSING  (hesaplanmaz)
+⚠️ İKİSİ AYNI KOŞUMDA AYRIŞMALI — aynı sonucu verirlerse test KÖRDÜR
+```
+
+---
+
+## `§1d` · TENANT POLİTİKASI — **OLAY TETİKLİ**, bugün YOK
+*"Baseline'sız submit yasak"* bir **tenant politikası** olabilir (`K-2.2.8` ailesi) —
+ama **bugün varsayılan blok YOK** (`Q16` emsali: uyarı evet, blok hayır).
+⛔ Bu adımda **açma**; gerekirse **DUR ve bildir**.
+
+---
+
 ## `§2` · KOVA KARARI — **`C`** (ürün sahibi, 2026-09-03)
 
 ```
@@ -66,7 +135,7 @@ olmazsa** *"yükledi, coverage'ını göremiyor"* doğar.
 
 ---
 
-## `§3` · İŞ 1 — COVERAGE KAPISI ROTASI
+## `§3` · İŞ 1 — COVERAGE ROTASI (⛔ KAPI DEĞİL, KARAR DESTEĞİ — `§1a`)
 
 `BaselineVolumeCoverageService.computeCoverageGate(tenantId)` **hazır ve test edilmiş**
 (`BL-3`, 11 test). Bu adım onu **yüzeye bağlar**.
@@ -84,6 +153,9 @@ UNMEASURABLE katalog evreni BOŞ      ⛔ "TEMİZ" DEĞİL
 
 ⛔ **Üç değer de yüzeye ÇIKAR** — istemci `UNMEASURABLE`'ı `%0` ya da *"yeşil"* diye
 **okuyamamalı**. `DISIPLIN`: *"bir beyan üç değer taşır"*.
+
+⛔ **VE HİÇBİRİ BLOKLAMAZ** (`§1a`): `RED` bir **yasak** değil, bir **kapsam beyanıdır** —
+ürün cümlesi: *"uplift/ROI **%X'lik evren** için anlamlı"*.
 
 📌 **Bugünkü gerçek cevap `RED`** (`0 / 59.160 = %0`) — `Z88 §2`'de ölçülü. Rota
 bağlandığında **ilk çağrı bunu döndürmeli**; `GREEN` ya da `UNMEASURABLE` dönerse
