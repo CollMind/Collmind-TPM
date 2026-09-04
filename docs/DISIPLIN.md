@@ -6485,6 +6485,23 @@ söylüyordu. Ve pini yazan taraf, brief'i de yazan taraftı.
 
 > ### **BİR KURALIN KAÇ YERDE UYGULANDIĞINI PİN SÖYLEMEZ — PİNİ YAZAN SÖYLER.**
 
+### ⇒ PİN KÖR-NOKTA AİLESİNİN **ALTINCI** TÜRÜ: **SEVİYE KÖRLÜĞÜ**
+
+```
+aynı kural İKİ SEVİYEDE yaşar   ·   pin BİRİNDE
+```
+Önceki beş tür *"test yeşil ama bir şeyi ölçmüyor"*du. Bu farklı: test **ölçtüğü şeyi
+doğru ölçüyor** — ama kural **başka bir yerde de** yaşıyor ve orada **kimse bakmıyor**.
+
+**Panzehir BRIEF katmanındadır, test katmanında değil:**
+> **Bir kural birden çok seviyede geçerliyse, pin HER SEVİYEDE AYRI yazılır.**
+
+Ve delege ederken sorulacak soru, **yerleşim mutasyonunun kardeşidir**:
+```
+yerleşim mutasyonu   "bu mutasyon MEKANİZMAYA mı düştü, yoruma mı?"
+seviye sorusu        "bu kural NEREDE YENİDEN UYGULANIYOR?"
+```
+
 **Pratik — bir davranışı pinlerken:**
 ```
 1  bu kural KAÇ seviyede/yolda geçerli    ← SKU · FU · plan · rollup · toplu uç …
@@ -6499,3 +6516,93 @@ gelmez"* ailesinin **kapsam** tarafındaki üyesi.
 KAPSAMASI tam değilken bir yargıya girdi olamaz.** Ölçülmüş vaka (aynı tur): kısmen dolu
 bir alt kümenin `SUM`'ı tesadüfen `0`'a düşebilir; `0`'ı *"yok"* diye okumak `§2.5`
 ihlalidir. Kapsama koşulu **yargının yanına** yazılır.
+
+---
+
+## BİR TOPLAMIN SIFIRI, BİLEŞENLERİN YOKLUĞU DEĞİLDİR (ZORUNLU — `§2.5`'in AGREGASYON hâli)
+
+> **`SUM([]) = null` ile `SUM([500, −500]) = 0` aynı çıktıyı vermez —**
+> **ama `SUM([0]) = 0` ile `SUM([0, null]) = 0` VERİR.**
+
+Ölçülmüş vaka (2026-09-03, `Z94 §6`): bir rollup'ta `INCR_PROMO_SPEND` toplamı `0` olduğu
+için *"bu planda promosyon yok"* (`LTA_ONLY`) yargısı verilecekti. Ama toplam **kısmen dolu
+bir alt kümeden** geliyordu — bazı SKU'lar `null` olduğu için **hesaba hiç girmemişti**.
+
+```
+"promosyon YOK"          ⇐ tüm bileşenler ölçüldü VE toplam 0
+"bazı SKU'lar ÖLÇÜLEMEDİ" ⇐ toplam 0, ama coverage < 1
+```
+
+⇒ **Bir TOPLAMIN değeri, o toplamın KAPSAMASI tam değilken bir yargıya girdi olamaz.**
+Kapsama koşulu **yargının yanına** yazılır — ayrı bir satıra, ayrı bir kontrole değil.
+
+📌 `§2.5`'in *"eksik girdi sessizce varsayılamaz"* kuralı, tekil bir alanda kolay görünür;
+**agregasyon katmanında görünmez olur**, çünkü `SUM` eksik bileşeni **hata vermeden**
+düşürür ve geriye **meşru görünen bir sayı** bırakır.
+
+⚠️ Ve `LTA_ONLY`/`BASELINE_MISSING` gibi **tanımlı-yokluk** sınıfları bu yüzden
+**toplam katmanında AYRICA ölçülür**: SKU seviyesinde doğru olan bir yokluk yargısı,
+FU/plan seviyesinde **aynı adla ama farklı anlamla** üretilebilir.
+
+---
+
+## BİR KAYNAK SESSİZCE BOŞALIRSA, FARK KÜMESİ DE BOŞ KALIR (ZORUNLU — kapı tasarımı)
+
+> **`A \ ∅ = ∅`. Boş bir kaynak, kapıyı KIRMAZ — SUSTURUR.**
+
+Ölçülmüş vaka (2026-09-04, `T-362`): `information_schema.role_table_grants` PostgreSQL'de
+**etkin role göre kısıtlıdır**.
+
+```
+app_operator bağlantısı  ·  WHERE grantee='app_runtime'   →    0 satır
+postgres     bağlantısı  ·  aynı sorgu                    →  110 satır
+```
+
+O view kullanılsaydı yeni eklenen kaynak **sessizce boş** türeyecek, `A \ ∅ = ∅` ile guard
+**kurulduğu gün yeşil** kalacaktı — ve **tam da kapatmak için doğduğu sınıfa** düşecekti.
+Yakalayan: rolün ne gördüğünü **ölçmek** (`43/43` pozitif kontrol). Çözüm: rol
+görünürlüğüne tabi **olmayan** `has_table_privilege`.
+
+**Kural — bir fark kümesi (`\`) hesaplayan her kapıda:**
+```
+1  her kaynağın BOŞ OLMADIĞI ayrıca pinlenir     ← farkın kendisinden BAĞIMSIZ bir kontrol
+2  bir kaynak boş türerse çıktı SETUP HATASI (exit 2), YEŞİL DEĞİL
+3  boş-kaynak vakası self-test'te BİR CASE'dir — hatırlanacak bir uyarı değil
+```
+
+📌 Bu, *"kapının üç meşru çıktısı vardır"* kuralının **kaynak tarafındaki** hâli: kapı
+kırmızı/yeşil ayrımını yapamıyorsa `ÖLÇEMEDİM` demek zorundadır — ve **bir kaynağın boş
+olması tam olarak o durumdur**, ama fark aritmetiği onu **yeşile** çevirir.
+
+⚠️ Ve sinsiliği şurada: kaynak boşalınca kapı **hiç hata vermez**, çıktısı **daha temiz**
+görünür. `§`'nin *"temiz doğan kapı bir başarı değil, bir ŞÜPHE SEBEBİDİR"* kuralı burada
+somut bir teşhis sorusuna dönüşür: **"kaynaklarımın kaç satırı var?"**
+
+---
+
+## SİNYAL RASTGELEYSE DE SİNYAL DEĞİLDİR (ZORUNLU)
+
+`§2.7`'nin *"sinyal sabitse sinyal değildir"* kuralı (hep yeşil ya da hep kırmızı bir kapı)
+bir **üçüncü** bozulma biçimi taşır: **aynı girdide farklı çıktı**.
+
+Ölçülmüş vaka (2026-09-04, `T-359`): `npm run guards` zinciri **12 koşumda 4 kırmızı** —
+kod değişmeden, girdi değişmeden. Mekanizma **adlandırıldı**: `pipefail` + `| grep -q` ⇒
+`grep` erken çıkar ⇒ yazan taraf **SIGPIPE (141)** ⇒ `pipefail` onu pipeline'ın kodu yapar.
+
+| bozulma | görünen | neden işlevsiz |
+|---|---|---|
+| kapsam kendini boşaltıyor | hep temiz | ölçecek bir şey yok |
+| kapsam hep dolu, hep kırmızı | hep kırık | kırmızı ayırt etmiyor |
+| **aynı girdi, farklı çıktı** | **bazen kırmızı** | **kırmızı bir BİLGİ taşımıyor** |
+
+⛔ Ve üçüncüsü en pahalısı, çünkü bir **davranış** üretir: *"bir daha koş, geçer"*. Bir kapı
+bir kez atlandığında, **gerçek** bir kırmızı da atlanır.
+
+> ### **ARALIKLI SAHTE KIRMIZI VEREN BİR ZİNCİRLE *"KAPILAR YEŞİL"* BEYANI VERİLEMEZ.**
+
+📌 Kardeşi `T-353` (frontend fork çekişmesi): **iki ayrı katmanda paralellik/yarış ölçümü
+bozdu**, ve ikisi de *"flaky"* denmeden, **mekanizma adlandırılarak** kapandı.
+
+**Pratik:** bir kapı aralıklı kırmızı veriyorsa, sıklığını **say** (`N` koşum, kaç kırmızı) —
+`1/8` ile `4/12` farklı teşhislerdir. Ve düzeltmeden **önceki** tabanı ölç: yönsüz
+reprodüksiyon burada da geçerli, çünkü *"düzeldi"* iddiası tek bir yeşil koşumla kurulamaz.

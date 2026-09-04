@@ -9060,3 +9060,112 @@ dal yalnız **yönlendirir**, yargıyı hâlâ `resolveRagQuadrant` verir.
 `C` (c=1 ⇒ kadran) · `D` (BASE_VOL dolu, başka eksen c=0 ⇒ yanlış atıf YOK) ·
 `E` (`N` `plans`'a yazılmadı) · `F` (LTA ∧ baseline yok ⇒ **üç seviyede de** `LTA_ONLY`) ·
 `G` (baseline yok ∧ promo>0 ⇒ **üç seviyede de** `BASELINE_MISSING`) · kontrol (`promo` kısmi).
+
+### `Z94 §7` · ⭐ ZİNCİR ÜÇ REPODA KAPANDI — HATTIN **İLK FRONTEND COMMIT'İ**
+
+```
+enum        BASELINE_MISSING tanımlı                      (önceki turlar)
+üretici     attributeBaselineMissing + resolveCarrierRag   d849173  (be)
+tüketici    ragCoverage.ts + iki sözlük, "Baseline eksik"  1553640  (fe)  ← BL hattının İLK FE commit'i
+```
+
+> ### ***"İNDİ"* CÜMLESİ İLK KEZ TAM.**
+
+📌 `BL` hattı `BL-1`'den beri **yalnız backend + meta** idi. Zincirin son halkası bir
+**başka repoda** yaşıyordu — ve `§3`'ün borcu tam oradan çıktı: bir dalganın done tanımı
+**submodule sınırında bitmez**.
+
+⚠️ Ve tüketici hâlâ **elle bakımlı bir liste** (`raw === 'A' || raw === 'B' ? raw : null`).
+Bu tur genişledi, **sınıf kapanmadı** — `§4`'ün kapı adayı (`T-356`'nın genelleştirilmesi)
+tam olarak bunun için duruyor ve **üçüncü vakada** inşa edilir.
+
+---
+
+## `Z95` — KAPI DOĞUŞTA BİR FAIL-OPEN YAKALADI · *"KANIT ESKİR"* · VE *"FLAKY"*NİN ADI **SIGPIPE**'TI
+
+> **Tarih:** 2026-09-04 · **Karar:** ürün sahibi (3 kalem) · **Ölçüm:** Team Lead + şeritler
+
+### `§1` · `T-362` İNDİ — ÜÇ KAYNAK, ÜÇ AD
+
+```
+A\C  table:<ad>:not-live          kod ihtiyaç duyuyor, DB'de yok      ← Z93'ün vakası
+B\C  table:<ad>:not-applied       beyan var, DB'de yok
+C\B  table:<ad>:undeclared-live   DB'de var, beyanda yok (Z51)
+DB yok ⇒ exit 2 = ÖLÇEMEDİM — sessiz yeşil DEĞİL
+```
+Doğum şartı (`Z83`) karşılandı: **bilinen-yeşil** (`A=41 B=43 C=43`, üç fark da boş) **ve**
+**bilinen-kırmızı** (üç yön için ayrı fixture). Guard'ın kendisi mutasyona uğratıldı →
+case 16-18 kırmızı yandı ⇒ self-test **mutasyona kör değil**.
+
+### `§2` · ⭐⭐ VE KAPI **KURULDUĞU GÜN** BİR FAIL-OPEN YAKALADI
+
+```
+information_schema.role_table_grants   PostgreSQL'de ETKİN ROLE göre KISITLI
+app_operator ile   grantee='app_runtime'  →    0 satır
+postgres     ile   aynı sorgu             →  110 satır
+```
+
+O view kullanılsaydı **kaynak C sessizce boş türeyecek**, `A \ ∅ = ∅` ile guard **kurulduğu
+gün yeşil** kalacaktı — **tam da kapatmak için doğduğu sınıfa düşerek**.
+
+> ### **BOŞ BİR KAYNAK, KAPIYI KIRMAZ — SUSTURUR.**
+
+⇒ `DISIPLIN`'e kapı-tasarım kuralı: **her fark kümesi hesabında kaynakların boş olmadığı
+AYRICA pinlenir**; boş kaynak **exit 2**, yeşil değil. Çözüm rol görünürlüğüne tabi olmayan
+`has_table_privilege` (`43/43` pozitif kontrol).
+
+### `§3` · ⛔ `B \ A` EKLENMEDİ — VE SEBEBİ BİR **KÖR KANAL**, FAZLA YETKİ DEĞİL
+
+Ürün sahibi şartı: *"`kod erişmiyor` bir NEGATİFtir — string evreni de taranır."* Tarandı:
+
+```
+v_budget_summary      forFeature / InjectRepository  =  0   [ÖLÇÜLDÜ]
+                      gerçek erişim: budget-tier-notification.service.ts:129
+                      manager.getRepository(BudgetSummaryView)      ⇒ DÖRDÜNCÜ KANAL
+lta_plan_overrides    forFeature'a BİLEREK konmadı (lta.module.ts:16, T-250 DUR #2)
+                      gerçek erişim: lta-agreement.repository.ts:128
+                      .leftJoinAndSelect('lta.planOverrides', …)    ⇒ BEŞİNCİ KANAL:
+                                                                      İLİŞKİ YÜKLEMESİ
+```
+
+> ### ⛔ **VE GUARD'IN BAŞLIĞI ŞUNU YAZIYORDU:**
+> ### *"dördüncü kanal EKLENMEDİ — 14 sınıf ölçüldü, `comm -23` → 0 fark;*
+> ### ***bugün eklemek kaynak A'yı DEĞİŞTİRMEZ**."*
+> ### **O ÖLÇÜM DOĞRUYDU — VE ESKİDİ.**
+
+📌 **Yeni sınıf: *"kanıt eskir"*.** Bir şeyi **yapmamayı** gerekçelendiren bir ölçüm, kod
+değiştikçe **sessizce** geçersizleşir — ve onu kimse yeniden ölçmez, çünkü *"ölçüldü"* yazılı.
+`@deprecated bir NİYET BEYANIDIR` ailesinin zaman eksenli üyesi.
+
+📌 Ve daha çarpıcısı: **SQL BEYANI, KODDAN TÜRETİLEN `A` KÜMESİNDEN DAHA DOĞRUYDU.** İki
+GRANT da **ölçülmüş bir `500`** yüzünden eklenmişti (`lta-agreement.repository.ts:120-127`
+yorumu: *"yalnız join eklenseydi bu sorgu YENİ bir 500 verirdi"*).
+
+⇒ `B \ A` yönü **eklenmedi**: kaynak A kör oldukça o yön **meşru GRANT'ları** kırmızı yakar
+ve **kırmızı doğan kapı ölür** (`Z83`). Önce `T-372` türetmeyi genişletir, **sonra** yön eklenir.
+
+### `§4` · ⛔ `T-359` BİR DOSYA DEĞİL, BİR **SINIF** — VE *"FLAKY"*NİN ADI VAR
+
+```
+grep -q eşleşince ERKEN ÇIKAR  →  yazan taraf SIGPIPE alır  →  141
+set -o pipefail                →  141 PIPELINE'ın kodu olur
+sonuç                          →  BAŞARILI eşleşme, BAŞARISIZLIK gibi okunur
+```
+**Nedensellik `[ÖLÇÜLDÜ]`:** `pipefail` altında `141` (5/5) · `pipefail` yokken `0` (3/3).
+**Canlı vaka:** `app-runtime-grants-self-test` **12 koşumda 4 kırmızı** (ajan `1/8` demişti —
+sıklık da ölçülür). Aralıklı, çünkü **yarış**.
+
+```
+EVREN   pipefail ∧ '| grep -q' taşıyan guard dosyası : 23
+```
+
+> ### **SİNYAL SABİTSE SİNYAL DEĞİLDİR — VE RASTGELEYSE DE DEĞİLDİR.**
+> ### **ARALIKLI SAHTE KIRMIZI, BİR DAVRANIŞ ÜRETİR: *"bir daha koş, geçer"* —**
+> ### **VE BİR KAPI BİR KEZ ATLANDIĞINDA, GERÇEK BİR KIRMIZI DA ATLANIR.**
+
+⇒ **Push, zincir aralıklı kırmızıyken YAPILMAZ** (`T-362`'nin kendi varlık gerekçesi —
+*beyan ≠ ölçüm* — guard zincirine de uygulanır). Ve kalıcı panzehir **kapıların kapısı**:
+`sigpipe-hygiene` — 23 dosyada bir kez temizlenen sınıf **24.'de doğmasın**.
+
+📌 Kardeş: `T-353` (frontend fork çekişmesi). **İki ayrı katmanda paralellik/yarış ölçümü
+bozdu**, ve ikisi de ***"flaky"* denmeden, mekanizma adlandırılarak** kapandı.
