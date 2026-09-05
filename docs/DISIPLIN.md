@@ -6606,3 +6606,39 @@ bozdu**, ve ikisi de *"flaky"* denmeden, **mekanizma adlandırılarak** kapandı
 **Pratik:** bir kapı aralıklı kırmızı veriyorsa, sıklığını **say** (`N` koşum, kaç kırmızı) —
 `1/8` ile `4/12` farklı teşhislerdir. Ve düzeltmeden **önceki** tabanı ölç: yönsüz
 reprodüksiyon burada da geçerli, çünkü *"düzeldi"* iddiası tek bir yeşil koşumla kurulamaz.
+
+---
+
+## BİR KAPANIŞ BEYANI, KAPSAMADIĞINI **YAZMADAN** VERİLEMEZ (ZORUNLU)
+
+> **"Uçtan uca" bir ZİNCİR iddiasıdır — ve zincir en zayıf halkası kadar uzundur.**
+
+Ölçülmüş vaka (2026-09-05, `Z96 §5`): bir hat *"uçtan uca canlı"* ilan edilirken üç sınır
+**ölçülerek** yazıldı ve beyana **eklendi**, çıkarılmadı:
+
+```
+import → plan_sku OTOMATİK DOLDURMA        YOK    (bilinçli kapsam dışı)
+üretilen sebep, import tarafını okumuyor    —      başka bir alanın NULL'luğunu okuyor
+tüketici hâlâ ELLE BAKIMLI bir liste        —      sınıf kapanmadı
+```
+
+📌 Aynı hattın önceki turunda **borç yer değiştirmişti** (`enum → üretici → tüketici`):
+bir halka kapandı, borç bir sonrakine taşındı, ve *"indi"* cümlesi **yalan olacaktı**.
+Kapanış beyanı, o dersin **belge tarafındaki** karşılığıdır.
+
+**Pratik — bir hattı kapatırken üç şey aynı kayda girer:**
+```
+1  NE kapandı        ← ölçümle, sayıyla
+2  NE AÇILDI         ← hattın kendi ürettiği borçlar, ADIYLA ve task numarasıyla
+3  NE KAPSANMADI     ← beyanın SINIRLARI; "bilinçli kapsam dışı" da bir SINIRDIR
+```
+
+⚠️ Ve `3` olmadan `1` **abartılmış** olur: okuyucu beyanı **kapsadığından geniş** okur, ve
+o geniş okuma bir sonraki turun **girdisi** olur. Bu, *"bir hatayı belgelemek onu koruma
+altına alır"* kuralının kapanış katmanındaki hâli — burada belgelenen şey bir hata değil,
+bir **eksik**tir, ama koruma mekanizması aynıdır.
+
+📌 Ve numaralandırma/adlandırma **ürün sahibinindir**: bir kapanış kaydı, kendi
+numaralandırmasını ürün sahibinin adlandırmasının **üstüne yazmaz** — yazarsa sonraki
+brief yanlış halkadan başlar. (Bu kural, aynı kaydı yazarken **bir kez ihlal edildi ve
+düzeltildi** — `§`: *"bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur"*.)

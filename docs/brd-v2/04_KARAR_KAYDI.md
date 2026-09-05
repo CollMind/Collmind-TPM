@@ -9169,3 +9169,107 @@ EVREN   pipefail ∧ '| grep -q' taşıyan guard dosyası : 23
 
 📌 Kardeş: `T-353` (frontend fork çekişmesi). **İki ayrı katmanda paralellik/yarış ölçümü
 bozdu**, ve ikisi de ***"flaky"* denmeden, mekanizma adlandırılarak** kapandı.
+
+---
+
+## `Z96` — `BL` HATTI **KAPANDI**: baseline uçtan uca · pin envanteri · ve **FAZ-2 KAPSAM REVİZYONU**
+
+> **Tarih:** 2026-09-05 · **Karar:** ürün sahibi · **Ölçüm:** Team Lead
+> **Push'lu HEAD:** meta `a7f57ab` · be `09378df` · fe `1553640`
+
+### `§1` · HAT — `BL-1` … `BL-4b`
+
+```
+BL-1  ŞEMA        main.baseline_volumes · grain tenant × sku × cpl × period      Z84/Z85
+                  dört CHECK · FK RESTRICT · gerçek fail-closed RLS politikası,
+                  RLS KAPALI doğar (şık (c) — ürün sahibi)
+BL-2  GİRİŞ       BASELINE_WRITE yeteneği {ADMIN, FINANCE} · ingest() · 7-kodlu
+                  red sözlüğü                                                     Z86
+BL-3  DOĞRULAMA   import_batch_rows: red VE kabul satırlarının kalıcı evi ·
+                  coverageRatio ≠ sourceMatchRatio (iki metrik, iki ad)           Z87/Z88
+BL-4a YÜZEY       GET /coverage · GET /batches/:id · GET /batches/:id/rows
+                  kova C · MASTER_DATA_READ                                       Z89/Z90/Z91
+BL-4b ÜRETİCİ     BASELINE_MISSING üreticisi + üç dünya + FE tüketicisi          Z94
+```
+
+> ### **ZİNCİR ÜÇ REPODA KAPANDI: `enum → üretici → TÜKETİCİ`.**
+> ### **VE BU, `BL` HATTININ İLK FRONTEND COMMIT'İYDİ (`1553640`).**
+
+### `§2` · ⭐ İLK GERÇEK SAYI — VE **DOĞRUSU BUYDU**
+
+```
+170 aktif SKU × 29 aktif CPL × 12 dönem = 59.160
+kabul edilmiş                            = 0
+coverageRatio                            = %0   ⇒  KIRMIZI
+```
+Brief bu beklentiyi **önceden yazmıştı** ⇒ rotanın **ayırt etme gücü** kanıtlandı
+(`GREEN`/`UNMEASURABLE` dönmüyor). Ve `Z90 §1`: bu `RED` bir **yasak değil, bir KAPSAM
+BEYANI** — *"uplift/ROI **%X'lik evren** için anlamlı"*.
+
+### `§3` · PİN ENVANTERİ — hattın taşıdığı ayrımlar
+
+| pin | ayrım | nerede |
+|---|---|---|
+| `0 ≠ NULL` | meşru sıfır ↔ yokluk; dal seçimi **`=== null`**, truthiness DEĞİL | `Z90 §3` · `Z94` |
+| üç çıktı | `GREEN` · `RED` · **`UNMEASURABLE`** (payda `0` ⇒ `0/0` hiç hesaplanmaz) | `Z89` |
+| iki metrik iki ad | `coverageRatio` (katalog evreni) ≠ `sourceMatchRatio` (batch içi) | `Z87` |
+| kapı bloklamaz | coverage bir **karar desteğidir** (`K-2.2.7c` çizgisi) | `Z90 §1` |
+| tanımlı-yokluk | `BASELINE_MISSING` — `LTA_ONLY`'nin kardeşi, yerine geçmez | `Z90 §2` |
+| sebep önceliği | `LTA_ONLY` > `BASELINE_MISSING` — **her seviyede** | `Z94 §5/§6` |
+| üç dünya | `c = 0` ⇒ sebep · `0 < c < 1` ⇒ sebepsiz · `c = 1` ⇒ kadran | `Z94 §1` |
+| türetilmiş alan | `N` sorguyla türer, `plans`'a **yazılmaz** (`INV-B-009`) | `Z94 §1` |
+
+### `§4` · HATTIN AÇTIĞI **BEŞ** KAPI/BORÇ — kapanış bunları KAPATMIYOR, ADLANDIRIYOR
+
+```
+T-360  coverage payı ile paydası AYNI EVRENİ konuşmuyor ⇒ ratio > 1 mümkün
+       ⚠️ ve yeni çapraz-doğrulama testi bunu YAKALAYAMAZ (§2.7 #8: kontrolün kopyası)
+T-361  getBatchRows sayfalamasız, raw JSONB ile yanıt boyutu üst sınırsız
+T-372  app-runtime-grants kaynak A KÖR (4. ve 5. kanal)
+T-359  §ek: sigpipe-hygiene'in evreni BİR repo, sınıf ÜÇ repoda temizlendi
+T-359  §ek2: `head -N` muafiyetinin bugün ÜRETİM VAKASI YOK
+```
+📌 Son ikisi **ürün sahibi kararı bekliyor** ve `§5`'in beyanına **dahil değildir**.
+
+### `§5` · BEYAN — ve **NE OLMADIĞI**
+
+> ### ✅ **BASELINE HATTI UÇTAN UCA CANLI — BASELINE'SIZ FİRMA DAHİL.**
+> yükleme → kabul/red → kalıcı satır evi → coverage → teşhis → RAG sebebi → **kullanıcı yüzeyi**
+
+⛔ **BEYANIN SINIRLARI, ÖLÇÜLEREK yazılır:**
+```
+import → plan_sku.baseVolume OTOMATİK DOLDURMA  ⇒  YOK  (Z90 §1, bilinçli kapsam dışı)
+BASELINE_MISSING bugün plan_skus.base_volume'un NULL'luğunu okur — import tarafını DEĞİL
+FE tüketicisi hâlâ ELLE BAKIMLI bir liste (sınıf kapanmadı — Z94 §4 kapı adayı, ÜÇÜNCÜ vakada)
+```
+
+📌 **`Z94 §3`'ün dersi burada da geçerli:** *"uçtan uca"* bir **zincir** iddiasıdır ve zincir
+**en zayıf halkası kadar** uzundur. Yukarıdaki üç satır o halkaların **adıdır** — bir kapanış
+beyanı, kapsamadığı şeyi **yazmadan** verilemez.
+
+### `§6` · FAZ-2 KAPSAM REVİZYONU — **TAM ZİNCİR**
+
+`BL` kapandığına göre bir sonraki hat **gerçekleşme tarafıdır**:
+
+```
+gerçekleşme-tamamlama   →   EŞLEŞTİRME MOTORU   →   claim üretimi
+                            varsayılan grain FU × CPL × Ay
+                            tenant-konfigüre edilebilir resolver
+                            ⛔ batch-scope ≠ match-grain — İKİ AYRI KAVRAM
+```
+⚠️ **Halka numaralandırması ürün sahibinindir** — bu kayıt zinciri onun yazdığı sırayla
+tutar ve **yeniden numaralandırmaz**. Brief'in başlayacağı halka, ürün sahibinin
+**`halka-2`** dediği yerdir: **on-invoice yolu + `sales_actuals` tüketicisi**.
+
+⚠️ **`batch-scope ≠ match-grain` bir AD ayrımıdır ve şimdiden yazılıdır** — `F8` ailesinin
+(*"aynı kavram iki temsil"*) tersi: **iki kavram, tek ad riski**. Bir yükleme partisinin
+kapsamı ile bir eşleştirmenin taneliliği aynı şey değildir; aynı adı taşırlarsa
+`AD-BORCU` doğar (`T-366` emsali: *"iki defter aynı kelimeyi farklı anlamda kullanıyor"*).
+
+```
+İADE            BEKLEMEDE — üç soru kayıtlı, cevap gelince hüküm
+RAPORLAMA       PARALEL ŞERİT (zincire bağımlı değil)
+```
+
+📌 Ve bu kayıt, **zincir-tamamlama brief'inin girdisidir** — brief ürün sahibinin
+`halka-2` dediği yerden başlar: **on-invoice yolu + `sales_actuals` tüketicisi**.
