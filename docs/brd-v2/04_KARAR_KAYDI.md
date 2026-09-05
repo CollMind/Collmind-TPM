@@ -9310,6 +9310,11 @@ evren                 =  "pipefail kullanan her .sh", meta kökünden, submodule
 **Ölçülmüş kanıt:** türetilmiş evren `54` dosya (`backend 41 · frontend 5 · meta scripts 5 ·
 .claude 2 · docs 1`). **Son üçü** `scripts/`-kısıtlı taramada **YOKTU**.
 
+📌 Bu, `G5`'in (*türetilmiş > taranmış > yazılmış*) **bir kapının KENDİ EVRENİ** için
+**ikinci** kanıtı — birincisi `money-float`'ın Alan A listesiydi. Orada evren bir **dosyada**
+yazılıydı ve bakımı bir **refleks** gerektiriyordu; burada evren bir **sorgudur** ve bakım
+gerektirmez. **Bir kapının kör noktası, çoğu zaman kendi evren tanımındadır.**
+
 ⚠️ İki tuzak, ölçülüp brief'e yazıldı: **`rg` bu ortamda bir SHELL FONKSİYONUDUR** (script
 içinde yok) · `find` taraması `node_modules`/`.git`'i **açıkça** elemeli.
 
@@ -9350,3 +9355,145 @@ quote-farkındalıklı bir parser **yeni bir kör nokta** riski taşırdı.
 ### `§6` · SAPMA — `improved` burada BLOKLAMIYOR
 `money-float`'ta bir `improved` satırı baseline güncellenmezse kapıya dönüşür; burada
 **bloklamaz**. Fark **bilinçli** ve kodda yorumla belgeli (`T-359b §4`).
+
+---
+
+## `Z98` — HALKA-2 AÇILDI: **YAZARSIZLIK BİR KOD BOŞLUĞU DEĞİL, BİR *IMPORT SÖZLEŞMESİ* BOŞLUĞUYDU**
+
+> **Tarih:** 2026-09-05 · **Karar:** ürün sahibi (şık `(a)` + sözleşme hükmü) · **Ölçüm:** Team Lead
+
+### `§1` · DALGAYI DURDURAN ÖLÇÜM
+
+```
+sales_actuals    fiscal_period NOT NULL · cpl_id NOT NULL · fu_id NULLABLE · sku_id NULLABLE
+satırlar         toplam 3 · fu_dolu 0 · sku_dolu 0 · cpl_dolu 3 · period_dolu 3
+                 (E2E- öneksiz, 2026-08-19, ACTIVE ⇒ e2e artığı DEĞİL, kalıcı demo verisi;
+                  T-047 invaryantı onları TABAN sayıyor)
+fu_id YAZARI     grep fuId src/modules/shared/sales-actuals/  →  0
+raw_row          category · cpl_code · net_amount · channel_code · gross_amount ·
+                 discount_amount            ⇒  FU/SKU BİLGİSİ YOK
+forecasting_units  gu_id · size · segment   ⇒  FU bir ÜRÜN HİYERARŞİSİ varlığı;
+                 satırın cpl/category/channel'ından TÜRETİLEMEZ
+```
+
+> ### ⛔ **ASIL TEŞHİS BİR KOLON DEĞİL, BİR SÖZLEŞME:**
+> ### **BUGÜNKÜ ACTUALS DOSYA FORMATI `kategori × CPL × dönem` GRAIN'İNDE.**
+> ### **`FU × CPL × Ay` EŞLEŞTİRMESİ BU FORMATLA *HİÇ* YAPILAMAZ —**
+> ### **BACKEND *"`fu_id` DOLDURMAYI ÖĞRENEMEZ"*, ÇÜNKÜ KAYNAKTA DOLDURULACAK ŞEY YOK.**
+
+📌 Team Lead'in ilk teşhisi *"yazarsız kolon"*du (`T-351` ailesi). Ürün sahibi bunu **bir
+katman derinleştirdi**: yazarsızlık **semptom**, sebep **girdi sözleşmesi**. Ve iki teşhis
+**farklı düzeltme** ister — biri kod yazdırır, diğeri **sözleşme değiştirir**.
+
+### `§2` · HÜKÜM — ŞIK `(a)`: İKİ MIGRATION, ARADA YOL
+
+```
+M1  (1824, data-engineer, BU DALGA)
+    event_type nullable-enum (TEK ÜYE 'SALE') · invoice_no nullable
+    batch-scope ≠ match-grain AD AYRIMI · CHECK'ler (her biri NULL-VAKALI)
+    ⛔ fu_id NULLABLE KALIR
+
+BACKEND YOLU (BU DALGA)  ⇒ ACTUALS DOSYA SÖZLEŞMESİ DEĞİŞİR
+    FU-kodu YA DA SKU-kodu ZORUNLU alan
+    SKU verilirse FU TÜRETİLİR (SKU → FU, hiyerarşiden)
+    ikisi de yoksa satır RED: MISSING_REQUIRED_FIELD
+      (BL-2 red-sözlüğü DESENİ — aynı enum AİLESİ, KOPYA DEĞİL)
+    ⇒ fu_id YAZARI DOĞAR — kısıttan ÖNCE
+
+M2  (1825, AYNI DALGA, yol inince)
+    üç eski satır: FU'suz ⇒ grain-uyumsuz ⇒ SİLİNİR
+    ⛔ BACKFILL YOK — uydurulacak FU yok (K-«karşılanamayan ölçüt uydurma veriyle
+      karşılanmaz» kuralı). Demo verisi FU'lu formatla YENİDEN ÜRETİLİR,
+      T-047 tabanı güncellenir.
+    → fu_id NOT NULL
+```
+
+**`(b)` reddi** *(tek migration, önce sil)*: dalga **ortasında** bir *"yol kırık"* penceresi
+açardı — `Z93 §4`'ün dersi taze: **bir kusur ikinci bir kusuru örter**.
+**`(c)` reddi** *(koşullu `CHECK`)*: `Z87` **NULL-collapse** tuzağına girer, ve `İlke 1` —
+tek üyeli bir enum'da koşullu kısıt **spekülatif**.
+
+### `§3` · ⛔ SIRA KURALI — `Z88 §1`'İN TERSİ
+
+> ### **`Z88 §1`: *tablo var, YAZAR yok* bir dalganın done tanımını karşılamaz.**
+> ### **`Z98 §3`: *KISIT, YAZARDAN ÖNCE gelirse YOLU ÖLDÜRÜR.***
+
+İkisi aynı ilkenin iki yönü: **bir kolonun ömrü `tanım → yazar → kısıt` sırasıyla ilerler**,
+ve bu sıra **atlanamaz**. Atlanırsa ya ölü kolon (yazarsız) ya kırık yol (kısıt önce) doğar.
+
+### `§4` · `event_type` — TEK ÜYELİ ENUM, VE **BİLİNÇLİ**
+
+`RETURN` **eklenmez** — üreticisi yok (`Z91`). İade hükmü geldiğinde **üreticisiyle
+birlikte** doğar; kolon **nullable** olduğu için **şema değişmez**.
+
+⛔ JSDoc damgası: **`"KAPANMIŞ DEĞİL, BEKLEYEN"`** — `T-084` tuzağı (*bir eksikliği
+belgelemek onu KORUMA ALTINA alır*): yorum *"tek üye yeterli"* gibi okunursa, iade turu onu
+**dokunulmaz** sanır. Tek üyelilik bir **tasarım** kararı değil, bir **SIRA** kararıdır.
+
+### `§5` · AÇIK SORU — SÖZLEŞMEYİ KİLİTLER
+
+> **Wella'da actuals dosyası FU (ya da SKU) kodu taşıyor muydu?**
+
+Muhtemelen evet — `FU × CPL × Ay` eşleştirmesi ancak öyle yapılmış olabilir. **Ama
+*"muhtemelen"* bir hüküm değildir** (`§2.4`). Cevap **import sözleşmesini kilitler**, ve
+iade dosya formatı **aynı sözleşmeye** gelecek (`event_type = RETURN` satırı da FU taşır).
+`M1` bu cevaba **bağımlı değildir** ve beklemez; **backend yolu bekler**.
+
+### `§6` · `T-351` AİLESİNE KAYIT SATIRI
+*"Yazarsız kolon"* sınıfının **bir üyesi daha** (`sales_actuals.fu_id`) — ve kök sebebi
+**kolon değil, KAYNAK SÖZLEŞMESİ** çıktı.
+⇒ **`T-351`'in altı `*_spend` kolonu için de aynı soru sorulur:**
+```
+yazarsızlık KOD eksiği mi, GİRDİ eksiği mi?
+```
+**Cevabı farklı bir düzeltme ister** — biri yazar ekler, diğeri sözleşme değiştirir.
+Bu dalga `fu_id`'yi kapatıyor; ayrı task **açılmaz**.
+
+### `Z98 §7` · ⭐ `GU` — **KOŞULLU HÜKÜM İŞLEDİ: HÜKÜM DEĞİL, HİPOTEZ ÇÜRÜDÜ**
+
+Paketteki satır *"ölçülür; **ölüyse** kaldırma-migration'ı **ADAY**"* biçimindeydi — yani
+bir **koşul** taşıyordu. Ölçüm koşulu **çürüttü**, aday **düştü**.
+
+```
+skus.gu_id                NOT NULL · 170/170          forecasting_units.gu_id  NOT NULL · 12/12
+generic_units             8 satır                     üretim kodu atıfları     64
+HTTP yüzeyi               GuController  @Controller('master-data/generic-units')   CANLI
+FE                        GenericUnitManagementPage → routes/index.tsx:605        ROTALI
+okuyucu                   agreement.service.ts:300 → generic_units.category_id
+```
+⇒ **Kaldırma migration'ı ÜRÜNÜ KIRARDI.** `GU`, `category ← GU ← FU ← SKU` hiyerarşisinin
+**ortası** ve kategori çözümlemesi ondan geçiyor.
+
+> ### **VE ÇELİŞKİ GERÇEK: *"GU eski kavram, tasarımımızda yok"* ↔ 64-ATIFLI CANLI TAŞIYICI.**
+> ### **HÜKÜM: KAVRAM **İKİ KATMANA** AYRILIR —**
+> ### **`GU` MASTER-DATA HİYERARŞİSİNDE **KALIR**, PLANLAMA/EŞLEŞTİRME GRAIN'İNDE **ROL ALMAZ**.**
+
+📌 *"Kavram olarak yok"* ≠ *"kolon olarak yok"* — `Z64-A0`'ın (*"ad eşleşmesi kavram
+eşleşmesi değildir"*) **ters yüzü**: burada **kavram** reddediliyor ama **kolon** taşıyıcı.
+Bir ürün sahibi *"yok"* derken hangi **katmanı** kastettiği yazılmazsa, bir sonraki tur
+**yanlış katmanı söker**.
+
+**Resolver sözleşmesindeki yeri:** `GU` bir **toplama hedefi DEĞİL**, bir **kategori-türetme
+ara katmanı**. Agregasyon `fatura → SKU → FU → CPL×Ay`; `GU`, `FU`'nun **üstünde**
+raporlama/kategori boyutu olarak yaşar (`FU → GU → category`). **Tenant grain menüsünde
+`GU` YOK** (`FU` · `SKU` · `fatura`).
+
+### `Z98 §8` · ⛔ VE BİR KOPYA-KOLON BULUNDU — **TUTUYOR, AMA KORUYAN MEKANİZMA YOK**
+
+```
+sku.gu_id == sku.fu.gu_id    170/170 TUTUYOR · 0 ÇELİŞİYOR
+CHECK        yalnız CHK_skus_conversion_factor_positive  ⇒ GU tutarlılığı için YOK
+trigger      YOK
+sku.service  GU'yu ve FU'yu AYRI AYRI doğruluyor — UYUŞTUKLARINI HİÇ SORMUYOR
+```
+
+> ### **BUGÜNKÜ TUTARLILIK BİR GARANTİ DEĞİL, BİR SEED TESADÜFÜ.**
+> Bir kullanıcı `GU-A` + `FU-B` (ki `FU-B.gu_id = GU-C`) ile SKU yaratabilir ve
+> **kabul edilir**.
+
+⇒ İki sınıfa birden giriyor:
+```
+INV-B-009   türetilebilir alan saklanıyor (sku.gu_id = sku.fu.gu_id)
+T-273 komşusu  "veri henüz SAPMADI" örtüyor — kusur, ilk sapan satırla DOĞAR
+```
+`T-351`'e kayıt satırı olarak gitti. **Ayrı task açılmadı** — sınıf zaten orada.

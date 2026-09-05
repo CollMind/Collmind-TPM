@@ -6692,3 +6692,36 @@ tutuldu**, ve fazlalık **kayıtla** yönetildi. Bir kapının hassasiyetini art
 ⚠️ Ve sınırı var: bir yanlış pozitif **her koşumda kırmızı** üretiyorsa bu kural geçmez —
 o zaman kapı *"hep kırmızı"* bozulmasına düşer. Burada işe yaramasının sebebi **ratchet**:
 vaka baseline'da **bloklamıyor**, ama **duruyor**.
+
+---
+
+## BİLİNEN-KIRMIZI **CANLI ZİNCİRDE** ÜRETİLEBİLİYORSA, EN GÜÇLÜ DOĞUM KANITI ODUR (ZORUNLU)
+
+`Z83`'ün kapı doğum şartı **bilinen-yeşil + bilinen-kırmızı** ister. Kırmızının iki üretim
+biçimi vardır ve **eşdeğer değildirler**:
+
+```
+(a) self-test FIXTURE'ı ile        guard'ı SAHTE bir evrende koşturur
+(b) ÜRETİM ZİNCİRİNDE bir SONDA    gerçek runner · gerçek evren · gerçek baseline
+```
+
+Ölçülmüş vaka (2026-09-05, `Z97 §4`): meta'nın `scripts/`'ine `pipefail` + `ls | head -1`
+taşıyan bir sonda dosyası kondu.
+```
+bash scripts/run-all.sh  →  exit 1 · dosya ADIYLA basıldı · "BASELINE-AŞILDI"
+sonda kaldırıldı         →  exit 0
+```
+
+> ### **`(b)`, `(a)`'nın ölçemediği ÜÇ ŞEYİ ölçer:**
+> ### **runner'ın guard'ı ÇAĞIRDIĞINI · bulgunun SAYILDIĞINI · exit kodunun YUKARI ÇIKTIĞINI.**
+
+📌 Ve bu üçü tam olarak **backend'de kusur ürettiği** noktalardı: guard zincire hiç
+bağlanmamıştı, ve bağlansaydı özet satırı bulgu sayılıp **kalıcı kırmızı** doğuracaktı.
+Bir self-test bunların **hiçbirini** göremez — kendi evrenini kendi kurar.
+
+**Kural:** bir kapı doğarken bilinen-kırmızı **canlı zincirde** üretilebiliyorsa **öyle
+üretilir**. Self-test yine de yazılır — **ikisi de varsa daha iyi**: sonda **bağlantıyı**
+ölçer, fixture **mantığı**.
+
+⚠️ Sondanın kendisi de bir mutasyondur: **kaldırıldığını ölç** (`exit 0`'a dönüş), ve sonda
+dosyasını ağaçta **bırakma**.
