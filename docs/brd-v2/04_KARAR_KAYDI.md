@@ -9273,3 +9273,80 @@ RAPORLAMA       PARALEL ŞERİT (zincire bağımlı değil)
 
 📌 Ve bu kayıt, **zincir-tamamlama brief'inin girdisidir** — brief ürün sahibinin
 `halka-2` dediği yerden başlar: **on-invoice yolu + `sales_actuals` tüketicisi**.
+
+---
+
+## `Z97` — KAPILARIN KAPISI **META**'DA, KÖKLER **TÜRETİLMİŞ** · ve TEAM LEAD'İN ÖLÇÜMÜ YANLIŞTI
+
+> **Tarih:** 2026-09-05 · **Karar:** ürün sahibi (2 hüküm) · **Ölçüm:** Team Lead + şerit
+
+### `§1` · ⛔ ÖNCE DÜZELTME — *"üç repoda temizlendi, kalan `0`"* **YANLIŞTI**
+
+```
+n=$(grep -c … || echo 0)
+grep -c SIFIR bulunca exit 1 verir  →  `|| echo 0` İKİNCİ bir 0 ekler
+değişken "0\n0" olur                →  aritmetik SESSİZCE bozulur
+```
+
+> ### **VE O KURALI (*"negatif sonuç pozitif kontrolsüz raporlanamaz"*)**
+> ### **`DISIPLIN`'e YAZAN TARAF, AYNI TURDA İHLAL ETTİ.**
+
+**Gerçek tablo `[YENİDEN ÖLÇÜLDÜ, pozitif kontrollü]`:** `18` vaka — ve içlerinde
+**frontend'in ÜÇ CANLI `ŞEKİL-1` vakası**. Önceki dalga **yalnız backend'i** kapsamıştı.
+
+📌 Ve yanlış ölçüm, kapanış turunun *"kapının evreni bir repo"* notunu **fazla iyimser**
+yazdırmıştı — yani bir ölçüm hatası, bir **karar metnine** sızmıştı.
+
+### `§2` · HÜKÜM 1 — TEK KAPI, META'DA, EVREN TÜRETİLMİŞ
+
+```
+"meta kendi zinciri"  =  aynı kapının İKİ KOPYASI (F8)         ⇒ REDDEDİLDİ
+"SCAN_DIR çoklu kök"  =  doğru yön, ama kökler ELLE yazılmaz   ⇒ TÜRETİLİR
+evren                 =  "pipefail kullanan her .sh", meta kökünden, submodule'ler görünür
+```
+> ### **YARIN FRONTEND'E YENİ BİR GUARD DOĞSA, KAPI ONU**
+> ### **KÖK LİSTESİNE EKLENMEDEN GÖRÜR — `G5` KAPININ KENDİ EVRENİ İÇİN.**
+
+**Ölçülmüş kanıt:** türetilmiş evren `54` dosya (`backend 41 · frontend 5 · meta scripts 5 ·
+.claude 2 · docs 1`). **Son üçü** `scripts/`-kısıtlı taramada **YOKTU**.
+
+⚠️ İki tuzak, ölçülüp brief'e yazıldı: **`rg` bu ortamda bir SHELL FONKSİYONUDUR** (script
+içinde yok) · `find` taraması `node_modules`/`.git`'i **açıkça** elemeli.
+
+### `§3` · HÜKÜM 2 — `head -N` MUAFİYETİ **KALKTI**
+
+```
+cmd | head -N  ⇒  head erken kapanır  ⇒  yazan komut SIGPIPE alır  ⇒  pipefail'de 141
+grep -q'dan FARKI YOK — yalnız YARIŞ OLASILIĞI çıktı boyutuna göre değişir
+```
+⛔ Bilinen bir sahte-kırmızı kaynağını muaf tutmak, **kapının kendi kör noktasını yazmak**
+olurdu (`B3` emsali: kör nokta, tehdidin geliş yönüyle **aynı eksende**).
+
+**Sözleşme:** *pipefail altında **erken kapanan hiçbir tüketici** boru sağında olamaz*
+(`grep -q` · `grep -m1` · `head`).
+**Mevcut vakalar muafiyet DEĞİL, `T-212` deseninde RATCHET:** `8` bulgu / `6` dosya
+baseline'da **adıyla**; yeni ekleme **bloklar**; düzeltildikçe **düşer**; baseline **kendini
+yazmaz**; ve *"sonrayı kim yapacak"* yazılı — **iyileştiren tur**.
+
+### `§4` · ⭐ VE KAPI **ÜRETİM ZİNCİRİNDE** ATEŞLEDİ — fixture değil
+
+```
+meta scripts/'e bir sonda dosyası kondu (pipefail + `ls | head -1`)
+  bash scripts/run-all.sh  →  exit 1
+  [sigpipe-hygiene] scripts/_sigpipe_probe.sh
+  BASELINE-AŞILDI: baseline'da olmayan YENİ bir vaka, 1 bulgu
+sonda kaldırıldı           →  exit 0
+```
+`Z83`'ün **bilinen-kırmızı** şartı, self-test fixture'ıyla **değil**, **canlı zincirle**
+karşılandı — bir kapı için elde edilebilecek **en güçlü** doğum kanıtı.
+
+### `§5` · SINIFLANDIRMA — bir vaka *"ayrı sınıf"* çıktı ve **baseline'a ALINDI**
+`k1b-two-marker-pin.sh:62`'deki boru, `docker exec … sh -c "…"` **dizesinin içinde** —
+**konteynerin kabuğunda** koşuyor, dış `pipefail` oraya geçmiyor ⇒ risk **gerçek değil**.
+**Yine de baseline'a alındı**, evrenden **çıkarılmadı**: guard metin-tabanlı tarar,
+quote-farkındalıklı bir parser **yeni bir kör nokta** riski taşırdı.
+> ### **GÖRÜNÜR + GEREKÇELİ BİR YANLIŞ POZİTİF, GÖRÜNMEZ BİR MUAFİYETTEN İYİDİR.**
+
+### `§6` · SAPMA — `improved` burada BLOKLAMIYOR
+`money-float`'ta bir `improved` satırı baseline güncellenmezse kapıya dönüşür; burada
+**bloklamaz**. Fark **bilinçli** ve kodda yorumla belgeli (`T-359b §4`).

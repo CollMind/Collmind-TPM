@@ -6642,3 +6642,53 @@ bir **eksik**tir, ama koruma mekanizması aynıdır.
 numaralandırmasını ürün sahibinin adlandırmasının **üstüne yazmaz** — yazarsa sonraki
 brief yanlış halkadan başlar. (Bu kural, aynı kaydı yazarken **bir kez ihlal edildi ve
 düzeltildi** — `§`: *"bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur"*.)
+
+---
+
+## `grep -c` SIFIR BULUNCA **exit 1** VERİR — `|| echo 0` BİR SAYIYI BOZAR (ZORUNLU)
+
+```bash
+n=$(grep -c PATTERN "$f" || echo 0)     # ⛔ eşleşme yoksa n = "0\n0"
+n=$(grep -c PATTERN "$f" || true)       # ✅ grep zaten 0 basar
+n=$(grep -cE PATTERN "$f"); n=${n:-0}   # ✅
+```
+
+Ölçülmüş vaka (2026-09-05, `Z97 §1`): bir sınıfın *"üç repoda temizlendi, kalan `0`"*
+raporu bu yüzden **yanlış** çıktı — **frontend'in üç canlı vakası** görülmedi, ve yanlış
+sayı bir **kapanış kaydının** cümlesine sızdı.
+
+> ### **VE O TURU YAZAN TARAF, *"negatif sonuç POZİTİF KONTROLSÜZ raporlanamaz"***
+> ### **KURALINI AYNI DOSYAYA YAZAN TARAFTI.**
+
+📌 Sinsiliği: `grep -c` **çıktı olarak `0` basar** — yani ekranda doğru görünür; bozulan şey
+**exit kodu** ve onu yakalayan `||` dalıdır. Yani hata **sayının kendisinde değil, sayıyı
+TOPLAYAN kabukta**.
+
+**Pratik:** bir tarama `0` döndürdüğünde, taramanın **bir şey bulabildiğini** göster —
+aynı deseni bilinen bir eşleşmede koştur. Bu kural `§`'nin *"pozitif kontrol"* şartının
+**aritmetik** tarafıdır: desen doğru, evren doğru, **toplama** yanlış.
+
+---
+
+## GÖRÜNÜR + GEREKÇELİ BİR YANLIŞ POZİTİF, GÖRÜNMEZ BİR MUAFİYETTEN İYİDİR (ZORUNLU)
+
+Ölçülmüş vaka (2026-09-05, `Z97 §5`): bir satırdaki boru, `docker exec … sh -c "…"`
+**dizesinin içindeydi** — konteynerin kabuğunda koşuyor, dış `pipefail` oraya geçmiyor,
+yani risk **gerçek değil**. İki seçenek vardı:
+
+```
+(a) guard'a quote-farkındalıklı bir parser yaz  →  vakayı ELER
+(b) baseline'a AL, gerekçesini YAZ              →  vaka GÖRÜNÜR kalır
+```
+
+**`(b)` seçildi.** Gerekçe: `(a)` bir **kör nokta** üretir — parser'ın kendi hataları
+sessizdir ve *"bu satır zaten elenmişti"* diye kimse bakmaz. `(b)` bir **liste satırıdır**:
+okunabilir, gerekçeli, ve yanlış olduğu gün **görülür**.
+
+📌 Aile: *"bir AD, koruduğu SINIFTAN dar olabilir"* — burada tersi: **kapsam bilerek geniş
+tutuldu**, ve fazlalık **kayıtla** yönetildi. Bir kapının hassasiyetini artırmak, çoğu zaman
+**onu akıllandırmaktan** güvenlidir.
+
+⚠️ Ve sınırı var: bir yanlış pozitif **her koşumda kırmızı** üretiyorsa bu kural geçmez —
+o zaman kapı *"hep kırmızı"* bozulmasına düşer. Burada işe yaramasının sebebi **ratchet**:
+vaka baseline'da **bloklamıyor**, ama **duruyor**.

@@ -1,0 +1,34 @@
+# sigpipe-hygiene baseline — [[T-359b]] ratchet referansı
+# date:    2026-09-05
+# commit:  a708e16
+# guard:   sigpipe-hygiene v2 (meta, head+grep-m1+grep-q)
+# total:   8 bulgu, 6 dosyada
+# format:  <dosya> <sayı>   (meta köküne göre relatif yol, sıralı)
+#
+# NEDEN GRANDFATHER: bu altı dosya, ESKİ guard'ın "head -N ÜRETİCİ güvenlidir"
+# İSTİSNASI (Hüküm 2 ile KALDIRILDI) yüzünden bugüne kadar hiç ölçülmemişti.
+# Muafiyet DEĞİL — LİSTE-TABANLI RATCHET (T-212 deseni): burada ADIYLA duran
+# bir bulgu BLOKLAMAZ, YENİ bir bulgu (bu listede olmayan) BLOKLAR. Düzeltmek
+# isteyen bir tur `--baseline`'ı YENİDEN üretir ve düşen satırı AYRI, gözden
+# geçirilebilir bir commit'te günceller (bu dosya kendini asla yazmaz).
+#
+# `collmind.backend/scripts/verification/k1b-two-marker-pin.sh:62` — AYRI
+# SINIF, ölçülüp gerekçesiyle buraya alındı ([[T-359b]] §2): satır
+# `docker exec "$CONTAINER" sh -c "ls -t .../*.log 2>/dev/null | head -1"`
+# İÇİNDEKİ boru, dış scriptin `pipefail`'ine tabi DEĞİL — çift-tırnaklı bir
+# STRING'in içinde, `sh -c` ile KONTEYNERİN KENDİ kabuğunda koşuyor. Dış
+# script'in SIGPIPE/141 riski burada GERÇEK DEĞİL: `docker exec` sh -c'nin
+# stdout'unu $()  ile yakalıyor, ve dış tarafta bu çıktıyı erken kapatan bir
+# tüketici YOK (satır `LATEST_LOG="$(...)"` ile bitiyor, borulanmıyor). Guard
+# METİN TABANLI tarama yaptığı için (tam shell parse etmiyor) bu satırı yine
+# de YAKALAR — bu bir YANLIŞ POZİTİF, ama akıllıca bir quote-farkındalıklı
+# parser yazmak yeni bir kör nokta riski taşır (CLAUDE.md §2.7: "kapsam
+# maskelemesi"). Karar: EVRENDEN ÇIKARMA (guard hâlâ bu satırı görür ve
+# adlandırır), bunun yerine BASELINE'A al — görünür + gerekçeli, sessizce
+# elenmiş bir heuristikten daha güvenli (money-float.sh'ın aynı ilkesi).
+collmind.backend/scripts/guards/alan-guard-ratchet.sh 2
+collmind.backend/scripts/guards/migration-schema.sh 1
+collmind.backend/scripts/guards/roles-ratchet.sh 2
+collmind.backend/scripts/guards/route-scope.sh 1
+collmind.backend/scripts/guards/scope-ratchet.sh 1
+collmind.backend/scripts/verification/k1b-two-marker-pin.sh 1

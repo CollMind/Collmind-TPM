@@ -35,6 +35,20 @@ run "E6 · brd-v2" bash docs/brd-v2/guard.sh docs/brd-v2
 # (T-356). Kontrol kaybolmadı, buraya taşındı.
 run "T-356 · role-enum-contract" node scripts/guards/role-enum-contract.mjs
 
+# [[T-359b]] "KAPILARIN KAPISI" · sigpipe-hygiene BURADA doğuyor, ÇÜNKÜ evreni
+# tek repo değil: "pipefail kullanan her .sh", meta kökünden, submodule'ler
+# görünür (backend + frontend + scripts + .claude + docs). Eskiden yalnız
+# collmind.backend/scripts/guards/'ta yaşıyordu ve frontend'in ÜÇ CANLI
+# şekil-1 vakası bu yüzden hiç görülmüyordu (ölçüldü, §0). Kopya bırakılmadı
+# — backend zincirinden ÇIKARILDI (lib.sh + run-all.sh).
+#
+# Doğum şartı (Z83) önce: self-test kırmızıysa bulgu sayıları anlamsızdır.
+run "sigpipe-hygiene · self-test" bash scripts/guards/sigpipe-hygiene.sh --self-test
+
+# Kapı: --ratchet. Bugünkü sekiz grandfathered vaka (sigpipe-hygiene-baseline.txt)
+# BLOKLAMAZ; baseline'da OLMAYAN yeni bir vaka BLOKLAR (T-212 deseni).
+run "sigpipe-hygiene · ratchet" bash scripts/guards/sigpipe-hygiene.sh --ratchet
+
 echo "==================="
 if [ "$FAIL" -eq 0 ]; then
   echo "✅ Meta guard zinciri temiz"
