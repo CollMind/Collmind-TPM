@@ -6725,3 +6725,233 @@ Bir self-test bunların **hiçbirini** göremez — kendi evrenini kendi kurar.
 
 ⚠️ Sondanın kendisi de bir mutasyondur: **kaldırıldığını ölç** (`exit 0`'a dönüş), ve sonda
 dosyasını ağaçta **bırakma**.
+
+---
+
+## BİR İNVARYANT BOŞ KÜMEDE SAĞLANIYORSA, HİÇ ÖLÇÜLMEMİŞTİR (ZORUNLU)
+
+> **`∀x ∈ ∅: P(x)` her `P` için doğrudur. Bu bir kanıt değil, bir BOŞLUKtur.**
+
+Ölçülmüş vaka (2026-09-05, `Z98`): `SYSTEM_INVARIANTS.md` iki invaryantı `HOLDS VACUOUSLY`
+diye taşıyordu — `INV-R-001` (*her `COMPLETED` on-invoice satırı ya `POSTED` + ledger `DEBIT`,
+ya `ERROR` + dolu `validation_errors`*) ve `INV-R-002` (*`DEBIT` toplamı == `POSTED discount`
+toplamı*). `on_invoice_entries` **sıfır satırdı**: *"düzeltme indi, veri gelmedi."*
+
+İlk gerçek parti geçince ikisi de **sayıyla** ölçüldü (`1/1 POSTED ↔ DEBIT` · `Σ 1000.00 ==
+Σ 1000.00`) — ve aynı koşum, o yolun bir **başka** kusurunu (`T-064`, `invoiceDate` tipi)
+ilk kez **canlı** gösterdi. Boş küme **iki şeyi** örtüyordu: invaryantın sağlanıp
+sağlanmadığını, ve yolun **hiç çalışıp çalışmadığını**.
+
+📌 `T-273`'ün (*"verinin yokluğu örter"*) **invaryant** hâli. Fark: orada örtülen bir
+**davranış**tı; burada örtülen bir **sözleşme beyanı** — ve beyan, doküman tablosunda
+*"HOLDS"* kelimesini taşıdığı için **daha güvenli görünüyordu**.
+
+**Pratik:**
+```
+1  bir invaryant tablosunda "VACUOUSLY" gördüğün satır, "ÖLÇÜLMEDİ" satırıdır — öyle oku
+2  o satırı kapatan şey bir FİXTURE + bir SAYIdır, bir düzeltme commit'i değil
+3  ve kanıt DB'de değil E2E'DE yaşar: üret → ölç → sil, her koşumda
+   (DB'de bırakılan bir "kanıt satırı" bir sonraki turun KİRLİLİĞİDİR)
+```
+
+---
+
+## KANIT KURULUMU ÖLÇÜMÜ BOZMASIN — AJAN TARAFI, ADIYLA (ZORUNLU)
+
+`§2.7`'nin kuralı Team Lead'in ölçümü içindi. Aynı kural **delege edilen ajan** için de
+geçerlidir — ve bir ajan onu **kendiliğinden** uyguladı (2026-09-05, halka-2 backend şeridi):
+
+```
+brief    "T-064 iddiasını ÖLÇ"   (invoiceDate.toISOString → TypeError)
+gerçek   o çağrı, işlenmiş partiyi FAILED'e çekiyor
+ajan     PİN-5/6'yı (INV-R-001/002) o çağrıdan ÖNCE ölçtü — "kendi ölçümüm bozulmasın"
+```
+
+> ### **BİR ÖLÇÜMÜN YAN ETKİSİ, BİR SONRAKİ ÖLÇÜMÜN GİRDİSİNİ DEĞİŞTİREBİLİR.**
+> ### **SIRA, ÖLÇÜMÜN PARÇASIDIR.**
+
+**Pratik — bir brief'te birden çok ölçüm varsa:** hangisinin **yan etkisi** var, yaz
+(`FAILED`'e çeker · satır siler · baseline'ı değiştirir); yan etkili ölçüm **en sona** gider,
+ya da izole hedefte koşar. Ajan bunu brief'te bulamazsa **kendi sorar** — ve bulduğunu
+raporunda **adıyla** yazar; bu tur öyle oldu.
+
+---
+
+## BRIEF, BİR KAPININ ÖNCEDEN BİLİNEN SINIRINI TAŞIR — AJAN ONU KOŞUMDA ÖĞRENMEMELİ (ZORUNLU)
+
+Ölçülmüş vaka (2026-09-06, halka-2 review düzeltmesi): bir ajan ortak bir yardımcıyı **yeni
+bir dosyaya** çıkardı; `npm run guards` `mode-split` ile durdu — `src/modules/modes/` altına
+**yeni dosya eklenemez** (`E1`/`A1`, 2026-08-12). Ajan uydu, fonksiyonu mevcut bir dosyaya
+taşıdı, guard `0 bulgu`. **Sonuç doğru; yol pahalı** — bir deneme, bir kırmızı, bir düzeltme.
+
+> ### **KAPININ SINIRI BİLİNİYORSA, BRIEF'E YAZILIR. AJANIN KAPIYA ÇARPARAK**
+> ### **ÖĞRENMESİ BİR ÖLÇÜM DEĞİL, BİR BEDELDİR.**
+
+📌 Bu, *"bir DUR listesi değişikliğin geçtiği her sınırı saymalı"* kuralının **kapı** yüzü:
+sınırı çizen şey bir insan kararı değil, **çalışan bir guard**. Ve guard'ın varlığı repoda
+**yazılı** (`E1`/`A1`) — yani *"bilinmiyordu"* değil, *"brief'e taşınmamıştı"*.
+
+**Brief şablonuna kalıcı satır** (backend işleri için):
+```
+⛔ mode-split: src/modules/modes/** altına YENİ DOSYA açılamaz — ortak yardımcı gerekiyorsa
+   mevcut dosyaya, ya da src/common/ · src/modules/shared/ altına (guard'ın izin verdiği yer;
+   scripts/guards/mode-split.sh başlığını OKU).
+```
+⚠️ Ve ters yönü de yazılı: guard'a çarpan ajan **"sınırı raporladı"** — bu doğru davranıştı.
+Sınırı **gizleyip** başka bir yola sapmak (ör. yardımcıyı inline kopyalamak, `F8`) daha kötü
+olurdu. Çarpmak bedel, **saklamak** kusurdur.
+
+---
+
+## BİR AD, **KAYNAĞI** HAKKINDA DA YANLIŞ SÖYLEYEBİLİR (ZORUNLU — *"ad ≠ sınıf"*ın kaynak boyutu)
+
+`§`'nin *"bir AD, koruduğu SINIFTAN dar/geniş olabilir"* kuralı adın **kapsamını** konuşur.
+Bu, adın **kökenini** konuşur.
+
+Ölçülmüş vaka (2026-09-06, `Z100`): canlı DB'de `E2E-HALKA2-VERIFY-NKA-2027-02` adlı bir
+bütçe zarfı duruyordu. Çıkarım kurulду: *"`E2E-` önekli ⇒ bir e2e üretti ⇒ bir teardown
+eksik ⇒ yalnız silmek yetmez, sızdıran yol kapatılmalı."* **Makul, ve yanlış.**
+
+```
+E2E-HALKA2-VERIFY üreten dosya (src/ · test/ · scripts/):  0
+POZİTİF KONTROL (benzer önek arayan aynı grep):            1   ⇒ tarama kör değil
+gerçek üretici:  bir ajanın ARTIK VAR OLMAYAN ad-hoc doğrulama script'i
+                 — e2e'ye BENZESİN diye o öneki seçmişti
+```
+⇒ Sızdıran yol **yoktu**; kapatılacak teardown **yoktu**. Ve ilgili e2e kendi zarfını
+**zaten siliyordu** — silmeyi **sayarak** doğrulayarak.
+
+> ### **BİR ARTIĞIN ÜRETİCİSİ, SİLİNMEDEN ÖNCE ÖLÇÜLÜR.**
+> Adı bir **ipucudur**, bir **kanıt değil** — ve bir konvansiyonu **taklit eden** her şey
+> o konvansiyonun adını taşıyabilir.
+
+**Pratik:** bir artık bulduğunda `grep -rl "<önek>" src test scripts` + **pozitif kontrol**.
+Üretici bulunamıyorsa çıkarım *"teardown eksik"* değil, *"üretici ağaçta yok"*tur — ve
+ikisi **çok farklı** iş üretir.
+
+---
+
+## TARİH/DÖNEM FİLTRELİ NEGATİF SONUÇLAR ÖZELLİKLE ŞÜPHELİDİR (ZORUNLU)
+
+*"Negatif sonuç pozitif kontrolsüz raporlanamaz"* kuralının **üçüncü** vakası (2026-09-06) bir
+**desen** kurdu — üçü de **filtre ekseni** ile **verinin gerçek ekseni** ayrıldığında oldu:
+
+```
+1  grep -c … || echo 0        sayı bozuldu           (Z97 §1)
+2  scripts/-kısıtlı tarama    evren eksikti          (Z97 §2)
+3  WHERE posting_date >= '2027-01-01'   BOŞ döndü    (Z100)
+   gerçek: satırın posting_date'i 2026-01-15 — "2027 dönemi" fixture'ın ADIYDI,
+   satırın TARİHİ değil. JOIN (budget_envelope_id) ile yakalandı.
+```
+
+> ### **FİLTRE EKSENİ, VERİNİN GERÇEK EKSENİYLE AYNI OLMAYABİLİR.**
+> ### `posting_date` ≠ *"dönem"* · `created_at` ≠ *"hangi turda üretildi"* ·
+> ### `fiscal_period` ≠ *"hangi tarihte yazıldı"*
+
+📌 Ve tehlike yönü sabit: filtre boş dönünce sonuç *"temiz"* okunur — **yokluk iddiası**,
+ve `§`'nin `[ÖLÇÜLDÜ]` damgası **tam olarak bunun için** gerekir.
+
+**Pratik:** bir dönem/tarih filtresiyle **boş** sonuç aldığında, aynı kümeyi **ikinci bir
+eksenden** sor (FK ile `JOIN` · `id` listesi · `code LIKE`). İki eksen de boşsa yokluk
+iddiası kurulabilir; biri doluysa **filtre yanlıştı**.
+
+---
+
+## SAYI YAZMA, **LİSTE** YAZ — ONUNCU VAKA, VE YAZANLAR İKİMİZDİK (ZORUNLU)
+
+`§`'nin *"elle yazılmış üye sayısı: ölçülmüş oran dokuzda dokuz"* kuralı **onuncu** vakasını
+aldı (2026-09-06) — ve bu kez **kuralı yazan iki taraf da** ihlal etti:
+
+```
+"red sözlüğü 7 → 8"     Team Lead paketi        gerçek: 13 + 1 = 14   ⇒ ajan ÖLÇTÜ, düzeltti
+"distinct kod: 15"      Team Lead doğrulaması   gerçek: 14            ⇒ desen `warnings.push`u da saydı
+```
+İkinci hata birincisini *"düzeltmeye"* kalkıştı — yani **yanlış bir sayı, başka bir yanlış
+sayıyla denetlendi**, ve ajanın doğru sayısı iki kez sorgulandı.
+
+> ### **BİR SAYI, BİR EVREN İDDİASIDIR. EVREN YAZILMADAN SAYI YAZILMAZ.**
+> ### **ARTIK SAYI DEĞİL, **LİSTE** YAZILIR — TEAM LEAD PAKETLERİNDE DE.**
+
+📌 Ve ikinci hatanın mekanizması `§`'nin **kendi** ailesinden: desen (`code: '…'`) doğruydu,
+**evren** yanlıştı (`errors.push` **ve** `warnings.push` — biri red, biri uyarı). *"Kapsam
+maskelemesi — desen çalışır, EVREN eksiktir"*, bu kez **fazlaydı**.
+
+---
+
+## `ASSERT` TAŞIYAN MIGRATION ÜÇ DURUMU AYIRT EDER — **VERİ SİLEN MIGRATION DÖRDÜNCÜYÜ DOĞURUR** (ZORUNLU — sınır notu)
+
+Kural (*hepsi / hiçbiri / kısmi ⇒ throw*) **geri alınabilir** migration'lar için yazılmıştı.
+
+Ölçülmüş vaka (2026-09-06, `M2`/`1825`): migration üç satır **siliyor** ve `fu_id`'yi
+`NOT NULL` yapıyor. `down()` kısıtı kaldırabilir ama **silinen satırları geri getiremez**
+⇒ `run → revert → run`'ın ikinci turunda tablo *"hiçbiri"* durumuna **dönemez**.
+
+```
+üç durumlu assert   ikinci turu KISMİ sayar  →  throw  →  MIGRATION KENDİ TESTİNİ KIRAR
+dört durum          S0 ilk · S1 revert-sonrası (veri yok, kısıt yok) · S2 tam · ELSE throw
+```
+
+> ### **BİR MIGRATION GERİ ALINAMAZ BİR ŞEY YAPIYORSA, DURUM UZAYI BÜYÜR —**
+> ### **VE `down()`'IN NE YAPAMADIĞI, `up()`'IN ASSERT'İNİN PARÇASIDIR.**
+
+⚠️ Ve `down()`'ın sınırı **koda yazılır**: neyi geri getiremediği, ve **neden kabul edilebilir**.
+
+---
+
+## BİRLEŞME ANI: TAM E2E TEK BAŞINA YETMEZ — **ŞEMA ↔ ENTITY METADATA** DA ÖLÇÜLÜR (ZORUNLU)
+
+`§4`'ün *"ağaç paylaşılır"* kuralına kalıcı satır. Ölçülmüş vaka (2026-09-06, `Z100`):
+
+```
+şerit A (data-engineer)   migration: fu_id NOT NULL          ← ŞEMAYI tutuyor
+şerit B (backend)          entity: @Column({nullable:true})   ← METADATA'yı tutuyor
+ikisi de AYRI AYRI YEŞİL   ·   çelişki YALNIZ BİRLEŞMEDE görünür
+```
+Yakalayan: `tsc` **değil şans** — `fuId?: string` → `fuId!: string` sıkılaştırması **tip
+zorlamasıydı**, ve hiçbir çağrıyı kırmaması yazar yolunun **zaten doğru** olduğunun bağımsız
+kanıtı oldu.
+
+**Birleşme kontrol listesi:**
+```
+1  tam e2e — İKİSİNİN TOPLAMI üstünde, bir kez        (ayrı ayrı yeşil YETMEZ)
+2  şema ↔ entity metadata uyumu                        (nullable · tip · kolon adı)
+3  bir şeridin ürettiği DB durumu, diğerinin testini besliyor mu
+```
+📌 `§`'nin *"bir şema kararını GERİ ALIRKEN entity metadata'sını da geri al"* kuralının
+**ileri** yönü: kısıtı **eklerken** de metadata hizalanır.
+
+---
+
+## HÜKÜM BEKLERKEN: ÜÇÜNCÜ YOL — **DİZİNİN KORUYUCU SEÇENEĞİYLE İNDİR** (ZORUNLU)
+
+Bir dizi (`sıra`) onaylandıktan **sonra**, o dizinin **içinde** yeni bir karar kalemi
+doğarsa iki bilinen davranış vardır ve **ikisi de kötüdür**:
+
+```
+(1) DURMAK              onaylı bir dizi, ilgisiz bir kalem için bekler
+(2) HÜKÜMSÜZ VARSAYMAK  ürün sahibinin kararı ajanın varsayımı olur (§2.4 ihlali)
+```
+
+**Üçüncü yol** (ürün sahibi onayı, 2026-09-06):
+> ### **DİZİNİN İÇİNDE DOĞAN KALEM, DİZİNİN *KORUYUCU* SEÇENEĞİYLE İNER —**
+> ### **VE FARKLI İSTENİRSE GERİ DÖNER.**
+
+**Koruyucu seçenek** = geri alınabilir · kapsamı genişletmeyen · veri/test **silmeyen** ·
+mevcut sözleşmeyi **sıkılaştıran** (gevşetmeyen) olan. Ölçülmüş vaka (`Z100`):
+```
+kalem 8  kırık test  →  (a) fixture düzeltilir + yeni kuralın testi eklenir   ← KORUYUCU
+                        (b) test silinir / senaryo reddedilir kabul edilir
+kalem 9  kod adı     →  (a) mevcut UNKNOWN_FU'ya düşer (yeni üye YOK)         ← KORUYUCU
+                        (b) aynı koda iki mesaj  (c) bugünkü hâli
+```
+İkisi de ürün sahibinin hükmüyle **aynı** çıktı — ama önemli olan bu değil: önemli olan
+**geri dönüşün ucuz** olması ve **açıkça beyan edilmesi**.
+
+⛔ **Şartlar (üçü de):**
+```
+1  dizi ZATEN onaylı olmalı — yeni bir dizi başlatmaz
+2  seçim RAPORDA açıkça "koruyucu seçenek, farklı istenirse geri döner" diye yazılır
+3  geri dönüş TEK DOKUNUŞ olmalı — değilse bu yol KULLANILMAZ, DURULUR
+```
+📌 Ve sınırı: **ürün davranışını genişleten** ya da **geri alınamaz** bir kalem asla bu
+yoldan inmez (veri silme · şema kısıtı · rota açma · enum üyesi) — onlar `§2.4`'e gider.

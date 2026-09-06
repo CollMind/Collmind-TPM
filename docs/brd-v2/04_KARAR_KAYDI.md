@@ -9497,3 +9497,222 @@ INV-B-009   türetilebilir alan saklanıyor (sku.gu_id = sku.fu.gu_id)
 T-273 komşusu  "veri henüz SAPMADI" örtüyor — kusur, ilk sapan satırla DOĞAR
 ```
 `T-351`'e kayıt satırı olarak gitti. **Ayrı task açılmadı** — sınıf zaten orada.
+
+---
+
+## `Z99` — HALKA-2 KAPANIŞ PAKETİ: pilot dosyaları FU taşımıyordu · brief kendi içinde çelişti · `T-064` ölçüldü
+
+> **Tarih:** 2026-09-06 · **Karar:** ürün sahibi (altı hüküm) · **Ölçüm:** Team Lead + şerit
+
+### `§1` · ⭐ SORU CEVAPLANDI — ÖLÇÜMLE, VE BEKLENTİNİN TERSİNE
+
+`Z98 §5` sormuştu: *"Wella'da actuals dosyası FU (ya da SKU) kodu taşıyor muydu? Muhtemelen
+evet."* Ölçüm:
+```
+actuals_2026-01.csv   cpl_code · category · channel_code · gross_amount · net_amount · discount_amount
+actuals_2026-02.csv   aynı
+```
+> ### **FU KODU YOK · SKU KODU YOK.** Pilot verisinin grain'i `CPL × kategori × kanal × dönem`.
+
+**Ve *"muhtemelen"*, hüküm olmadığı için dalgayı KİLİTLEMEDİ** — `M1` cevaptan bağımsızdı
+ve indi; yalnız backend yolu bekledi. `§2.4`'ün *"varsayma"* kuralı burada bir **sıralama**
+üretti, bir durma değil.
+
+**Hüküm:** `actuals_2026-01/02.csv` **SEED KURGUSUDUR** — gerçek veriden türetilmiş,
+pilot-export **DEĞİL** ⇒ FU kodu eklemek **seed tasarımıdır, uydurma değil**. Sınırları:
+FU'lar mevcut `forecasting_units`'tan, satırın kategorisiyle **hiyerarşiden tutarlı**
+(rastgele **YASAK**); satır sayısı + tutarlar **korunur**; `cpl_code`'dan FU türetme **YASAK**;
+sözleşme **gevşetilmez**.
+
+📌 Ve bedeli görünür oldu: sözleşme değişince `npm run seed` **kendiliğinden kırıldı**
+(`NO_VALID_ROWS`). **İstenen buydu** — seed, kendi sözleşmesini koşuyor.
+
+### `§2` · KAPI ADAYI — *"SEED DOSYALARI IMPORT SÖZLEŞMESİNDEN GEÇER"*
+
+```
+şekil    seed koşumunda parser red-sözlüğü 0 RED basar
+etki     sözleşme değişince seed KENDİLİĞİNDEN kırılır — istenen davranış
+kapatır  "1/3 doğru seed" sınıfını YAPISAL olarak (budget_policies 50/60 emsali)
+statü    ADAYLIK — inşa DEĞİL (üçüncü vaka kuralı)
+```
+📌 `Z91 §4`'ün (enum-üye × atayan) ve `Z94 §4`'ün (backend-üye ↔ FE-sözlük) kardeşi:
+üçü de *"iki temsil, biri sessizce geride kaldı"* sınıfına kapı.
+
+### `§3` · `PİN 7` — BRIEF KENDİ İÇİNDE ÇELİŞTİ, AJAN VARSAYMADI
+
+```
+istenen   PİN 7: FU-grain veriyle SKU-hedef ⇒ AÇIK RED
+yasak     §6: NotMatched reason ÜYESİ bu turda yok (Z91) · tenant hedef-grain alanı YOK
+⇒ reddi üretecek YOL da SEBEP de yok — ajan DUR dedi, tip sözleşmesine belgeledi
+```
+**Hüküm: `(a)` halka-3'e ertele.** `Z91` delinmez. Halka-3 brief'inin **ilk maddesi**:
+tenant grain-politikası alanı (`tanım → yazar → kısıt`, `Z98 §3`) + `GRAIN_MISMATCH` üyesi
+**üreticisiyle**.
+📌 Brief hatası Team Lead'indi: sözleşmenin *"tenant-konfig grain politikası"* satırını **var**
+sayıp pin yazdım. `§`: *bir DUR listesi değişikliğin geçtiği her sınırı saymalı* — burada
+brief'in **kendi** iki maddesi arasındaki sınır sayılmamıştı.
+
+### `§4` · `T-064` — İDDİA ÖLÇÜLDÜ, **DOĞRU**
+```
+on-invoice.service.ts:218,239   e.invoiceDate.toISOString()
+entity                          invoiceDate!: Date        ← YALAN: TypeORM `date`'i STRING hydrate eder
+canlı                           TypeError: … is not a function
+```
+`T-333`/`Z81` ailesi. **Hüküm: bu dalga kapatır** — `.toISOString()` kaldırılır, string
+doğrudan; `Date`'e çevirip geri çevirme **YASAK** (TZ kayması). Pin: gerçek parti `POSTED` +
+date-string **üç TZ'de aynı**.
+⭐ Ve ajan `PİN-5/6`'yı bu çağrıdan **ÖNCE** ölçtü — çağrı partiyi `FAILED`'e çekiyordu.
+`DISIPLIN`: *kanıt kurulumu ölçümü bozmasın — ajan tarafı, adıyla.*
+
+### `§5` · `INV-R-001` / `INV-R-002` — İLK KEZ ÖLÇÜLDÜ, VE KANIT **E2E'YE TAŞINIR**
+```
+INV-R-001   1/1 entry POSTED + karşılık gelen ledger DEBIT
+INV-R-002   Σ DEBIT 1000.00 == Σ POSTED discount 1000.00
+```
+`SYSTEM_INVARIANTS.md:1402` *"HOLDS VACUOUSLY"* → *"e2e-kanıtlı, sayıyla"*.
+**Kanıt DB'de değil, e2e'de yaşar:** üret → ölç → sil, her koşumda. DB'de bırakılan
+doğrulama satırları **temizlenir** — ne silindiği **basılarak** (`T-325`).
+`DISIPLIN`: *bir invaryant boş kümede sağlanıyorsa hiç ölçülmemiştir* (`T-273`'ün
+invaryant hâli).
+
+### `§6` · KÜÇÜK HÜKÜMLER
+- `getSummaryByFu` rotası **bağlanmaz** — kova + hücre kararı **halka-3 brief'ine**
+  (emsal `BL-4` kova-C / `MASTER_DATA_READ`; ölçümle gelsin). Guard'lar (`route-cell-map` +
+  `scope-ratchet`) doğru durdurdu — `T-266`.
+- 9/30 kırmızı test + `PİN-5/6` e2e'si → `qa-engineer`, ayrı el (`§3`).
+- `plans = 0` penceresi **KAPALI** — `plans` ailesine dokunan migration'lar **maliyet
+  satırıyla** gelir.
+
+### `§7` · SIRA
+`seed → T-064 → temizlik → qa → code-reviewer → M2 (1825) → tam e2e → push` →
+halka-2 **MATCH-READY** beyanı (*kapandı · açıldı · kapsanmadı*) → halka-3 brief'i.
+
+### `Z99 §8` · REVIEW — `B1` + sekiz 🟡, ve `getSummaryByFu` **`blocked-unreachable`**
+
+```
+B1  sözleşme değişti, ÜÇ e2e fixture'ı değişmedi → 400 NO_VALID_ROWS'a düşer   [TL doğruladı: 0/0/0, unit 10]
+S4  :525 yorumu "safe regardless of shape" — ÖLÇÜLDÜ, YANLIŞ (Istanbul'da Date şekli 06-14)
+    ⇒ HÜKÜM 3'ü beklemeden düzeltme: tercih DEĞİL, KUSUR
+S5  idempotency anahtarı İKİ formatlama — duplicate sessizce kaçabilir
+S1  invaryant e2e'si entry_direction ayırmıyor — reversal geldiği gün sessiz yanlış
+S3  summarizeByFu: üretim çağıranı 0  ⇒  `blocked-unreachable` (done DEĞİL — §4.2)
+S7  UNKNOWN_FU / UNKNOWN_SKU dalları testsiz (6 dalın 2'si)
+```
+📌 `S3`: rota bilerek bağlanmadı (`Z99 §6`, halka-3'e) — ama *"mekanizma var, yol yok"*
+ailesinin **dokuzuncusu** olmasın diye statü **adıyla**: `summarizeByFu` bu dalgada
+**`blocked-unreachable`**, `done` değil.
+
+⛔ **Reviewer DUR'u — ürün kuralı:** `fu_code` ile satırın `category`'si arasında **çapraz
+doğrulama yok** (kanal↔CPL için `:170-183`'te var). Bugün sessiz hata üretmiyor (FU yalnız
+kolona yazılıyor, tüketici yok — `S3`), ama rota bağlandığı gün *"kategori X satırı,
+kategori Y'nin FU'suna"* mümkün. **Hüküm ister.**
+
+### `Z99 §9` · ⭐ TAM E2E KIRMIZI — **DALGA MASUM**, `plans = 2` BİR YOLU İLK KEZ KOŞTURDU
+
+```
+mevcut ağaç, tek başına       4/20   plan.startDate.toISOString is not a function
+HEAD 6aada26, temiz worktree  4/20   AYNI hata   ⇒ kırmızı bu dalgadan ÖNCE vardı
+E4 (09-04) yeşildi            çünkü finance-reporting o yolu plans=0 iken HİÇ koşturmamıştı
+```
+> ### **`plans = 0` PENCERESİNİN KAPANMASI BİR MALİYET SATIRI DEĞİLDİ YALNIZ —**
+> ### **BİR KUSURU DA ORTAYA ÇIKARDI.** `T-273`: veri gelince kusur kendiliğinden doğar.
+
+**Sınıf:** `T-064` bir dosya değil — `type:'date'` kolonuna `Date` diyen **14 alan / 7 entity**
+(`T-374`, `P0`). Pozitif kontrol: doğru olan **1** (`on-invoice-entry`, bu dalgada).
+
+**⛔ Brief'in satır teşhisi YANLIŞTI** (`:263/:448` bir `grep` sonucuydu; gerçek suçlu stack
+trace'te `:859/:1319`). Debugger reprodüksiyonla düzeltti — kaldırılsaydı **çalışan kod
+bozulurdu**. *Bir sebep atfı, bulgunun kendisi kadar ölçüm ister* — bu kez atfı yapan Team Lead'di.
+
+**⭐ Yazma yolunda canlı GÜN KAYMASI bulundu ve kaldırıldı:** `plan.service` `new Date(dto.*)`
+→ TypeORM `{utc:false}` lokal bileşen: `America/Los_Angeles`'ta `2026-01-01 → 2025-12-31`,
+`2026-03-01 → 2026-02-28`. **Istanbul'da sessiz** (`+03`). Tip düzeltmesi karışımı **kaldırdı**.
+
+**Kalan canlı crash-class site:** `agreement-transaction.service.ts:79` — `T-374` kalan şeridi.
+Sonuç: `3 suite 48/48 · 11 unit suite 169/169 · tsc 0 · guards 0`.
+
+---
+
+## `Z100` — HALKA-2 **MATCH-READY**: *"eşleştirilebilir veri üretir, EŞLEŞTİRMEZ"*
+
+> **Tarih:** 2026-09-06 · **Karar:** ürün sahibi (on bir hüküm) · **Ölçüm:** Team Lead + altı şerit
+
+### `§0` · MANŞET — ABARTI ÖNLEYİCİ
+> ### **HALKA-2 *"MATCH-READY"* ÜRETİR — *"MATCHED"* DEĞİL.**
+`Z96 §5`'in dersi: bir kapanış beyanı **kapsamadığını yazmadan** verilemez, ve bu kez
+kapsanmayan şeyin **adı manşettir**.
+
+### `§1` · KAPANDI
+```
+SÖZLEŞME       FU-kodu YA DA SKU-kodu ZORUNLU · SKU→FU DOĞRUDAN · invoice_no opsiyonel
+fu_id YAZARI   halka-2 backend  ⇒  M2 (1825) ile NOT NULL   (Z98 §3 sırası TAM)
+TÜKETİCİ       sales_actuals summarizeByFu — servis/repo CANLI (rota bağlanmadı, aşağı)
+ON-INVOICE     CANLI · INV-R-001/002 İLK KEZ ÖLÇÜLDÜ (e2e, üret→ölç→sil)
+RESOLVER       arayüz: Matched{key} | NotMatched{reason} · reason KASITLI BOŞ (Z91 randevusu)
+FU↔KATEGORİ    FU_CATEGORY_MISMATCH — üye + ÜRETİCİSİ aynı turda
+T-064 (kısmi)  on-invoice-entry.invoiceDate · plan.startDate/endDate
+```
+
+### `§2` · AÇILDI — hepsi ADIYLA, task numarasıyla
+```
+T-373  P0  on-invoice zarf eşleşmesi KATEGORİYİ ayırt etmiyor (sessiz yanlış zarf, finansal)
+T-374  P0  `type:'date'` + `Date` — kalan 12 alan / 6 entity
+           agreement-transaction.service.ts:79  ÖLÇÜLMÜŞ canlı crash-class
+T-351  ⛔ ACİLİYET ARTTI — sku.gu_id ↔ fu.gu_id bağımsız kolonlar, eşitleyen kısıt 0;
+           "seed tesadüfü" BİR HAFTADA bir red kodunun varlık sebebi oldu
+GRAIN_MISMATCH + tenant grain-politikası alanı  →  halka-3'ün İLK maddesi
+summarizeByFu rotası  →  blocked-unreachable (kova + hücre kararı halka-3'e)
+```
+
+### `§3` · KAPSANMADI — beyanın SINIRLARI
+```
+eşleştirme MANTIĞI (gövde) · plan/anlaşma BAĞI · hakediş ETKİSİ
+NotMatched reason ÜYELERİ (üreticileriyle halka-3'te)
+RETURN enum üyesi (iade hükmü + üreticisi)
+```
+
+### `§4` · ⭐ DALGANIN EN PAHALI DERSİ — **DALGA MASUMDU**
+```
+tam e2e   3 suite / 17 test KIRMIZI      plan.startDate.toISOString is not a function
+HEAD 6aada26 temiz worktree               AYNI 4/20   ⇒ kırmızı DALGADAN ÖNCE vardı
+E4 (09-04) yeşildi                        çünkü plans=0 iken o yol HİÇ koşmamıştı
+```
+> ### **`plans = 0` PENCERESİNİN KAPANMASI BİR MALİYET SATIRI DEĞİLDİ YALNIZ —**
+> ### **BİR KUSURU DA ORTAYA ÇIKARDI.**
+
+Ve düzeltme **ikinci bir şey** buldu: yazma yolunda **canlı gün kayması**
+(`America/Los_Angeles`: `2026-01-01 → 2025-12-31`), **Istanbul'da sessiz**.
+
+### `§5` · ÜÇ ÇÜRÜYEN HİPOTEZ — üçü de ÖLÇÜMLE
+```
+"SKU→FU hiyerarşik ⇒ çelişki imkânsız"     Sku.guId ⊥ FU.guId, kısıt 0        → kural İSTİSNASIZ
+"E2E-önekli ⇒ teardown eksik"               öneki koyan e2e DEĞİL, ad-hoc script → kapatılacak yol YOK
+"red sözlüğü 7→8"  /  "distinct 15"         gerçek 14                            → ONUNCU elle-sayı vakası
+```
+📌 Üçüncüsünde **iki taraf da** yanıldı: Team Lead'in yanlış sayısı, başka bir yanlış
+sayıyla *"denetlendi"*, ve ajanın **doğru** sayısı iki kez sorgulandı.
+⇒ `DISIPLIN`: **sayı yazma, LİSTE yaz — Team Lead paketlerinde de.**
+
+### `§6` · BİRLEŞME KUSURU — *"ayrı ayrı yeşil"* YETMEDİ
+```
+şerit A  migration: fu_id NOT NULL        ← ŞEMA
+şerit B  entity: nullable: true           ← METADATA
+ikisi de AYRI AYRI yeşil · çelişki YALNIZ BİRLEŞMEDE
+```
+Yakalayan **tip zorlamasıydı**, şans değil — ve `fuId?` → `fuId!` sıkılaştırması **hiçbir
+çağrıyı kırmadı**, yani yazar yolunun **zaten doğru** olduğunun bağımsız kanıtı.
+
+### `§7` · SÜREÇ — **ÜÇÜNCÜ YOL**
+Onaylı bir dizinin **içinde** doğan iki karar kalemi (kırık test · kod adı), *durmak* ile
+*hükümsüz varsaymak* arasında **koruyucu seçenekle** indirildi ve *"farklı istenirse geri
+döner"* diye beyan edildi. İkisi de ürün sahibinin hükmüyle **aynı** çıktı.
+⛔ Sınırı yazılı: **ürün davranışını genişleten ya da geri alınamaz** hiçbir kalem bu
+yoldan inmez — onlar `§2.4`'e gider.
+
+### `§8` · KAPILAR
+```
+tsc 0 · unit 84 suite / 1501 · e2e 64 suite / 873 exit 0 · T-047 PASS
+guards 0 (TOPLAM 0 bulgu · money-float + lint-ratchet ratchet'leri temiz) · code-reviewer ✅
+```
+Artık temizliği: `docs/verification/HALKA2_ARTIK_TEMIZLIGI_2026-09-06.md` — kaybolan **tam
+olarak iki satır**, eklenen **hiçbiri**.

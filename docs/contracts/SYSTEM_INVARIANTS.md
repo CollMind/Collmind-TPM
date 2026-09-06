@@ -689,6 +689,38 @@ here so they are designed in rather than retrofitted.
 - **Status:** HOLDS
 - **Guard:** TEST → add `DB` (`CHECK`: `status='REPLACED'` requires both columns non-null)
 - **Source:** audit candidate #15
+- ⛔ **İSTİSNA — `F12` deseni, eski metin SİLİNMEDİ (halka-2, `M2`, migration `1825`,
+  2026-09-06):**
+  ```
+  istisna adı        seed-soylu tek seferlik silme (Z100, migration 1825)
+  üç batch id         7c7b2c18-9bf4-45ca-ae87-4c596ecf5a34
+                      d0fe7bc1-3f85-4eb8-bf59-4258264eefa6
+                      23c727be-b06c-4724-b9e2-74f288ec9345
+                      (+ bağlı 3 `sales_actuals` satırı, aynı `batch_id`'lerle)
+  tanım               batch seed'e ait ∧ sözleşme-öncesi (fu_id importı henüz
+                      yoktu — `1824`'ün NULLABLE turu, `1825`'in NOT NULL turundan
+                      önce; bkz. `docs/process/HALKA2_M2_BRIEF.md §0`)
+  snapshot referansı  migration'ın kendi ÖNCE/SONRA sayımı: ÖNCE
+                      `sales_actuals` 6 satır / `sales_actual_batches` 6 satır
+                      (3 REPLACED + 3 ACTIVE) → SONRA 3/3 (REPLACED 0)
+                      (`1825000000000-DeleteSeedReplacedBatchesAndEnforceFuIdNotNull.ts`
+                      `describeState()`/`up()`, dev DB'de canlı ölçüldü)
+  kapsam              KAPALI LİSTE — genel "seed silinebilir" kuralı DEĞİL.
+                      Migration bu üç id'yi HARD-CODE eder (bir `WHERE
+                      status='REPLACED' AND fu_id IS NULL` ŞARTI DEĞİL) —
+                      çünkü bir şart, gelecekte doğacak meşru bir REPLACED
+                      satırını da (fu_id importı sözleşme-öncesi olmayan bir
+                      sebepten NULL kalmışsa) sessizce silebilirdi. Hüküm bir
+                      **liste** verdi, bir **kural** vermedi.
+  geri alınabilirlik  `down()` yalnız `fu_id` kısıtını kaldırır (`DROP NOT
+                      NULL`) — silinen üç satır KALICI OLARAK gitmiştir,
+                      `down()` bunları GERİ GETİRMEZ (DELETE geri alınamaz).
+                      Kabul edilebilir çünkü veri seed-soylu: `npm run seed`
+                      aynı sınıftan satırları yeniden üretir.
+  ```
+  Bu istisna `INV-R-004`'ün **`HOLDS`** statüsünü DEĞİŞTİRMEZ — invaryantın
+  amacı gerçek yükleme geçmişini korumaktır, ve bu üç satır o evrenin
+  (gerçek ingest geçmişi) İÇİNDE değildi.
 
 ### INV-R-005 — `sales_actuals.discount_amount` never contributes to any ledger entry, budget reservation, or spend figure.
 - **Status:** HOLDS
@@ -1398,8 +1430,8 @@ a tenant profile — and TTM's copy marked historical.
 | `INV-L-006` | HOLDS · beş tablo | HOLDS · **dört tablo** | `main.budget_transaction_logs` **tablosu yok** (`Z24`) |
 | `INV-B-003` | VIOLATED at HEAD · HOLDS with **uncommitted** delta | ⚠️ **KISMEN** — bölünmüş boyutta sağlanıyor, bölünmemişte **ÖLÇÜLMEDİ** | `T-057` **commit edildi**; `on-invoice.service.ts` iki aşamalı çözüm |
 | `INV-B-007` | BLOCKED → `D-09` | ⛔ **ÖLÇÜLMEDİ** *(engel kalktı, ölçüm yapılmadı)* | `K-2.2.3` `L2`'de kararlaştırdı · `main.budget_allocations` **tablosu yok** |
-| `INV-R-001` | ⚠️ HOLDS VACUOUSLY | ⛔ **ÖLÇÜLMEDİ** | `main.on_invoice_entries` **sıfır satır** — düzeltme indi, **veri gelmedi** |
-| `INV-R-002` | ⚠️ HOLDS VACUOUSLY | ⛔ **ÖLÇÜLMEDİ** | aynı ölçüm |
+| `INV-R-001` | ~~⚠️ HOLDS VACUOUSLY~~ | ✅ **e2e-KANITLI, sayıyla** (2026-09-06, `Z99 §5`) | `test/on-invoice-ledger-invariants.e2e-spec.ts` — gerçek parti, **iki dal aynı koşumda**: `1/1 POSTED ↔ ledger DEBIT` · `ERROR + dolu validation_errors` · üret → ölç → sil · mutasyon (`amount: 0`) **kırmızı** |
+| `INV-R-002` | ~~⚠️ HOLDS VACUOUSLY~~ | ✅ **e2e-KANITLI, sayıyla** (2026-09-06, `Z99 §5`) | aynı suite: `Σ DEBIT 222.75 == Σ POSTED discount 222.75`; `entry_direction='DEBIT'` filtreli — filtresiz sorgu synthetic CREDIT'le `1222.74` verdi (**ayırt edici**) |
 | `INV-N-002` | VIOLATED · guard **NONE** | VIOLATED · guard **`GUARD SCRIPT` (ratchet)** | `money-float.sh --ratchet` doğdu, bugün **exit 0** |
 | `INV-N-004` | 🔴 VIOLATED · beş yüzey | ⛔ **ÖLÇÜLMEDİ** — beş ihlal noktasının **hepsi kapalı**, ama **tek noktanın testi yok** | `\|\| 'GREEN'` ve `!ragStatus` **sıfır**; hepsi `utils/ragCoverage.ts`'ten geçiyor; `main.plans.coverage_ratio` **var** |
 | `INV-C-002` | BLOCKED · *"anonimleştirme ÖLÇÜLMEDİ"* | BLOCKED · **ölçüldü: YOK** | `anonymiz\|anonimle` üretimde sıfır eşleşme |

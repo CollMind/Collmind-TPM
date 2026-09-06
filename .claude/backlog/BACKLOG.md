@@ -464,7 +464,7 @@ status: active        # planned | active | closed
 - [[T-348]] `plan_mechanic_values.plan_sku_id` — `S1`/`Z74`'ün **taşıyıcısı** (FU-varsayılan + SKU-override) — **todo** · `Z79 §2` · migration **1821** · ⛔ `NULLS NOT DISTINCT` + `plans=0` penceresi
 - [[T-349]] ✅ FE'nin **40 sessiz sıfırı** — ⛔ `Q20`'nin işi **görüntü katmanında geri alınıyor** — **todo** · `Z79 §8` (`8b` ÖNCE)
 - [[T-350]] ✅ `calculateAllSpendsForFU` **ÖLÜR** — dokuzuncu aday, **tüketici kazanmadı** — **todo** · `Z79 §7`
-- [[T-351]] Altı **yazarsız** `*_spend` kolonu — `T-270` kuralı: ya yazar kazanır ya ölür; **ikisi OKUNUYOR** — **todo** · `Z79 §8`
+- [[T-351]] Altı **yazarsız** `*_spend` kolonu — `T-270` kuralı: ya yazar kazanır ya ölür; **ikisi OKUNUYOR** — **todo** · `Z79 §8` · ⛔ **ACİLİYET ARTTI** (`Z100`): `sku.gu_id ↔ fu.gu_id` bağımsız kolonlar, eşitleyen kısıt **0** — *seed tesadüfü* bir haftada `FU_CATEGORY_MISMATCH`'in varlık sebebi oldu; üç seçenek **ertelenmez**
 - [[T-352]] `ŞART-6` kalanı — dört kalem *"canlıda hesaplanıyor, KPI olarak **doğmuyor**"*; ⛔ **task'ları YOKTU** — **todo**
 - [[T-353]] ✅ Frontend suite **YÜK ALTINDA KARARSIZ** — aynı ağaç iki farklı cevap veriyor (`5↔6` failed, izole `0`) — **todo** · ⛔ teşhis YAPILMADI
 - [[T-354]] Sessiz sıfırın **PLAN ekseni** + beş dosya daha — `8b`'nin **ölçtüğü ama kapsamadığı** kalan — **todo**
@@ -477,6 +477,8 @@ status: active        # planned | active | closed
 - [[T-361]] `getBatchRows` **SINIRSIZ** — sayfalama yok, her satırın `raw` JSONB'si dönüyor, yazma yolu `CHUNK_SIZE=500` ile binlerce satır bekliyor — **todo** `P2`
 - [[T-362]] ✅ `app-runtime-grants` guard'ı **KAYNAK ↔ KAYNAK** karşılaştırıyor (`psql` çağrısı **0**) — `02-runtime-grants.sql:724` GRANT'i **beyan ediyor**, canlı DB'de `app_runtime` **sıfır ayrıcalık**, guard **YEŞİL** · `T-249`'u yakalamak için doğdu, **tam o sınıfın vakasını kaçırdı** — **done** `2026-09-05`
 - [[T-372]] `app-runtime-grants` **kaynak A KÖR** — `v_budget_summary` yalnız `manager.getRepository` (4. kanal), `lta_plan_overrides` yalnız `leftJoinAndSelect` **ilişki yüklemesi** (5. kanal) ile erişiliyor · guard'ın *"4. kanal fark üretmez"* ölçümü **ESKİDİ** · `B\A` yönü türetme genişleyene kadar **eklenmedi** — **todo** `P1`
+- [[T-373]] ⛔ On-invoice zarf eşleşmesi **KATEGORİYİ hiç ayırt etmiyor** — `sku.service#findOne` `genericUnit.category` yüklemiyor ⇒ `if (category)` filtresi **hiç çalışmıyor** ⇒ aynı dönem/kanalda birden çok kategori zarfı varsa **sessizce yanlış zarf** (finansal yol, `§2.5`) · `T-057` yakalamadı (her dönemde tek zarf, `§2.7` vaka 6) — **todo** `P0`
+- [[T-374]] ⛔ `type:'date'` kolonu, TS tipi `Date` — **14 alan / 7 entity YALAN** (`T-064` bir dosya değil SINIF) · `plans=0` penceresi kapanınca `finance-reporting:263,448` **ilk kez** patladı (17 e2e kırmızı, HEAD'de de aynı — dalga masum) · `ledger-entry.postingDate` finansal, leksik `<`/`>` **sessiz** — **todo** `P0`
 - [[T-363]] Danışman paketi Bölüm 1 — **5-halka akış doğrulaması**, bugünkü canlı ölçüm (dört rol bizzat gezildi) + statü-akışı fark tablosu (Excel §4) + **68 ekran görüntüsü** (`docs/domain/screenshots/INDEX.md`) — çıktı `docs/domain/BOLUM1_AKIS_DOGRULAMASI_TASLAK.md` — `architect` (Team Lead orkestre) — **review**
 - [[T-364]] `PENDING_FINANCE_REVIEW` planı **hiçbir ekranda görünmüyor** — mekanizma-var-yol-yok sınıfının dokuzuncu vakası (`T-363 §1`) — `frontend-engineer` — **todo** `P1`
 - [[T-365]] Bütçe panelinde **"Consumed ₺0" ama bakiye zaten düşmüş** — canlı-yanlış görünüm (`T-363 §5a`), `T-366`'ya bağımlı — `frontend-engineer` — **todo** `P1`
