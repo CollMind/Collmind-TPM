@@ -10268,3 +10268,141 @@ ek worktree yok · reflog temiz · **ezilmiş değişiklik YOK**.
 > ### Sapma bu turda **zararsızdı** — ama bildirilmesi, gerekçesinden **daha değerlidir**.
 > ### Sessizce geçilseydi, aynı sapma paralel bir turda başkasının commit edilmemiş işini
 > ### siler ve o zaman **görünmez** olurdu.
+
+---
+
+## `Z105` — DÖRT HÜKÜM: **DÖNEM-ARALIĞI** · KİMLİK **DEĞİŞMEZ** · TEK TEMSİL **UUID** · İKİ PARALEL DALGA
+
+> Ürün sahibi, 2026-09-07 · `T-375` dalgasının kapanışında verilen dört cevap.
+> ⛔ Bu kayıt **dondurulmuş `BRD v2.0`'da** bir düzenleme **AÇAR** (`Z1`): `K-2.2.1`'in
+> **DÖRDÜNCÜ** ölçümlü düzeltmesi. *Donmuş belge "donmuş" kalır — yalnız **izli** değişir.*
+
+### `§1` · ⛔ VE ÖNCE BİR HÜKÜM KAYBI: `period='2026-04'` BİR KARAR DEĞİL, BİR **BOŞLUKTU**
+
+Dönem-aralığı hükmü (*"`period_from`/`period_to`, kapsayıcı `'YYYY-MM'`,
+`Q2 = 2026-04..2026-06`"*) **bir gün önce verilmişti**. Ölçüldü:
+
+```
+grep -rn "period_from|periodFrom|period_to|periodTo"  docs/  .claude/   →  SIFIR
+```
+
+⇒ Hüküm **hiçbir belgeye taşınmamıştı**. Zincir:
+
+```
+hüküm belgeye geçmedi
+  → Team Lead boşluğu TANIMSIZLIK sandı — Z102 §9'a "hüküm 'Q2' dedi, kolon YYYY-MM
+    taşıyor" YAZDI ve oraya bir KARAR koydu
+  → period = '2026-04' + yıl-LIKE fallback
+  → BULANIK BİR EŞLEŞME TAŞIYICI OLDU  ⇒  T-380 (sessiz tie riski) DOĞDU
+  → ve bunu ürün sahibi, İKİ DALGA SONRA fark etti
+```
+
+> ### ⛔ Asıl hata bir karar vermek değil, **VAR OLUP OLMADIĞINI SORMAMAKTI.**
+> ### Bir *"Team Lead kararı"* yazmadan önceki soru: **"bu noktada bir hüküm var mı — nerede yazılı?"**
+
+📌 `CLAUDE.md §3`'ün *"tek yazar yetmez, tek **KANAL** gerekir"* maddesinin **belge tarafı**:
+orada bir kural metni **iki yere** ulaşmıştı, burada bir hüküm **hiçbir yere**. Aynı eksik.
+⇒ `DISIPLIN`: *"Konuşmada verilen bir HÜKÜM, BELGEYE geçmediyse DALGAYI GEÇMEZ."*
+
+### `§2` · HÜKÜM 12 — ZARF DÖNEMİ BİR **ARALIKTIR**, BİR NOKTA DEĞİL
+
+```
+period_from / period_to      kapsayıcı, 'YYYY-MM'        Q2 = 2026-04 .. 2026-06
+eşleşme                      işlem-dönemi ∈ [from, to]
+⛔ period LIKE 'YYYY%' fallback'i  ÖLÜR
+tie                          YAPISAL OLARAK İMKÂNSIZ — aynı kategori+kanal için
+                             aralıklar KESİŞEMEZ (EXCLUDE-kısıtı ya da CHECK+uygulama,
+                             ⛔ hangisi ÖLÇÜMLE seçilir)
+```
+
+⭐ **Aralık modeli, `T-380`'in üç seçeneğinden ikisini ORTADAN KALDIRIR:**
+`(B)`'nin *"tie'da açık hata"*sı **gereksizleşir** (tie doğamaz), `(C)`'nin **96 zarfı ölür**
+(bir aralık zaten çeyreği ifade eder). Yani doğru model, bir kuralı **uygulamak** yerine
+**gereksiz kılıyor** — `§2.5`'in en güçlü biçimi.
+
+⛔ `K-2.2.1`'e `F12` **evet** — dördüncü ölçümlü düzeltme. **`DALGA-B` ile iner** (kolon şekli
+ve tüketicileri o turda ölçülecek); bu kayıt düzenlemeyi **açar**.
+
+### `§3` · HÜKÜM 13 — KALICI KİMLİKLER: YENİ ÜRETİM TENANT-GÜNÜNDEN, **GEÇMİŞ DEĞİŞMEZ**
+
+```
+yeni üretim   plan/agreement kodu TENANT gününden türer
+geçmiş kod    DEĞİŞMEZ — yeniden-adlandırma turu AÇILMAZ
+gerekçe       KOD BİR KİMLİKTİR: yanlış-yıl taşıyan bir kod bile REFERANSLARIYLA yaşar
+              (append-only ruhu, K-2.2.16 / K16 ile aynı aile)
+```
+
+⛔ **Ve ölçüm yine de ZORUNLU:** üretilmiş kodlarda yanlış-yıl var mı — **sayılır**.
+Canlıda **muhtemelen sıfır** (`plans` 2 · `agreements` 5, hepsi Ağustos–Eylül; yıl-sınırı
+penceresi yalnız **31 Aralık 21:00–24:00 UTC**) — ⛔ **ama *"muhtemelen"* yazılmaz, SAYILIR.**
+Varsa: bir **`F12` notu** (*"kod `X`, üretim-anı `Y`, tenant-günü `Z` olmalıydı"*) —
+**değiştirilmez**.
+
+📌 Bu, `DISIPLIN`'in *"elle yazılmış sayı"* ailesinin tersi bir uygulaması: burada sayı
+**küçük ve muhtemelen sıfır**, ama tam da bu yüzden **yazılmaz, ölçülür** — sıfır olduğunu
+*bilmek* ile *sanmak* arasındaki fark, bir `F12` notunun gerekip gerekmediğidir.
+
+### `§4` · HÜKÜM 14 — TEK TEMSİL **UUID**; VE ASIL KUSUR `0/GREEN`
+
+```
+kimlik        UUID          — ad doğruyu söyler
+kod           insan-etiketi — anlaşma-kodu ÖMÜR-BOYU-TEKİL ama KİMLİK DEĞİL
+backend       `id`'ye geçer · çağrı yerleri LİSTE olarak (T-373 deseni)
+"zarf yok"    → UNMEASURABLE / AÇIK HATA   (üç-çıktı yasası: geçti · kaldı · ÖLÇEMEDİM)
+```
+
+⛔ **Ve 20+ çağrı yeri `İlke 1`'e ÇARPMAZ** — çünkü bu bir esneklik değil, bir **canlı yanlış**:
+frontend UUID gönderiyor, backend kod bekliyor ⇒ **eşleşmiyor** ⇒ **sessiz `0/GREEN`**.
+
+> ### Sessiz-yeşilin en tehlikeli türü: bir **finansal ekranda** *"bütçe rahat"* yazıyor,
+> ### ve o cümlenin kaynağı bir **eşleşmeme**.
+
+Ölçek büyükse **iki dalga** — ⛔ **yön değişmez.**
+
+### `§5` · HÜKÜM 15 — İKİ PARALEL DALGA, SONRA `halka-3`
+
+```
+DALGA-A (agreement / tarih)
+  1830 NOT NULL  +  T-383 (üç taban → tenant-TZ, YEDİ yer LİSTE)
+  + T-378 (bayat kategori: FU yeniden-sınıflanırsa resolver CANLI-TÜRETİM mi SAKLI mı
+           — ⛔ T-378 ile 1830 AYNI SORUDUR)
+  + resolveEffectiveCategoryId FU-fallback'i NOT NULL sonrası "yol-yok"a düşüyor mu
+    ⇒ ÖLÇÜLÜR; ölürse ölür (gerekçesiyle)
+
+DALGA-B (budget)
+  T-380 ARALIK modeli + KESİŞME kısıtı + K-2.2.1 F12
+  + T-379 UUID tek-temsil + 0/GREEN'in ÖLÜMÜ
+
+⛔ dosyalar AYRIK · birleşme-anı kuralı: TAM-e2e TEK · şema ↔ entity aynı turda
+
+SONRA  halka-3 — grain kararı T-380'in ARALIK hükmüyle NETLEŞTİ (bulanık eşleşme YOK)
+       tenant-grain-politikası · GRAIN_MISMATCH + ÜRETİCİSİ (Z91) ·
+       NotMatched ilk üyeleri · summarizeByFu kova/hücre
+
+KUYRUK T-376 · T-377 · T-381 · T-382  — halka-3'ü BLOKLAMIYOR
+       ⚠️ T-377 (cleanup RESTRICT'e çarpar) TEST-TABANI HİJYENİ — ilk uygun ara
+```
+
+### `§6` · ⛔ BU DALGANIN KALICI MİRASI — İKİ CÜMLE, İKİSİ DE `DISIPLIN`'DE
+
+```
+1  "Bir LİSTE vermek, EVRENİ tanımlamak değildir; doğru soru 'şu üç yeri taşı' değil,
+    'bu soruyu BAŞKA HANGİ ŞEKİLDE soruyoruz'."
+      §7.1'in BEŞ ihlali (DÖRDÜ Team Lead'in) · beşinde de KAPILAR YEŞİL
+      yakalayan: iki kez code-reviewer, bir kez bir SELECT, bir kez (eksik) kendi tarama
+      ⇒ SINIF-TARAMASI HİÇBİR KAPIYA BAĞLI DEĞİL — bir İNSAN DİSİPLİNİDİR
+
+2  "Yanlış bir KAPANIŞ aramayı DURDURUR — bir hata en azından KENDİNİ GÖSTERİR."
+      Z104 §3: blocker bir CÜMLEYDİ, davranış değil
+```
+
+### `§7` · VE SİSTEM DOĞRU ÇALIŞTI
+
+```
+DÖRT tur review · İKİ blocker · ikisi de HAKLI
+ikisi de kapıların GÖRMEDİĞİ sınıftan (biri PARAYA bağlı bir yol, biri bir CÜMLE)
+ürün sahibi kaydı: "sistem doğru çalıştı"
+```
+
+⚠️ Ve `§1`'in eklediği: sistemin **görmediği** bir şey de vardı — **belgeye geçmemiş bir
+hüküm**. Onu ne kapı ne review yakaladı; **ürün sahibi**, iki dalga sonra yakaladı.

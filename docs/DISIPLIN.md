@@ -6955,3 +6955,92 @@ kalem 9  kod adı     →  (a) mevcut UNKNOWN_FU'ya düşer (yeni üye YOK)     
 ```
 📌 Ve sınırı: **ürün davranışını genişleten** ya da **geri alınamaz** bir kalem asla bu
 yoldan inmez (veri silme · şema kısıtı · rota açma · enum üyesi) — onlar `§2.4`'e gider.
+
+---
+
+## Bir LİSTE vermek, EVRENİ tanımlamak değildir (ZORUNLU)
+
+**Bir sınıfı kapatırken verilen şey bir YER LİSTESİ ise, kapatılan şey o listedir — sınıf değil.**
+
+Doğru soru *"şu üç yeri taşı"* **değil**, ***"bu soruyu BAŞKA HANGİ ŞEKİLDE soruyoruz"*** —
+ve o soru **şekilleri ÖNCE ADLANDIRMAYI** gerektirir.
+
+Ölçülmüş vaka (2026-09-07, `T-375` / `Z104 §6`): *"bugün"* kavramı tek tabana indirilecekti.
+Brief **üç tüketiciyi adıyla** verdi. Şerit dördüncüsünü kendi buldu. Ama beşinci–yedinci
+**başka bir ŞEKİLDEYDİ** ve ne brief'in listesi ne Team Lead'in *"kardeş yol"* taraması onları
+kapsıyordu:
+
+```
+ŞEKİL 1  new Date() + takvim alanı           → kalıcı kimlik · finansal pencere
+ŞEKİL 2  new Date() + setHours + karşılaştırma → AYNI if'te İKİ TABAN
+ŞEKİL 3  new Date() → DB karşılaştırması      → takvim sınırı DB OTURUM TZ'sine düşer
+⇒ "bugün" ÜÇ TABANDA yaşıyordu: sunucu-yerel · UTC · DB oturumu
+```
+
+⛔ **Ve Team Lead'in kendi taraması DA bir şekle bağlıydı** — yani bu kural yalnız brief
+yazana değil, **doğrulayana** da bakar. `§`'nin *"kapsam maskelemesi — desen çalışır, EVREN
+eksiktir"* maddesinin **kavram** tarafı: orada evren bir **dizin** eksikti, burada bir **şekil**.
+
+**Pratik:** bir sınıfı kapatan turda, listeden **önce** şu iki satır yazılır —
+```
+bu soru kaç FARKLI ŞEKİLDE sorulabilir?      ← şekilleri adlandır
+her şekil için tarama deseni nedir?          ← ve her desen AYRI ölçülür
+```
+
+📌 Ve `§7.1` bu oturumda **beş kez** ihlal edildi (dördü Team Lead'in), **beşinde de kapılar
+YEŞİLDİ**. Yakalayan her seferinde ya `code-reviewer` ya bir `SELECT` oldu.
+⛔ **Sınıf-taraması hiçbir kapıya bağlı DEĞİLDİR — bir insan disiplinidir.** Bu, kapıların
+eksikliği değil, sınıfın **kapıya dönüşmeyen** yarısıdır.
+
+---
+
+## YANLIŞ BİR KAPANIŞ, ARAMAYI DURDURUR — bir hata en azından kendini gösterir (ZORUNLU)
+
+**Bir kapanış iddiası (*"bu sınıf artık yok"*, *"hiçbir yerde kullanılmıyor"*) ölçülmeden
+yazılmaz — ve yazıldığında SINIRIYLA yazılır.**
+
+Ölçülmüş vaka (2026-09-07, `Z104 §3`): bir spec dosyasının başında
+*"sunucu yereli artık **hiçbir üretim yolunda** kullanılmıyor"* yazıyordu. Ölçüldü: **üç canlı
+üretim yolu**, üçü de finansal, biri **aynı turun değiştirdiği dosyanın içinde**.
+
+`code-reviewer` bunu **davranış** olduğu için değil, **normatif** olduğu için **blocker** saydı:
+
+> ### Bir hata en azından **kendini gösterir**. Yanlış bir **kapanış** ise **aramayı durdurur** —
+> ### sonraki okuyucu sınıfı kapalı sanar ve kardeş yolları **bir daha aramaz**.
+
+📌 `§7.1`'in *"bir hatayı belgelemek onu koruma altına alır"* maddesinin **daha pahalı** hâli:
+orada korunan şey bir kusurdu, burada korunan şey bir **kusurun yokluğu iddiası**.
+
+**Pratik:** kapanış cümlesi **kapsamını taşır** — *"`X` yardımcısının tüketicilerinde"*,
+*"`Y` modülünde"*. Kapsamsız bir *"hiçbir yerde"* yazılmaz.
+
+---
+
+## Konuşmada verilen bir HÜKÜM, BELGEYE geçmediyse DALGAYI GEÇMEZ (ZORUNLU)
+
+**Bir ürün-sahibi hükmü bir dokümana taşınmadıysa, bir sonraki turun girdisi DEĞİLDİR —
+ve o turda yerine bir "Team Lead kararı" doğar.**
+
+Ölçülmüş vaka (2026-09-07, `T-375` / `Z105`): dönem-aralığı hükmü
+(*"`period_from`/`period_to`, kapsayıcı `'YYYY-MM'`, `Q2 = 2026-04..2026-06`"*) bir gün önce
+verilmişti. Ölçüm: `grep -rn "period_from\|period_to" docs/ .claude/` → **hiçbir belgede yok**.
+
+Sonuç zinciri:
+```
+hüküm belgeye geçmedi
+  → Team Lead boşluğu TANIMSIZLIK sandı ve "hüküm 'Q2' dedi, kolon YYYY-MM taşıyor" YAZDI
+  → yerine bir KARAR koydu: period = '2026-04' + yıl-LIKE fallback
+  → bulanık bir eşleşme TAŞIYICI oldu ⇒ T-380 (sessiz tie riski) DOĞDU
+  → ve bunu ancak ürün sahibi, iki dalga sonra fark etti
+```
+
+⛔ **Ve asıl hata bir karar vermek değil, VAR OLUP OLMADIĞINI SORMAMAKTI.** Bir *"Team Lead
+kararı"* yazmadan önce sorulacak soru: **"bu noktada bir hüküm var mı — ve nerede yazılı?"**
+
+📌 `CLAUDE.md §3`'ün *"tek yazar yetmez, tek KANAL gerekir"* maddesinin **belge tarafı**:
+orada bir kural metni **iki yere** ulaşmıştı; burada bir hüküm **hiçbir yere** ulaşmadı.
+İki hata, aynı eksik: **kanal**.
+
+**Pratik:** bir hüküm verildiği turda **karar defterine** ya da ilgili task dosyasına geçer.
+Geçmediyse, bir sonraki tur onu **bulamaz** — ve *"bulamadım"* bir mazeret değil, **ölçülmüş
+bir sonuçtur.**
