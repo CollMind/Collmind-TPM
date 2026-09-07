@@ -9716,3 +9716,110 @@ guards 0 (TOPLAM 0 bulgu · money-float + lint-ratchet ratchet'leri temiz) · co
 ```
 Artık temizliği: `docs/verification/HALKA2_ARTIK_TEMIZLIGI_2026-09-06.md` — kaybolan **tam
 olarak iki satır**, eklenen **hiçbiri**.
+
+### `Z100 §9` · ⭐ `Z94`'ÜN **VERİ-SIFIR-YEŞİLİ** RİSK NOTU — İLK ÖLÇÜLMÜŞ DOĞRULAMASI
+
+`BL-3`'e bir **risk notu** koymuştuk: *"veri yokken yeşil olan bir yol, veri girer girmez
+kusur gösterebilir."* Bir **uyarıydı**, ölçülmüş bir vaka değil.
+
+**İlk ateşleme halka-2'de geldi — ve İKİ kusur birden çıktı:**
+```
+plans = 0  →  plans = 2  (09-03, UI'dan)
+kusur 1    finance-reporting:859/1319  plan.startDate.toISOString()  →  17 e2e KIRMIZI
+           (HEAD'de de vardı — dalga masum; yol İLK KEZ koştu)
+kusur 2    plan.service yazma yolu — TZ GÜN KAYMASI
+           America/Los_Angeles: 2026-01-01 → 2025-12-31 · 2026-03-01 → 2026-02-28
+           Istanbul'da (+03) SESSİZ   ⇒ düzeltme aranırken BULUNDU, aranmıyordu
+```
+
+> ### **BİR RİSK NOTU, ATEŞLENENE KADAR BİR TAHMİNDİR.**
+> ### **ATEŞLENDİĞİNDE ÖLÇÜLMÜŞ BİR VAKA OLUR — VE ÖDEDİĞİ BEDEL, YAZILDIĞI TURDA**
+> ### **KAZANDIRDIĞINDAN BÜYÜKTÜR: İKİ KUSUR, BİR KIRMIZI TURU, BİR ARKEOLOJİ.**
+
+📌 Ve ikinci kusur `T-273`'ün **ters yüzü**: orada *"verinin yokluğu örter"*; burada
+**verinin varlığı bir kusuru açtı, ve o kusurun düzeltilmesi İKİNCİ bir kusuru açtı.**
+Sıfır-veri yeşili yalnız bir şeyi gizlemez — bir **zinciri** gizler.
+
+⇒ Pratik: `plans = 0` gibi bir *"pencere"* kapanırken **yalnız maliyet satırı yazılmaz**;
+o pencerenin arkasındaki yollar **koşturulur**. Bugün açık kalan benzer pencereler:
+`on_invoice_entries` (bu dalgada kapandı) · `claims` · `tactic_realizations` (**0 satır**).
+
+---
+
+## `Z101` — İKİ `P0` KAPANDI: **ÜÇ CANLI SESSİZ KUSUR**, VE HER ŞERİT KENDİ KÖR NOKTASINI BULDU
+
+> **Tarih:** 2026-09-06 · **Ölçüm:** Team Lead + üç şerit · **Karar bekleyen:** iki `DUR`
+
+### `§1` · `T-373` — ZARF **YALNIZ KANALA** GÖRE SEÇİLİYORDU
+```
+sku.service.ts:77   findOne relations'ında genericUnit.category YOK
+sku.service.ts:95   findByCode AYNI varlığı category İLE yüklüyor   ⇒ İKİ OKUYUCU, İKİ ŞEKİL
+on-invoice          category HİÇ geçmiyor ⇒ budget.repository:165 `if (category)` HİÇ koşmuyor
+```
+**Reprodüksiyon canlı görüldü** (iki kategori zarfı, `createdAt DESC` tie-break yanlış tarafa
+yaslanmış): `SKU → CAT-KOPUK`, seçilen zarf **`CAT-SAC-BOYASI`**. Düzeltmeden sonra: **`CAT-KOPUK`**.
+
+**`BRD` bağlayıcı** — `K-2.2.3`: *"Zarf çözümlemesi **tüm yollarda aynı boyut kümesini**
+kullanır… **fark sessizdir**."* Gerekçe metni bu vakayı **birebir** tarif ediyor.
+Git tarihçesi: sapma **kaza** — performans gerekçesi yok, yorum yok.
+
+⭐ **VE BİRİM TESTİ BU KUSURA KÖRDÜ — `78/78` YEŞİLKEN.** `on-invoice.service.spec.ts:105`
+mock'u `genericUnit.category` **döndürüyordu**: üretimin **hiç üretmediği** bir şekil, ve
+test `'CAT-1'` geçtiğini assert ediyordu.
+> ### **`§2.7`: MOCK İLE ASSERTION AYNI YANLIŞI PAYLAŞIR — İÇ TUTARLILIK DOĞRULUK GİBİ GÖRÜNÜR.**
+
+⛔ **Ve Team Lead'in brief maddesi ÖLÇÜMLE REDDEDİLDİ:** *"`budget.repository:165`'te `if
+(category)` `else`siz kalamaz"* demiştim. Şerit çağıranları **saydı**: `budget.service` 6 ·
+`plan.service` 6 · `agreement-transaction` 3 — **kategoriyi kasten vermiyorlar**;
+repository'de `throw` **on birini kırardı**.
+⇒ Açık hata **çağırana** kondu: kategori orada **çözülmesi gereken bir girdi**, repository'de
+**meşru biçimde opsiyonel bir filtre**. *(`§7.1`'i brief'e yazıp kendim uygulamamıştım.)*
+
+### `§2` · `T-374` — ÜÇ **CANLI SESSİZ** KUSUR, hiçbiri patlamıyordu
+```
+ledger.service.ts:43     FİNANSAL posting günü · TZ=LA: 2026-01-15 → 2026-01-14   [TL doğruladı]
+lta-agreement:270        expiry<=effective KARIŞIK TİP: 'Mon Jun 01 2026…' <= '2026-12-01' → false
+                         ters yön → false   ⇒ GUARD HİÇBİR ŞEYİ REDDETMİYORDU     [TL doğruladı]
+agreement-transaction:279 "bugünün işlemleri" UTC batısında HER ZAMAN boş
+```
+> ### **ÜÇÜ DE ISTANBUL'DA (`+03`) GÖRÜNMÜYORDU — VE ÜÇÜ DE BİR *KIRMIZI* ÜRETMİYORDU.**
+
+⭐ **Şerit kusuru olduğundan BÜYÜK raporlamadı:** `:79` *"her çağrı 500"* değil,
+*"**400 olması gereken yanıt 500'e dönüyor**"* — dal yalnız **dönem dışı** faturada koşuyor.
+*"Bu ayrımı ölçmeden yazsaydım kusuru olduğundan büyük raporlamış olurdum."*
+
+### `§3` · ⭐⭐ VE HER ŞERİT **KENDİ PİNİNİN KÖR OLDUĞUNU** ÖLÇTÜ
+```
+T-374   :242 entity-yazma mutasyonu → LA'da 70/70 YEŞİL   ⛔ YAKALANMADI
+        (:263 ledger argümanı ✅ yakalandı)
+        ⇒ GÜN KAYMASININ TA KENDİSİ PİNSİZDİ — txRepo.create mock'u her şeyi kabul ediyor
+T-374   fixture'lar üretim şeklini taklit etmiyordu: `string < Date` → NaN → SESSİZCE false
+        ⇒ dönem kontrolü o fixture altında HİÇ ÖLÇÜLMÜYORDU
+TL      "bugün" testi fixture'ı localTodayIsoDate() ile kurup AYNI fonksiyonla filtreliyordu
+        ⇒ §2.7 #8 (kontrolün kopyası): yardımcı bozulsa İKİ TARAF BİRLİKTE KAYAR
+        ⇒ local-today.spec.ts (sabit Date, zamana bağlı DEĞİL); mutasyon getUTC* → 2 KIRMIZI
+```
+📌 `src/common/date/` altındaki **beş** yardımcının **dördünün** pini vardı; `local-today`
+`T-374` turunda **doğdu**, pini **aynı turda gelmedi** — `Z91`'in *"üye + üreticisi"* kuralının
+**yardımcı** hâli.
+
+### `§4` · İKİ `DUR` — KARAR BEKLİYOR
+```
+T-375  zarflarda category KOLONDA BOŞ (dördünde de) ⇒ düzeltme sonrası zarf BULUNAMAZ
+       (A) veri düzeltmesi   ↔   (B) K-2.2.2'ye kategori muafiyeti (YENİ BRD KURALI)
+       ⚠️ e2e bunu GÖSTERMEZ — yeni testler kendi zarflarını kategorili kuruyor;
+         kusur ÜRETİM VERİSİNDE. T-273'ün TERSİ: veri testte VAR, üretimde YOK.
+"bugün" finansal yollarda SUNUCU-YERELİ mi UTC mi — BRD'de ölçülmedi
+       mevcut (yerel) davranış BİREBİR korundu ve TEK NOKTAYA indi (local-today.ts)
+       ⇒ karar gelirse değişecek TEK yer orası
+```
+
+### `§5` · KAPILAR
+```
+tsc 0 · unit 87 suite / 1531 · e2e 64 suite / 873 exit 0 · T-047 PASS · guards 0
+```
+⚠️ `guards` bir kez **kırmızı** verdi ve durdurduğu şey **Team Lead'in kendi dosyasıydı**
+(`local-today.spec.ts`, `prettier`) — *"kapı, hükmü veren turu da durdurur."*
+⚠️ Ve `mode-split` yine öğretti: dört yeni spec `modes/` altındaydı, guard yakaladı, şerit
+**mevcut kardeş dosyalara** taşıdı. Kural `backend` brief'ine yazılıydı, **`qa` brief'ine
+yazılmamıştı** — Team Lead eksiği.
