@@ -89,6 +89,35 @@ Bu bir kod kusuru değil **demo/seed veri kapsama boşluğu** — ama danışman
 Care kategorisinde açtığımız ilk plan tam da bu yüzden "yetim" kaldı; ikinci bir plan Saç Boyası'nda
 açılarak onay akışı tamamlandı (bkz. §1b).
 
+> ## ⭐ `F12` — **SEED'DE KAPANDI** (2026-09-07, `T-375` ADIM 2 · karar kaydı `Z102`)
+>
+> Yukarıdaki metin **silinmedi** — o günün ölçümüydü ve doğruydu. Bugünkü ölçüm başka:
+>
+> ```
+> CAT-DIGER           → manager@wella.com
+> CAT-KARMA-KOLI      → manager@wella.com
+> CAT-KOPUK           → category.manager@wella.com
+> CAT-PEROKSIT        → manager@wella.com
+> CAT-SAC-BOYASI      → category.manager2@wella.com
+> CAT-SEKILLENDIRICI  → category.manager@wella.com
+> CAT-SET-BOYA        → category.manager@wella.com
+> HAIR_CARE           → category.manager@wella.com
+> ```
+>
+> **Sekiz kategorinin sekizinde de tam bir CM var, çakışma yok** (canlı `user_scopes` sorgusu,
+> Team Lead bağımsız doğruladı). Eski **çift-atama** (`Saç Boyası`'nın hem `category.manager`
+> hem `manager`'da olması) kaldırıldı — dağılım ürün sahibi imzalıdır.
+>
+> ⛔ **Ama "yetim plan" bir ÜRÜN sorusu olarak KUYRUKTA KALIR** ([[T-372]]): seed'in kapsaması,
+> *"bir kategoriye CM atanmamışsa ne olur"* sorusunu **cevaplamaz** — yalnız bugün
+> **sormamamızı** sağlar. Bir müşteri kurulumunda kategori eklenip CM atanmazsa aynı yetim
+> durum **yeniden doğar**, ve o zaman görünür bir uyarı mı yoksa sessiz bir boş kuyruk mu
+> olacağı hâlâ karara bağlı değildir.
+>
+> 📌 Ve bu ayrım tam olarak `T-273` dersidir: **veri boşluğunun kapanması, kusurun kapanması
+> DEĞİLDİR** — yalnız kusurun *bugün tetiklenmemesidir*. Pin bu yüzden seed'den **bağımsız**
+> bir fixture'a bağlanmalıdır.
+
 ### §1b — Onay anında bütçe-zarfı kontrolü (bu turda bizzat gözlendi)
 
 CM "Onayla" dediğinde açılan modal:

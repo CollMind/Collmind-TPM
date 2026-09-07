@@ -445,11 +445,28 @@ olabilir — [[T-206]] ve [[T-209]] **aynı sorunun iki yüzü:** bu tablonun s�
 
 ## 2.2.1 Zarf modeli
 
-**K-2.2.1** — Bütçe, **zarflara** bölünür. Bir zarf üç boyutla tanımlanır:
+~~**K-2.2.1** — Bütçe, **zarflara** bölünür. Bir zarf üç boyutla tanımlanır: `Kanal × Kategori × Dönem`~~
+
+> ⭐ **`F12` — REVİZE EDİLDİ (2026-09-07, ürün sahibi hükmü · karar kaydı `Z102`).**
+> Eski metin **silinmedi**, üstü çizildi. Gerekçe: eski hâl üç boyutu **eşit ağırlıkta**
+> yazıyordu; canlı ölçüm dört zarfın dördünde de `category` **ve** `channel`'ın boş olduğunu
+> gösterdi (`Z101 §4` / `T-375`) ve *"eşit ağırlık"* okuması, kanalsız bir zarfın **tanımsız**
+> mı yoksa **genel** mi olduğunu söyleyemiyordu.
+
+**K-2.2.1** — Bütçe, **zarflara** bölünür. Bir zarfın boyutları **eşit ağırlıkta değildir**:
 
 ```
-Kanal × Kategori × Dönem
+Kategori × Dönem      ZORUNLU   —  bir zarf bu ikisi olmadan TANIMLANAMAZ
+Kanal                 OPSİYONEL —  boş bırakılması bir EKSİKLİK DEĞİL, bir DEĞERDİR:
+                                   "tüm kanallar" (TANIMLI-WILDCARD)
 ```
+
+⛔ **Boşluk bir değerdir, bir bilgisizlik değil.** Bir zarfın kanalı boşsa bu *"kanal
+girilmemiş"* anlamına **gelmez**; *"her kanala hizmet eder"* anlamına gelir. Bu ayrım
+yazılmadığı sürece aynı satır iki farklı biçimde okunur ve fark **sessizdir**.
+
+📌 `Kategori × Kanal` birlikte daraltma **ileride** açılabilir; bugün açılmaz —
+*bugün ölçülmemiş bir esneklik yazılmaz* (`İlke 1`).
 
 **K-2.2.2** — Bir zarf isteğe bağlı olarak **harcama tipine** göre bölünebilir
 (fatura-içi / fatura-dışı). Bölünmemiş bir zarf her iki tipe de hizmet eder.
@@ -459,6 +476,38 @@ farklı bir boyut kümesiyle zarf arayamaz.
 
 > Gerekçe: iki farklı çözümleme, aynı harcamanın iki farklı zarfa düşmesine yol açar ve fark
 > sessizdir.
+
+**K-2.2.3a** — `F12` **EKLENDİ (2026-09-07, `Z102`).** `K-2.2.1`'in kanal boyutu opsiyonel
+olduğu için çözümleme **TEK bir kaskaddır**, ve kademeleri **SIRALIDIR**:
+
+```
+1  kategori + dönem      ← HER ZAMAN uygulanır, atlanamaz
+2  kanal-ÖZEL zarf       ← varsa KAZANIR
+3  kanal-GENEL zarf      ← yalnız kanal-özel YOKSA
+⛔ eşitlik (tie) YOKTUR · gizli tie-break YOKTUR (§2.5)
+⛔ hiçbiri eşleşmezse → K-2.2.14 (zarf bulunamadı; sessizce geçilmez)
+```
+
+⛔ **`K-2.2.3`'ün "aynı boyut kümesi" şartı bu kaskadla SAĞLANIR, ondan MUAF DEĞİLDİR** —
+kaskad **tek bir yerde** tanımlıdır ve her yol **oradan** geçer. İki yolun iki farklı
+kaskad yazması `K-2.2.3` ihlalidir.
+
+> ⚠️ **Ve bu madde bir İHLALDEN doğdu — düzeltmenin KENDİSİNİN ürettiği bir ihlalden.**
+> `T-373` on-invoice yolunu kategoriye bağladı; **öncesinde** tüm yollar (yanlış ama) **aynı**
+> boyut kümesini kullanıyordu, **sonrasında** kullanmıyordu. Yani `K-2.2.3`'ün **lafzı**
+> ihlali, **ruhunu** (doğru zarf) kurtaran düzeltmeyle **birlikte doğdu**. `K-2.2.3a` o borcu
+> kapatır: kaskad tek yerde, herkes oradan.
+
+**K-2.2.3b** — `F12` **EKLENDİ (2026-09-07, `Z102`).** Bir **anlaşma tek bir kategoriye**
+aittir. Çok kategoriye yayılan bir ihtiyaç, çok-kategorili bir anlaşmayla **karşılanmaz**;
+**anlaşma-paketi** ile karşılanır: `N` adet tek-kategorili anlaşma, ortak başlık/numara
+altında — her biri kendi zarfı, kendi kategori yöneticisi, kendi onayı, kendi hakedişi.
+Paket **yalnız raporlama görünümüdür**, bir yürütme birimi değil.
+
+⛔ Bir anlaşma işleminin **FU'su**, anlaşmanın kategorisiyle **çapraz-doğrulanır**;
+uyuşmazlık **açık red**tir (emsal: `FU_CATEGORY_MISMATCH`).
+
+📌 **Paket, olay-tetiklidir** — ilk gerçek talebe kadar **yazılmaz** (`İlke 1`).
 
 ## 2.2.2 Durum kovaları
 

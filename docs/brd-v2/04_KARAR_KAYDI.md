@@ -9823,3 +9823,310 @@ tsc 0 · unit 87 suite / 1531 · e2e 64 suite / 873 exit 0 · T-047 PASS · guar
 ⚠️ Ve `mode-split` yine öğretti: dört yeni spec `modes/` altındaydı, guard yakaladı, şerit
 **mevcut kardeş dosyalara** taşıdı. Kural `backend` brief'ine yazılıydı, **`qa` brief'ine
 yazılmamıştı** — Team Lead eksiği.
+
+---
+
+## `Z102` — ZARF **MODELİ**: KATEGORİ ZORUNLU, KANAL **TANIMLI-WILDCARD** · VE ANLAŞMA **TEK KATEGORİ**
+
+> Ürün sahibi hükmü **2026-09-07**. `Z101 §4`'ün iki `DUR`'unu da kapatır.
+> ⛔ Bu kayıt, **dondurulmuş `BRD v2.0`'da** bir düzenleme **AÇAR** (`Z1` gereği: kayıtsız
+> düzenleme yasak). Açılan dosya: `docs/brd-v2/03_IS_KURALLARI/L2_01_veri_butce_defter_hesaplama.md`.
+
+### `§1` · HÜKÜM
+
+```
+grain      kategori (+ dönem) ZORUNLU
+           kanal NULLABLE = TANIMLI-WILDCARD ("tüm kanallar")
+           ileride kategori × kanal
+kaskad     TEK resolver · kategori+dönem her zaman
+           kanal-özel zarf  >  kanal-geneli zarf
+           iki kademe SIRALI · tie YOK · gizli tie-break YOK (§2.5)
+anlaşma    = TEK KATEGORİ (tanım → yazar → kısıt)
+"bugün"    = TENANT saat dilimi
+```
+
+### `§2` · ⛔ VE HÜKÜM YANLIŞ KURALI ADRESLİYORDU — ÖLÇÜMLE DÜZELTİLDİ
+
+Hüküm metni *"`K-2.2.2`/`K-2.2.3` zarf boyutları"* diyordu. Ölçüldü:
+
+```
+K-2.2.1   "Bir zarf ÜÇ BOYUTLA tanımlanır: Kanal × Kategori × Dönem"   ⇐ BOYUTLAR BURADA
+K-2.2.2   harcama tipine göre BÖLÜNME (fatura-içi/dışı)                ⇐ İLGİSİZ, dokunulmaz
+K-2.2.3   "tüm yollarda AYNI boyut kümesi"                             ⇐ kaskad şartı buraya
+```
+
+⇒ `F12` **`K-2.2.1`** ve **`K-2.2.3`**'e uygulanır. `K-2.2.2`'ye **dokunulmaz**.
+
+📌 Bu, `DISIPLIN`'in *"bir kural ararken hangi bölüm"* maddesinin bir vakası — ve hükmü veren
+tarafın atfı yanlıştı, kuralı değil. **Atıf düzeltilir, hüküm aynen uygulanır.**
+
+### `§3` · ⛔ VE DALGA, İNECEĞİ YERE İNMEDEN BİR ÖLÇÜMLE DURDU — `B1`'İN KARDEŞİ
+
+```
+main.agreements   toplam 5   ·   category_id DOLU 0        ⛔
+main.plans        toplam 2   ·   category_id DOLU 2   ✓   (kolon NOT NULL)
+```
+
+Kategori-zorunlu grain **agreement yoluna olduğu gibi** uygulansaydı
+`agreement-transaction.service:190/212` + `controller:191` — bir **FİNANSAL YAZMA YOLU** —
+`T-373`'ün on-invoice'a yaptığının **AYNISINI** yaşardı: *yanlış zarf* → **hiç zarf**.
+
+> ### `Z101`'in `B1`'i bir turda **inmişti** ve ancak review yakalamıştı.
+> ### Bu kez aynı sınıf, **kod yazılmadan ÖNCE**, bir `SELECT` ile görüldü.
+> ### **Fark bir refleks değil, bir SORU: "bu düzeltmenin girdisi bugün DOLU mu?"**
+
+### `§4` · ANLAŞMA = TEK KATEGORİ — VE ÇOK-KATEGORİ TALEBİNİN CEVABI **YAPISAL**
+
+Çok-kategorili talep gelirse cevap **"anlaşma-PAKETİ"**: `N` adet tek-kategorili anlaşma,
+ortak başlık/numara altında — her biri **kendi zarfı, kendi CM'i, kendi onayı, kendi
+hakedişi**; paket **yalnız raporlama görünümü**. ⛔ **Olay-tetikli** (ilk gerçek talep);
+bugün yalnız tasarım-notu, **kod yazılmaz** — `İlke 1`: *bugün ölçülmemiş bir esneklik yazılmaz.*
+
+Kaskad **daralır**: kategori anlaşma düzeyinde (tek); işlem satırının FU'su anlaşmanın
+kategorisiyle **çapraz-doğrulanır** — emsal `FU_CATEGORY_MISMATCH`. Uyuşmazlık ⇒ **açık red**.
+
+### `§5` · LTA İSTİSNASI **ÖLÇÜLDÜ** — VE ÖLÇÜM **TARİHLİ**
+
+Hükmün şartı: *"LTA harcaması promo bütçesinden düşmüyorsa zarf sorusu doğmaz."*
+
+```
+LTA modülü → BudgetService / LedgerService     ENJEKSİYON BİLE YOK          0 dosya
+   POZİTİF KONTROL: aynı desen on-invoice modülünde 4 dosya bulur     ✓
+ters yön:  budget/ledger modülleri → LTA atfı                          0 dosya
+modül-dışı TEK tüketici: spend-calculation.service — HESAPLAMA, Budget/Ledger enjekte etmiyor
+ledger_entries kaynak tipleri: AGREEMENT/OFF_INVOICE 3  — LTA kaynak tipi HİÇ YOK
+lta_agreements                                          0 satır
+```
+
+⇒ LTA bugün **rezervasyon da tüketim de yapmıyor** ⇒ zarf sorusu **doğmuyor** ⇒ kapsam dışı.
+
+⚠️ ⛔ **VE SON SATIR BİR `T-273` KÖRLÜĞÜDÜR.** `lta_agreements = 0`. *"Bu yol bugün koşuyor
+mu?"* sorusunun cevabı **hayır** — yani *"doğru mu?"* **hiç sorulmadı**. Ölçüm **tarihlidir**;
+LTA ilk gerçek satırını aldığı gün soru **yeniden sorulur**. Kayda böyle geçiyor, çünkü
+*"ölçtük, temiz"* diye geçseydi cevabın **yokluğu** bir **onay** gibi okunurdu.
+
+### `§6` · ANLAŞMA KATEGORİSİ **TÜRETİLEBİLİYOR** — 5/5, İMZA GEREKMEDİ
+
+```
+agreements.fu_id → forecasting_units.gu_id → generic_units.category_id → categories
+
+STA-2026-0001  Wella NKA Migros Ocak Promosyon        FU-WELLA-HC-500ML → HAIR_CARE
+STA-2026-0002  Wella NKA CarrefourSA Şubat Promosyon  FU-WELLA-HC-500ML → HAIR_CARE
+LTA-2026-0001  Wella Traditional Trade Q1 2026        FU-WELLA-HC-500ML → HAIR_CARE
+STA-2026-003   T-277 repro 1787570690946              FU-KARMA-KOLI     → CAT-KARMA-KOLI
+STA-2026-004   T-277 repro 1787570752352              FU-KARMA-KOLI     → CAT-KARMA-KOLI
+```
+
+Hüküm *"türetilemeyene ürün-sahibi imzalı atama"* diyordu — **türetilemeyen çıkmadı.**
+
+⚠️ İki ad iki ayrı tuzak taşıyor:
+- `T-277 repro <epoch>` — **reprodüksiyon artığı** olabilir, seed verisi değil (`ADIM 2` ölçer).
+- `LTA-2026-0001` **`agreements`** tablosunda; `lta_agreements` **boş**.
+  *"Bir ad, kaynağı hakkında da yanlış söyleyebilir."*
+
+### `§7` · `S2` — VE SEBEBİ **YAPISAL**, BİR DİKKATSİZLİK DEĞİL
+
+```
+postgres DURDURULDU → npm test    EXIT 1
+  Test Suites: 1 failed, 86 passed, 87       ← kırmızının TEK kaynağı o blok
+  hata: CannotExecuteNotConnectedError
+```
+
+Taşımak istendi, **mümkün olmadı**:
+
+```
+mode-split.sh   SPLIT_DIR = src/modules/modes      REF_ROOTS = "src test"
+  F  bölme İÇİ dosya   → yeni dosya = ihlal
+  R  bölme DIŞI dosya  → modes/'a import eden dosya
+     "YENİ REFERANS — bölmeye yeni bağ kurulamaz"
+  baseline'daki R satırı: altı · test/ altında SIFIR
+```
+
+⇒ `test/` altına konan bir dosya `OnInvoiceService`'i import edecek ⇒ **yeni `R`** ⇒ kırmızı.
+
+> ### `E1` guard'ı, `modes/` kodunun **DB-entegrasyon testini bölmenin İÇİNE itiyor** —
+> ### yani `npm test`'e. **`S2` `E1`'in YAN ETKİSİDİR.**
+
+⭐ **VE BU AMPİRİK OLARAK KANITLANDI, HEM DE KAZAYLA:** `ADIM 0` şeridi oturum limitine
+takılıp **öldü** ve ağaçta yarım bir dosya bıraktı (yeni `test/` dosyası yazılmış, kaynak
+spec'ten blok **çıkarılmamış** ⇒ test **çiftlenmiş**). `mode-split` **kırmızı yandı** — ve o
+kırmızı, yukarıdaki analizin **tahmin olmaktan çıkıp ÖLÇÜM olmasını** sağladı.
+
+📌 Aynı olay *"paylaşılan ağaç"* sınıfının yeni bir vakası: **ölen bir ajan, yarım bir durum
+bırakır** — ve onu yakalayan şey bir refleks değil, **bir kapı** oldu.
+
+**Çözüm (ve daha güçlü kanıt):** mevcut `test/on-invoice-ledger-invariants.e2e-spec.ts`
+**HTTP rotası** üzerinden genişletilir — yeni `R` doğmaz, ve kanıt *servisi elle kurmaktan*
+**üretim rotasına** yükselir (`§4.2`: *"üretim çağrı yolu var mı"*). Bedeli bir **sıra
+değişikliği**: gerçek katalog + gerçek zarf ister ⇒ `ADIM 2` **sonrasına** kayar.
+
+### `§8` · MIGRATION ZİNCİRİ — SIRA **`Z98 §3`**'ÜN TA KENDİSİ
+
+```
+1826  tenants.timezone TERFİ    ⛔ YENİ ALAN DEĞİL — settings.timezone TANIMLI,
+                                  YAZARI VAR (tenant.seed.ts:23), CANLIDA DOLU;
+                                  eksik olan KISIT ve TÜKETİCİ  (§7 "önce ara" buldu)
+1827  eski dört zarfın SÜPERSEDE'i   BAĞLI ikisi CLOSED (SİLİNMEZ), bağsız ikisi yeniden kurulur
+1828  agreements.category_id BACKFILL   ⛔ TÜRETİLİR, kopyalanmaz
+1829  budget_envelopes.category NOT NULL   ← seed ürettikten SONRA
+1830  agreements.category_id NOT NULL      ← form YAZARI indikten SONRA
+```
+
+**`tanım → yazar → kısıt`** üç kez ayrı ayrı uygulanıyor; hiçbirinde kısıt yazardan önce gelmiyor.
+
+### `§9` · ⛔ VE İKİ TEAM LEAD KARARI, HÜKÜMDEN TÜREMEDİ — AYRIMI KAYITLI
+
+1. **`period = '2026-04'`** — hüküm *"2026 Q2"* dedi, kolon `YYYY-MM` taşıyor.
+   Çözümleyicinin yıl-LIKE fallback'i (`period LIKE '2026%'`) 2026'nın **her ayını** bu zarfa
+   düşürür ⇒ kategori başına **tek** zarf, çakışmasız. `'2026-Q2'` yazılsaydı **exact-match
+   dalı ve sıralama anahtarı ÖLÜ** kalırdı.
+2. **`category` kolonuna KOD yazılır, ad değil** — `on-invoice.service.ts:496`
+   `code || name` gönderiyor. Ada yazılsaydı eşleşme **sessizce** kaçardı.
+
+İkisi de **ölçümden** türedi, tercihten değil — ama **hüküm değil, karardır** ve ürün sahibi
+tersini söylerse tek satırda döner.
+
+---
+
+## `Z103` — `T-375` ZARF MODELİ **İNDİ**: ÜÇ SÜTUN
+
+> `Z102`'nin hükmünün uygulanışı. Kapılar (Team Lead bağımsız koştu):
+> `tsc 0 · guards 0 · unit 87 suite / 1538 test · e2e 64 suite / 877 test · T-047 PASS`
+
+### `§1` · **KAPANDI**
+
+```
+zarf grain        kategori+dönem ZORUNLU · kanal TANIMLI-WILDCARD          K-2.2.1' (F12)
+kaskad            TEK resolver · kanal-özel > kanal-geneli · tie YOK       K-2.2.3a (yeni)
+                  findEnvelopeByDimensions VE ...Strict aynı fonksiyondan
+anlaşma           = TEK KATEGORİ · FU↔kategori çapraz-doğrulama            K-2.2.3b (yeni)
+                  create() VE update() TEK metottan (B1'de kapandı)
+veri              8 kategori zarfı Σ2.300.000 · eski dördü CLOSED/silindi
+                  agreements.category_id 5/5 FU'dan TÜRETİLDİ
+                  CM-scope 8/8 kategori · çift-atama kalktı
+kısıt             kategorisiz bir zarf CANLI OLAMAZ (duruma-koşullu CHECK)
+on-invoice        T-375'in doğuş sebebi: yol YENİDEN AÇILDI
+```
+
+### `§2` · **AÇILDI** — beşi de bu turun ölçümlerinden doğdu
+
+```
+T-376  "T-277 repro" anlaşmaları — adı artık, BAĞI canlı (defter izinin TAMAMI)
+T-377  cleanup-data.ts ledger_entries'i silmiyor ⇒ RESTRICT'e çarpar
+T-378  anlaşma kategorisi SAKLANDI ⇒ FU yeniden sınıflandırılırsa BAYATLAR
+T-379  GET /budget/status: frontend UUID, backend KOD — ve zarf yoksa sessizce 0/GREEN
+T-380  period LIKE 'YYYY%' + kanal-wildcard ⇒ SESSİZ TIE riski
+T-381  role-journey N1/N2/N12 — YEŞİL, ama iddia ettiği kapıdan değil
+```
+
+### `§3` · **KAPSANMADI** — ve bilerek
+
+```
+ADIM 3   "bugün" = tenant-TZ (hüküm 11) — kendi turu; settings.timezone ZATEN var
+S2       gerçek-DB testi birim spec'inde — E1'in yan etkisi; HTTP rotasıyla, ADIM 2 sonrası
+1830     agreements.category_id NOT NULL — form YAZARI indi, kısıt sonraki tur
+1827     bond ölçümünün evreni iki tablo (üçüncüsü yok) — YÖNSEL OLARAK GÜVENLİ:
+         yalnız beklenmedik İPTAL üretebilir, asla sessiz yanlış kapatma. Gerekçe yazılacak.
+kategori×kanal   ileride; bugün ölçülmemiş bir esneklik yazılmaz (İlke 1)
+anlaşma-paketi   olay-tetikli; bugün yalnız TASARIM NOTU (K-2.2.3b)
+```
+
+### `§4` · ⛔ VE BU TUR ÜÇ KEZ AYNI SINIFA DÜŞTÜ — **HER SEFERİNDE DAHA ERKEN YAKALANDI**
+
+Sınıf: **bir düzeltme, düzelttiği sınıfın yeni bir vakasını üretir** — *yanlış zarf* → *hiç zarf*.
+
+```
+1  T-373 · on-invoice     kod İNDİ, PUSH edildi, ancak REVIEW yakaladı        (Z101, B1)
+2  agreements 5/5 NULL    kod YAZILMADAN, bir SELECT ile görüldü               (Z102 §3)
+3  PATCH /agreements/:id  kod İNDİ, kapılar YEŞİLDİ, REVIEW yakaladı           (bu tur, B1)
+```
+
+> ### Üç vaka bir desen: **kapılar bu sınıfı GÖRMÜYOR.** Üçünde de `tsc`, `guards`,
+> ### `unit` ve `e2e` **yeşildi** — çünkü hiçbiri *"bu düzeltmenin girdisi bugün DOLU mu"*
+> ### ve *"aynı alanı yazan İKİNCİ yol hangisi"* sorularını sormuyor.
+
+⛔ İkinci vaka ötekilerden **tek bir soruyla** ayrıldı: *"bu düzeltmenin girdisi bugün dolu mu?"*
+Bir `SELECT`, bir turu kurtardı. Birinci ve üçüncü vakada o soru **sorulmadı**.
+
+📌 Ve üçüncü vakanın ihlal ettiği kural (`§7.1`: *"düzeltmeden önce say"*), tam da bu dalganın
+**kapatmak için açıldığı** kuralın kendisiydi. `DISIPLIN`: *"bir kuralı yazdığın tur, o kuralı
+en çok ihlal ettiğin turdur."*
+
+### `§5` · ⛔ VE BİR KUSURU BU DALGA GETİRMEDİ — **ÖRTÜSÜNÜ KALDIRDI**
+
+`T-379`: anlaşma formunun bütçe kutusu `GET /budget/status`'a **UUID** gönderiyor, backend
+**KOD** bekliyor — ve backend'in kendi yorumu bunu itiraf ediyor: *"`categoryId` (tarihsel ad,
+aslında bir CODE taşır)"*. Hiçbir zaman eşleşmiyordu.
+
+```
+neden görünmüyordu   eski dört zarfın category'si NULL'du
+                     ⇒ eşleşmemenin SEBEBİ ölçülemiyordu
+```
+
+⇒ `T-273` ailesi (*verinin yokluğu örter*), ama örtülen şey bir davranış değil bir
+**sözleşme uyuşmazlığı** — ve iki **ayrı repoda** yaşıyor.
+
+### `§6` · ÜÇ TEAM LEAD KARARI, HÜKÜMDEN TÜREMEDİ — AYRIMI KAYITLI
+
+```
+1  period = '2026-04'          hüküm "Q2" dedi, kolon YYYY-MM taşıyor
+   ⛔ VE BU KARAR T-380'İ DOĞURDU: gerekçem "yıl-LIKE fallback her ayı bu zarfa
+     düşürür" idi — yani bir BULANIK EŞLEŞMEYİ taşıyıcı yaptım. Doğrusu yıl
+     kapsamının bir BEYAN olmasıydı. Karar ayakta, borcu T-380'de.
+2  category kolonuna KOD       on-invoice code || name gönderiyor; ada yazılsaydı sessizce kaçardı
+3  1829 NOT NULL DEĞİL CHECK   NOT NULL geçmiş satırları retroaktif geçersiz kılar ve kilidi
+                               ancak VERİ UYDURARAK açtırırdı; CHECK ayrıca CLOSED→ACTIVE
+                               geri dönüşünü de kapatır — NOT NULL bunu İFADE EDEMEZ
+```
+
+### `§7` · ŞERİT DİSİPLİNİ — **DÖRT DUR, DÖRDÜ DE DOĞRU**
+
+```
+ADIM 2   "T-277 artıklarını temizle" hükmünü UYGULAMADI — bağ ölçünce 3 ledger_entry çıktı
+         ⇒ TEAM LEAD'İN TEŞHİSİ ADA DAYANIYORDU, BAĞA DEĞİL                    → T-376
+ADIM 2   "T-047 tabanındaki sayıyı güncelle" — ÖYLE BİR SAYI YOK, brief'in varsayımı çürüdü
+ADIM 1   1829'da NOT NULL'ı zorlamadı, kararı Team Lead'e bıraktı
+ADIM 1   role-journey E2 çelişkisini uydurma bir çözümle kapatmadı
+```
+
+📌 Ve `qa` şeridi **kendisine verilmemiş** bir bulgu ölçüp raporladı (`T-381`): üç test yeşil,
+ama yeşilliği **iddia ettiği kapıdan gelmiyor** — istek `RolesGuard`'da, scope kontrolünden
+**önce** duruyor. *"Kanıt rengin kendisi değil, rengin sebebidir."*
+
+### `§8` · KAPILARIN BU TURDA DURDURDUĞU ŞEYLER
+
+```
+mode-split     ölen bir ajanın bıraktığı YARIM dosyayı yakaladı — ve o kırmızı,
+               S2'nin taşınamayacağına dair analizin AMPİRİK KANITI oldu (Z102 §7)
+lint-ratchet   iki turda iki kez, ikisi de yeni test dosyalarının prettier formatı
+1829 assert    kendi migration'ını DURDURDU (iki CLOSED zarf, kategorisi türetilemez)
+               ⇒ ve o duruş bir MODELLEME KARARINI açığa çıkardı
+```
+
+### `§9` · REVIEW — İKİ TUR, VE İLKİ **PUSH'A UYGUN DEĞİL** DEDİ
+
+```
+tur 1   ⛔ B1: K-2.2.3b çapraz-doğrulaması PATCH /agreements/:id'de YOK
+              ve o yol reserveForAgreement üzerinden PARAYA bağlanıyor
+        🟡 S1  boş channel sessizce "tüm kanallar" oluyor  — dalga bunu KENDİSİ üretti
+        🟡 S2  getBudgetStatus zarf yoksa 0/GREEN            → T-379
+        🟡 S3  INV-R-001'in ERROR dalı SEBEBİNİ iddia etmiyor
+        🟡 S4  çapraz-kategori sızıntı pini kaldırılmıştı — dalganın DEĞİŞTİRDİĞİ davranış
+        🟡 S5  "bağsız" ölçümünün EVRENİ eksik (üç RESTRICT FK'den ikisi)
+        🟡 S6  1828.down() JSDoc'u TERSİNİ iddia ediyor
+        🟡 S7  UNKNOWN_FU taşıdığı sınıftan dar
+tur 2   ✅ PUSH'A UYGUN — B1 kapandı, kardeş yazma yolu taraması ÖLÇÜLEREK boş çıktı
+        beş 🟡 kaldı → T-382 (ikisi "mekanizma doğru, ÖLÇÜMÜ yok")
+```
+
+⛔ **Ve `S1` bu dalganın KENDİ ürettiği bir gerilemeydi:** `plan.channel?.code || ''` öncesinde
+hiçbir şeye uymuyor, `null` dönüyor ve **açık hata** fırlatıyordu. Kaskad gelince `''`,
+`GENERAL` kademesinin (`channel IS NULL`) **sekiz zarfının hepsine** uydu.
+
+> ### Yani kaskad, **gürültülü bir başarısızlığı sessiz bir wildcard eşleşmesine** çevirdi.
+> ### `K-2.2.1`'in *"boşluk bir DEĞERDİR, bir bilgisizlik değil"* ayrımı tam burada kayboldu:
+> ### `''` bir **bilgisizliktir**, ama kaskad onu bir **değer** okudu.
+
+📌 Ve `T-382`'nin en pahalı maddesi (`Y3`) `§2.7 #4`: `S1`'in yedi yeni guard'ının **sıfırı**
+pinli, ve unit fixture'larda yapılan tek şey guard'ı **KARŞILAMAK** oldu — yani **kanıt
+kurulumu, ölçülmek istenen durumu yok etti.** Guard yarın sessizce kaldırılsa hiçbir test kırılmaz.
