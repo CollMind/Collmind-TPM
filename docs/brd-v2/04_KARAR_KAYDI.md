@@ -10130,3 +10130,141 @@ hiçbir şeye uymuyor, `null` dönüyor ve **açık hata** fırlatıyordu. Kaska
 📌 Ve `T-382`'nin en pahalı maddesi (`Y3`) `§2.7 #4`: `S1`'in yedi yeni guard'ının **sıfırı**
 pinli, ve unit fixture'larda yapılan tek şey guard'ı **KARŞILAMAK** oldu — yani **kanıt
 kurulumu, ölçülmek istenen durumu yok etti.** Guard yarın sessizce kaldırılsa hiçbir test kırılmaz.
+
+---
+
+## `Z104` — HÜKÜM 11 KAPANDI: `"BUGÜN"` = **TENANT** SAAT DİLİMİ · VE `"BUGÜN"` **ÜÇ TABANDA** YAŞIYORMUŞ
+
+> `T-375` ADIM 3. Kapılar (Team Lead bağımsız koştu):
+> `tsc 0 · guards 0 · unit 87 suite / 1547 test · e2e 64 suite / 877 test · T-047 PASS`
+
+### `§1` · KAPANDI
+
+```
+1826        settings.timezone (jsonb) → tenants.timezone varchar(64) NOT NULL DEFAULT
+            üç durum: dolu→backfill · boş/NULL→DEFAULT · BOŞ-STRING→İPTAL (throw)
+            run→revert→run  ŞEMA VE VERİ bayt-birebir
+tek temsil  settings'ten anahtar DÜŞTÜ · entity tipinden DÜŞTÜ · DTO'dan DÜŞTÜ · F8 kapandı
+            ŞEMA ↔ ENTITY METADATA aynı turda hizalı (Z100 md.6)
+yardımcı    localTodayIsoDate (SUNUCU-yerel) ÖLDÜ
+            calendarDayInTimeZone · tenantTodayIsoDate · calendarDayFromDateOrInstant
+tüketici    agreement-transaction.controller · ledger.service (FİNANSAL ters kayıt)
+            lta#createAgreement · lta#updateAgreement  ← DÖRDÜNCÜSÜNÜ ŞERİT KENDİ BULDU
+S1          lta:127↔139 · ledger:55↔152 · agreement-tx:288 — karışık taban KAPANDI
+```
+
+⛔ **`§7` "önce ara" bir alan icadını ÖNLEDİ:** `tenant.timezone` **yeni bir alan değildi** —
+`settings.timezone` **tanımlıydı**, **yazarı vardı**, **canlıda doluydu**. Eksik olan **kısıt**
+ve **tüketici**. Yeni bir kolon "eklemek" bir `F8` (iki temsil) doğururdu; doğrusu **terfi**ydi.
+
+### `§2` · ⛔ VE ASIL BULGU: `"BUGÜN"` **ÜÇ FARKLI TABANDA** YAŞIYOR
+
+`ADIM 3` sunucu-yerel tabanı **adı verilen tüketicilerde** kapattı. Sonra iki ayrı tarama
+**iki ayrı ŞEKİL** buldu:
+
+```
+ŞEKİL 1 · new Date() + TAKVİM ALANI                       [Team Lead taraması]
+  plan.repository:401-402      generatePlanCode      → PLAN-<yıl>-Q<çeyrek>   ⛔ KALICI KİMLİK
+  agreement.repository:275     generateAgreementCode → <tip>-<yıl>            ⛔ KALICI KİMLİK
+  dashboard.service:411        period='ALL'          → <yıl>-01-01..12-31     ⛔ FİNANSAL PENCERE
+
+ŞEKİL 2 · new Date() + setHours + KARŞILAŞTIRMA           [code-reviewer]
+  off-invoice-validation:203-204   \  "Fatura tarihi gelecekte olamaz"
+  on-invoice-validation:241-242    /  ⛔ KELİMESİ KELİMESİNE KOPYA
+  → SUNUCU-yereli `today` ↔ UTC-parse edilmiş `invoiceDate`
+  ⛔ AYNI if'TE İKİ TABAN — bu turun düzelttiği desenin TA KENDİSİ
+
+ŞEKİL 3 · new Date() → DB KARŞILAŞTIRMASI                 [code-reviewer]
+  lta-agreement.service:447/457/547 → repository:112-114  `effectiveDate <= :date`
+  ⇒ takvim sınırı DB OTURUM TZ'sine düşer — ne tenant, ne sunucu: ÜÇÜNCÜ TABAN
+  ⛔ VE BU, ADIM 3'ÜN DEĞİŞTİRDİĞİ DOSYANIN İÇİNDE
+```
+
+> ### ⇒ `"bugün"` bu kod tabanında **sunucu-yerel · UTC · DB oturumu** olmak üzere
+> ### **üç tabanda** yaşıyor. Bir turda **biri** kapandı. `T-383`.
+
+### `§3` · ⛔ VE BLOCKER BİR **CÜMLEYDİ** — `T-084` SINIFININ EN SAF HÂLİ
+
+`local-today.spec.ts:14` şunu yazıyordu:
+> *"`S1` kapanışı: **sunucu yereli artık hiçbir üretim yolunda kullanılmıyor**"*
+
+**Ölçüldü — yanlış.** Ve review bunu **davranış** olduğu için değil, **normatif** olduğu için
+blocker saydı: sonraki okuyucu sınıfı **kapalı** sanacak ve kardeş yolları **bir daha
+aramayacaktı**.
+
+📌 *"Bir hatayı belgelemek onu koruma altına alır"* — ve burada belgelenen şey bir hata
+değil, bir **kapanış iddiasıydı**. Daha tehlikeli: bir hata en azından kendini gösterir;
+yanlış bir **kapanış** aramayı durdurur.
+
+### `§4` · ⛔ VE PİNİN ÜÇ BLOĞUNDAN İKİSİ **HİÇBİR ŞEY ÖLÇMÜYORDU** — MUTASYONLA GÖRÜLDÜ
+
+Review, `tenantTodayIsoDate`'in sunucu-yerel mutantını yazıp **aynı harness'ten** geçirdi:
+
+```
+harness-sanity   EŞİTLİK iddiası        → MUTANTTA DA GEÇER   ⛔ kör
+it.each ZONES    "güvenli ÖĞLE vakti"   → MUTANTTA DA GEÇER   ⛔ kör
+reprodüksiyon    2026-01-15 ≠ -16       → KIRMIZI  ← ayrımın TAMAMI tek testte
+```
+
+*"Eşitlik, VARLIĞIN kanıtı değildir"* — ve *"güvenli öğle"* seçimi, bloğu **adlandırdığı
+regresyona yapısal olarak kör** yapıyordu. Düzeltildi: sanity artık bir **fark** iddia ediyor
+(`Set(offsets).size === 3`), `ZONES` bloğu **gün sınırı** anını kullanıyor.
+
+⭐ **VE DÜZELTMENİN SINIRI DA ÖLÇÜLDÜ, GİZLENMEDİ:** Team Lead'in brief'i *"üç blok da
+kırmızı olmalı"* diyordu. Ölçüm **çürüttü** — sınır anında sunucu TZ'si tenant TZ'siyle
+çakıştığında (`Europe/Istanbul`) mutant **tesadüfen doğru günü** üretiyor, ve tek bir sabit an
+ile üç zone'u aynı anda ayırt eden bir instant **yok**. Şerit bunu *"üç blok da kırmızı"* diye
+raporlamadı; sınırı **spec dosyasına yazdı**.
+
+📌 Yani düzeltilmesi gereken ajanın işi değil, **Team Lead'in beklentisiydi** — ve onu
+düzelten şey bir itiraz değil, **bir ölçüm** oldu.
+
+### `§5` · BEKLENMEDİK KAZANÇ — SESSİZ KAYMADAN FAIL-CLOSED'A
+
+`'2026-02-30'` girdisini `@IsDateString()` **kabul ediyor** (ölçüldü). Eski kod onu sessizce
+**`2026-03-02`'ye yuvarlıyordu**; yeni `calendarDayFromDateOrInstant` `'YYYY-MM-DD'`'yi
+**olduğu gibi** geçiriyor ve `date` kolonu **reddediyor**.
+
+⇒ Bu turun **amacı değildi**, ama `§2.5` lehine bir yan etki: **sessiz kayma → gürültülü red**.
+📌 Kalan: hata `400` değil `500` düşüyor — passthrough dalına takvim-geçerliliği kontrolü
+eklenirse `400`'e döner (`T-382`).
+
+### `§6` · ⛔ VE `§7.1` BU OTURUMDA **BEŞİNCİ** KEZ AYNI YERE BAKTI
+
+```
+1  T-373 on-invoice        kardeş yollar sayılmadı              → review yakaladı
+2  agreements 5/5 NULL     GİRDİ ölçüldü                        → kod yazılmadan görüldü
+3  PATCH /agreements/:id   create() kapandı, update() ölçülmedi → review yakaladı
+4  "bugün" ŞEKİL 1         liste verildi, EVREN tanımlanmadı    → Team Lead taraması
+5  "bugün" ŞEKİL 2/3       Team Lead'in taraması da DAR'dı      → review yakaladı
+```
+
+> ### Beşincisi en öğreticisi: **Team Lead'in "kardeş yol" taraması da bir ŞEKLE bağlıydı.**
+> ### Brief'e **üç tüketiciyi adıyla** yazdım; şerit dördüncüsünü buldu — ama beşinci–yedinci
+> ### **başka bir şekildeydi** ve benim taramam onları **kapsamıyordu**.
+
+⛔ **Bir liste vermek, EVRENİ TANIMLAMAK DEĞİLDİR.** Doğru soru *"şu üç yeri taşı"* değil,
+***"bu soruyu BAŞKA HANGİ ŞEKİLDE soruyoruz"*** olmalıydı — ve o soru **şekilleri önce
+adlandırmayı** gerektirir. `DISIPLIN`: *"kapsam maskelemesi — desen çalışır, EVREN eksiktir"*,
+bu kez **brief yazarken** ihlal edildi.
+
+### `§7` · AÇILAN / GENİŞLEYEN
+
+```
+T-383  "bugün" üç tabanda — üç ŞEKİL, yedi yer; ikisi KALICI KİMLİK yazıyor
+T-382  Y6 @IsTimeZone() GERÇEK YAZARIN yolunda değil (CreateTenantDto'nun create ROTASI YOK,
+          gerçek yazar seed ve DTO'ya HİÇ uğramıyor) ⇒ "mekanizma var, yol yok" ailesi
+       Y7 1826 yayınlanmış migration'ların ALTINA numaralandı — bağımsızlık ölçüldü,
+          risk yok, ama GEREKÇE YAZILI DEĞİL
+       Y8 getTimezone toplu içe-aktarma döngüsünün İÇİNDE (N+1)
+```
+
+### `§8` · ŞERİT DİSİPLİNİ — VE BİR **KENDİ BİLDİRDİĞİ** SAPMA
+
+`ADIM 3` şeridi, brief'in *"doğrulamanı izole `git worktree`'de yap"* şartını **uygulamadığını
+kendisi bildirdi** (paylaşılan ağaçta `eslint --fix`). Review bağımsız ölçtü: `git stash` boş ·
+ek worktree yok · reflog temiz · **ezilmiş değişiklik YOK**.
+
+> ### Sapma bu turda **zararsızdı** — ama bildirilmesi, gerekçesinden **daha değerlidir**.
+> ### Sessizce geçilseydi, aynı sapma paralel bir turda başkasının commit edilmemiş işini
+> ### siler ve o zaman **görünmez** olurdu.

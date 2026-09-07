@@ -99,3 +99,47 @@ ikinci bir kopya yazmak `§2.7 #8`'dir.
 - `npx tsc --noEmit` 0 · `npm test` 0 · `npm run test:e2e` 0 · `npm run guards` 0
 - Üç `TZ` altında pin yeşil · reprodüksiyon kanıtı (kırmızı → yeşil) raporda
 - ⛔ Rapor: **SAYI değil, satırın kendisi.**
+
+---
+
+# ⛔ EK (2026-09-07, `T-375` ana dalgası PUSH edildikten SONRA yazıldı)
+
+## E.1 · Ortam değişti — bunu okumadan başlama
+
+`T-375` ADIM 1/2 **indi ve PUSH edildi** (`be e28d0dd` · `meta 0f75d6f`). Yani:
+```
+budget_envelopes   8 kategori zarfı ACTIVE (channel NULL · period 2026-04 · Σ 2.300.000)
+                   ENV-2026-NKA-Q1 / Q2  CLOSED
+agreements         category_id 5/5 DOLU · CreateAgreementDto.categoryId ZORUNLU
+kısıt              kategorisiz bir zarf CANLI OLAMAZ (1829, duruma-koşullu CHECK)
+migration'lar      1827 · 1828 · 1829  YAYINLANDI
+kapılar            tsc 0 · guards 0 · unit 87/1538 · e2e 64/877 · T-047 PASS
+```
+⛔ **Ağaç TEMİZ.** Kırdığın her şey **senin**.
+
+## E.2 · EK İŞ — `1827`'nin "bağ" iddiası EVRENİNİ yazsın (yalnız YORUM)
+
+Review ölçtü: `budget_envelopes`'a **ÜÇ** `RESTRICT` FK bağlı —
+`ledger_entries` · `budget_transactions` · **`on_invoice_entries`**. `1827`'nin
+yeniden-ölçümü yalnız **ilk ikisini** sayıyor. (Seed tarafındaki aynı boşluk `S5` ile kapatıldı.)
+
+**Team Lead kararı — davranış DEĞİŞMEZ, gerekçe YAZILIR:**
+```
+1827 yalnız ZATEN-BAĞLI sandığı iki zarfı CLOSED yapar, ve sayaçlar 0 çıkarsa THROW eder
+⇒ eksik evren yalnız BEKLENMEDİK BİR İPTAL üretebilir — asla SESSİZ YANLIŞ KAPATMA
+⇒ yön FAIL-CLOSED, veri riski YOK
+```
+⛔ **Ve `1827` artık PUSH EDİLDİ** — davranışını değiştirmek **yeni bir migration** ister
+(`Z87 §F12`'nin *"yayınlanmamış, maliyet sıfır"* penceresi **KAPANDI**). Bu yüzden yapılacak
+şey **yalnız yorum**: evrenin **iki tablo** olduğunu, üçüncüsünün **bilerek** sayılmadığını ve
+**neden yönsel olarak güvenli** olduğunu dosyaya yaz.
+📌 Aynı yerde `1828:104` `undivable` → `underivable` (yazım) ve `1828`'in **satır içi**
+`down()` yorumu düzeltilsin — dosya başı `S6` ile düzeltildi ama satır içi yorum **eski,
+çürütülmüş iddiayı** hâlâ taşıyor (`T-382 Y5`; *"yorum kirliliği iki yönde birden yanıltır"*).
+
+## E.3 · ⛔ VE `1830`'A DOKUNMA
+`agreements.category_id NOT NULL` **sonraki turun**. Numara tahsisli, **kullanma**.
+
+## E.4 · Kapsam dışı — açık task'lar, **çözme, atıf ver**
+`T-376` · `T-377` · `T-378` · `T-379` · `T-380` · `T-381` · `T-382`.
+Bunlardan birine denk gelirsen **dokunma**, raporunda **adıyla** an.
