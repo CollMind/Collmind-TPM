@@ -7301,3 +7301,40 @@ gizleyen her yapı, bu ailenin üyesidir.
 ayırt edicilik) bir **tarife** iner ve **olay-tetikleyicisiyle** birlikte yaşar: hangi gün
 bu mekanizma **gerekli hâle gelir**. ⛔ Ve o tarifin kanıtı **tarihlidir** — satır
 numaraları kayar, o gün **mekanizma adları** aranır.
+
+---
+
+## `npm run guards` KAPININ TAMAMI DEĞİLDİR — **İKİ ZİNCİR VAR** (ZORUNLU)
+
+Ölçülmüş vaka (2026-09-08, `DALGA-A` `İŞ C`): Team Lead *"bağımsız kapı"* koştu ve
+**yeşil** aldı; `push-order` aynı ağaçta **KIRMIZI** verdi.
+
+```
+[ÖLÇÜLDÜ: collmind.backend/scripts/guards/run-all.sh:316-317]
+   "⛔ T-359b 'KAPILARIN KAPISI' — sigpipe-hygiene BU ZİNCİRDEN ÇIKARILDI ve
+    META'ya taşındı (scripts/guards/sigpipe-hygiene.sh + scripts/run-all.sh)"
+```
+
+⇒ `npm run guards` **backend** zincirini koşar. `sigpipe-hygiene` **meta kökündedir** ve
+yalnız `scripts/run-all.sh` (meta) — yani `push-order`'ın koştuğu zincir — onu çağırır.
+
+> ### ⛔ Yani *"guards 0"* demek **"kapı yeşil" DEMEK DEĞİLDİR**. İki zincir var ve
+> ### `push-order` **ikisini birden** koşar; elle koşan **birini kaçırabilir.**
+
+**Vaka:** yeni doğan `manager-ratchet.sh` bir `find … | head -1` taşıyordu (`pipefail`
+altında `SIGPIPE` ⇒ sahte kırmızı, `T-359`). Backend zinciri **görmedi**; `push-order`
+**BASELINE-AŞILDI** ile durdurdu ve **push yapılmadı**.
+
+```
+⇒ ELLE KAPI KOŞARKEN İKİSİ DE KOŞULUR:
+     cd collmind.backend && npm run guards      # backend zinciri
+     cd <meta> && bash scripts/run-all.sh       # META zinciri (sigpipe-hygiene BURADA)
+```
+
+📌 Ve bu, *"bir kapının kapsamı dinamiktir"* ailesinin **topoloji** yüzü: kapı doğru
+çalışıyordu, **yanlış zincirdeydi**. ⚠️ Bir guard **taşındığında**, onu elle koşan her
+alışkanlık **bayatlar** — ve bayatlığı yalnız **gerçek kapı** gösterir.
+
+⭐ **Ve kapı KENDİ DOĞUM TURUNDA yakaladı:** ihlal, `sigpipe-hygiene`'in korumak için var
+olduğu sınıfın tam bir örneğiydi ve **yeni bir guard dosyasında** doğmuştu — yani
+*"guard yazan tur, guard'ın koruduğu hatayı yapar"*.
