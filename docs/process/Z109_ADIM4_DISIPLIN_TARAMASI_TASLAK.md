@@ -569,3 +569,83 @@ atıf** kurulur. Ve **ikinci vakada GERİ TERFİ EDER** (`F12`).
 · "bir kural bulunamıyor" iddiası HÂLÂ ölçülmedi — (a) yazım hızı ÜÇTE BİRE düştü,
   (b) 40 tekrar itirafı GÜÇLÜ ⇒ amaç KISALTMAK değil BULUNABİLİR KILMAK
 ```
+
+---
+---
+
+# ⛔ TAM TUR BAŞLADI VE **İKİ ŞEY ÇÜRÜDÜ** (2026-09-09, Team Lead)
+
+## `T1` · EVREN **129 DEĞİL 218** — beşinci evren düzeltmesi
+
+```
+[ÖLÇÜLDÜ: '## ' başlıkları]                136   bunun ZORUNLU'su  129
+[ÖLÇÜLDÜ: '### ' başlıkları]               158   bunun ZORUNLU'su   89
+                                                 ⇒ NORMATİF TOPLAM 218
+```
+`AİLE` gövdelerinin içindeki `###` başlıkları **bölüm başlığı değil, TAM KURAL** —
+`(ZORUNLU)` taşıyorlar. Örnek (`DÜZELTME · PORT · BAYATLIK` içinden):
+```
+Test dosyası TASK NUMARASI değil SÖZLEŞME ADI taşır (ZORUNLU)
+Bir AD, koruduğu SINIFTAN dar olabilir (ZORUNLU)
+Fixture, ayırt etmek istediği iki tarafta FARKLI değer taşımalı (ZORUNLU)
+```
+> ### ⛔ Ben `##` saydım ve ona **"evren"** dedim. Kurallar **iki seviyede** yaşıyor.
+> ### Bu oturumda **BEŞİNCİ** evren düzeltmesi — ve yine **benim** desenimdi.
+
+📌 Ve `DÜZELTME · PORT · BAYATLIK`'ın **1.322 satırı** artık açıklandı: içinde **53**
+alt-kural var. `H3`'ün **üçe bölme** hükmü bununla daha da güçlendi.
+
+---
+
+## `T2` · ⛔ `R1` (TÜREV SAYISI) **MEKANİK OLARAK ÖLÇÜLEMİYOR**
+
+Başlıktan **ayırt edici terim** çıkarıp saymayı denedim. Sonuç **anlamsız**:
+```
+[ÖLÇÜLDÜ: 218 kural, başlıktan otomatik terim seçimi]
+  türev ≥10 : 203      ⇒ dağılım ÇÖKTÜ
+  seçilen terimler:  DEĞİL (1262 eşleşme) · DOĞRU (681) · KUSUR (277) · ÖLÇÜM · HÜKÜM
+```
+Başlıklar **Türkçe vurgu** için büyük harf kullanıyor (`DEĞİL`, `DOĞRU`, `YANLIŞ`), ve o
+kelimeler **her yerde** geçiyor. Otomatik seçim **ayırt edici olanı** bulamıyor.
+
+> ### ⇒ `R1` **sağlam bir ölçüt** ama **otomatikleştirilemez**: her kural için
+> ### **ayırt edici anahtarı bir İNSAN seçmek zorunda.**
+
+📌 On örnekte çalışmasının sebebi buydu — anahtarları **ben** seçmiştim
+(`kardeş yol` · `NULL-collapse` · `dokuzda dokuz`), başlıktan türetmemiştim.
+
+### ⛔ VE BU, ÜÇÜNCÜ KEZ: **YARGI SORUSUNA MEKANİK PROXY**
+```
+1  "kaç vaka" ← tarih+task proxy'si      → altıda DÖRT yanlış (§2.1)
+2  "türev sayısı" ← başlıktan terim      → dağılım çöktü (BU)
+3  (dolaylı) "evren" ← '##' sayımı        → 129 vs 218
+```
+⇒ **Mekanik tarama bir GİRDİ üretir, bir TEŞHİS değil** — ve bu, `DISIPLIN`'in kendi
+maddesinin (*"bir sayı bir ENVANTERDİR"*) **üçüncü kez** kendi üstünde doğrulanmasıdır.
+
+---
+
+## `T3` · ⇒ **TAM TURUN ÖLÇÜLMÜŞ MALİYETİ** — ürün sahibine
+
+```
+218 kural × (ayırt edici anahtar SEÇ → türev ÖLÇ → sınıf · aile · 🔎 yaz)
+⛔ mekanikleştirilemez kısım: ANAHTAR SEÇİMİ — 218 insan yargısı
+```
+`H2`/`H3`'ün *"tam tur"*u bu demek. **Ölçüldü, tahmin edilmedi.**
+
+### ÜÇ SEÇENEK — kapsam ürün sahibinin
+```
+(A) TAM TUR          218 kural, tek geçiş. Dürüst maliyet: BÜYÜK.
+(B) TEKRAR-ÖNCELİKLİ  S3'ün ON kuralı + türev ≥3 çıkan komşuları ÖNCE;
+                      kalanı ikinci turda. ⇒ Z110 metriği ZATEN o on kuralı ölçüyor.
+(C) AİLE-ÖNCELİKLİ    önce H3 (aile ataması + 1.322'nin üçe bölünmesi) — 218'in
+                      TAMAMINA uygulanır ama madde başına YARGI GEREKTİRMEZ
+                      (aile ataması başlıktan çoğunlukla okunur), sonra R1/R2.
+```
+📌 **Ölçümüm `(C) → (B) → (A)` sırasını destekliyor:** `H3` ucuz ve **bulunabilirliği
+hemen** artırır (`H1`'in amacı buydu); `R1`/`R2` pahalı ve **tekrar-önceliğiyle**
+yapıldığında `Z110`'un ölçtüğü yere denk düşer.
+
+⛔ **Ama bu bir öneri, hüküm değil** — ve maliyet beyanım bu oturumda **bir kez çürüdü**
+(hüküm 25). Bu kez **ölçtüm**: `218` sayısı `[ÖLÇÜLDÜ]`, `203/13/1/1` dağılımı ise
+**çürütülmüş bir proxy** — ona dayanma.
