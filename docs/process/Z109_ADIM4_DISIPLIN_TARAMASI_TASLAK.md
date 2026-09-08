@@ -1,4 +1,4 @@
-# `Z109 ADIM 4` — `DISIPLIN` TARAMASI · **TASLAK**
+# `Z109 ADIM 4` — `DISIPLIN` TARAMASI · **TASLAK v2** (revize 2026-09-08)
 ### Team Lead ölçümü — ⛔ **HÜKÜM ÜRÜN SAHİBİNİN**, tek oturumda
 
 > ## ⛔ BU BİR TASLAKTIR, BİR ÖNERİ DEĞİL
@@ -152,4 +152,176 @@ gözlem  →  İKİNCİ vakada KURAL  →  ÜÇÜNCÜde ARAÇ
   bir kuralı KAÇIRDIĞI sayılmadı. ⛔ Bu, taramanın TAŞIYICI GEREKÇESİDİR ve
   ölçülmemiştir. [ÖLÇÜLMEDİ — ölçülecek: NASIL?]
   ⇒ hüküm 25 tam da bu sebeple düştü; aynı hatayı bu adımda YAPMAYALIM.
+```
+
+---
+---
+
+# ⭐ REVİZE — ÜRÜN SAHİBİNİN DÖRT KARARI UYGULANDI (2026-09-08)
+
+## `R1` · KÖŞE TAŞI **KABUL** — ve etiketi ÖLÇÜLÜR: **TÜREV SAYISI**
+
+Ürün sahibi hükmü: *"vakası yok ama sınıf tanımlıyor"* iddiasının ölçütü **türev-sayısı**:
+maddeye atıf yapan başka **kural / kapı / araç / Z-kaydı ≥ 1**.
+⛔ **Türevi sıfır olan bir *"köşe taşı"* iddiası → GÜNLÜĞE.**
+
+### Ölçüt sınandı — ve **KESKİN**
+
+```
+[ÖLÇÜLDÜ: rg -c "<kavram>" docs/ scripts/ collmind.backend/scripts/]
+
+3788 "BİR KAPININ ÜÇ MEŞRU ÇIKTISI VARDIR"
+   "ÖLÇEMEDİM"          docs  80   ·  scripts  21
+   "üç meşru çıktı"      docs   5   ·  scripts   1
+   "kapının üçüncü"      docs   4   ·  scripts   0
+   ⇒ TÜREV ≈ 101 — her guard'ın ve her aracın tasarım ilkesi
+   ⇒ KÖŞE TAŞI, ÖLÇÜLEREK. Mekanik proxy'nin "tek vaka" dediği madde, EN ÇOK TÜREVİ OLAN.
+```
+
+### ⛔ VE ÖLÇÜT KENDİ YAZARINI DA VURDU
+
+```
+"Bir YÖNLENDİRME sessiz olamaz"      türev  0   (yalnız kendi metni)
+"Bir DOSYA YOLU da bir iddiadır"     türev  0   (yalnız kendi metni)
+   ⇒ İKİSİ DE BUGÜN YAZILDI (Z109 §4 KAYIT 2 ve 3), ve ölçüte göre GÜNLÜĞE GİDER.
+```
+
+> ### ⛔ **DOĞRU SONUÇ BU.** İkisi de **tek vakalık** ve **henüz türevi yok**. Yerlerini
+> ### **ikinci vaka geldiğinde** hak ederler — ve kuralın kendisi bunu söylüyor:
+> ### *"gözlem → İKİNCİ vakada kural → ÜÇÜNCÜde araç."*
+
+📌 Bir tarama ölçütü, **onu yazan turun kendi kurallarını** eliyorsa **çalışıyor** demektir.
+Elemiyorsa, ölçüt **kendini korumak** için yazılmıştır.
+
+---
+
+## `R2` · 🔎 TETİKLEYİCİ-SORU **KABUL**
+
+Her kalan maddede **tek satır**, kuralın **başında**:
+```
+🔎 ne zaman: <durum>
+```
+⛔ **Ve bir eleme ölçütüdür:** *"tetikleyicisi yazılamayan madde **uygulanamaz** demektir"*
+⇒ **günlüğe**. Bu, `R1`'in **davranış** tarafındaki kardeşi: `R1` maddenin **geçmişini**
+ölçer (türev), `R2` **geleceğini** (bulunabilirlik).
+
+---
+
+## `R3` · AİLE LİSTESİ — ürün sahibinin beklediği **12**, taslak **doğruluyor ve İKİ EKLİYOR**
+
+| # | aile | bugünkü karşılığı |
+|---|---|---|
+| 1 | **ölçüm-önce** | `AİLE — ARAMA UZAYI ve NEGATİF KANIT` (kısmen) |
+| 2 | **evren** (türetilmiş > taranmış > yazılmış) | `3521` + `4726` + `4478` |
+| 3 | **pin-kör-noktası** (altı tür) | `AİLE — GİZLENEN KUSUR SINIFLARI` |
+| 4 | **kapı: üç-çıktı / doğum** | `3788` + `Z83` maddeleri + `AİLE — KAPI ve GUARD YAZIMI` |
+| 5 | **gerekçe-yaşam-döngüsü** (`Z60`/`Z69`) | `3457` + `4396` + `5009` + **yeni** `7276` |
+| 6 | **ad ≠ sınıf / kaynak** | `AİLE — SAYI · LİSTE · KANIT` (kısmen) |
+| 7 | **`tanım → yazar → kısıt`** | `Z98 §3` türevleri |
+| 8 | **sessiz-varsayılan** (`§2.5`) | `CLAUDE.md §2.5` türevleri + **yeni** `7224` |
+| 9 | **paralel-şerit / birleşme** | `4572` + `CLAUDE.md §4` bloğu |
+| 10 | **brief-etiket / hüküm-katmanı** | `Z108 §3` + `Z109 §1` + **yeni** `7255` |
+| 11 | **seed ↔ fixture** | `7182` + `Z107 §3` |
+| 12 | **araç-hatası** (`npx` · glob · `grep -c`) | dağınık — ⛔ **BUGÜN AİLESİ YOK** |
+
+**⛔ TASLAĞIN EKLEDİĞİ İKİ AİLE:**
+```
+13  HAYATTA KALMA / TAŞIMA     "RAPOR < BELGE < KAPI < PİN" (5035) · devir-teslim (4009)
+                                ⇒ bir bilginin NEREDE yaşadığı, bir SINIFTIR
+14  ORTAM ve BAYATLIK          hayalet konteyner · bayat süreç · ölçüm ortamı ·
+                                "bir ölçümün geçerliliği KOŞULLARINA bağlıdır"
+                                ⇒ bugün "DÜZELTME · PORT · BAYATLIK" ailesinin İÇİNDE
+                                  ve o aile 1.322 SATIR — en büyüğü, bölünme adayı
+```
+
+```
+[ÖLÇÜLDÜ: bölüm boyları]  "AİLE — DÜZELTME · PORT · BAYATLIK" = 1.322 satır
+                          (ikinci büyük ailenin 2,5 KATI) ⇒ tek aile değil, ÜÇ aile olabilir
+[ÖLÇÜLMEDİ — ölçülecek: elle tur]  her maddenin TEK bir aileye düşüp düşmediği.
+   ⛔ Ürün sahibi kuralı: iki aileye giren madde ya BÖLÜNÜR ya BİRLEŞTİRME ADAYIDIR.
+```
+
+---
+
+## `R4` · `T-128` — **`DALGA-A`'DAN ÖNCE**, ve ŞERİT AÇILDI
+
+```
+[ÖLÇÜLDÜ: .claude/backlog/tasks/T-128.md]  altı vaka, ikisi 2026-09-08
+brief: docs/process/T128_MUTASYON_ARACI_BRIEF.md   ⇒ şerit KOŞUYOR
+şekil: satırı hedefle (satır-no, glob DEĞİL) → uygula → DEĞİŞTİRİLEN SATIRI BAS →
+       sayım/tsc → ölç → shasum geri-yükle → ÜÇ DEĞERLİ sonuç
+⛔ mutasyon uygulanmadı = ÖLÇEMEDİM, "yeşil" DEĞİL
+```
+
+---
+
+## `R5` · ⛔ TAŞIYICI ÖLÇÜMÜ — hüküm 25'in dersi BU ADIMA UYGULANDI
+
+*"Bir kural bulunamıyor"* ölçülmemişti. Gerçek taşıyıcı **iki parçalı** ve ikisi de ölçüldü.
+
+### `(a)` YAZIM MALİYETİ — `git log`, kesin sayı
+
+```
+[ÖLÇÜLDÜ: git log --format=%ad --date=short -- docs/DISIPLIN.md + her commit'te wc -l]
+  doğuş         2026-08-25   2.319 satır   (CLAUDE.md'den SALT TAŞIMA — yeni yazım DEĞİL)
+  bugün         2026-09-08   7.303 satır
+  ⇒ 14 günde +4.984 satır · 82 commit
+
+  gün gün:  08-26 +1067 · 08-27 +619 · 08-28 +512 · 08-29 +236 · 08-30 +175 · 08-31 +492
+            09-02  +681 · 09-03 +400 · 09-04 +107 · 09-05 +119 · 09-06 +230 · 09-07  +89
+            09-08  +257
+```
+⛔ **VE EĞRİ YASSILIYOR — bu, taşıyıcıyı ZAYIFLATIR:**
+```
+ilk 7 gün    ≈ +526 satır/gün
+son 7 gün    ≈ +183 satır/gün      ⇒ ÜÇTE BİRE düştü
+```
+> ### Yani *"belge kontrolsüz büyüyor"* iddiası **ölçümle desteklenmiyor**. Büyüme
+> ### **yavaşlıyor** — sorun **hacim** değil, **erişilebilirlik** olabilir.
+
+### `(b)` UYGULANMAMA ORANI — *"N'inci kez"* işaretleyicileri
+
+Ürün sahibinin önerdiği anahtar-kelime proxy'si (`yazılıydı|yine ihlal|…`) **dağınık** çıktı
+(farklı ifadeler, alakasız eşleşmeler). Daha sıkı bir ölçüt kullanıldı: bir kaydın
+**kendi itirafı** — *"üçüncü vaka"*, *"ikinci kez"*, *"yedinci vaka"*.
+
+```
+[ÖLÇÜLDÜ: rg -o -i "(ikinci|üçüncü|…|on ikinci) (kez|vaka|vakası|üye|nesli)"
+          docs/brd-v2/04_KARAR_KAYDI.md docs/DISIPLIN.md]
+  04_KARAR_KAYDI.md   30 satır
+  DISIPLIN.md         16 satır
+  ⇒ ≈42 TEKRAR işaretleyicisi (kez/vaka) + 4 aile-büyümesi (üye/nesil)
+
+  dağılım:  üçüncü vaka 18 · ikinci kez 7 · üçüncü kez 6 · ikinci vaka 4 ·
+            dördüncü vaka 4 · dördüncü kez 1 · yedinci vaka 1 · onuncu vaka 1
+  + ORAN kayıtları:  "dokuzda dokuz" 15 · "on birinci elle" 3
+```
+
+> ### ⇒ **TAŞIYICI `(b)`'DİR VE ÖLÇÜLDÜ:** kurallar **var** ve **uygulanmıyor** —
+> ### belgenin kendisi bunu **42 yerde itiraf ediyor**.
+
+⛔ **Ve `(a)` ile `(b)` ZIT YÖNE İŞARET EDİYOR:**
+```
+(a) büyüme YAVAŞLIYOR      ⇒ "hacim sorunu" iddiası ZAYIF
+(b) tekrar 42 KEZ İTİRAF   ⇒ "bulunamıyor/uygulanmıyor" iddiası GÜÇLÜ
+⇒ TARAMANIN AMACI KISALTMAK DEĞİL, BULUNABİLİR KILMAK.
+   Panzehir: R2 (tetikleyici-soru) + R3 (aile) — R1 (günlük) yalnız YAN ÜRÜN.
+```
+
+📌 **Bu, hükmü değiştirir:** *"`DISIPLIN`'i yarıya indir"* bir hedef **değil**; bir **sonuç**
+olabilir. Hedef **tetikleyici + aile**tir.
+
+---
+
+## `R6` · ⛔ NE ÖLÇEMEDİM (revize)
+
+```
+· 129 kuralın tamamı hâlâ okunmadı — R1 ölçütü ÜÇ maddede sınandı (3788 + iki yeni),
+  129'a UYGULANMADI. Tam tur bir OTURUM işi.
+· R3'ün 14 ailesi ADAY — her maddenin TEK aileye düştüğü ÖLÇÜLMEDİ
+· (b)'nin 42 işaretleyicisi TEKİLLEŞTİRİLMEDİ — aynı vaka iki yerde anılmış olabilir
+  ⛔ "bir sayı, eşleşmeleri ÖRNEKLENMEDEN raporlanamaz" — sekiz tanesi örneklendi
+     (§7.1 sekizde-beş · satırı-bas üçüncü kez · üç meşru çıktı · dokuzda dokuz …),
+     kalan ~34 ÖRNEKLENMEDİ
+· "araç-hatası" ailesinin (12) bugün BİR AİLESİ YOK — maddeleri dağınık, sayılmadı
 ```
