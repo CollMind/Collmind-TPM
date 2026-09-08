@@ -7218,3 +7218,86 @@ bu şeklin zaten çalışan hâlidir.
 📌 **Bir "1 Ekim'de kırmızıya döner" bilgisini kuyrukta bekletmek**, ay-sonu kusurlarını
 *"flaky"* sanma vakasının (`T-328`) **PLANLI hâlidir** — tarihi biliyoruz, sebebi biliyoruz,
 ve o gün yine *"neden kırmızı?"* diye sorulacak. **Zamanlı bir kırmızı, kuyruğa girmez.**
+
+---
+
+## Bir YÖNLENDİRME sessiz olamaz — ölçüm, NEYİ ölçtüğünü söylemeli (ZORUNLU)
+
+`§2.5` sessiz varsayılanı yasaklar. Bu onun **ölçüm araçları** tarafındaki hâli:
+
+> ### ⛔ Bir araç, hangi hedefe/DB'ye/zincire baktığını **çıktısında söylemiyorsa**,
+> ### o çıktı bir **kanıt değildir** — çünkü neyin kanıtı olduğu bilinmiyor.
+
+Ölçülmüş vaka (2026-09-08, `Z109 §4 KAYIT 2`): bir migration harness'ı
+`MIGRATION_VERIFY_RUN_CMD` / `REVERT_CMD` env override'ları taşıyordu. Meşru bir ihtiyaçtan
+doğmuşlardı (sentetik bilinen-kırmızı, gerçek zincirin dışında yaşıyor) ama **sessizdiler**:
+override aktifken çıktıda **hiçbir iz yoktu**.
+
+```
+⇒ etkin komut/hedef HER koşumda basılır
+⇒ bir override AKTİFSE ayrıca UYARI basılır ve MEŞRU KULLANIMI yazılır
+```
+
+### Kardeşi: **YÜKSEK SESLE EKSİK KALMAK**
+
+Aynı harness'ın en iyi tarafı bir kontrol değildi: `K5`'in bir **sezgi** olduğunu ve
+`K6`'nın **hiç inşa edilmediğini** — bir raporda değil, **aracın kendi çıktısında**,
+**her koşumda** basıyordu.
+
+> ### ⛔ Sessizce atlayan bir kontrol, **olmayan** bir kontrolden **daha tehlikelidir** —
+> ### çünkü **var sanılır.**
+
+📌 `ÖLÇEMEDİM`'in (kapının üçüncü çıktısı) kontrol-düzeyindeki hâli: bir araç, kapsamadığı
+şeyi **geçti** saymaz, ve kapsamadığını **söyler**.
+
+---
+
+## Bir DOSYA YOLU da bir iddiadır — ve BAYATLAR (ZORUNLU)
+
+Bir brief'in okuma listesi, bir yorumun atfı, bir `[ÖLÇÜLDÜ:]` etiketinin kaynağı — hepsi
+**iddiadır**, ve dosyalar **taşınır**.
+
+Ölçülmüş vaka (2026-09-08, `Z109 §4 KAYIT 3`): bir brief'in okuma listesinde
+`collmind.backend/scripts/guards/sigpipe-hygiene.sh` yazıyordu. **O yol yoktu** — dosya
+`T-359b` ile meta köküne taşınmıştı. Şerit ölçtü ve bildirdi.
+
+```
+⇒ okuma listesindeki HER YOL, brief yazılırken `ls` ile doğrulanır
+⇒ [ÖLÇÜLDÜ: ls -l <yol>]  —  yol da bir ölçümdür
+```
+
+📌 *"Brief'te her iddia bir etiket taşır"* kuralının **kaynak gösteren her satıra**
+genişlemesi: kural yalnız **sayılara** değil, **işaret eden her şeye** uygulanır.
+⚠️ Ve aynı sınıf kod yorumlarında da yaşar (`dosya:satır` atıfları) — orada adı
+**yorum kirliliği**dir ve zaten kayıtlıdır; bu, onun **brief** tarafındaki yüzü.
+
+---
+
+## TAŞIYICI çürüyünce hüküm DARALMAZ, DÜŞER — ve süzgeç sorusu (ZORUNLU)
+
+Bir hüküm, **taşıyıcı bir gerekçe** üzerine kurulur. O gerekçe ölçümle çürürse, refleks
+hükmü **daraltmaktır** — *"o zaman şu kadarıyla kalsın"*. ⛔ **Yanlış.**
+
+> ### Geriye kalan gerekçeler hükmü **kendi başlarına** doğuracak kadar güçlü değilse,
+> ### hüküm **düşer**. Daraltmak, ölmüş bir gerekçeyi bakım borcuyla yaşatmaktır.
+
+Ölçülmüş vaka (2026-09-08, `Z109 §2`): iki katmanlı e2e hükmünün taşıyıcısı
+*"tam suite ~15 dk, dalga başına 30-45 dk bekleme"*ydi. **Ölçüldü: 185 s (~3 dk).** Kalan
+gerekçe (*"`full`'ün kimin işi olduğu yazılı olsun"*) **zaten** push-order beyanının
+`koşulmadı:` satırıyla karşılanıyordu ⇒ hüküm **geri alındı**.
+
+### ⛔ SÜZGEÇ SORUSU — her mekanizma adayına, doğmadan önce
+
+```
+1  KORUDUĞU SINIF NE?     — ölçülmüş bir fayda, tahmin değil
+2  MALİYETİ NE?           — bakım · ikinci bir komut/yol · YANLIŞ OKUNMA riski
+3  ⛔ SESSİZ-YEŞİL ÜRETİR Mİ?  — "dar kapı yeşil" bir raporda "kapı yeşil" diye OKUNUR
+```
+
+📌 Üçüncüsü en sinsisidir ve bir **kılık değiştirme**dir: bir koşumun *"koşulmadı"*sını
+gizleyen her yapı, bu ailenin üyesidir.
+
+⚠️ **Ve düşen bir hükmün KANITI atılmaz.** Ölçümler (doğum şartı · mutasyon vakaları ·
+ayırt edicilik) bir **tarife** iner ve **olay-tetikleyicisiyle** birlikte yaşar: hangi gün
+bu mekanizma **gerekli hâle gelir**. ⛔ Ve o tarifin kanıtı **tarihlidir** — satır
+numaraları kayar, o gün **mekanizma adları** aranır.

@@ -10892,3 +10892,180 @@ Ve aynı düzenlemede `F12` geçmişini **sildi**: `T-270`/`Z21`'in kök-neden k
 
 📌 `DISIPLIN`: *"bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur"* — ve bu kez
 ihlal eden **şerit**, yakalayan **kuralın kendisiydi**.
+
+---
+
+## `Z109` — SÜREÇ HIZLANDIRMA: BİRİ AYAKTA KALDI, BİRİ **KENDİ ÖLÇÜMÜYLE DÜŞTÜ**
+### (ürün sahibi, 2026-09-08)
+
+Amaç ölçülebilir yazıldı: **tur-başına süre · review-tur sayısı · DUR sayısı** — üçü ölçülür,
+`DALGA-A`'da karşılaştırılır. Ürün koduna **dokunulmadı**; yalnız `docs/` + `scripts/` +
+test altyapısı.
+
+```
+ADIM 1  BRIEF ŞABLONU              hüküm 24   ✅ İNDİ
+ADIM 2  E2E İKİ KATMAN             hüküm 25   ⛔ GERİ ALINDI — F12, aşağıda
+ADIM 3  MİGRATION HARNESS'I        hüküm 26   ✅ İNDİ
+ADIM 4  DISIPLIN TARAMASI          hüküm 27   ⏸ taslak Team Lead → hüküm ürün sahibi
+```
+
+---
+
+### `§1` · `HÜKÜM 24` — BRIEF ŞABLONU: `[ÖLÇÜLDÜ]`'NÜN KAYNAĞI BİR **KOMUT**TUR
+
+`docs/process/BRIEF_SABLONU.md`. Üç etiket, ve dördüncüsü yok:
+```
+[ÖLÇÜLDÜ: <çalıştırılabilir komut ya da dosya:satır>]
+[ÖLÇÜLMEDİ — ölçülecek: <nasıl>]
+[REVIEW İDDİASI — DOĞRULANMADI]
+⛔ etiketsiz iddia ⇒ ajan brief'i DUR ile İADE EDER
+```
+
+⛔ **Ve kaynak bir RAPOR ADI olamaz — bir KOMUT olmalı.** Gerekçe bir ölçümdür:
+`T-385`'te *"altı kopya"* yanlıştı, ama **sayı yanlış değildi — KOMUT yanlıştı**
+(`grep -rc "…" test/*.ts` özyinelemesiz).
+
+> ### **Komut etikette yazılı olsaydı, okuyucu ARAÇ HATASINI SAYIYA BAKMADAN GÖRÜRDÜ.**
+> ### Bir sayı denetlenemez; bir **komut** denetlenebilir.
+
+Şablona hazır tarama desenleri girdi: **dizin ver, glob değil** · **`npx` YASAK**
+(`DYLD`/`faketime` sessizce düşer) · **`pipefail` + `grep -q` YASAK** (`T-359`) ·
+**bir dosya yolu da bir iddiadır ve bayatlar** (`§6.3`).
+
+---
+
+### `§2` · `HÜKÜM 25` — E2E İKİ KATMAN ⇒ ⛔ **`F12`: GERİ ALINDI**
+
+#### `2.1` · ÖNCE HÜKÜM, SONRA ÇÜRÜTME
+
+~~`core` (~2 dk) şerit-içi hızlı geri bildirim; `full` (~15 dk) dalga-sonu. Gerekçe:
+tam e2e ~15 dk, bir şerit üç kez ölçmek isterse dalga başına 30-45 dk bekleyerek geçiyor.~~
+
+```
+[İDDİA, ETİKETSİZ]  "~15 dk"  ·  "dalga başına 30-45 dk bekleme"
+[ÖLÇÜLDÜ: date +%s farkı, Team Lead, 2026-09-08]
+   npm run e2e:full  → 185 s  (64 suite / 887 test)  ⇒ ~3 DAKİKA
+   npm run e2e:core  →  89 s  ( 8 suite / 171 test)
+   ⇒ kazanç 96 s/koşum · dalga başına ~5 dk — İDDİANIN BEŞTE BİRİ
+```
+
+> ### ⛔ `Z69 §4c` — **TAŞIYICI ÇÜRÜYÜNCE HÜKÜM DARALMAZ, DÜŞER.**
+
+Geriye kalan gerekçe (*"`full`'ün kimin işi olduğu yazılı olsun"*) zaten **push-order
+beyanının `koşulmadı:` satırıyla** karşılanıyordu. `core` ona bir şey **eklemiyordu**.
+
+#### `2.2` · SÜZGEÇ SORUSU — koruduğu sınıf ne, maliyeti ne
+
+```
+KORUDUĞU   dalga başına ~5 dk (3 × 96 s)
+MALİYETİ   1  türetilmiş liste bakımı — 5-halka envanteri değişince SESSİZCE bayatlar
+           2  iki komut — hangisinin koşulduğu her raporda ayrıca sorulmalı
+           3  ⛔ SESSİZ-YEŞİL: "core yeşil" bir ajan raporunda "e2e yeşil" diye OKUNUR
+              ⇒ T-325'in gizlediği "koşulmadı"nın YENİ BİR KILIĞI
+```
+⇒ **96 saniye bunu hak etmiyor**, ve `185 s` bir ara-doğrulamada kabul edilebilir.
+📌 `T-267` sınıfı: **tüketicisiz uç** bakım borcu üretir ve yanlış okunur.
+
+#### `2.3` · UYGULAMA
+```
+npm run e2e:core            KALKTI (script + liste + wrapper silindi, sarkan atıf: SIFIR)
+docs/process/E2E_CORE_TARIFI.md   türetme komutu + liste + ÜÇ ÇAPANIN AYIRT EDİCİ ÖLÇÜTÜ
+                                  + Z83 kanıtı  ⇒ OLAY-TETİKLİ: CI/PR-gate günü script'e döner
+push-order beyanı           TEK KATMAN kalır
+```
+⛔ **Ayırt-edicilik kanıtı ve mutasyon vakası KAYIT DEĞERİNİ KORUR — boşa gitmedi,
+TARİFİN KANITIDIR.**
+
+---
+
+### `§3` · `HÜKÜM 26` — MİGRATION HARNESS'I: **80 dk → 38 s** (ÖLÇÜLDÜ)
+
+`collmind.backend/scripts/migration-verify.sh`, üç çıktılı (`YEŞİL` 0 · `KIRMIZI` 1 ·
+**`ÖLÇEMEDİM` 2**), `K1..K7`.
+
+```
+[ÖLÇÜLDÜ: Team Lead kendi koşumu]  bilinen-YEŞİL   1832 → exit 0 · 38 s
+[ÖLÇÜLDÜ: Team Lead kendi koşumu]  bilinen-KIRMIZI sentetik → exit 1
+                                   "(∅) NULL vektörü: GEÇTİ (NULL-collapse — Z87)
+                                    fixture EXPECT_NULL=reject bekliyordu, GERÇEK=pass"
+[ÖLÇÜLDÜ: Team Lead kendi koşumu]  ÖLÇEMEDİM → exit 2, ÜÇ ayrı sebep, her biri ÇÖZÜMÜYLE
+[ÖLÇÜLDÜ: docker exec psql]        T-047 → 555 satır / 51 tablo, taban BİREBİR
+```
+
+⛔ **Ve harness'ın en değerli özelliği bir kontrol değil, bir DÜRÜSTLÜK:** `K5` bir
+**sezgi** olduğunu, `K6`'nın **hiç inşa edilmediğini** — raporda değil, **aracın kendi
+çıktısında**, her koşumda basıyor.
+
+> ### **YÜKSEK SESLE EKSİK KALMAK.** Sessizce atlayan bir kontrol, olmayan bir kontrolden
+> ### **daha tehlikelidir** — çünkü var sanılır.
+
+⛔ **`F12` — sentetik fixture COMMIT EDİLİR.** Brief *"commit edilmez"* diyordu ve o kural
+**kanıtı öldürüyordu**: commit edilmezse bilinen-kırmızı bir sonraki temiz checkout'ta yok
+olur, ve `Z83`'e göre **bilinen-kırmızısı olmayan bir kapı, kapı değildir**. Güvenlik
+endişesi **ölçüldü ve yok** (`typeorm.config.ts:61-84` — gerçek zincir
+`src/database/migrations/**` globunu kullanır, sentetik onun dışında).
+
+---
+
+### `§4` · DÖRT KAYIT
+
+#### `KAYIT 1` — ⛔ **HÜKÜM 20, HÜKÜM VERENİ DE BAĞLAR**
+
+Ürün sahibinin kendi kaydı:
+```
+hız-analizindeki İKİ SAYIM benimdi ve ÖLÇÜMSÜZDÜ:  "~15 dk"  ·  "30-45 dk"
+Team Lead onu BRIEF'e taşıdı  →  şerit ÖLÇTÜ  →  ÇÜRÜTTÜ
+```
+> ### ⇒ Etiket kuralı yalnız şeritler için değil. **Bir analizde sayı yazılacaksa, etiketli.**
+
+📌 Ve zincir tam olarak hüküm 20'nin öngördüğü gibi işledi: **etiketsiz bir sayı bir hükme
+girdi**, hüküm bir brief'e, brief bir şeride — ve **kuralın kendisi** onu geri getirdi.
+Team Lead ayrıca `§1`'i etiketsiz yazarak zinciri **bir halka uzattı**; şerit yine ölçtü.
+
+#### `KAYIT 2` — BİR YÖNLENDİRME SESSİZ OLAMAZ
+
+`ADIM 3`'ün en değerli satırı bir kontrol değil, bir **sertleştirme**: harness'ın
+`MIGRATION_VERIFY_RUN_CMD`/`REVERT_CMD` override'ları **başka bir DB'ye** işaret edebilirdi
+ve **sessizdi**.
+```
+⇒ etkin komutlar HER koşumda basılır; override AKTİFSE ayrıca UYARI basılır
+```
+> ### **Bir yönlendirme sessizse `§2.5` ihlalidir. Ve bir ölçüm, NEYİ ÖLÇTÜĞÜNÜ
+> ### söylemiyorsa bir kanıt değildir.**
+
+Kardeşi `K5`/`K6`'nın aracın kendi çıktısında basılması: **yüksek sesle eksik kalmak**.
+
+#### `KAYIT 3` — BİR **DOSYA YOLU** DA BİR İDDİADIR, VE **BAYATLAR**
+
+`ADIM 3` brief'inin okuma listesinde `collmind.backend/scripts/guards/sigpipe-hygiene.sh`
+yazıyordu — **o yol yoktu** (`T-359b` ile meta köküne taşınmış). Şerit ölçtü, bildirdi.
+```
+⇒ okuma listesindeki HER YOL, brief yazılırken `ls` ile doğrulanır
+```
+📌 Hüküm 20'nin **kaynak gösteren her satıra** genişlemesi — yalnız sayılara değil. Şablona
+girdi (`§2.4`).
+
+#### `KAYIT 4` — *"SATIRI BAS"* **ÜÇÜNCÜ KEZ** YAKALADI
+
+Team Lead ayırt ediciliği bağımsız ölçerken **mutasyon hiç uygulanmadı**: eşleştirme metni
+**8 boşluk** varsayıyordu, dosyada **6** vardı; `assert` düştü, dosya yazılmadı, iki koşum da
+**mutasyonsuz** koda karşı yeşil çıktı.
+
+> ### ⛔ *"Ayırt edicilik kanıtlanamadı"* diye yazılabilirdi. Yakalayan şey **değiştirilen
+> ### satırı BASMAK** oldu.
+
+Ve şerit **kendi** ilk denemesinde `TS2345`'e düşmüştü — *"derlenmeyen bir mutasyon hiçbir
+şey kanıtlamaz"*. İki farklı el, iki farklı tuzak, **aynı tur**.
+📌 `DISIPLIN` taramasında (hüküm 27) bu madde **"terfi etmiş"** sınıfında: bir gözlem değil,
+bir **araç** hak ediyor.
+
+---
+
+### `§5` · HIZLANMANIN GERÇEK KAYNAĞI
+
+```
+ADIM 1  ETİKET       iddia ile ölçümü ayırır          ⇒ review turu ve DUR sayısını düşürür
+ADIM 3  HARNESS      80 dk → 38 s  (ÖLÇÜLDÜ)          ⇒ tur süresini düşürür
+ADIM 2  ─            kendi ölçümüyle düştü
+```
+⛔ **Üç metriğin taban değeri ve `DALGA-A` karşılaştırması `Z110`'un konusudur.**
