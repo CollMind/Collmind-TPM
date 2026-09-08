@@ -362,3 +362,40 @@ kardeşi  "DÜZENLEMEYİ de satır numarasıyla hedefle"   → ⛔ ARAÇ YOK, ku
 bir **kural** mı (*"çok satırlı bir bloğu metinle eşleştirme — satır indeksi kullan"*),
 yoksa yalnızca bir **günlük kaydı** mı. ⚠️ Ölçüt `R1`'in kendisi: **türev sayısı** —
 ve bugün türevi **sıfır**, çünkü kural henüz **yok**.
+
+
+---
+
+## `R7` GENİŞLEDİ — **TEK MADDE, İKİ YÜZ** (2026-09-08, `T-388` turu)
+
+`R7` şöyle yazılmıştı: *"mutasyonda kapanan sınıf, DÜZENLEMEDE açık"* — beş vaka.
+Aynı turda **ikinci yüzü** ölçüldü ve **aynı kökten**:
+
+```
+YÜZ 1 · DÜZENLEME — metin eşleştirmesi tutmuyor (assert düşer, dosya YAZILMAZ)
+  girinti 6/8 · girinti 4/6 · fazladan boş satır · iki describe'dan yanlışı · brief §4
+  ⇒ ZARAR YOK (assert korur) ama TUR UZAR
+
+YÜZ 2 · ÖLÇÜM — dar desen YANLIŞ SAYI verir (ve hiçbir şey uyarmaz)
+  grep -rc "…" test/*.ts            → ÖZYİNELEMESİZ  ⇒ yedinci kopya görünmedi
+  rg -l "on-invoice|onInvoice"       → 16 dosya       ⇒ GÜRÜLTÜ, çapa değil
+  "isoToday|isoPlusDays" beş dosya   → YORUMLA eşleşti ⇒ evren 6→3
+  finance-reporting "üç yer"         → tam tarama DÖRT buldu
+  ENV-2026-CAT-%                     → Σ 2.000.000/7  ⇒ HAIR_CARE'in CAT- öneki YOK
+                                        desensiz: Σ 2.300.000/8 ✅
+  ⇒ ZARAR VAR: yanlış sayı bir HÜKME girer (hüküm 25 tam böyle düştü)
+```
+
+> ### ⛔ Kök tek: **bir desen yazdığımda, onun EVRENİ KAPSADIĞINI ayrıca ölçmüyorum.**
+> ### Ve iki yüz arasında bir **asimetri** var: düzenlemede `assert` beni korur,
+> ### ölçümde **hiçbir şey korumaz** — sayı gelir, doğru görünür, ve kayda geçer.
+
+### ⇒ `ADIM 4` OTURUMUNA: **TERFİ KESİN**, ve `R1` ölçütüyle
+```
+[ÖLÇÜLDÜ]  YÜZ 1: 5 vaka  ·  YÜZ 2: 5 vaka  ⇒ TOPLAM 10, hepsi TEK OTURUMDA
+[ÖLÇÜLMEDİ — ölçülecek: oturumda]  türev sayısı (R1 ölçütü) — bugün SIFIR,
+   çünkü kural HENÜZ YOK. On vaka bir kuralı hak eder mi, yoksa doğrudan ARAÇ mı?
+```
+📌 Ve *"üçüncüde araç"* kuralına göre **çoktan geçilmiş**: `YÜZ 2` için aday bir
+**pratik** var ve ucuz — *"bir sayı raporlamadan önce deseni GENİŞLET ve fark var mı bak"*
+(`ENV-2026-CAT-%` → `ENV-2026-%` farkı **tam olarak** bunu gösterirdi).
