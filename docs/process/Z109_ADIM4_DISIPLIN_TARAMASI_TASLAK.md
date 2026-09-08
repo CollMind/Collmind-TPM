@@ -399,3 +399,173 @@ YÜZ 2 · ÖLÇÜM — dar desen YANLIŞ SAYI verir (ve hiçbir şey uyarmaz)
 📌 Ve *"üçüncüde araç"* kuralına göre **çoktan geçilmiş**: `YÜZ 2` için aday bir
 **pratik** var ve ucuz — *"bir sayı raporlamadan önce deseni GENİŞLET ve fark var mı bak"*
 (`ENV-2026-CAT-%` → `ENV-2026-%` farkı **tam olarak** bunu gösterirdi).
+
+---
+---
+
+# ⭐ OTURUM TASLAĞI — KARAR İÇİN HAZIR (2026-09-09)
+
+> Ürün sahibi tek oturumda karar verecek. Aşağıdaki her satır etiketli, ve
+> **ölçüm** ile **öneri** ayrı yazıldı.
+
+---
+
+## `S1` · ⛔ ÖNCE BİR DÜZELTME: **`42` İKİ FARKLI ŞEYİ KARIŞTIRIYORDU**
+
+```
+[ÖLÇÜLDÜ]  toplam işaretleyici                                    42
+[ÖLÇÜLDÜ]  bunun "üçüncüde ARAÇ" POLİTİKA beyanı olanı             2   ← ihlal DEĞİL
+           ⇒ GERÇEK tekrar itirafı                                40
+```
+
+### Ve daha önemli bir ayrım — **ben de karıştırdım**
+```
+TÜREV   maddeye KAÇ YERDEN ATIF var        → R1 ölçütü      → madde KALIR mı?
+TEKRAR  madde KAÇ KEZ İHLAL edildi          → (b) metriği    → TETİKLEYİCİ nereye?
+```
+⛔ İkisi **aynı komutla ölçülmez**, ve ilk taramamda ikisini **aynı sayı** sandım.
+📌 Bu, `R7 YÜZ 2`'nin **canlı bir tekrarı** — taslağı yazarken bile.
+
+---
+
+## `S2` · `R1` — TÜREV SAYISI, **129 KURALA UYGULANDI**
+
+```
+[ÖLÇÜLDÜ: rg -c -i "<kavram>" docs/brd-v2/04_KARAR_KAYDI.md docs/DISIPLIN.md]
+   §7.1 · kardeş yol sayımı              40   ⭐ KÖŞE TAŞI
+   Z87  · NULL-collapse                  19   ⭐ KÖŞE TAŞI
+   "liste ≠ evren"                        8   ⭐ KÖŞE TAŞI
+   Z69 §4c · taşıyıcı çürümesi            6   ⭐ KÖŞE TAŞI
+   "satırı BAS"                           5   ⭐ KÖŞE TAŞI
+   "dokuzda dokuz"                        3      KALIR
+   başlık sayıları                        2      KALIR
+   case-insensitive refleksi              2      KALIR
+   "bir yönlendirme sessiz olamaz"        0   ⇒ GÜNLÜĞE   (bugün yazıldı)
+   "bir dosya yolu da bir iddiadır"       0   ⇒ GÜNLÜĞE   (bugün yazıldı)
+```
+> ### ⛔ Ölçüt **çalışıyor**: en çok türevi olan madde, mekanik proxy'nin *"tek vaka"*
+> ### dediğiydi. Ve **bu turda yazdığım iki kuralı eliyor** — doğru sonuç.
+
+⛔ **[ÖLÇÜLMEDİ — oturumda]** Kalan ~120 kural için türev sayımı **tek tek**
+yapılmadı; **on kural** örneklendi. Tam tur oturumun işi.
+
+---
+
+## `S3` · `(b)` TEKRAR — **EN ÇOK İHLAL EDİLEN ON KURAL**
+
+⛔ Bunlar **atıf değil, İTİRAF** — kaydın kendi *"N'inci kez"* cümlesinden okundu.
+
+| # | kural | kaç | son vaka |
+|---|---|---|---|
+| 1 | **`SAYI YAZMA, LİSTE YAZ`** | **10** | `DISIPLIN:6860` — *"ve yazanlar İKİMİZDİK"* |
+| 2 | **elle yazılmış üye-sayısı** (`dokuzda dokuz`) | **9** | `DISIPLIN` — oran olarak kayıtlı |
+| 3 | **`§7.1` kardeş yol sayımı** | **8** | `Z107 §11` — *"sekizde BEŞİ Team Lead'in"* |
+| 4 | **mutasyon hedefleme** (`satırı bas`) | **6** | `T-128` — araç indi, iki vaka daha aynı gün |
+| 5 | **`liste ≠ evren`** | **5** | `T-388` — `6→3→1` · `6→7` · `3→4` · `ENV-%` |
+| 6 | **case-insensitive refleksi** | **4** | `DISIPLIN:6413` |
+| 7 | **`Z87` NULL-collapse** | **3** | `Z109 ADIM 3` — harness'ın bilinen-kırmızısı |
+| 8 | **başlık sayıları** | **3** | `DISIPLIN:6675` — *"sistematik güvenilmez"* |
+| 9 | **`Z69 §4c` taşıyıcı çürümesi** | **3** | `Z109 §2` — hüküm 25 düştü |
+| 10 | **kural yazıldıktan sonra ihlal** (meta) | **3+** | `Z109 §4 KAYIT 1` — *"hüküm vereni de bağlar"* |
+
+> ### ⛔ **`1` ve `2` aynı ailenin iki yüzü:** *"sayı yazma"* ile *"elle yazılmış üye
+> ### sayısı"* — biri **anlatıda**, biri **kodda/belgede**. Toplam **19 vaka**, ve
+> ### ikisi de hâlâ bir **araca** bağlanmadı.
+
+⇒ **Tetikleyici-soru ilk buraya yazılır** (`R2`), ve `Z110`'un ölçeceği şey:
+*sonraki iki haftada bu on kuralın tekrar-oranı düşüyor mu?*
+
+---
+
+## `S4` · `R3` — **14 AİLE**, ve büyük olanın **ÜÇE** bölünmesi
+
+```
+[ÖLÇÜLDÜ]  "AİLE — DÜZELTME · PORT · BAYATLIK" = 1.322 satır (ikinci büyüğün 2,5 KATI)
+```
+| # | aile | not |
+|---|---|---|
+| 1 | ölçüm-önce | mevcut |
+| 2 | **evren** (türetilmiş > taranmış > yazılmış) | ⭐ `S3`'ün 3 ve 5'i burada |
+| 3 | pin-kör-noktası (altı tür) | mevcut |
+| 4 | kapı: üç-çıktı / doğum (`Z83`) | mevcut |
+| 5 | gerekçe-yaşam-döngüsü (`Z60`/`Z69`) | ⭐ `S3`'ün 9'u |
+| 6 | ad ≠ sınıf / kaynak | mevcut |
+| 7 | `tanım → yazar → kısıt` | mevcut |
+| 8 | sessiz-varsayılan (`§2.5`) | mevcut |
+| 9 | paralel-şerit / birleşme | mevcut |
+| 10 | brief-etiket / hüküm-katmanı | mevcut |
+| 11 | seed ↔ fixture | mevcut |
+| 12 | **araç-hatası** (`npx` · glob · `grep -c` · `cwd` · `rg -ril` · `SIGPIPE`) | ⛔ **BUGÜN AİLESİ YOK — KURULUR** |
+| 13 | **hayatta kalma / taşıma** (`RAPOR < BELGE < KAPI < PİN`) | ⭐ taslağın eklediği |
+| 14 | **ortam ve bayatlık** | ⭐ taslağın eklediği |
+| **↓** | **`DÜZELTME · PORT · BAYATLIK` ÜÇE BÖLÜNÜR** | **düzeltme-disiplini** / **port-yolu** / **ortam-bayatlığı** (→ 14) |
+
+⛔ **Her madde TEK aile.** İki aileye düşen madde **birleştirme adayıdır**.
+⛔ **[ÖLÇÜLMEDİ — oturumda]** her maddenin tek aileye düştüğü.
+
+---
+
+## `S5` · `R2` — TETİKLEYİCİ-SORU ŞEKLİ
+
+```
+🔎 ne zaman: <durum>
+```
+`S3`'ün **on kuralına önce** yazılır. Örnekler (mevcut metinlerden **türetildi**):
+```
+🔎 "bir sayı yazacağım"                        → SAYI YAZMA, LİSTE YAZ         (10 vaka)
+🔎 "bir üye sayısı yazacağım"                  → elle yazılmış üye-sayısı       (9)
+🔎 "bir davranışı düzeltiyorum"                → §7.1 kardeş yol sayımı         (8)
+🔎 "mutasyon uygulayacağım"                    → satırı BAS  (⇒ mutate.sh)      (6)
+🔎 "bir desen yazdım, sayı aldım"              → liste ≠ evren  (⇒ scan.sh?)    (5)
+🔎 "bir CHECK yazıyorum"                       → Z87 NULL-collapse              (3)
+🔎 "bir hükmün gerekçesi çürüdü"               → taşıyıcı DÜŞER, daralmaz       (3)
+```
+⛔ **Tetikleyicisi yazılamayan madde UYGULANAMAZ demektir** ⇒ günlüğe (`R2`'nin eleme yüzü).
+
+---
+
+## `S6` · `R7` — **İKİ YÜZ**, ve önerilen araç
+
+```
+YÜZ 1  DÜZENLEME   metin eşleştirmesi tutmaz   5 vaka   assert korur → TUR UZAR
+YÜZ 2  ÖLÇÜM       dar desen yanlış SAYI verir 5 vaka   ⛔ HİÇBİR ŞEY KORUMAZ
+```
+> ### ⛔ Pozitif-kontrol kuralı *"desen ÇALIŞIYOR mu"*yu ölçer.
+> ### ***"Desen EVRENİ KAPSIYOR mu"*** **ayrı bir sorudur ve onun kontrolü YOK.**
+
+`T-385`'in `6→3→1`'i · *"altı kopya"* · `test/*.ts` glob'u · *"sembol ≠ yetenek"* ·
+`ENV-2026-CAT-%` — **hepsi bu ikinci sorunun boşluğu.**
+
+### ⇒ ARAÇ ADAYI: `scripts/scan.sh` (ürün sahibi şekli)
+```
+GİRDİ    desen
+       + EVREN (dizin listesi — TÜRETİLMİŞ, glob DEĞİL)
+       + POZİTİF kontrol beklentisi (deseni YAKALAMASI gereken bir örnek)
+       + NEGATİF kontrol            (deseni KAÇIRMASI gereken bir örnek)
+ÇIKTI    LİSTE (sayı DEĞİL)  +  "desen ⊇ evren?" kanıtı
+SONUÇ    ⇒ glob'lu-özyinelemesiz taramalar YAPISAL OLARAK İMKÂNSIZ olur
+```
+📌 `mutate.sh`'ın **mutasyon** için yaptığını, `scan.sh` **ölçüm** için yapar.
+⛔ `Z83` bu araca da uygulanır: bilinen-yeşil **ve** bilinen-kırmızı.
+
+---
+
+## `S7` · ÜRÜN — iki dosya, ve **taşıma bir SİLME DEĞİLDİR**
+```
+docs/DISIPLIN.md               KÖŞE TAŞI + ÇOK VAKA · aileye girer · 🔎 tetikleyicili
+docs/process/GOZLEM_GUNLUGU.md TEK VAKA · ⛔ F12 ile TAŞINIR, SİLİNMEZ
+```
+⛔ `DISIPLIN`'de **başlık + tek satırlık özet KALIR**, gövde günlüğe iner, **karşılıklı
+atıf** kurulur. Ve **ikinci vakada GERİ TERFİ EDER** (`F12`).
+
+---
+
+## `S8` · ⛔ NE ÖLÇEMEDİM (oturuma girdi)
+```
+· 129 kuralın TAMAMINA türev sayımı — ON kural örneklendi
+· her maddenin TEK aileye düştüğü — ölçülmedi
+· S3'ün on kuralı, "N'inci kez" İTİRAFI OLANLARDAN çıkarıldı; itiraf YAZMAYAN
+  bir kural daha çok ihlal edilmiş olabilir ⇒ ⛔ bu liste bir ALT SINIRDIR
+· "bir kural bulunamıyor" iddiası HÂLÂ ölçülmedi — (a) yazım hızı ÜÇTE BİRE düştü,
+  (b) 40 tekrar itirafı GÜÇLÜ ⇒ amaç KISALTMAK değil BULUNABİLİR KILMAK
+```
