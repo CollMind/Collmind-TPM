@@ -5,7 +5,20 @@
 > **tam-e2e TEK**, şema ↔ entity **aynı turda**.
 > Migration **`1830000000000`** (tahsisli). ⛔ Kendi numaranı SEÇME.
 
-## 0 · Bağlayıcı kaynaklar
+## 0 · ⛔ HÜKÜM-ATIF KURALI (ürün sahibi, 2026-09-07)
+
+**Bu brief'teki her hüküm bir `Z`-numarası taşır.** Bir yerde *"hüküm"* diyen ama `Z`-atfı
+olmayan bir cümle görürsen ⛔ **DUR** — uygulama, Team Lead'e bildir.
+Gerekçe: `Z105 §1` — bir hüküm belgeye geçmediği için bir dalga onu **kaybetti** ve yerine bir
+*"Team Lead kararı"* doğdu. **Atıfsız hüküm, kaybolmuş hükmün habercisidir.**
+
+```
+hüküm 11  "bugün" = tenant saat dilimi           Z104 §1
+hüküm 13  kalıcı kimlikler: geçmiş DEĞİŞMEZ      Z105 §3
+hüküm 15  iki paralel dalga · T-378 ≡ 1830       Z105 §5
+```
+
+## 0.1 · Bağlayıcı kaynaklar
 `docs/brd-v2/04_KARAR_KAYDI.md` → **`Z102`** · **`Z103`** · **`Z104`** · **`Z105`** (hüküm 13/15)
 `docs/brd-v2/03_IS_KURALLARI/L2_01_*.md` → `K-2.2.1` · `K-2.2.3a` · `K-2.2.3b` · `K-2.2.16`
 `.claude/backlog/tasks/` → `T-375` · **`T-378`** · **`T-383`** · `T-382`
@@ -38,7 +51,7 @@ Bilinen üç şekil (⛔ **bunlar bir başlangıç, bir sınır DEĞİL** — d�
 ⛔ **Rapor SAYI değil LİSTE**: her yer, **hangi şekil**, **meşru mu kaçak mı**, ve *"meşru"*
 diyorsan **neden** (TZ'den bağımsız by construction mı?).
 
-## 2 · İŞ 1 — `T-383`: KAÇAK OLANLAR TENANT-TZ TABANINA
+## 2 · İŞ 1 — `T-383`: KAÇAK OLANLAR TENANT-TZ TABANINA (**hüküm 11** · `Z104 §1`)
 
 `tenantTodayIsoDate` / `calendarDayFromDateOrInstant` zaten var (`common/date/local-today.ts`,
 `Z104`). ⛔ **Yeni yardımcı AÇMA** — `common/date/` altındakileri **ölç ve kullan**.
@@ -52,7 +65,7 @@ diyorsan **neden** (TZ'den bağımsız by construction mı?).
 çakışırsa mutant **tesadüfen doğru** günü üretir — **tek bir sabit an ile üç zone'u aynı anda
 ayırt eden bir instant YOKTUR.** Pinin sınırını **yaz**, gizleme.
 
-## 3 · İŞ 2 — KALICI KİMLİKLER (hüküm 13)
+## 3 · İŞ 2 — KALICI KİMLİKLER (**hüküm 13** · `Z105 §3`)
 
 ```
 yeni üretim   TENANT gününden türer
@@ -64,13 +77,13 @@ Beklenti sıfır (`plans` 2 · `agreements` 5, hepsi Ağustos–Eylül; pencere 
 **31 Aralık 21:00–24:00 UTC**) — ⛔ ama *"muhtemelen sıfır"* **YAZILMAZ**, sorgu **koşulur**.
 Varsa: `F12` notu (*"kod `X`, üretim-anı `Y`, tenant-günü `Z` olmalıydı"*), **değiştirilmez**.
 
-## 4 · İŞ 3 — `1830`: `agreements.category_id` **`NOT NULL`**
+## 4 · İŞ 3 — `1830`: `agreements.category_id` **`NOT NULL`** (**hüküm 15** · `Z105 §5`; sıra `Z98 §3`)
 
 `tanım → yazar → kısıt`'ın son halkası. Yazar (`CreateAgreementDto.categoryId` zorunlu) **indi**
 (`Z103`); kısıt bu turda gelir. `Z100` şablonu bağlayıcı: üç-durum assert · şema-nitelendirme
 (`main`) · `run→revert→run` bayt-birebir · **şema ↔ entity aynı turda**.
 
-## 5 · İŞ 4 — ⛔ `T-378` İLE `1830` **AYNI SORUDUR** (ürün-sahibi kaydı)
+## 5 · İŞ 4 — ⛔ `T-378` İLE `1830` **AYNI SORUDUR** (**hüküm 15** · `Z105 §5`)
 
 `agreement.service.ts:337` (`T-028e`) bir zamanlar şunu yasaklıyordu: *"**DO NOT backfill**
 `agreements.category_id` — a copied value goes **stale** the moment the FU's category

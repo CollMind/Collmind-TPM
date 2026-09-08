@@ -10406,3 +10406,197 @@ ikisi de kapıların GÖRMEDİĞİ sınıftan (biri PARAYA bağlı bir yol, biri
 
 ⚠️ Ve `§1`'in eklediği: sistemin **görmediği** bir şey de vardı — **belgeye geçmemiş bir
 hüküm**. Onu ne kapı ne review yakaladı; **ürün sahibi**, iki dalga sonra yakaladı.
+
+---
+
+## `Z107` — DEMO DÖNEMİ **2026 Q3** · VE BİR KUSUR **ON SUITE'LİK BİR YEŞİLİ TAŞIYORMUŞ**
+
+> Ürün sahibi, 2026-09-07. `Z105 §2`'nin (aralık modeli) inişi sırasında ortaya çıkan
+> sistemik uyuşmazlığın hükmü.
+
+### `§1` · ⛔ BULGU: BİR KUSUR, BİR **YEŞİLİ** TAŞIYORDU
+
+```
+T-375    eski dört zarfı (2026-01 / 2026-02) KAPATTI/SİLDİ, yerine YALNIZ Q2 zarfları koydu
+demo     agreements 2026-01 (4) · 2026-02 (1) · agreement_tx 2026-01 (3)
+örtü     yıl-LIKE fallback bunları Q2 zarfına YANLIŞLIKLA AMA ÇALIŞACAK ŞEKİLDE eşliyordu
+hüküm 12 LIKE ÖLDÜ  ⇒  eşleşme yok  ⇒  10 suite / 57 test düştü
+```
+
+> ### Bu oturumun deseni burada en büyük hâlini aldı: *"bir kusur başka bir kusuru örter"*
+> ### değil — ***bir kusur ON SUITE'LİK BİR YEŞİLİ TAŞIYORDU.***
+> ### Kusuru öldürmek, yeşilin **dayanaksız** olduğunu gösterdi.
+
+⛔ **Ve Team Lead'in brief'i yanlış bir tabanla gitti:** *"1 suite / 9 test kırmızı … kod turu
+bunun üstüne yeni kırmızı **eklemedi (ölçüldü)**"*. Kod turu **tam e2e koşmamıştı** — seçili
+beş suite koşup *"diğerleri yeşil"* demişti; Team Lead o **kısmi** ölçümü aldı, **koşulunu
+düşürdü** ve `(ölçüldü)` diye yazdı. `qa` şeridi tam e2e koşup **10 suite / 57 test** ölçtü ve
+**brief'i çürüttü**; Team Lead bağımsız doğruladı — **birebir aynı**.
+📌 `DISIPLIN`: *"bir ölçümün geçerliliği koşullarına bağlıdır — koşulu ölçümle birlikte yaz."*
+⚠️ Aynı brief *"üç ham `INSERT`"* diyordu; ölçüm **dört** buldu — **on ikinci** elle-sayı
+vakası, ve yine Team Lead'in.
+
+### `§2` · HÜKÜM 16 — DEMO DÖNEMİ **2026 Q3** (Temmuz–Eylül)
+
+```
+BÜTÇE      8 kategori zarfı · imzalı tutarlar AYNEN (Σ 2.300.000)
+           period_from 2026-07 · period_to 2026-09   (K-2.2.1a aralık modeliyle)
+DEMO-SEED  plans · agreements · işlemler Q3'e — tenant-BUGÜN (7 Eylül) İÇİNDE: CANLI DEMO
+           seed = DEMO; dönem tenant-bugüne göre · T-047 tabanı YENİDEN ÖLÇÜLÜR
+```
+
+⛔ **Ölçüm hükmü daralttı (Team Lead, itiraza açık):**
+```
+zarf ADLARINDA "Q2" YOK  → "… 2026 Kategori Bütçesi" (yıl düzeyi) ⇒ yeniden adlandırma GEREKMİYOR
+plans                     2026-09  ✓ ZATEN Q3'te
+taşınacak agreements      STA-2026-0001 · STA-2026-0002 · LTA-2026-0001   tx 0 · ledger 0 ⇒ GÜVENLİ
+DOKUNULMAYACAK            STA-2026-003 · STA-2026-004 — SEED DEĞİL (agreement.seed.ts ÜRETMİYOR,
+                          ölçüldü), T-277 reprodüksiyon artığı, ve DEFTER KAYDI TAŞIYORLAR
+                          ⇒ taşımak DEFTERİ GERİYE YAZMAK olurdu (K-2.2.16 / K16). T-376'nın konusu.
+```
+📌 Defter kayıtlarının **işleme değil ANLAŞMAYA** bağlı olduğu ölçülerek görüldü — ilk
+varsayım (`l.source_id = t.id`) **sıfır** döndürüyordu; doğru bağ (`l.source_id = a.id`)
+ölçülmeseydi *"taşınabilir"* diye yanlış bir sonuç yazılacaktı.
+
+### `§3` · HÜKÜM 17 — e2e: **SEED'DEN BAĞIMSIZLIK**, ve göreli tarih **YASAK**
+
+```
+on düşen suite LİSTE olarak sınıflanır:
+  (i)  dönem-SABİTİ olan          → sabit değişir
+  (ii) SEED ZARFINA bağımlı olan  → KENDİ ZARFINI KURAR, SABİT tarih, seed'den BAĞIMSIZ
+⛔ testte GÖRELİ TARİH (new Date(), "bugün + N") YASAK — T-329 / T-333
+```
+
+> ### Bir e2e, seed'in **dönem seçimine** bağımlıysa, o test bir **davranışı** değil bir
+> ### **veri kararını** pinliyor demektir — ve veri kararı değiştiği gün, kod doğruyken kırmızı yanar.
+
+### `§4` · HÜKÜM 18 — `(C)` PİNİ: SESSİZ `DRAFT` **ÖLÜR** (üçü aynı tur, ayrı fixture)
+
+```
+1  bütçesiz dönemde plan gönderimi: 200 + success:false + sessiz DRAFT  ⇒ ÖLÜR
+   yerine AÇIK cevap: "bu dönem/kategori için zarf yok"
+2  UtilizationStatus'a "zarf yok" ÜYESİ — ⛔ ÜRETİCİSİYLE AYNI TURDA (Z91)
+3  trigger fallback'i (period_from IS NULL → period) KALKAR
+```
+⛔ **Üçü de aynı *"zarf bulunamadı"* yüzeyine dokunur** — `K-2.2.14`'ün *"tek bir bildirilmiş
+politika, TÜM YOLLARDA AYNI"* şartı ancak üçü birlikte inerse sağlanır. ⛔ **Ama fixture'ları
+AYRI** — biri diğerinin yeşilini taşımasın.
+
+📌 Ve `2`'nin şekli bir **adjudikasyondu**: kod turu `NotFoundException` denedi ve
+`SP-E2E-10` (`200` bekliyor) ile çarpıştı. `K-2.2.14` bir **istisna** değil **bildirilmiş bir
+politika** istiyor; ihlal `0` döndürmek değil, **`GREEN`** döndürmek — çünkü `GREEN` bir
+**yargıdır** ve kaynağı bir **yokluktur**. `200 + <zarf-yok>` ikisini de sağlar.
+
+### `§5` · VE `SP-E2E-10` ARTIK **BOŞA KOŞUYOR** (`qa` ölçtü)
+
+Senaryosu (*"aynı kanal+yılda split edilmiş BAŞKA bir dönemin ikizine düşmemeli"*) **yalnız
+yıl-`LIKE` fallback'i sayesinde** üretilebiliyordu. `LIKE` ölünce `candidates = []` — test
+bugün **sessiz `0/GREEN` yolundan geçerek** yeşil kalıyor, yani **adının iddia ettiği
+mekanizmayı hiç sınamıyor** (`§2.7 #6`).
+⛔ Ve `§4`'ün `1`/`2`'si indiği gün bu test **assertion'ı değişmeden kırmızıya döner** —
+sözleşmesi zaten hükümle çatışıyor.
+
+---
+
+## `Z107` · **MÜHÜR** — DALGA-B + DEMO Q3 İNDİ
+
+> Kapılar (Team Lead bağımsız koştu, 2026-09-08):
+> `tsc 0 · guards 0 · unit 87 suite / 1547 test · e2e 64 suite / 887 test · T-047 PASS`
+> Review **ÜÇ TUR** · **ÜÇ BLOCKER** · üçü de gerçek.
+
+### `§6` · **KAPANDI**
+
+```
+dönem        ARALIK (period_from … period_to, kapsayıcı)         K-2.2.1a (F12 #4)
+kesişme      aynı kategori×kanal×tip için aralıklar KESİŞEMEZ    K-2.2.1b (yeni)
+             taşıyıcı: trigger (⛔ EXCLUDE DEĞİL — eşzamanlılık sınırı YAZILI)
+LIKE         yıl-kalıbı fallback'i ÖLDÜ
+finance-rep  NOKTA sütununu ARALIK gibi sorgulayan CANLI kusur ONARILDI
+"zarf yok"   ENVELOPE_NOT_FOUND + null sayılar (0 DEĞİL) · üretici AYNI TURDA (Z91)
+sessiz DRAFT ÖLDÜ — açık cevap, dönem/kategori ADIYLA
+demo         2026 Q3 (2026-07..2026-09) · tutarlar AYNEN · tenant-bugünü İÇERİR
+tx-threading findEnvelopeByDimensions + ...Strict + checkBudgetAvailability manager ALIYOR
+23P01        409 + kod (dar sarmalayıcı)
+pinler       877 → 887 (P1 autoCreateBudget · P2 metadata-boyut · P3 kesişme · P4 zarf-yok)
+```
+
+### `§7` · **AÇILDI**
+
+```
+T-384  §2.5 REPO SINIRINI AŞTI — backend null seçti, Intl.NumberFormat geri ₺0 yaptı
+T-385  demo hizalaması 2026-09-30'da SONA ERİYOR — altı suite o gün kendiliğinden kırmızı
+T-386  K-2.2.14 HÂLÂ İHLAL: "zarf yok" için ÜÇ politika (kardeş yollar sayılmadı)
+T-387  23P01 sınıfının ÜÇÜNCÜ üreticisi · geçerli gövde 500 üretiyor
+       ⛔ manager? OPSİYONEL: unutulan çağrı yeri SESSİZCE eski davranışa düşer
+```
+
+### `§8` · **KAPSANMADI** — ve bilerek
+
+```
+period nokta-kolonu   F8 (iki temsil) BİLİNÇLİ, geçici — tüketiciler taşındıktan sonra ayrı migration
+EXCLUDE / advisory    kesişme invaryantının EŞZAMANLILIK güvencesi (K-2.2.1b F12'de yazılı)
+T-379 (1)             UUID tek temsil — ayrı dalga, YÖN DEĞİŞMEZ (Z105 §4)
+DALGA-A               1830 + T-383 + T-378 — sırada
+```
+
+### `§9` · ⛔ BU DALGANIN ÜÇ BLOCKER'I — VE ÜÇÜ DE **AYNI KÖKTEN**
+
+```
+1  "silinen koruma, KANITLANMAMIŞ bir cümleye dayanarak silindi"
+   L2'ye "taşıyıcı EŞDEĞER GÜÇTE" YAZAN TEAM LEAD'Dİ — bir ölçüm değil bir ÇIKARIM
+   kod ona dayandı ("spend_type başına EN FAZLA bir satır"), ve İKİ KEZ ÖLÇÜLMÜŞ
+   bir yanlış-pozitif düzeltmesini SİLDİ
+2  "kapı, ÜRETİCİSİNİ saymadan kondu"
+   brief "metadata boyutu BÜYÜMEZ" dedi — ölçüm: plan.service'in ÜÇ auto-create çağrısı
+   TAM DA ONU ÜRETİYOR ⇒ kapı inseydi autoCreateBudget=true ile HER ONAY 400 alacaktı
+3  "düzeltilmiş kusur, HÂLÂ KIRIK diye belgeleniyor"
+   biri TEST ADININ İÇİNDE (her koşumda basılıyor), biri GERÇEKTEN AÇIK bir boşluğu ÖRTÜYOR
+```
+⛔ Üçü de: **bir cümle yazıldı, karşılığı ölçülmedi, ve sonraki adım o cümleye DAYANDI.**
+
+### `§10` · ⛔ VE ÜÇ **YENİ SINIF** — üçü de "yeşilin sebebi" hakkında
+
+```
+A  BİR KUSUR, BİR YEŞİLİ TAŞIR                                    (§1)
+   yıl-LIKE fallback'i ON SUITE'LİK bir yeşili ayakta tutuyordu — kusuru öldürünce
+   yeşilin DAYANAKSIZ olduğu görüldü
+B  BİR GÖZLEM, BİR SÖZLEŞMEYE DÖNÜŞÜR                             (A13/A13b)
+   `not.toBe(403)` testin NİYETİYDİ; yanına yazılan `toBe(404)` "şu an ne dönüyorsa"ydı
+   — ve o 404 KUSURUN SEMPTOMUYDU. Kusur onarılınca DOĞRU davranış kırmızı yandı
+C  TESTİN YOKLUĞU, BİR KUSURU ÖRTER                               (P1)
+   autoCreateBudget CANLI bir rota ve e2e kapsamı SIFIRDI; tek unit testi createEnvelope'u
+   MOCK'luyordu ⇒ transaction içinde yaratılan zarfı KENDİ transaction'ında okuyamayan
+   bir yol, KİMSE FARK ETMEDEN yaşıyordu
+```
+
+> ### `A` ve `B`'de yeşil **yanlış bir sebeple** vardı. `C`'de yeşil **hiç yoktu** — ve
+> ### **ölçüm yoksa, kusur da yok sayılır.**
+
+📌 Ve `C`'nin düzeltmesi **iki katmanlı** çıktı: `findEnvelopeByDimensions` düzeltildi, pin
+**hâlâ kırmızıydı**; `checkBudgetAvailability` **aynı sınıftan ikinci bir boşluk** taşıyordu,
+**aynı çağrı zincirinde**. ⛔ *"Düzelttim ama hâlâ kırmızı"* anı, teşhisin **yanlış** değil
+**EKSİK** olduğunu söylüyordu — ve bunu **reprodüksiyon** buldu, çıkarım değil.
+
+### `§11` · `§7.1` — BU OTURUMDA **SEKİZ** VAKA, **BEŞİ TEAM LEAD'İN**
+
+```
+1  T-373 on-invoice          kardeş yollar sayılmadı               → review
+2  agreements 5/5 NULL       GİRDİ ölçüldü                         → kod yazılmadan  ✓
+3  PATCH /agreements/:id     create() kapandı, update() ölçülmedi  → review
+4  "bugün" ŞEKİL 1           liste verildi, EVREN tanımlanmadı     → TL taraması
+5  "bugün" ŞEKİL 2/3         TL'nin taraması DA dar'dı             → review
+6  K-2.2.14 kardeş yolları   bir yol düzeltildi, ikisi sayılmadı   → review        (T-386)
+7  metadata üreticisi        kapı kondu, ÜRETİCİ sayılmadı         → review
+8  manager threading         BİR katman düzeltildi, İKİNCİSİ aynı zincirdeydi → reprodüksiyon
+```
+⛔ **Sekizinde de kapılar YEŞİLDİ.** Yakalayan: **beş kez `code-reviewer`**, iki kez bir
+**ölçüm/reprodüksiyon**, bir kez **ürün sahibi**.
+
+> ### ⇒ `Z104 §6`'nın hükmü **doğrulandı ve genişledi**: sınıf-taraması hiçbir kapıya bağlı
+> ### değildir — bir **insan disiplinidir**. Ve bu dalgada o disiplini **en çok Team Lead ihlal etti.**
+
+📌 **Ama bir yarısı kapıya BAĞLANABİLİR ve bu dalga onu gösterdi:** `manager?` / `envelopeFound?`
+gibi **opsiyonel** bir parametre, *"unutmayı"* **sessiz** kılar. **Zorunlu** yapmak onu bir
+**derleme hatasına** çevirir — `Z103`'te `category`'yi zorunlu yapmanın **on birinci elle-sayı
+hatasını** önlemesiyle **aynı hamle**. ⛔ `Z83` doğum kuralı burada **gerekmez**: bu bir guard
+değil, bir **tip** — bilinen-kırmızısı derleyicinin kendisi. (`T-387`)

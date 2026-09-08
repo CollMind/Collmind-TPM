@@ -6,7 +6,21 @@
 > ⛔ Migration numarasını **`.claude/backlog/MIGRATION_SEQUENCE.md`'den Team Lead tahsis eder** —
 > ajan **kendi numarasını SEÇMEZ**. Numara yoksa **DUR ve iste**.
 
-## 0 · Bağlayıcı kaynaklar
+## 0 · ⛔ HÜKÜM-ATIF KURALI (ürün sahibi, 2026-09-07)
+
+**Bu brief'teki her hüküm bir `Z`-numarası taşır.** Bir yerde *"hüküm"* diyen ama `Z`-atfı
+olmayan bir cümle görürsen ⛔ **DUR** — uygulama, Team Lead'e bildir.
+Gerekçe: `Z105 §1` — bir hüküm belgeye geçmediği için bir dalga onu **kaybetti** ve yerine bir
+*"Team Lead kararı"* doğdu (**`period='2026-04'` + yıl-`LIKE`**, ve `T-380` oradan doğdu).
+**Atıfsız hüküm, kaybolmuş hükmün habercisidir** — ve bu dalga tam olarak onun onarımıdır.
+
+```
+hüküm 12  zarf dönemi bir ARALIKTIR              Z105 §2
+hüküm 14  tek temsil UUID · 0/GREEN ölür         Z105 §4
+hüküm 15  iki paralel dalga                      Z105 §5
+```
+
+## 0.1 · Bağlayıcı kaynaklar
 `docs/brd-v2/04_KARAR_KAYDI.md` → `Z102` · `Z103` · **`Z105`** (hüküm 12/14)
 `docs/brd-v2/03_IS_KURALLARI/L2_01_*.md` → **`K-2.2.1`** · `K-2.2.3` · **`K-2.2.3a`** · `K-2.2.14`
 `.claude/backlog/tasks/` → **`T-379`** · **`T-380`** · `T-375` · `T-382`
@@ -22,7 +36,7 @@ ve `T-380` (sessiz tie riski) **oradan doğdu**. Tam hikâye: **`Z105 §1`**.
 > ### Bu yüzden bu dalgada bir şey **özellikle** yasak: bir noktada belirsizlik görürsen
 > ### **kendi kararını koyma** — önce sor: *"bu noktada bir HÜKÜM var mı, nerede yazılı?"*
 
-## 2 · İŞ 1 — `T-380`: ZARF DÖNEMİ BİR **ARALIKTIR** (hüküm 12)
+## 2 · İŞ 1 — `T-380`: ZARF DÖNEMİ BİR **ARALIKTIR** (**hüküm 12** · `Z105 §2`)
 
 ```
 period_from / period_to      KAPSAYICI, 'YYYY-MM'         Q2 = 2026-04 .. 2026-06
@@ -50,7 +64,7 @@ dal yazarsan **modeli yanlış kurmuşsun** demektir.
 (`CLAUDE.md §3`: `L2_*` tek yazar **ve** tek kanal). Sen **ölçümü** ver: kolon şekli, tüketici
 listesi, göç kararı. ⛔ **`docs/brd-v2/**` YAZMA.**
 
-## 3 · İŞ 2 — `T-379`: TEK TEMSİL **UUID**, VE `0/GREEN`'İN ÖLÜMÜ (hüküm 14)
+## 3 · İŞ 2 — `T-379`: TEK TEMSİL **UUID**, VE `0/GREEN`'İN ÖLÜMÜ (**hüküm 14** · `Z105 §4`)
 
 ```
 kimlik    UUID          — ad DOĞRUYU söyler (categoryId → gerçekten bir id)

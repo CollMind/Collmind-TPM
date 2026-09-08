@@ -468,6 +468,59 @@ yazılmadığı sürece aynı satır iki farklı biçimde okunur ve fark **sessi
 📌 `Kategori × Kanal` birlikte daraltma **ileride** açılabilir; bugün açılmaz —
 *bugün ölçülmemiş bir esneklik yazılmaz* (`İlke 1`).
 
+**K-2.2.1a** — `F12` **EKLENDİ (2026-09-07, `Z105 §2`, ürün sahibi hükmü 12 —
+`K-2.2.1`'in DÖRDÜNCÜ ölçümlü düzeltmesi).** Bir zarfın **dönemi bir NOKTA değil, bir
+ARALIKTIR**:
+
+```
+period_from … period_to      KAPSAYICI, 'YYYY-MM'      örn. Q2 = 2026-04 … 2026-06
+eşleşme                      işlem-dönemi ∈ [period_from, period_to]
+```
+
+⛔ **Bir dönem-aralığı, bir nokta ile BULANIK EŞLEŞTİRİLEREK temsil edilemez.**
+
+> ### Ve bu madde bir **hüküm kaybından** doğdu (`Z105 §1`): aralık hükmü verilmiş ama
+> ### **hiçbir belgeye taşınmamıştı**; yerine bir nokta (`period`) + bir **yıl-kalıbı
+> ### eşleşmesi** kondu ve **bulanık bir eşleşme TAŞIYICI oldu.**
+
+**K-2.2.1b** — `F12` **EKLENDİ (2026-09-07, `Z105 §2`).** Aynı `kategori × kanal × harcama
+tipi` için iki zarfın dönem aralıkları **KESİŞEMEZ.**
+
+⛔ Bu bir tavsiye değil, bir **yapısal invaryanttır**: kesişme mümkün olmadığı için
+*"hangisi kazanır"* sorusu **doğmaz** — `K-2.2.3a`'nın yasakladığı **gizli tie-break**
+böylece bir kuralla değil, **modelin kendisiyle** engellenir.
+
+> ### ⭐ Doğru model bir kuralı **uygulamak** yerine **gereksiz kılar.** Bir çözümlemede
+> ### *"eşitlik durumunda ne olacak"* diye bir dal yazılıyorsa, model yanlış kurulmuştur.
+
+📌 **Harcama tipi tuple'a DAHİLDİR ve bu ölçülerek eklendi:** `K-2.2.2`'nin
+fatura-içi/fatura-dışı ikizi **aynı** kategori+kanal+dönemde **bilinçli olarak birlikte
+var olur** — onları çakışma saymak `K-2.2.2`'yi ihlal ederdi. `NULL` uçlar (**kanal
+wildcard'ı**, **bölünmemiş** zarf) `NULL`-güvenli karşılaştırılır (`K-2.2.8c` dersi).
+
+⚠️ **Ve bir ölçüm kaydı:** bu invaryantın veritabanı-düzeyi taşıyıcısı seçilirken
+`EXCLUDE USING gist` **ölçülerek elendi** — gerekli uzantı kurulu değil ve migration rolünün
+onu kuracak yetkisi yok. Seçimi bir tercih değil **yetki verisi** yaptı. ~~Taşıyıcı eşdeğer
+güçte bir tetikleyicidir.~~ *(Koşul ölçümle birlikte yazılır — `DISIPLIN`.)*
+
+> ### ⛔ `F12` — **ÜSTÜ ÇİZİLEN CÜMLE YANLIŞTI** (2026-09-08; `code-reviewer` ölçtü, Team Lead
+> ### kabul etti). Bir `BEFORE ROW` tetikleyicisi **`EXCLUDE` ile EŞDEĞER DEĞİLDİR.**
+>
+> ```
+> commit edilmemiş satır   tetikleyicinin SELECT'i onu GÖREMEZ ⇒ iki eşzamanlı INSERT
+>                          (kesişen aralık, aynı tuple) İKİSİ DE geçer
+> çok satırlı tek INSERT   aynı komutun önceki satırları snapshot'ta GÖRÜNMEZ
+> EXCLUDE                  index düzeyinde ÇAKIŞMA BEKLER — bu davranış burada YOK
+> ```
+>
+> ⇒ Kesişme invaryantı **tek-yazar varsayımı altında** yapısaldır; **eşzamanlılıkta değildir.**
+> Tam güvence: `btree_gist` + `EXCLUDE`, ya da yazma yolunda tuple-hash'li
+> `pg_advisory_xact_lock` (`K-2.2.15`'in zaten kullandığı desen).
+>
+> 📌 **Bu cümleyi Team Lead yazdı** — bir **ölçüm** değil bir **çıkarımdı**; ve üretim kodu ona
+> **dayanarak** iki kez ölçülmüş bir korumayı **sildi**. `DISIPLIN`: *"yanlış bir kapanış
+> aramayı durdurur"* — burada durdurduğu şey bir arama değil, bir **KORUMAYDI**.
+
 **K-2.2.2** — Bir zarf isteğe bağlı olarak **harcama tipine** göre bölünebilir
 (fatura-içi / fatura-dışı). Bölünmemiş bir zarf her iki tipe de hizmet eder.
 

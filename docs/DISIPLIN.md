@@ -7044,3 +7044,59 @@ orada bir kural metni **iki yere** ulaşmıştı; burada bir hüküm **hiçbir y
 **Pratik:** bir hüküm verildiği turda **karar defterine** ya da ilgili task dosyasına geçer.
 Geçmediyse, bir sonraki tur onu **bulamaz** — ve *"bulamadım"* bir mazeret değil, **ölçülmüş
 bir sonuçtur.**
+
+---
+
+## Şerit devri BRIEF ile yapılır — `SendMessage` KAPALI (ürün sahibi kararı, 2026-09-07)
+
+**Bir şeridin bir sonraki turu, önceki turun bağlamını KONUŞMADAN değil BELGEDEN alır.**
+
+Karar: `SendMessage` (bir ajanı bağlamıyla devam ettirme) **açılmaz**. Devir **brief** ile olur.
+
+**Gerekçe — ikisi de bu oturumda ölçüldü:**
+
+```
+1  KANAL, BELGENİN YERİNİ ALIR
+   Z105 §1: bir hüküm KONUŞMADA verildi, hiçbir belgeye geçmedi, ve DALGAYI GEÇMEDİ.
+   SendMessage ile devam eden bir şerit bağlamı KONUŞMADA taşır — yani tam o hata
+   sınıfının aracıdır: bilgi bir kanaldan akar ama HİÇBİR YERE YAZILMAZ.
+   Brief ise yazmaya ZORLAR — ve yazılan şeyi Team Lead de DOĞRULAYABİLİR.
+
+2  DEVAM EDEN ŞERİT, BAYAT ÖLÇÜME GÜVENİR
+   Bu projede ölçümler TARİHLİDİR (bir çağrı-yeri listesi bir tur sonra kaymıştı;
+   bir "bağ" sayımı bayatlamıştı). YENİ bir el yeniden ölçmek ZORUNDA;
+   DEVAM EDEN el zorunda DEĞİL — ve bu kolaylık, bir körlük üretir.
+```
+
+📌 Ve maliyeti ölçüldü: bu oturumda `SendMessage` **bir kez** gerekti; yerine yazılan brief
+**kalıcı bir artefakt** oldu, sonraki turlarda atıf aldı, ve **sohbetten uzun yaşadı**.
+
+⚠️ **Açılırsa tek meşru kullanımı dardır:** bir şerit `DUR` ettiğinde **tek soruluk** açıklama
+(alternatifi bütün bir eli yeniden açmaktır). ⛔ **Hüküm, karar ve ölçüm ORADAN GEÇMEZ** —
+hüküm karar defterine, karar brief'e, ölçüm rapora yazılır.
+
+---
+
+## SEED bir DEMO'dur, FIXTURE bir SÖZLEŞMEDİR — e2e seed'in VERİ KARARINA bağlanmaz (ZORUNLU)
+
+**Bir e2e testi, seed'in dönem/tutar/kapsam seçimine bağımlıysa, bir DAVRANIŞI değil bir
+VERİ KARARINI pinliyor demektir** — ve veri kararı değiştiği gün, kod **doğruyken** kırmızı yanar.
+
+Ölçülmüş vaka (2026-09-07, `Z107 §1`): bir dönem hükmü (`hüküm 12`, aralık modeli) inince
+**10 e2e suite / 57 test** düştü. Kök neden tek: seed zarfları bir çeyreği kapsıyordu, e2e
+fixture'ları **başka bir çeyrekte** plan/anlaşma kuruyordu, ve aradaki uyuşmazlığı bir
+**bulanık eşleşme** (`period LIKE 'YYYY%'`) örtüyordu.
+
+> ### ⛔ Yani bir **kusur**, on suite'lik bir **yeşili TAŞIYORDU.** Kusuru öldürmek,
+> ### yeşilin **dayanaksız** olduğunu gösterdi.
+
+**Kural (ürün sahibi hükmü 17, `Z107 §3`):**
+```
+seed     = DEMO verisidir; dönemi/tutarı bir ÜRÜN kararıdır ve DEĞİŞİR
+fixture  = bir SÖZLEŞMEDİR; SABİT tarih taşır ve GEREKTİRDİĞİ VERİYİ KENDİSİ KURAR
+⛔ testte GÖRELİ TARİH (`new Date()`, "bugün + N") YASAK — T-329 / T-333
+```
+
+📌 Ve bu, `§2.7 #4`'ün ("kanıt kurulumu ölçüleni değiştirir") **tersidir**: orada kurulum
+ölçüleni **yok ediyordu**; burada kurulumun **YOKLUĞU**, testi başkasının veri kararına
+**bağımlı** kılıyor. İkisi de aynı sonucu verir: **test, sandığı şeyi ölçmez.**
