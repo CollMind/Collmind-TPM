@@ -325,3 +325,40 @@ olabilir. Hedef **tetikleyici + aile**tir.
      kalan ~34 ÖRNEKLENMEDİ
 · "araç-hatası" ailesinin (12) bugün BİR AİLESİ YOK — maddeleri dağınık, sayılmadı
 ```
+
+---
+
+## `R7` · ⛔ `T-128`'İN KARDEŞİ: **DÜZENLEME** DE AYNI TUZAĞA DÜŞÜYOR (2026-09-08)
+
+`T-128` (mutasyon aracı) `2026-08-10`'da açıldı, `2026-09-08`'de indi, ve **altı vakanın
+dördünün kökü metin eşleştirmesiydi**. `scripts/mutate.sh` bunu **mutasyonlar** için
+kapattı — hedefleme satır numarasına indi.
+
+⛔ **Ama `DALGA-A` review düzeltmeleri sırasında AYNI SINIF, DÜZENLEMELERDE tekrarladı:**
+
+```
+[ÖLÇÜLDÜ: bu turun kendi düzenlemeleri, 2026-09-08]
+  1  agreement.repository.ts   COALESCE bloğu    girinti 6 vs varsayılan 8   → assert düştü
+  2  off-invoice .spec.ts      assertion çapası  girinti 4 vs varsayılan 6   → assert düştü
+  3  on-invoice .spec.ts       test çapası       fazladan boş satır          → assert düştü
+  4  on-invoice .spec.ts       provider bağlama  İKİ describe, yanlışı bağlandı → tsc kırmızı
+  5  Z109 ADIM3 brief          §4 bloğu          girinti                     → assert düştü
+```
+
+⇒ **BEŞ vaka, hepsi AYNI turda, hepsi `assert` sayesinde SESSİZ KALMADI.**
+
+> ### ⛔ Fark can alıcı: mutasyonlarda yanlış eşleşme **sahte bir ölçüm** üretiyordu;
+> ### düzenlemelerde `assert` **dosyayı hiç yazmıyor** ⇒ zarar yok, ama **tur uzuyor**.
+
+📌 Yani bu, `T-128`'in **maliyet** kardeşi: tehlike değil **sürtünme**. Ve `Z109`'un
+ölçtüğü şey tam olarak **tur süresiydi**.
+
+### ⇒ `ADIM 4` OTURUMUNA GİRDİ — *"terfi etmiş"* sınıfında, İKİNCİ ÜYE
+```
+kural    "mutasyonu satır numarasıyla hedefle"        → ARAÇ İNDİ (mutate.sh)
+kardeşi  "DÜZENLEMEYİ de satır numarasıyla hedefle"   → ⛔ ARAÇ YOK, kural bile YOK
+```
+⛔ **[ÖLÇÜLMEDİ — ölçülecek: oturumda]** bu bir **araç** mı hak ediyor (bir `edit.sh`),
+bir **kural** mı (*"çok satırlı bir bloğu metinle eşleştirme — satır indeksi kullan"*),
+yoksa yalnızca bir **günlük kaydı** mı. ⚠️ Ölçüt `R1`'in kendisi: **türev sayısı** —
+ve bugün türevi **sıfır**, çünkü kural henüz **yok**.

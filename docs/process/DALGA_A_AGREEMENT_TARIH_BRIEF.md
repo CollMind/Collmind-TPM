@@ -24,6 +24,108 @@ hüküm 15  iki paralel dalga · T-378 ≡ 1830       Z105 §5
 `.claude/backlog/tasks/` → `T-375` · **`T-378`** · **`T-383`** · `T-382`
 `CLAUDE.md` · `docs/DISIPLIN.md` — ikisi de **BAĞLAYICI**
 
+## 0.3 · ⛔ İKİNCİ GÜNCELLEME — `Z109` SONRASI (2026-09-08, öğleden sonra)
+
+### `A` · ⛔ MIGRATION NUMARASI DEĞİŞTİ: ~~`1830`~~ → **`1833000000000`**
+
+```
+[ÖLÇÜLDÜ: SELECT timestamp,name FROM main.migrations ORDER BY timestamp DESC LIMIT 3]
+  1832000000000  DemoPeriodQ3Realignment
+  1831000000000  BudgetEnvelopePeriodRange
+  1829000000000  BudgetEnvelopeCategoryStatusConditionalCheck
+```
+`1830` **2026-09-07**'de tahsis edildi; o gün `1831`/`1832` **yoktu**. İkisi de indi.
+⇒ `1830` uygulansa bile **HEAD `1832` KALIR**, ve bunun **iki ölçülmüş sonucu** var:
+```
+(i)  migration-verify.sh ÖLÇEMEDİM döner  — :168 HEAD'i `timestamp DESC` ile bulur
+(ii) migration:revert 1832'yi geri alır, 1830'u DEĞİL
+     ⇒ run→revert→run İMKÂNSIZ  ⇒  Z100 şablonu SAĞLANAMAZ
+```
+> ### ⛔ Yani `1830` bir numara değil, bir **TUZAKTI** — ve bu şeridi **boşa harcayacaktı**.
+📌 Sınıf: *"bir ölçümün/tahsisin geçerliliği KOŞULLARINA bağlıdır"* — bir **numara** da bayatlar.
+
+### `B` · ⛔ İKİ ARAÇ DOĞDU — VE BU DALGA ONLARIN **İLK GERÇEK MÜŞTERİSİ**
+
+```
+[ÖLÇÜLDÜ: backend a0d4125]  scripts/migration-verify.sh   YEŞİL 0 · KIRMIZI 1 · ÖLÇEMEDİM 2
+                            1832 üzerinde exit 0 · 38 s
+[ÖLÇÜLDÜ: backend 7c43762]  scripts/mutate.sh             YAKALANDI 0 · HAYATTA 1 ·
+                            ÖLÇEMEDİM 2 · ⛔ ARAÇ HATASI 3 · self-test 14/14
+```
+⛔ **ELLE MUTASYON / ELLE MIGRATION DOĞRULAMA YASAK** — araç var, araç çağrılır.
+`DISIPLIN`: *"kuralı hatırlamak yerine ARACI çağır."*
+
+```
+1833 (NOT NULL)          →  bash scripts/migration-verify.sh <sınıf|dosya>
+manager TİP KAPISI pini  →  bash scripts/mutate.sh --file … --line … --to '…' -- <ölçüm>
+```
+⛔ `migration-verify.sh` `K4` için **fixture ZORUNLU**
+(`scripts/verification/check-fixtures/<KISIT_ADI>.env`) — yoksa o kısıt için **`ÖLÇEMEDİM`**
+basar ve **sessizce yeşil saymaz**. Fixture'ı **sen yazarsın**.
+
+### `C` · ⛔ ÖN KOŞUL ÖLÇÜLDÜ — `1833`'ün KİLİDİ AÇIK
+
+```
+[ÖLÇÜLDÜ: SELECT count(*), count(category_id) FROM main.agreements WHERE deleted_at IS NULL]
+   5 satır · 5 DOLU · 0 NULL          ⇒ NOT NULL kilidi AÇIK
+[ÖLÇÜLDÜ: information_schema.columns]  is_nullable = YES · uuid   ⇒ kısıt HENÜZ YOK
+```
+⛔ **Yine de migration KENDİ assert'ini taşır** (`Z100` üç/dört durum) — bu ölçüm
+**bugünün** ölçümüdür, migration **her ortamda** koşacak.
+
+### `D` · ŞERİTLER **SIRALI**, PARALEL DEĞİL
+
+```
+ŞERİT 1  data-engineer     1833 (NOT NULL) + harness             ← ÖNCE
+ŞERİT 2  backend-engineer  T-383 + T-378 kalanı + İŞ 5 (manager) ← SONRA
+```
+⛔ **Gerekçe iki katlı ve ikisi de ölçülmüş:**
+```
+1  touches KESİŞİYOR — agreement.repository.ts HEM T-383'te (generateAgreementCode:271)
+   HEM İŞ 5'te (manager, 4 eşleşme)   [ÖLÇÜLDÜ: grep]
+2  DB PAYLAŞILIYOR — harness `migration:revert` koşar; canlı bir e2e ile ÇAKIŞIRSA
+   bir kez 18 suite'i SAHTE KIRMIZIYA çevirdi (Z107 blocker'ı).
+   ⛔ harness K1'de `test/.e2e-run.lock` KONTROL EDER — ama şeritler de kontrol eder.
+```
+
+### ⛔ `F12` — BU BRIEF KENDİ İÇİNDE ÇELİŞTİ (Team Lead hatası, 2026-09-08)
+
+`§0.3 B` (İŞ 5, `manager` tip kapısı) hedefini **açıkça** adlandırıyor:
+`budget.service.ts:1491-1502` (`checkEnvelopeAvailability`) ve
+`budget-availability-message.ts:55,61` (`envelopeFound?`).
+
+`§6` ise şunu diyor:
+```
+⛔ DALGA-B'nin dosyalarına DOKUNMA: budget.repository.ts · budget.service.ts ·
+   budget.controller.ts · budget-envelope.* — Çakışma görürsen DUR ve bildir.
+```
+ve `§0.2` (satır 117) yasağın **kalkmadığını** ayrıca teyit ediyor.
+
+> ### ⛔ İKİSİ AYNI BRIEF'TE, VE DOĞRUDAN ÇATIŞIYOR. `§0.3`'ü yazan tur `§6`'yı AÇMADI.
+
+`ŞERİT 2` notification zincirini izole etmeye çalıştı; çağıran zinciri kaçınılmaz olarak
+`budget.service.ts`'e çıktı (`budget-tier-notification` → `evaluateAndNotify` →
+`budget.service.ts:122` · `budget-reservation.service.ts:324`) ve şerit **DUR etti** —
+brief'in kendi kuralına (*"ayrılamıyorsa DUR ve bildir"*) uyarak. **Doğru davranış.**
+
+📌 **Ders:** bir brief'e **yeni bir iş** eklerken, o brief'in **DUR listesini okumak da
+işin parçasıdır**. `DISIPLIN`: *"bir DUR listesi, değişikliğin geçtiği HER SINIRI
+saymalıdır"* — burada eksik olan sınır değil, **yeni işin o listeye karşı okunmaması**ydı.
+
+⛔ **İŞ 5 BU DALGADA UYGULANMADI** — kod tarafında hiçbir `budget.*` dosyasına dokunulmadı.
+Karar ürün sahibine gider: (1) yasağı **imza-only** dar bir dokunuş için aç, ya da
+(2) `T-387`'ye ertele (o task zaten `🟡-4`/`🟡-5`'i izliyor).
+
+### `E` · ⛔ ÜÇ METRİK — BU DALGADA **ÖLÇÜLECEK**, İDDİA EDİLMEYECEK
+
+`Z109`'un amacı buydu ve karşılaştırma **burada** yapılır:
+```
+tur süresi         şeridin duvar saati (başlangıç→rapor)
+review-tur sayısı  kaç kez code-reviewer turu gerekti
+DUR sayısı         kaç kez şerit DUR edip Team Lead'e döndü
+```
+⛔ **Her şerit bunları RAPORUNDA verir.** Hızlanma iddiası `Z110`'da **ölçümle** yazılır.
+
 ## 0.2 · ⛔ ORTAM DEĞİŞTİ — BU BRIEF `Z107` + `Z108` SONRASI GÜNCELLENDİ (2026-09-08)
 
 Bu brief `DALGA-B` ile **paralel** koşmak üzere yazılmıştı. `DALGA-B` **indi ve push edildi**;
