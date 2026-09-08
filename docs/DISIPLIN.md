@@ -7097,6 +7097,124 @@ fixture  = bir SÖZLEŞMEDİR; SABİT tarih taşır ve GEREKTİRDİĞİ VERİYİ
 ⛔ testte GÖRELİ TARİH (`new Date()`, "bugün + N") YASAK — T-329 / T-333
 ```
 
+### ⛔ `F12` — HÜKÜM 17'NİN KAPSAMI DARALTILDI (ürün sahibi, 2026-09-08 · `Z108 §6`)
+
+Yukarıdaki son satır *"testte GÖRELİ TARİH YASAK"* diyor. **Okunduğu gibi uygulandığında
+DOĞRU İŞİ ENGELLEDİ** — `T-385` turunda ölçüldü. *(Eski satır **silinmedi**, kapsamı yazıldı:)*
+
+```
+YASAK olan    testin SONUCUNUN TAKVİME BAĞLI olması        ← "zamanlı-kırmızı"
+YASAK DEĞİL   bir ÜRÜN KURALININ girdisi olarak "bugün"ü okumak
+```
+
+**Ölçülmüş istisna — üç dosya** (`formula-canon-turnover-niv-and-rag-quadrant` ·
+`lta-parent-lifecycle-status-gate` · `lta-lifecycle-bond-and-base-chain`): `isoToday()`
+kullanıyorlar ama sınadıkları şey **bir ürün kuralı** —
+`lta-agreement.service.ts:151` `if (effectiveDate < tenantTodayIsoDate(timezone)) throw 400`
+(*"yürürlük tarihi geçmişte olamaz"*).
+
+⛔ **Ve meşruiyet bir İDDİA DEĞİL, BİR ÖLÇÜMDÜR:**
+```
+faketime -f "2026-10-01 12:00:00" node node_modules/.bin/jest --config ./test/jest-e2e.json <dosya>
+  formula-canon …   7/7  ✅     lta-parent-lifecycle …  5/5  ✅     lta-lifecycle-bond …  4/4  ✅
+  (karşılaştırma: role-journey A13/A13b → 404 ⛔ — O düzeltildi)
+```
+⇒ Reprodüksiyon bu üç dosyada **kırmızı üretmedi**. Ve tersi denendi: **sabit tarihe çekmek
+14 testi kırdı** — sabit bir geçmiş tarih bugünden sonraki **her** koşumda `400` üretir.
+
+> ### ⛔ Yani *"sabit tarih"* çözümü, hüküm 17'nin kapattığı bombadan **DAHA KALICI** bir
+> ### kırmızı üretecekti. **Bir kuralı harfiyen uygulamak, kuralın amacına aykırı düşebilir.**
+
+📌 `CLAUDE.md`'nin *"bir kural okunduğu gibi uygulandığında ya ihlal ediliyorsa ya işi
+durduruyorsa, kuralın kendisi zayıflar"* maddesinin **ikinci vakası** (ilki: dondurma
+kuralının `guard.sh`'ı kapsaması).
+
+⚠️ **Ve ayrımın SINAVI tek soru:** *"takvim ilerlerse bu test rengini değiştirir mi?"*
+— **Evet** ise zamanlı-kırmızıdır, düzeltilir. **Hayır** ise "bugün" testin **meşru
+girdisidir**. ⛔ Cevap bir **çıkarım değil, bir `faketime` koşumudur.**
+
 📌 Ve bu, `§2.7 #4`'ün ("kanıt kurulumu ölçüleni değiştirir") **tersidir**: orada kurulum
 ölçüleni **yok ediyordu**; burada kurulumun **YOKLUĞU**, testi başkasının veri kararına
 **bağımlı** kılıyor. İkisi de aynı sonucu verir: **test, sandığı şeyi ölçmez.**
+
+---
+
+## Brief'te her İDDİA bir ETİKET taşır — etiketsiz iddia = **DUR** (ZORUNLU)
+
+**İddia ile ölçüm aynı yazı tipinde duramaz.** Bir brief'e yazılmış cümle, bir sonraki el
+tarafından **doğrulanmış** gibi okunur — çünkü yazılı olmak, ölçülmüş olmakla aynı görünür.
+
+```
+[ÖLÇÜLDÜ: <kaynak>]        kaynak = komut · dosya:satır · rapor. Kaynağı OLMAYAN etiket yoktur.
+[ÖLÇÜLMEDİ — ölçülecek]    iddia bir HİPOTEZDİR; ölçüm ŞERİDİN İŞİDİR
+⛔ etiketsiz iddia          ajan brief'i İADE EDER (DUR, CLAUDE.md §2.4)
+```
+
+**Nasıl doğdu (ürün sahibi hükmü 20, `Z108 §3`):** bir dalganın **üç blocker'ının üçü de**
+bu kökten çıktı. Kanonik vaka — bir brief'e şu yazıldı:
+
+> *"kod turu bunun üstüne yeni kırmızı **eklemedi (ölçüldü)**"*
+
+Kod turu **yalnız beş seçili suite** koşmuştu. `qa` **10 suite / 57 test** ölçtü ve yazanı
+**çürüttü**. Parantez içindeki *"(ölçüldü)"* **yanlıştı** — ve tam da o kelime, bir sonraki
+eli **yeniden ölçmekten alıkoyuyordu.**
+
+> ### ⛔ Yani bir ölçüm iddiası, ölçümün **yerini alır**. Yanlışsa, aramayı **durdurur**.
+
+### Ailenin üç üyesi — tek ilke
+
+```
+1  [REVIEW İDDİASI — DOĞRULANMADI]   bir review bulgusu ölçülmüş bir kusur DEĞİLDİR
+2  [ÖLÇÜLDÜ] hükmün PARÇASI          bir hüküm NEYE dayanıyor — damga hükümle birlikte yazılır
+3  [ÖLÇÜLDÜ / ÖLÇÜLMEDİ] BRIEF'TE    ← bu kural
+```
+
+📌 Ve *"konuşmada verilen bir hüküm, belgeye geçmediyse dalgayı geçmez"* kuralının
+**kardeşi**: orada bilgi **hiç yazılmıyordu**; burada yazılıyor ama **statüsü** yazılmıyor.
+İkincisi daha tehlikelidir, çünkü **yazılmış olmak doğrulanmış gibi okunur** — ve
+*"yanlış bir kapanış aramayı durdurur"* kuralının brief tarafındaki hâlidir.
+
+⚠️ **Ve etiket Team Lead'e de uygulanır — hatta ÖNCE ona.** Yukarıdaki kanonik vakayı yazan
+Team Lead'di; kuralın ihlal edildiği yer **brief'i OKUYAN el değil, YAZAN eldi**.
+
+---
+
+## SEED GÖRELİDİR, FIXTURE SABİTTİR — ikisi ZIT yöne gider (ZORUNLU)
+
+*"`SEED` bir DEMO'dur, `FIXTURE` bir SÖZLEŞMEDİR"* kuralının **zaman eksenli tamamlayıcısı**
+(ürün sahibi hükmü 18, `Z108 §1.1`):
+
+```
+seed     tenant-BUGÜNE GÖRE üretilir  (içinde bulunulan çeyrek)  →  demo HEP CANLI
+fixture  SABİT tarih taşır + kendi verisini KENDİ kurar          →  takvimden BAĞIMSIZ
+⛔ ürün-sahibi imzalı TUTAR tablosu her iki durumda da SABİT — dönem kayar, tutar kaymaz
+```
+
+> ### ⛔ İkisinin **aynı yönde** olması gerektiği sanısı, on suite'lik dayanaksız bir
+> ### yeşili üreten sanının ta kendisiydi.
+
+~~**Ve testin "bugün"ü ENJEKTE EDİLİR — okunmaz.** Bir test takvime bakıyorsa, takvim testin
+girdisidir ve test koştuğu güne göre kayar. Tenant-TZ çözümleyicisi testte sabit saat alır
+(clock-injection).~~
+
+> ### ⛔ `F12` — **BU CÜMLE YÜRÜRLÜKTE DEĞİL** (hüküm 22, `Z108 §6`, 2026-09-08)
+>
+> `clock-injection` **AÇILMADI** — `İlke 1`: ihtiyacı **ölçülmedi** (`T-385` reprodüksiyonu
+> tek zamanlı-kırmızıyı **sabit fixture** ile kapattı). **Olay-tetikli aday** olarak
+> `T-389`'da duruyor.
+>
+> ⛔ **Yürürlükteki kapsam yukarıdaki `F12` bloğudur**, ve sınavı tek soru:
+> ***"takvim ilerlerse bu test rengini değiştirir mi?"*** — cevap bir çıkarım değil,
+> bir **`faketime` koşumudur**.
+>
+> 📌 Ve bu cümle **doğduğu commit'te ihlal ediliyordu**: aynı commit
+> `test/helpers/server-calendar-day.ts`'i ekledi — *"bugün"ü **okuyan** bir yardımcı.*
+> `code-reviewer` yakaladı. `CLAUDE.md`: *"bir kural okunduğu gibi uygulandığında ya ihlal
+> ediliyorsa ya işi durduruyorsa, kuralın kendisi zayıflar."*
+
+⛔ Emsal **yeniden kullanılır**, kopya yazılmaz — `T-333` harness'i (üç `TZ`, child-process)
+bu şeklin zaten çalışan hâlidir.
+
+📌 **Bir "1 Ekim'de kırmızıya döner" bilgisini kuyrukta bekletmek**, ay-sonu kusurlarını
+*"flaky"* sanma vakasının (`T-328`) **PLANLI hâlidir** — tarihi biliyoruz, sebebi biliyoruz,
+ve o gün yine *"neden kırmızı?"* diye sorulacak. **Zamanlı bir kırmızı, kuyruğa girmez.**

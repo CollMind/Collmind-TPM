@@ -24,6 +24,83 @@ hüküm 15  iki paralel dalga · T-378 ≡ 1830       Z105 §5
 `.claude/backlog/tasks/` → `T-375` · **`T-378`** · **`T-383`** · `T-382`
 `CLAUDE.md` · `docs/DISIPLIN.md` — ikisi de **BAĞLAYICI**
 
+## 0.2 · ⛔ ORTAM DEĞİŞTİ — BU BRIEF `Z107` + `Z108` SONRASI GÜNCELLENDİ (2026-09-08)
+
+Bu brief `DALGA-B` ile **paralel** koşmak üzere yazılmıştı. `DALGA-B` **indi ve push edildi**;
+ardından `Z107` (demo Q3) ve `Z108` (üç hüküm) geldi. ⛔ **Aşağıdakiler artık VARSAYIM DEĞİL,
+ORTAMDIR** — brief'in eski metnini bunlara göre oku:
+
+```
+[ÖLÇÜLDÜ: backend fcfef5c · origin/staging]
+  zarflar         period_from '2026-07' … period_to '2026-09'   (aralık modeli CANLI, 1831/1832)
+  period LIKE     ÖLDÜ — tek kaskad, aralık eşleşmesi
+  manager         findEnvelopeByDimensions(Strict) artık manager? ALIYOR
+  e2e tabanı      64 suite / 887 test · unit 87 / 1547 · tsc 0 · guards 0 · T-047 PASS
+  MIGRATION       sıradaki boş numara 1833 — ⛔ AMA BU ŞERİDİN NUMARASI HÂLÂ 1830 (tahsisli)
+```
+
+⛔ **VE `DALGA-B` ARTIK PARALEL DEĞİL — İNDİ.** `§6`'nın *"`DALGA-B`'nin dosyalarına DOKUNMA"*
+yasağı **kalkmadı ama SEBEBİ DEĞİŞTİ**: çakışma riski değil, **`§7.1` riski**. O dosyalar
+`Z107`'de üç blocker üretti; dokunuyorsan **kardeş yolları SAY**.
+
+⛔ **VE `§6`'nın *"izole worktree"* şartı DURUYOR** — sebebi yine değişti: `T-385` şeridi
+**aynı ağaçta** koşuyor (`test/` altında).
+
+### ⛔ YENİ İŞ — `İŞ 5`: `manager` **TİP KAPISI** (hüküm 19 · `Z108 §2`)
+
+`T-387 🟡-5` bir **karar** bekliyordu; ürün sahibi verdi: **TİP KAPISI.**
+
+```
+karar    manager: EntityManager   ⛔ OPSİYONEL DEĞİL
+gerekçe  "disiplin" = BİR ÇAĞIRAN UNUTUR — ve UNUTTU DA: sekiz kardeşten biri
+çizgi    "kapı tek noktada, TİP onu zorlar"
+         emsaller: SKUContext markası · toFiniteNumber · targetRoi çözümleyicisi
+emsal    T-322 — NotificationRepository tx-manager'ı almıyordu → ROLLBACK-ARTIĞI doğdu
+         ⇒ sınıf YENİ DEĞİL; Z107'nin P1 bulgusu onun İKİNCİ vakasıydı
+```
+
+**ŞEKİL (bağlayıcı):**
+```
+tx-içi okuma yapabilen HER repository metodu  →  manager: EntityManager  ZORUNLU
+tx-DIŞI çağıranlar                            →  AÇIKÇA this.dataSource.manager geçer
+                                                 ⛔ YAZILI — sessiz-default DEĞİL (§2.5)
+zorlayan                                      →  DERLEYİCİ
+mutasyon-kanıtı                               →  bir çağıranda parametre SİLİNİR → tsc KIRMIZI
+```
+📌 `Z83` doğum kuralı burada **gerekmez**: bu bir guard değil bir **tip** —
+bilinen-kırmızısı **derleyicinin kendisi**, bilinen-yeşili `tsc 0`.
+
+⛔ **ÖNCE EVREN, SONRA DEĞİŞİKLİK** (`§7.1`):
+```
+[ÖLÇÜLMEDİ — ölçülecek]  "tx-içi okuma YAPABİLEN repository metodu" kaç tane?
+   ⇒ ŞARTI ÖNCE TANIMLA, sonra tara. ⛔ DISIPLIN: "bir TANIMIN evreni, tanımın
+     ŞARTIYLA seçilemez" — 'manager alanlar' diye tarama, o SONUÇ değil GİRDİ olur.
+[ÖLÇÜLDÜ: Z107 turu]  budget.repository'de sekiz kardeş metot manager ALIYORDU,
+   findEnvelopeByDimensions(Strict) ALMIYORDU ⇒ bu tur ikisine de eklendi (OPSİYONEL olarak)
+[ÖLÇÜLDÜ: T-387 🟡-4]  checkEnvelopeAvailability (budget.service.ts:1491-1502) HÂLÂ
+   manager'sız çağırıyor ⇒ checkPlanBudgetAvailability transaction-KÖR
+[ÖLÇÜLMEDİ — ölçülecek]  aynı ŞEKİL başka repository'lerde var mı — agreement · plan ·
+   ledger · notification (T-322'nin dosyası!) ⇒ SAYI DEĞİL LİSTE
+```
+
+⚠️ **Ve `envelopeFound?: boolean` AYNI ŞEKLİN İKİNCİ ÜYESİ** (`budget-availability-message.ts:55,61`):
+üretici bir dalda yazmayı unutursa *"zarf YOK"* sessizce *"zarf var, yetersiz"* olur ve
+`K-2.2.14` mesajı **kaybolur**. ⛔ **Aynı hamle ona da uygulanır** — `envelopeFound: boolean`.
+
+⛔ **KAPSAM SINIRI:** `T-387`'nin diğer maddeleri (`🟡-1` `23P01` üçüncü üretici · `🟡-2`
+DTO format · `🟡-3` pin) **BU ŞERİDİN İŞİ DEĞİL** — `T-387` kendi turunda kapanır. Burada
+**yalnız `🟡-5`** (+ `🟡-4`, çünkü aynı imzadan geçiyor). Ayrılamıyorsa **DUR ve bildir**.
+
+### ⛔ VE BU BRIEF `Z108 §3` (HÜKÜM 20) ALTINDADIR
+
+**Her iddia bir etiket taşır:** `[ÖLÇÜLDÜ: <kaynak>]` ya da `[ÖLÇÜLMEDİ — ölçülecek]`.
+Etiketsiz bir iddia görürsen ⛔ **DUR ve brief'i İADE ET.**
+⚠️ **Bu brief'in `§1`–`§5`'i hüküm 20'den ÖNCE yazıldı** — oradaki dosya:satır listeleri
+`Z104` review'ında **ölçülmüştür** (`[ÖLÇÜLDÜ: T-383 task dosyası, code-reviewer 2026-09-07]`),
+ama **TARİHLİDİR**: `DALGA-B` o dosyalardan bazılarına dokundu. ⛔ **Her satırı YENİDEN doğrula**
+— `DISIPLIN`: *"ölçüm ortamının bayatlığı da bir maskeleme sınıfıdır."*
+**Kendi raporunda da etiket kullan.**
+
 ## 1 · ⛔ ÖNCE: BU DALGANIN İLK İŞİ BİR **EVREN TANIMI**, BİR LİSTE DEĞİL
 
 `DISIPLIN`: *"Bir liste vermek, evreni tanımlamak değildir."* Bu kural **`T-383`'ün kendisinden**

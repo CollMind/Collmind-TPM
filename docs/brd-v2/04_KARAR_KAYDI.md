@@ -10525,6 +10525,11 @@ pinler       877 → 887 (P1 autoCreateBudget · P2 metadata-boyut · P3 kesişm
 ```
 T-384  §2.5 REPO SINIRINI AŞTI — backend null seçti, Intl.NumberFormat geri ₺0 yaptı
 T-385  demo hizalaması 2026-09-30'da SONA ERİYOR — altı suite o gün kendiliğinden kırmızı
+>
+> ⛔ **`F12` — BU SAYI ÇÜRÜTÜLDÜ: `ALTI` DEĞİL `BİR`.** Reprodüksiyon (`faketime 2026-10-01`)
+> ölçtü: yalnız `role-journey` `A13`/`A13b` kırmızıya dönüyordu; `isoToday()` kullanan üç dosya
+> **yeşil** kaldı. ⇒ **bkz. `Z108 §6` ve `§6.1 KAYIT 1`** (*evren üç turda `6 → 3 → 1`*).
+> *(Eski cümle **silinmedi** — o gün elimizdeki en iyi tahmindi ve bir **tahmindi**.)*
 T-386  K-2.2.14 HÂLÂ İHLAL: "zarf yok" için ÜÇ politika (kardeş yollar sayılmadı)
 T-387  23P01 sınıfının ÜÇÜNCÜ üreticisi · geçerli gövde 500 üretiyor
        ⛔ manager? OPSİYONEL: unutulan çağrı yeri SESSİZCE eski davranışa düşer
@@ -10600,3 +10605,290 @@ gibi **opsiyonel** bir parametre, *"unutmayı"* **sessiz** kılar. **Zorunlu** y
 **derleme hatasına** çevirir — `Z103`'te `category`'yi zorunlu yapmanın **on birinci elle-sayı
 hatasını** önlemesiyle **aynı hamle**. ⛔ `Z83` doğum kuralı burada **gerekmez**: bu bir guard
 değil, bir **tip** — bilinen-kırmızısı derleyicinin kendisi. (`T-387`)
+
+---
+
+## `Z108` — ÜÇ HÜKÜM: `T-385` ÖNCELİĞİ · `manager` TİP KAPISI · BRIEF ETİKET KURALI
+### (ürün sahibi, 2026-09-08)
+
+`Z107` mühürlendikten sonra Team Lead üç soru sordu; ürün sahibi üçünü de **hükme** bağladı.
+Üçü de aynı aileden: **bir şey biliniyordu ve KAYDA GEÇMEDİĞİ için işlemiyordu.**
+
+---
+
+### `§1` · HÜKÜM 18 — `T-385` **ÖNCE**, `DALGA-A`'DAN ÖNCE
+
+```
+gerekçe (ürün sahibi):
+  "üç haftalık ZAMANLI kırmızı, ve Z107'nin KAPATTIĞI SANILAN sınıfın ARTIĞI.
+   Altı suite 1 Ekim'de kendiliğinden düşüyorsa, altısı hâlâ seed-dönemine /
+   tenant-bugüne bağımlı — seed↔fixture ayrımı (Z107) ONLARDA UYGULANMAMIŞ."
+```
+
+⛔ **Ve bekletmenin adı kondu:** *"1 Ekim'de kırmızı"* diye bir tarihi kuyrukta bekletmek,
+**ay-sonu-kusurlarını *"flaky"* sanma vakasının (`T-328`) PLANLI hâli** olurdu. Yani biliyoruz,
+tarihi de biliyoruz, ve yine de o gün *"neden kırmızı?"* diye sorulacak bir duruma **kasten**
+gidiyoruz.
+
+**Düzeltme SINIF DÜZEYİNDE — üç parça:**
+
+```
+1  altı suite KENDİ FIXTURE'INI kurar          (ensureBudgetEnvelope deseni, Z107 §3)
+2  SABİT tarih                                  (⛔ göreli tarih YASAK — T-329 / T-333)
+3  "bugün" ENJEKTE EDİLİR                       clock-injection: tenant-TZ çözümleyicisi
+   testte SABİT-SAAT alır (T-333 harness'ının KARDEŞİ — ⛔ emsali YENİDEN KULLAN)
+⇒ TAKVİM, TESTİN GİRDİSİ OLMAZ.
+```
+
+📌 `tenantTodayIsoDate(timezone, now?)` ikinci parametreyi **zaten taşıyor** (`T-375` ADIM 3'te
+öyle yazıldı) — yani clock-injection için **yeni bir mekanizma gerekmiyor**, var olanın
+**testten erişilebilir** kılınması gerekiyor. ⛔ Bu bir **ölçüm**, bir varsayım değil:
+`src/common/date/local-today.spec.ts:205` *"`now` enjekte edilebilir, zamana bağlı DEĞİL"*
+başlıklı bir bloğu **zaten koşuyor**.
+
+#### `§1.1` — DEMO-SEED'İN KENDİSİ AYRI BİR SORU, VE CEVABI **GÖRELİ**
+
+Soru: *1 Ekim'de demo Q4'e kaymalı mı?*
+
+```
+HÜKÜM  demo-seed tenant-bugüne göre "İÇİNDE BULUNULAN ÇEYREĞİ" üretir  →  demo HEP CANLI
+       ⛔ ürün-sahibi imzalı TUTAR TABLOSU SABİT (Σ 2.300.000 — dokunulmaz)
+```
+
+⇒ Bu, `Z107`'nin *"seed = DEMO, dönem tenant-bugüne göre"* satırının **tam uygulamasıdır** —
+`Z107` ilkeyi koydu, `1832` onu **bir kez elle** uyguladı; hüküm 18 onu **kendi kendini
+sürdüren** hâle getirir.
+
+> ### ⛔ VE İKİ TARAF ZIT YÖNE GİDER — BU BİR ÇELİŞKİ DEĞİL, SINIFIN TA KENDİSİ
+> ```
+> seed    GÖRELİ olur   (demo canlı kalsın)          ← veri kararı, DEĞİŞİR
+> fixture SABİT olur    (sözleşme takvimden bağımsız) ← davranış kararı, DEĞİŞMEZ
+> ```
+> İkisinin **aynı yönde** olması gerektiği sanısı, `Z107 §1`'in on suite'lik yeşilini
+> üreten sanının ta kendisiydi.
+
+---
+
+### `§2` · HÜKÜM 19 — `T-387 🟡-5`: **TİP KAPISI.** `manager` OPSİYONEL DEĞİL, **ZORUNLU**
+
+```
+karar   manager: EntityManager   (opsiyonel DEĞİL)
+gerekçe "disiplin" = BİR ÇAĞIRAN UNUTUR — ve UNUTTU DA: sekiz kardeşten biri.
+```
+
+**Yazılı çizgi (ürün sahibi):** *"kapı tek noktada, tip onu zorlar"* — emsalleri
+`SKUContext` markası · `toFiniteNumber` · `targetRoi` çözümleyicisi.
+
+⛔ **Ve bu vakanın DOĞRUDAN emsali var: `T-322`** — `NotificationRepository` tx-manager'ı
+almıyordu, **rollback-artığı** doğdu. Yani sınıf **yeni değil**; `Z107`'nin `P1` bulgusu onun
+**ikinci vakasıydı** ve ilkinden ders çıkarılmamıştı.
+
+**ŞEKİL:**
+```
+tx-içi okuma yapabilen HER repository metodu   →  manager: EntityManager   ZORUNLU
+tx-DIŞI çağıranlar                             →  AÇIKÇA this.dataSource.manager geçer
+                                                  ⛔ YAZILI — sessiz-default DEĞİL (§2.5)
+zorlayan                                        →  DERLEYİCİ
+mutasyon-kanıtı                                 →  bir çağıranda parametre SİLİNİR → tsc KIRMIZI
+```
+
+📌 **Ve mutasyon-kanıtı burada `Z83` doğum kuralının yerine geçer:** bu bir guard değil bir
+**tip** — bilinen-kırmızısı **derleyicinin kendisi**, ve `tsc 0` bilinen-yeşili.
+
+⛔ **Yeri: `DALGA-A`'NIN İÇİ.** Karar verildi ⇒ tek tur, **dosyalar bir kez açılır**. Karar
+`DALGA-A`'dan **sonra** verilseydi aynı `budget`/`agreement` yüzeyi **iki kez** açılacaktı.
+
+> 📌 Bu, bir kararın **sıralamayı** değiştirdiği bir vakadır: soru *"ne yapalım"* değil
+> *"NE ZAMAN karar verelim"*di — ve cevabı **maliyet** belirledi, tercih değil.
+
+---
+
+### `§3` · HÜKÜM 20 — BRIEF'TE HER İDDİA **ETİKET TAŞIR**; ETİKETSİZ İDDİA = **DUR**
+
+```
+[ÖLÇÜLDÜ: <kaynak>]        ← komut · dosya:satır · rapor
+[ÖLÇÜLMEDİ — ölçülecek]    ← ölçüm ŞERİDİN İŞİ, iddia BİR HİPOTEZ
+⛔ etiketsiz iddia  ⇒  ajan brief'i İADE EDER (DUR, §2.4)
+```
+
+**Nasıl doğdu:** bu dalganın **üç blocker'ının üçü de** aynı kökten çıktı —
+
+> ### ⛔ Brief'te **İDDİA** ile **ÖLÇÜM** aynı yazı tipinde duruyor, ve bir sonraki el
+> ### ikisini **AYIRT EDEMİYOR.**
+
+Ölçülmüş vaka: bir brief'e *"kod turu bunun üstüne yeni kırmızı **eklemedi (ölçüldü)**"*
+yazıldı. Kod turu **yalnız beş seçili suite** koşmuştu. `qa` **10 suite / 57 test** ölçtü ve
+Team Lead'i **çürüttü**. Parantez içindeki *"(ölçüldü)"* kelimesi **yanlıştı** — ve tam da o
+kelime, bir sonraki eli yeniden ölçmekten **alıkoyuyordu**.
+
+#### `§3.1` — BU BİR AİLENİN **ÜÇÜNCÜ ÜYESİ**
+
+```
+1  [REVIEW İDDİASI — DOĞRULANMADI]   review bulgusu ≠ ölçülmüş kusur
+2  [ÖLÇÜLDÜ]  hükmün PARÇASI          hüküm-damgası: bir hüküm neye dayanıyor
+3  [ÖLÇÜLDÜ / ÖLÇÜLMEDİ]  BRIEF'TE    ← BU (hüküm 20)
+```
+
+⇒ Üçü tek bir ilkenin üç yüzü: **İDDİA İLE ÖLÇÜM AYNI YAZI TİPİNDE DURAMAZ.**
+
+📌 Ve `Z105 §1`'in (*"konuşmada verilen bir hüküm, belgeye geçmediyse dalgayı geçmez"*)
+**kardeşi**: orada bilgi **hiç yazılmıyordu**; burada yazılıyor ama **statüsü** yazılmıyor.
+İkincisi daha tehlikeli — çünkü **yazılmış olmak, doğrulanmış gibi okunur.**
+
+---
+
+### `§4` · ÜRÜN SAHİBİNİN KAYIT NOTU — İKİ YAPISAL HATA
+
+`Z107`'nin on hata kaydından **ikisi yapısal** (kalanı vaka):
+
+```
+1  §7.1'in SEKİZDE BEŞİ Team Lead'in       → sınıf-taraması insan disiplini (Z104 §6)
+2  "brief'e ölçülmemiş cümle" → ÜÇ BLOCKER → panzehiri HÜKÜM 20 (§3)
+```
+
+⛔ **Ve `CLAUDE.md §3` ihlali (`1829` `backend-engineer`'a verildi) kayıtta:** ürün sahibi
+hükmü — ***"kural yerinde, uygulaması kaydı."*** Yani kural değişmez, ihlal **sayılır**.
+
+📌 Ve dört sınıf-doğuran bulgunun adlandırması **onaylandı** — özellikle **`C`**
+(*"bir testin YOKLUĞU bir kusuru örter"*, `autoCreateBudget` sıfır-kapsama → `manager`
+eksikliği): `T-273` ailesine (*"verinin yokluğu örter"*) **YENİ BİR YÜZ** — orada örten şey
+**verinin** yokluğuydu, burada **ölçümün**.
+
+---
+
+### `§5` · SIRA (hüküm 21)
+
+```
+1  T-385      altı suite seed-BAĞIMSIZ + clock-injection + GÖRELİ demo-seed
+2  DALGA-A    brief GÜNCEL: Q3 zarflar · manager TİP KAPISI · e2e 887 · T-383 üç-taban
+3  halka-3    brief'i
+```
+
+---
+
+### `Z108 §6` — `T-385` KAPANIŞI: ÜÇ HÜKÜM DAHA, VE ÜÇ KAYIT
+#### (ürün sahibi, 2026-09-08)
+
+---
+
+#### `HÜKÜM 22` — ŞEKİL 1'in üç dosyası: **(A) DOKUNMA**, ve hüküm 17'nin KAPSAMI netleşti
+
+```
+YASAK olan    testin SONUCUNUN TAKVİME BAĞLI olması       ← "zamanlı-kırmızı"
+YASAK DEĞİL   bir ÜRÜN KURALININ girdisi olarak "bugün"ü okumak
+```
+
+⛔ **Ve meşruiyet bir İDDİA DEĞİL, BİR ÖLÇÜM:** `faketime 2026-10-01` altında üç dosya
+**yeşil** (7/7 · 5/5 · 4/4), reprodüksiyon **kırmızı üretmedi**. Tersi de ölçüldü: sabit
+tarihe çekmek **14 testi** kalıcı kırmızıya çevirirdi (`lta-agreement.service.ts:151` —
+*"yürürlük tarihi geçmişte olamaz"*).
+
+> ### ⇒ *"Sabit tarih"* çözümü **bombadan beter** olurdu. Hüküm 17'ye `F12` (kapsam cümlesi
+> ### + bu üç dosyanın **ölçülmüş** istisnası) — `DISIPLIN`'e yazıldı.
+
+**`(B)` clock-injection reddedildi — `İlke 1`:** ürün kodu değişikliği, ve **ihtiyacı
+ölçülmedi**. ⛔ Ama **silinmedi, OLAY-TETİKLİ adaya çevrildi** (`T-389`): halka-3/4'te tarih
+mantığı büyüdüğünde (dönem kapanışı · kilit süresi · otomatik statü) `ClockService` **doğal
+olarak** gerekecek. **O gün gelir.**
+
+**Kalan `§2.7 #8` kapatıldı:** yardımcı ~~**altı kez**~~ **YEDİ KEZ** yazılıydı ⇒ tek
+`test/helpers/server-calendar-day.ts`. Aynı commit.
+
+> ⛔ **`F12` — "ALTI" YANLIŞTI, VE SEBEBİ TARAMA DESENİYDİ** (`code-reviewer`, aynı tur):
+> ```
+> grep -rc "…" test/*.ts    ⛔ `test/*.ts` ÖZYİNELEMESİZ; `-r` bir dosya glob'uyla İŞLEVSİZ
+>                              ⇒ `test/helpers/` HİÇ TARANMADI
+> grep -rn "…" test/        ✅ doğrusu: DİZİN ver, glob değil
+> ```
+> **Yedinci kopya:** `test/helpers/seed-e2e.ts:1041` `isoOffsetDays` — gövdesi
+> `serverTodayPlusDaysIso` ile **karakter karakter aynı**. O da taşındı (iki çağıran).
+>
+> ### ⇒ Evren `6 → 3 → 1` diye üç kez daraldıktan sonra, **birleştirme turunda BİR KEZ DAHA
+> ### eksik tanımlandı** — ve bu kez fazla değil **EKSİK**. Aynı tur, aynı sınıf, dördüncü kez.
+> 📌 Ve iddia bağlayıcı belgeye **`[ÖLÇÜLDÜ]` etiketiyle** girmişti — hüküm 20'nin
+> *"yanlış bir ölçüm iddiası aramayı DURDURUR"* maddesinin canlı vakası.
+
+---
+
+#### `HÜKÜM 23` — SEED ANAHTARI: `T-388`, AYRI VE **ZAMANLI**
+
+`qa` şeridinin brief'te olmayan bulgusu (`§6`, ölçüldü):
+```
+budget-envelope.seed.ts   code = `ENV-2026-${categoryCode}`     ⛔ DÖNEM TAŞIMIYOR
+                          if (existing) { created.push(existing); continue; }   ⛔ SESSİZ
+⇒ HÜKÜM 18'in "GÖRELİ SEED"i, anahtar değişmeden SESSİZCE ETKİSİZ kalır.
+```
+
+> ### ⛔ Sınıf tanıdık: **`1/3-doğru-seed` ailesi** — mekanizma doğru, anahtar yanlış, ve
+> ### **hiçbir kapı bunu göremez** çünkü seed *"başarıyla"* koşar.
+
+**İKİ DÜZELTME BİRLİKTE (ayrılamaz):**
+```
+1  anahtar DÖNEME ÖZGÜ    `ENV-${period_from}-${cat}`  ya da  code + period_from BİLEŞİK TEKİLLİK
+2  idempotent seed NE ATLADIĞINI BASAR   ⛔ `continue` SESSİZ OLAMAZ (§2.5)
+   ⇒ "seed-sözleşme-kapısı" adaylığının ÜÇÜNCÜ üyesi
+```
+
+⛔ **SIRA BAĞLAYICI: anahtar → göreli seed.** Hüküm 18 (göreli seed) bu anahtar **inmeden
+uygulanmaz** — uygulanırsa sessizce hiçbir şey yapmaz.
+⛔ **TARİH SINIRI: 2026-09-30** (demo canlılığı). Yeri: **`DALGA-A`'dan SONRA**, tek küçük tur.
+
+---
+
+### `§6.1` · ÜÇ KAYIT
+
+#### `KAYIT 1` — ÜÇ TURDA ÜÇ SAYI: **6 → 3 → 1**, ve üçünü de düzelten **REPRODÜKSİYON**
+
+```
+tur 1  code-reviewer + Team Lead   "ALTI suite"   ← grep (yorum satırıyla eşleşti)
+tur 2  Team Lead F12               "ÜÇ dosya"     ← daha iyi grep
+tur 3  qa reprodüksiyonu           "BİR suite"    ← faketime 2026-10-01 KOŞUMU
+```
+
+> ### ⛔ Evren-daralmasının **KANIT TÜRÜ** budur: üç turda üç sayı, ve düzelten şey
+> ### hiçbirinde **daha iyi bir grep** değil, **bir REPRODÜKSİYON** oldu.
+
+📌 `DISIPLIN`: *"reprodüksiyon şartı iddiayı da, düzeltmeyi de AYNI KAPIDAN geçirir"* —
+ve *"kusur var"* demek, *"kusur yok"* demek kadar bir iddiadır. Burada üç kez **"kusur var"**
+denmişti; ikisi ölçümle **çürüdü**.
+
+#### `KAYIT 2` — `npx`/`DYLD`: KANIT KURULUMU ÖLÇTÜĞÜ DURUMU **YOK ETTİ**
+
+```
+faketime … node -e 'new Date()'      → 2026-10-01T09:00:00Z   ✅ sahte saat GEÇERLİ
+faketime … npx node -e 'new Date()'  → 2026-09-08T08:13:35Z   ⛔ sahte saat SESSİZCE DÜŞTÜ
+```
+`npx` yeni bir node çözer ve `libfaketime`'ın `DYLD` enjeksiyonunu kaybeder. Team Lead bununla
+ölçtü ve ***"kırmızı üremedi"*** yazdı — **yanlış**, ve `§2.7 #4`'ün yeni bir vakası.
+⚠️ Yanılma yönü **RAHATLATICI** olandı (`DISIPLIN`: *"beklenen yöne yanılan bir hata, ters
+yöne yanılandan tehlikelidir"*).
+
+> ### ⛔ VE ASIL DERS BAŞKA: **BAĞIMSIZ ÖLÇÜM, RAPORUN ARAÇ-NOTLARINI OKUDUKTAN SONRA YAPILIR.**
+> ### **Bağımsızlık, "OKUMADAN" demek değildir.**
+
+Şerit tuzağı **zaten ölçmüştü** (*"npx üzerinden çalışmadığı ölçüldü"*) ve raporuna yazmıştı;
+Team Lead raporu **okumadan** ölçtü ve **aynı tuzağa** düştü. ⇒ Bağımsız doğrulama, **aracın
+sınırlarını** devralır; **iddiaları** devralmaz. İkisi ayrı şeydir.
+
+📌 Ve aracın ikinci sınırı da yazıldı: **`libfaketime` DB'yi sahtelemez** (Postgres ayrı
+container, gerçek saat). Bu turda zararsızdı; `created_at`/optimistic-lock damgasına dayanan
+bir test bu yöntemle **yanlış** sonuç verir.
+
+#### `KAYIT 3` — HÜKÜM 20'NİN İLK İHLALİ, **İLK TURUNDA** YAKALANDI
+
+`qa` şeridi `role-journey`'nin yorumuna şunu yazdı:
+```
+"reprodüksiyon: `T-385` RAPORU, ölçüldü 2026-10-01 altında bu satırlar KIRMIZI"
+                 ↑ O AN VAR OLMAYAN BİR KAYNAK
+```
+Ve aynı düzenlemede `F12` geçmişini **sildi**: `T-270`/`Z21`'in kök-neden kaydı (sessiz
+`0`/GREEN raporu, `§2.5`) ve üstü çizili `toBe(404)` satırları.
+
+**Team Lead ikisini de geri aldı:** geçmiş **geri kondu** (append-only), ve doğrulanmamış atıf
+**çalıştırılabilir bir komutla** değiştirildi.
+
+> ### ⇒ Hüküm 20 (`§3`) **doğduğu turda** ihlal edildi — ve **doğduğu turda yakaladı**.
+> ### Bir kuralın işe yaradığının kanıtı, ilk vakasını **kendi turunda** durdurmasıdır.
+
+📌 `DISIPLIN`: *"bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur"* — ve bu kez
+ihlal eden **şerit**, yakalayan **kuralın kendisiydi**.

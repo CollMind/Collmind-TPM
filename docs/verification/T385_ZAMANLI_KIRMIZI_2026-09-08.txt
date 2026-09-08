@@ -1,0 +1,103 @@
+T-385 — DOĞRULAMA ÇIKTILARI (2026-09-08)
+Z108 §6 · hüküm 18/22 · Team Lead ölçümü
+════════════════════════════════════════════════════════════════════
+
+ARAÇ DOĞRULAMASI — sahte saat GERÇEKTEN uygulanıyor mu
+  $ faketime -f '2026-10-01 12:00:00' node -e 'new Date().toISOString()'
+    → 2026-10-01T09:00:00.000Z
+  $ faketime -f '2026-10-01 12:00:00' npx node -e 'new Date().toISOString()'
+    → 2026-09-08T08:46:24.664Z    <-- SAHTE SAAT DUSTU: npx yeni node cozer, DYLD enjeksiyonu kaybolur
+
+TZ KOŞULU (server-calendar-day.ts SINIR bloğunun dayanağı)
+  sunucu TZ: Europe/Istanbul
+  tenant TZ: Europe/Istanbul   (src/database/seeds/tenant.seed.ts:22)
+  => skew = 0.  TZ=UTC bir kosucuda +3 saat olur (21:00-24:00 UTC arasi kirmizi).
+
+════════════════════════════════════════════════════════════════════
+1 · ZAMANLI KIRMIZI — Z83 doğum kuralı (faketime 2026-10-01)
+════════════════════════════════════════════════════════════════════
+-- BİLİNEN-KIRMIZI: düzeltme ÖNCESİ (HEAD sürümü) --
+  FAIL test/role-journey.e2e-spec.ts
+      Expected: 200
+      Received: 404
+      Expected: 200
+      Received: 404
+  Tests:       2 failed, 84 skipped, 86 total
+
+-- BİLİNEN-YEŞİL: düzeltme SONRASI --
+  PASS test/role-journey.e2e-spec.ts
+  Tests:       84 skipped, 2 passed, 86 total
+
+-- ŞEKİL 1'in üç dosyası (hipotez ÇÜRÜDÜ: kırmızı üretmediler) --
+  repro_formula_canon    Tests: 7 passed, 7 total
+  repro_lta_parent       Tests: 5 passed, 5 total
+  repro_lta_bond         Tests: 4 passed, 4 total
+
+-- TAM e2e, faketime 2026-10-01 --
+  Test Suites: 64 passed, 64 total
+  Tests:       887 passed, 887 total
+  [T-047 invariant] PASS — satır sayıları suite öncesi/sonrası birebir aynı.
+
+-- birleştirme SONRASI, faketime 2026-10-01 (4 dosya, A13 donemi HENUZ 2026-02) --
+  Test Suites: 4 passed, 4 total
+  Tests:       102 passed, 102 total
+
+════════════════════════════════════════════════════════════════════
+2 · A13 FIXTURE'I AYIRT EDİYOR MU — MUTASYON KANITI
+════════════════════════════════════════════════════════════════════
+mutasyon: A13/A13b'nin ensureBudgetEnvelope(… '2029-04' …) çağrıları SİLİNDİ (2 blok)
+geri alma: kopyadan cp + shasum -a 256 -c  (git checkout KULLANILMADI)
+
+-- MUTASYONSUZ --
+  PASS test/role-journey.e2e-spec.ts
+  Tests:       84 skipped, 2 passed, 86 total
+-- MUTASYONLU --
+  FAIL test/role-journey.e2e-spec.ts
+      Expected: 200
+      Received: 404
+      Expected: 200
+      Received: 404
+  Tests:       2 failed, 84 skipped, 86 total
+
+NOT: ilk yazımda dönem '2026-02' idi ve AYIRT ETMİYORDU (code-reviewer, §2.7 #6) —
+     beforeAll zaten HAIR_CARE/NKA/2026-02 kuruyor ve sorgu kategoriye daraltmıyor.
+     '2029-04' seçildi: hiçbir fixture/seed o dönemi kapsamıyor (ölçüldü).
+
+════════════════════════════════════════════════════════════════════
+3 · TAM KAPI (gerçek saat)
+════════════════════════════════════════════════════════════════════
+  hayalet: yok
+  TSC=0
+  GUARDS=0
+  UNIT=0
+  Test Suites: 87 passed, 87 total
+  Tests:       1547 passed, 1547 total
+  E2E=0
+  Test Suites: 64 passed, 64 total
+  Tests:       887 passed, 887 total
+  [T-047 invariant] PASS — satır sayıları suite öncesi/sonrası birebir aynı.
+  
+  [exited with code 0]
+
+════════════════════════════════════════════════════════════════════
+4 · SON HAL — review duzeltmeleri SONRASI (A13 donemi 2029-04)
+════════════════════════════════════════════════════════════════════
+-- faketime 2026-10-01, 4 dosya --
+  Test Suites: 4 passed, 4 total
+  Tests:       102 passed, 102 total
+  (arac dogrulamasi ayni kosumda: faketime … node -e -> 2026-10-01T09:00:00.000Z)
+
+-- TAM KAPI, gercek saat --
+  hayalet: yok
+  TSC=0 · LINT=0 (89 uyari, 0 hata) · GUARDS=0
+  UNIT=0   Test Suites: 87 passed / Tests: 1547 passed
+  E2E=0    Test Suites: 64 passed / Tests: 887 passed
+  [T-047 invariant] PASS
+
+════════════════════════════════════════════════════════════════════
+OLCUMUN KOSULLARI (DISIPLIN: "bir olcumun gecerliligi de kosullarina baglidir")
+════════════════════════════════════════════════════════════════════
+  TZ            Europe/Istanbul (sunucu) == Europe/Istanbul (tenant)  => skew 0
+  saat          faketime 12:00:00  => GUN SINIRINA ve TZ SKEW'ine KOR
+  DB            Postgres ayri container, GERCEK saatte — faketime DB'yi sahtelemez
+  arac          node node_modules/.bin/jest  (npx DEGIL — npx DYLD enjeksiyonunu kaybeder)
