@@ -77,3 +77,62 @@ tereddüt ettiklerim. `H3`: *"iki aileye düşen madde **birleştirme adayıdır
 · atamanın KENDİSİ bir insan yargısı: ikinci bir okuma FARKLI sonuç verebilir
   ⇒ gri listesi bir ALT SINIRDIR
 ```
+
+---
+---
+
+# ⭐ REVİZE — ÜÇ HÜKÜM UYGULANDI (2026-09-09)
+
+## `H-1` · **DAĞITMA** — ve `H3`'e `F12`
+```
+~~"DÜZELTME · PORT · BAYATLIK üçe bölünür"~~
+⇒ DAĞITILDI: 11 üye üç yeni aileye (F14/F15/F13) · 31 üye AİDİYETLERİNE
+```
+> ### ⛔ **VE 1.322 SATIRIN GERÇEK SEBEBİ KAYDA:** o aile **büyüdüğü için değil,
+> ### AİLE OLMADIĞI İÇİN** büyümüştü.
+
+⇒ **AİLE TANIMI** (ürün sahibi, `H3` revizesi):
+```
+aile = AYNI TETİKLEYİCİ-SORUNUN sorulduğu maddeler.   ⛔ BOYUT DEĞİL.
+```
+
+## `H-2` · `F16` → `F13` **TAŞIMA** (4 üye)
+`RAPOR < BELGE < KAPI < PİN` · devir-teslim · içerik/statü · *"davranış taşınır,
+bağlam taşınmaz"* — dördü de **tek** soruyu soruyor: ***bir şey taşınırken ne kaybolur?***
+⛔ `(b)` (aileyi tek üyeyle yaşatmak) **`İlke 1`** ile reddedildi.
+
+## `H-3` · `F00 META` — **YENİ AİLE**, 7 üye
+```
+#22  kuralı yazdığın tur en çok ihlal ettiğin turdur
+#82  kural yazan tur, kuralın KENDİ ÜSTÜNDEKİ ilk mutasyonunu da koşar
+#88  bir kapı ağının KENDİ SAĞLIĞINI ölçmesi
+#147 KAPI, KAPIYI YAZAN TURU DURDURUR
+#169 ÜÇÜNCÜ İHLAL YERLEŞİM KUSURUDUR
+#179 KAPI, HÜKMÜ VEREN TURU DA DURDURUR
+#196 KAPANIŞ BEYANI, KAPSAMADIĞINI YAZMADAN VERİLEMEZ
+```
+🔎 ***"bir kural / kapı / araç yazıyorum — kendime uyguluyor muyum?"***
+
+⛔ **VE İKİ ÜYESİ HENÜZ YAZILMADI** — bu oturumun hükümleri, `DISIPLIN`'de **YOK**:
+```
+[ÖLÇÜLDÜ: grep -c ... docs/DISIPLIN.md → 0]
+  "yargı sorusuna MEKANİK PROXY yazılmaz — tarama ADAY üretir, sınıflandırma İNSAN YARGISI"
+  "gözlem → İKİNCİ vakada KURAL → ÜÇÜNCÜde ARAÇ"
+⇒ DISIPLIN v2'de YAZILACAK. Aile 9 üyeye çıkar.
+```
+
+## NİHAİ DAĞILIM — **16 aile · 218 kural · GRİ 0**
+```
+F01 ölçüm-önce            36    F09 paralel-şerit            6
+F04 kapı-doğum            25    F12 araç-hatası  ⭐YENİ       6
+F02 evren                 23    F06 ad ≠ sınıf               5
+F10 brief-belge-kayıt     23    F11 seed ↔ fixture           5
+F03 pin-kör-noktası       22    F14 ortam-bayatlık ⭐YENİ     5
+F05 gerekçe-yaşam         22    F15 düzeltme-disiplini       5
+F07 tanım→yazar→kısıt     14    F13 TAŞIMA ⭐YENİ             4
+F08 sessiz-varsayılan     10    F00 META ⭐YENİ               7
+```
+⛔ **GRİ 0** — dokuzu `(B)`'de **tetikleyici-ölçütüyle** çözüldü
+(`docs/process/ADIM4_B_TETIKLEYICILER.md`), ve **hiçbiri bölünmedi ya da birleşmedi**:
+dokuzu da **tek** tetikleyici taşıyordu. Belirsizlik **konudan** değil, **benim iki
+ailede birden görmemden** geliyordu.

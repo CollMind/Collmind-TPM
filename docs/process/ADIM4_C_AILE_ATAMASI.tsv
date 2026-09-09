@@ -6,10 +6,10 @@ no	aile	gri	satir	baslik
 5	F02		179	Arama terimi, ARANAN YERİN DİLİYLE seçilir (ZORUNLU)
 6	F02		199	Bir VARLIĞIN yokluğunu sorarken, TANIMININ yaşadığı yüzeyde ara (ZORUNLU)
 7	F02		243	ENJEKSİYON kullanım değildir — ailenin üçüncü yüzü (ZORUNLU)
-8	F01	GRİ	395	`@deprecated` bir NİYET BEYANIDIR, bir ölçüm değil (ZORUNLU)
+8	F01		395	`@deprecated` bir NİYET BEYANIDIR, bir ölçüm değil (ZORUNLU)
 9	F01		460	Bir SAYI, eşleşmeleri ÖRNEKLENMEDEN raporlanamaz (ZORUNLU)
 10	F01		485	Bir SAYIM FARKI, farkın KAYNAĞI gösterilmeden yorumlanamaz (ZORUNLU)
-11	F01	GRİ	517	`LEFT JOIN` + `IS NULL` bir YOKLUK testi DEĞİLDİR (ZORUNLU)
+11	F02		517	`LEFT JOIN` + `IS NULL` bir YOKLUK testi DEĞİLDİR (ZORUNLU)
 12	F02		551	"Sekiz vaka" gibi bir sayı, LİSTESİYLE anılır ya da HİÇ anılmaz (ZORUNLU)
 13	F04		580	Yazma ile commit arasına bir DOĞRULAMA koy (ZORUNLU)
 14	F04		605	Doğrulama bir KAPIDIR — durdurmuyorsa doğrulama değildir (ZORUNLU)
@@ -18,16 +18,16 @@ no	aile	gri	satir	baslik
 17	F03		727	DÖRDÜNCÜ SORU — kontrolün girdisi, kontrol ettiği şeyden mi türüyor? (ZORUNLU)
 18	F04		756	DOSYA SINIRI, STATE SIFIRLAMA NOKTASIDIR (ZORUNLU — guard yazımı)
 19	F03		777	Bir kusur, BAŞKA bir kusur tarafından örtülebilir (ZORUNLU)
-20	F03	GRİ	813	YORUM KİRLİLİĞİ iki yönde birden yanıltır (ZORUNLU)
+20	F10		813	YORUM KİRLİLİĞİ iki yönde birden yanıltır (ZORUNLU)
 21	F01		844	Kod yorumunda "ulaşılamaz" yazmadan önce ölç (ZORUNLU)
-22	F05	GRİ	915	Bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur (ZORUNLU)
+22	F00		915	Bir kuralı yazdığın tur, o kuralı en çok ihlal ettiğin turdur (ZORUNLU)
 23	F03		1037	BİLEŞİMSEL FAIL-OPEN — her parça masum, boşluk BİLEŞİMDE (ZORUNLU)
 24	F03		1062	Bir doğrulamanın "çalıştığı" sanılması, girdinin ona hiç ULAŞMAMASINDAN gelebi
 25	F05		1271	"Güvenlik" gerekçeleri en az sorgulananlardır (ZORUNLU)
 26	F10		1310	KARAR VERİLDİ ≠ KARAR KODA İNDİ (ZORUNLU)
-27	F02	GRİ	1338	HÜCRE KÜMESİ ile ROTA KÜMELERİ BİREBİR DEĞİLSE DALGA DUR'A DÜŞER (ZORUNLU)
+27	F02		1338	HÜCRE KÜMESİ ile ROTA KÜMELERİ BİREBİR DEĞİLSE DALGA DUR'A DÜŞER (ZORUNLU)
 28	F13		1366	İÇERİK TAŞINIR, STATÜ ÇEVREDEN GELİR (ZORUNLU — belge taşıma)
-29	F10	GRİ	1413	Bir SIRA şartı, AYRILABİLİRLİK şartı İÇERMEZ (ZORUNLU)
+29	F05		1413	Bir SIRA şartı, AYRILABİLİRLİK şartı İÇERMEZ (ZORUNLU)
 30	F02		1467	Bir DUR listesi, değişikliğin geçtiği HER SINIRI saymalıdır (ZORUNLU)
 31	F05		1512	Bir kuralın FAZ TABLOSU varsa, YÜRÜRLÜKTEKİ satır okunur (ZORUNLU)
 32	F01		1539	Karşılanamayan bir ÖLÇÜT revize edilir — uydurma veriyle karşılanmaz (ZORUNLU)
@@ -52,10 +52,10 @@ no	aile	gri	satir	baslik
 51	F15		2093	Bir düzeltmenin iki ekseni vardır: HEDEFİ ve YÖNÜ (ZORUNLU)
 52	F14		2129	Ölçüm ortamının bayatlığı da bir maskeleme sınıfıdır (ZORUNLU)
 53	F14		2144	BAYAT SÜREÇ BİRİKİR — ve ölçümü ARALIKLI bozar (ZORUNLU)
-54	F10	GRİ	2179	Testler bir ŞARTNAMEDİR — kod silinse bile (ZORUNLU, ve bir kurtarmayla ölçüld
+54	F03		2179	Testler bir ŞARTNAMEDİR — kod silinse bile (ZORUNLU, ve bir kurtarmayla ölçüld
 55	F07		2194	Bir şema kararını geri alırken entity metadata'sını da geri al (ZORUNLU)
 56	F03		2217	Fixture, ayırt etmek istediği iki tarafta FARKLI değer taşımalı (ZORUNLU)
-57	F16		2233	Port ederken: davranış taşınır, onu DOĞRU KILAN BAĞLAM taşınmaz (ZORUNLU)
+57	F13		2233	Port ederken: davranış taşınır, onu DOĞRU KILAN BAĞLAM taşınmaz (ZORUNLU)
 58	F05		2264	Bir ÖLÇÜMÜN geçerliliği de koşullarına bağlıdır — koşulu ölçümle birlikte yaz 
 59	F15		2299	Bir CACHE İNVALİDASYONU yazıldığında çağıranı AYNI TURDA bağlanır (ZORUNLU)
 60	F08		2339	`new Date(kullanıcıGirdisi)` — beş sessiz hata biçimi, hepsi ölçüldü (ZORUNLU)
@@ -64,29 +64,29 @@ no	aile	gri	satir	baslik
 63	F10		2471	Bağlayıcı kaynağa ATIF vermek, METNİNİ uydurmak değildir (ZORUNLU)
 64	F01		2488	Hiçbir şeyi ELEMEYEN bir vaka, kural gerekçesi olamaz (ZORUNLU)
 65	F01		2505	DURAĞAN yüzeyler bir HİPOTEZ oluşturur, bir BULGU değil (ZORUNLU)
-66	F07	GRİ	2563	Köken imzası taşımayan bir idempotency anahtarı, PROVENANCE'ı cevapsız bırakır
+66	F07		2563	Köken imzası taşımayan bir idempotency anahtarı, PROVENANCE'ı cevapsız bırakır
 67	F03		2585	Bir pin, ÜRETİMİN OKUDUĞU kaynağı ölçmüyorsa pin değildir (ZORUNLU)
 68	F08		2631	Bir DÖNÜŞÜM boru hattı, YOKLUĞU bir DEĞERE çevirebilir (ZORUNLU)
 69	F15		2676	⛔ VE BİR ÖRTÜ KALDIRILIRKEN ALTINDAKİ AYNI COMMIT'TE KAPANIR (ZORUNLU)
 70	F03		2701	Bir DÜZELTME PİNİ yalnız STATÜ değil, DEĞER doğrular (ZORUNLU)
 71	F03		2739	PİN KÖR-NOKTA AİLESİ — dört tür, hepsi ÖLÇÜLDÜ (ZORUNLU)
 72	F03		2817	⇒ VE ÇÖZÜMÜN BİÇİMİ: DEĞER-pini değil, İLİŞKİ-pini (ZORUNLU)
-73	F10	GRİ	2837	Bir rota-GENİŞLEMESİ ne zaman BİLGİ-AÇILIMI sayılmaz (ZORUNLU — çift ölçüm)
+73	F07		2837	Bir rota-GENİŞLEMESİ ne zaman BİLGİ-AÇILIMI sayılmaz (ZORUNLU — çift ölçüm)
 74	F12		2866	`Kayıt taraması`nın KANONİK komutu `git log -L`'dir (ZORUNLU)
 75	F05		2884	⛔ BİR İSTİSNA KALKTIĞINDA, ONA YASLANAN KARARLAR YENİDEN OKUNUR (ZORUNLU)
 76	F05		2909	Bir rotanın ÖLÜMÜ, komşularının UNION-GEREKÇESİNİ de öldürebilir (ZORUNLU)
 77	F01		2930	İMKÂNSIZLIK KONTROLÜ — tuhaflık-dedektörü ailesinin EN UCUZ üyesi (ZORUNLU)
 78	F04		2964	İSTİSNA LİSTELERİ DE BİRER KAPIDIR — ve kapının kendisi kadar disiplin ister (
 79	F05		2979	⇒ VE BİR İSTİSNA GİRİŞİ **TAŞIYICI OLDUĞU ÖLÇÜLEREK** YAZILIR (ZORUNLU)
-80	F07	GRİ	3019	`Yetkiler DB'de mi, kodda mı?` — cevap İKİLİ (ZORUNLU)
+80	F07		3019	`Yetkiler DB'de mi, kodda mı?` — cevap İKİLİ (ZORUNLU)
 81	F04		3035	⛔ GÖSTERİP GEÇEN KAPI — kapı kör-nokta ailesinin EN SİNSİ üyesi (ZORUNLU)
-82	F04		3081	Kural yazan tur, kuralın KENDİ ÜSTÜNDEKİ ilk mutasyonunu da koşar (ZORUNLU)
+82	F00		3081	Kural yazan tur, kuralın KENDİ ÜSTÜNDEKİ ilk mutasyonunu da koşar (ZORUNLU)
 83	F12		3102	⚠️ TIRNAKSIZ `$F` TUZAĞI TEKRARLADI — ve bu kez SAHTE YEŞİL ÜRETTİ (ZORUNLU)
 84	F01		3142	*"ZATEN"* BİR ÖLÇÜM EMRİDİR, MUAFİYET DEĞİL (ZORUNLU)
 85	F01		3161	Bir MUTASYON da bir ÖLÇÜMDÜR — etkisi kanıtlanmamış mutasyon hiçbir şeyin kanı
 86	F03		3189	KÖR-NOKTA TÜRLERİ MUTASYON TÜRÜNE GÖRE AYRIŞIR (ZORUNLU — bir daraltma)
 87	F02		3229	⛔ KARAR-GİRDİSİ YÜZEYLERİ, KARARINDAN **ÖNCE** TARANIR (ZORUNLU — beşinci satı
-88	F04		3253	Bir kapı ağının KENDİ SAĞLIĞINI ölçmesi (ZORUNLU — `G5`'in dersi PROAKTİF)
+88	F00		3253	Bir kapı ağının KENDİ SAĞLIĞINI ölçmesi (ZORUNLU — `G5`'in dersi PROAKTİF)
 89	F01		3275	İki kanıt ÇATIŞTIĞINDA: **PROVENANCE KAZANIR** (ZORUNLU)
 90	F02		3340	Bir kapının EVRENİ, koruduğu şeyle BİRLİKTE BÜYÜMÜYORSA kapı küçülür (ZORUNLU)
 91	F04		3410	RATCHET AİLESİNİN TAMAMLAYICI YASASI — gerileme ∧ donma (ZORUNLU)
@@ -95,14 +95,14 @@ no	aile	gri	satir	baslik
 94	F10		3571	Bir listeyi **SÖZLEŞME** biçiminde yazmak, listenin söylemediğini söyletir (ZO
 95	F04		3618	MUTASYON EŞDEĞERLİĞİ: **ÜRÜN için eşdeğer ≠ KAPI için eşdeğer** (ZORUNLU)
 96	F01		3667	POZİTİF KONTROLÜN DÖRDÜNCÜ NESLİ: **müdahale DOĞRU EKSENDE mi?** (ZORUNLU)
-97	F07	GRİ	3698	Her YETKİ-GENİŞLEMESİ, arkasındaki yüzeyin İLK GERÇEK TRAFİĞİDİR (ZORUNLU)
+97	F07		3698	Her YETKİ-GENİŞLEMESİ, arkasındaki yüzeyin İLK GERÇEK TRAFİĞİDİR (ZORUNLU)
 98	F07		3726	SINIF-SEVİYESİ dekoratör, dosyadaki HER rotanın sözleşmesini değiştirir (ZORUN
 99	F02		3760	KAPSAM-BEYANI ≠ KAPSAM-KANITI (ZORUNLU)
 100	F04		3788	BİR KAPININ ÜÇ MEŞRU ÇIKTISI VARDIR (ZORUNLU — kapı disiplininin kapanış taşı)
 101	F10		3824	BİR UYARI HATIRLANMAK ZORUNDADIR; BİR LİSTE MADDESİ DEĞİLDİR (ZORUNLU)
 102	F03		3857	`VERİNİN YOKLUĞU ÖRTER`in ALT-TÜRÜ: **KULLANIMIN yokluğu, SÖZLEŞME KIRIĞINI ör
 103	F01		3893	`ÖLÇÜLMEDİ` BİR DURAK DEĞİL, **GEREKÇELİ BİR DURAKTIR** (ZORUNLU)
-104	F09	GRİ	3933	KAPSAM GENİŞLETME **YETKİSİ YOKTUR** — TEKLİF + ÖLÇÜM + `DUR` VARDIR (ZORUNLU)
+104	F09		3933	KAPSAM GENİŞLETME **YETKİSİ YOKTUR** — TEKLİF + ÖLÇÜM + `DUR` VARDIR (ZORUNLU)
 105	F10		3958	KAPANMIŞ BİR TASK'IN ANLATI PARANTEZİ, BİR TASK DEĞİLDİR (ZORUNLU)
 106	F01		3983	KUSURU **ÖLDÜREN** TURDA REPRO ARTEFAKTI **DAHA** GEREKLİDİR (ZORUNLU)
 107	F13		4009	DEVİR-TESLİM YASASI ÜÇ ÖLÇEKTE ÇALIŞIR: **oturum · thread · AJAN** (ZORUNLU)
@@ -145,7 +145,7 @@ no	aile	gri	satir	baslik
 144	F12		5078	SEÇİCİ `git add`, **SEÇİCİ COMMIT DEMEK DEĞİLDİR** (ZORUNLU)
 145	F02		5107	YANLIŞ ÖNCÜL, **DOĞRU TARAMAYI YANLIŞ EKSENE KİLİTLER** (ZORUNLU)
 146	F10		5131	UYARININ YERİNE **SESSİZLİK DEĞİL, KARŞI YÖNDE GÜVENCE** (ZORUNLU)
-147	F04		5154	⭐ KAPI, KAPIYI YAZAN TURU DURDURUR — **ARTIK BİR DESEN** (ZORUNLU)
+147	F00		5154	⭐ KAPI, KAPIYI YAZAN TURU DURDURUR — **ARTIK BİR DESEN** (ZORUNLU)
 148	F02		5169	BİR ALANI **TAŞIYICI OLARAK** KULLANAN KOD, TÜKETİCİ ARAMASINDA **BULUNMAZ** (
 149	F05		5202	GEREKÇENİN **ÇÜRÜMESİ** İLE **KARŞILANMASI** AYRI SINIFTIR (ZORUNLU)
 150	F03		5236	ÖLÜ BİR YOLU PİNLEMEK, ONU **CANLI SANMAYA** YOL AÇAR (ZORUNLU — `T-084`'ün TE
@@ -167,7 +167,7 @@ no	aile	gri	satir	baslik
 166	F01		5685	MEKANİZMA MI BOZUK, YOL MU ATLIYOR — **İKİ AYRI DENEY** (ZORUNLU)
 167	F03		5704	ÜÇ İHLAL TEK TURDA — VE ÜÇÜ DE **AYNI YÖNE** YANILDI (ZORUNLU)
 168	F04		5735	BİR KAPIYI KOŞMAMAK, ONU YOK SAYMAKTIR — VE HATAYI BİR SONRAKİ TUR BULUR (ZORU
-169	F05		5776	ÜÇÜNCÜ İHLAL **YERLEŞİM KUSURUDUR** (ZORUNLU — kuralların terfi eşiği)
+169	F00		5776	ÜÇÜNCÜ İHLAL **YERLEŞİM KUSURUDUR** (ZORUNLU — kuralların terfi eşiği)
 170	F04		5808	ÖNCE BORÇ, SONRA KAPI — **KIRMIZI DOĞAN KAPI ÖLÜR** (ZORUNLU)
 171	F04		5826	TEMİZ DOĞAN KAPI BİR BAŞARI DEĞİL, BİR **ŞÜPHE** SEBEBİDİR (ZORUNLU)
 172	F04		5864	YENİ KAPI, **BİLİNEN BİR KIRMIZIYI GÖRMEDEN** *"ÇALIŞIYOR"* İLAN EDİLMEZ (ZORU
@@ -177,7 +177,7 @@ no	aile	gri	satir	baslik
 176	F03		5976	KURULUM, ÖLÇMEK İSTEDİĞİ DURUMU **HİÇ KURAMIYORSA** TEST YİNE YEŞİLDİR (ZORUNL
 177	F10		6019	UYARI **KOMŞU DOSYADA YAZILIYDI** — VE YİNE OKUNMADI (ZORUNLU)
 178	F02		6048	BİR YETENEĞE ROL EKLEMEDEN ÖNCE **HÜCRENİN UÇ LİSTESİ** OKUNUR (ZORUNLU — hükü
-179	F04		6084	KAPI, **HÜKMÜ VEREN TURU** DA DURDURUR — DESENİN ÜÇÜNCÜ KANADI (ZORUNLU)
+179	F00		6084	KAPI, **HÜKMÜ VEREN TURU** DA DURDURUR — DESENİN ÜÇÜNCÜ KANADI (ZORUNLU)
 180	F06		6105	HÜKÜM BİR **ADI** DEĞİL, ADIN TAŞIDIĞI **LİSTEYİ** KARARA BAĞLAR (ZORUNLU — hü
 181	F07		6142	HER `CHECK`'İN NEGATİF KONTROLÜNDE BİR **`NULL` GİRDİ** VAKASI ZORUNLUDUR (ZOR
 182	F07		6179	`CHECK` **KODDAN** KURULUR, **SİMETRİDEN** DEĞİL (ZORUNLU)
@@ -194,7 +194,7 @@ no	aile	gri	satir	baslik
 193	F08		6522	BİR TOPLAMIN SIFIRI, BİLEŞENLERİN YOKLUĞU DEĞİLDİR (ZORUNLU — `§2.5`'in AGREGA
 194	F04		6549	BİR KAYNAK SESSİZCE BOŞALIRSA, FARK KÜMESİ DE BOŞ KALIR (ZORUNLU — kapı tasarı
 195	F04		6583	SİNYAL RASTGELEYSE DE SİNYAL DEĞİLDİR (ZORUNLU)
-196	F10		6612	BİR KAPANIŞ BEYANI, KAPSAMADIĞINI **YAZMADAN** VERİLEMEZ (ZORUNLU)
+196	F00		6612	BİR KAPANIŞ BEYANI, KAPSAMADIĞINI **YAZMADAN** VERİLEMEZ (ZORUNLU)
 197	F12		6648	`grep -c` SIFIR BULUNCA **exit 1** VERİR — `|| echo 0` BİR SAYIYI BOZAR (ZORUN
 198	F04		6673	GÖRÜNÜR + GEREKÇELİ BİR YANLIŞ POZİTİF, GÖRÜNMEZ BİR MUAFİYETTEN İYİDİR (ZORUN
 199	F04		6698	BİLİNEN-KIRMIZI **CANLI ZİNCİRDE** ÜRETİLEBİLİYORSA, EN GÜÇLÜ DOĞUM KANITI ODU
