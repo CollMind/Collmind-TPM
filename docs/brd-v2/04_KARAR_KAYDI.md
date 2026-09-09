@@ -11069,3 +11069,138 @@ ADIM 3  HARNESS      80 dk → 38 s  (ÖLÇÜLDÜ)          ⇒ tur süresini d�
 ADIM 2  ─            kendi ölçümüyle düştü
 ```
 ⛔ **Üç metriğin taban değeri ve `DALGA-A` karşılaştırması `Z110`'un konusudur.**
+
+---
+
+## `Z110` — `ADIM-4` KAPANDI: **BULUNABİLİRLİK**, VE ÜÇ METRİĞİN TABANI
+### (ürün sahibi, 2026-09-09)
+
+`Z109` bir hızlandırma dalgasıydı ve **dörtte biri kendi ölçümüyle düştü**. `ADIM-4`
+onun son parçasıydı — ve **amacı ölçümle değişti**.
+
+---
+
+### `§1` · ⭐ AMAÇ **KISALTMA DEĞİL, BULUNABİLİRLİK** — ve sayıyla doğrulandı
+
+```
+[ÖLÇÜLDÜ: git log + her commit'te wc -l]   (a) YAZIM HIZI
+   ilk 7 gün ≈ +526 satır/gün  →  son 7 gün ≈ +183   ⇒ ÜÇTE BİRE düştü
+   ⇒ "belge kontrolsüz büyüyor" iddiası ÖLÇÜMLE DESTEKLENMİYOR
+[ÖLÇÜLDÜ: rg "(ikinci|üçüncü|…) (kez|vaka)"]  (b) UYGULANMAMA
+   40 TEKRAR İTİRAFI (+2 "üçüncüde ARAÇ" politika beyanı, ihlal DEĞİL)
+   ⇒ kurallar VAR ve UYGULANMIYOR — belge bunu 40 yerde İTİRAF EDİYOR
+```
+
+⛔ **VE `(A)` BUNU BİR SAYIYA İNDİRDİ:**
+```
+23 vakasız maddeden GÜNLÜĞE İNEN: 1
+⇒ kısaltma YAN ÜRÜN BİLE DEĞİL — NEREDEYSE SIFIR.
+  Değerin TAMAMI (C) aile + (B) tetikleyicide.
+```
+
+---
+
+### `§2` · ÜRÜN — `DISIPLIN v2`
+
+```
+219 kural → 16 AİLE                    (eski: 6 aile + 130 AİLESİZ kuyruk)
+her ailenin başında bir 🔎 TETİKLEYİCİ  (durum dilinde, ad dilinde DEĞİL)
+3 madde GOZLEM_GUNLUGU'na              (başlık+özet KALDI, karşılıklı atıflı, F12)
+2 YENİ kural F00'a                     (bu oturumun hükümleri — YAZILMAMIŞLARDI)
+[ÖLÇÜLDÜ: satır-satır karşılaştırma]   KAYIP: 0 kural · 0 içerik satırı
+```
+
+#### `2.1` · ⛔ **AİLE TANIMI DEĞİŞTİ** — ve bir aile ÇÖP KUTUSU ÇIKTI
+
+```
+AİLE = AYNI TETİKLEYİCİ-SORUNUN sorulduğu maddeler.   ⛔ BOYUT DEĞİL.
+```
+`H3` *"1.322 satırlık aileyi ÜÇE BÖL"* demişti. Ölçüm başka bir şey gösterdi:
+```
+42 üyeden üçe bölünen: 11.  Kalan 31 ASLINDA ALTI BAŞKA AİLEYE aitti.
+⇒ O aile BÜYÜDÜĞÜ İÇİN DEĞİL, AİLE OLMADIĞI İÇİN büyümüştü.
+```
+> ### ⇒ Hüküm ölçüme uydu: *"üçe böl"* → **"DAĞIT"**.
+
+#### `2.2` · `F00 META` — YENİ AİLE, 9 ÜYE
+🔎 ***"bir kural / kapı / araç yazıyorum — kendime uyguluyor muyum?"***
+⛔ Ve iki üyesi **bu oturumda verilmiş ama YAZILMAMIŞ** hükümlerdi
+(`[ÖLÇÜLDÜ: grep → 0]`) — `Z105`'in *"hüküm belgeye geçmediyse dalgayı geçmez"*
+maddesinin **`DISIPLIN` tarafındaki** hâli. **İki kural verdik, ikisini de yazmadık.**
+
+---
+
+### `§3` · ÜÇ METRİK — **`Z110` TABANI**
+
+| metrik | `DALGA-A` | önceki hafta |
+|---|---|---|
+| **review-tur** | **1** (6 bulgu, 5 kapandı) | 2–4 / dalga |
+| **DUR** | **2** — ikisi de **HAKLI**, ikisi de brief'in eksiğini gösterdi | — |
+| **bağımsız kapı** | **1** — ⛔ **ve O DA EKSİK ÇIKTI** (meta zinciri kaçtı) | — |
+
+⛔ **Metrik kendi kusurunu taşıyor** — *"bağımsız kapı"* koştum, **yeşil** aldım,
+`push-order` aynı ağaçta **KIRMIZI** verdi (`sigpipe-hygiene` **meta** zincirinde).
+**Olması gereken bu.**
+
+#### `3.1` · ⏰ RANDEVU — **iki hafta sonra** (`2026-09-23`)
+```
+ÖLÇÜLECEK: S3'ün ON KURALININ tekrar-oranı DÜŞTÜ MÜ?
+  1  SAYI YAZMA / elle üye-sayısı   19 vaka   ⇒ scan.sh'a bağlandı
+  2  §7.1 kardeş yol                 8
+  3  mutasyon hedefleme              6         ⇒ mutate.sh'a bağlandı
+  4  liste ≠ evren                   5         ⇒ scan.sh'a bağlandı
+  5  F00 kural kendi yazarına        3+
+⛔ Düşmezse: 🔎 tetikleyici YETMİYOR demektir ⇒ o madde ARACA bağlanır.
+```
+
+---
+
+### `§4` · `Z109`'UN GETİRİSİ — **DÖRT ÖLÇÜM**, iddia değil
+
+```
+migration-verify.sh  1830'un BAYAT NUMARA olduğunu ŞERİT AÇILMADAN gösterdi
+mutate.sh            DALGA-A'da BEŞ kez koşuldu, İKİ yanlışımı çürüttü
+scan.sh              manager-ratchet baseline'ını BAĞIMSIZ doğruladı (36/9 ↔ 36/9)
+                     ⛔ ve İLK KULLANIMDA beni yakaladı (yanlış yol → ÖLÇEMEDİM)
+push-order           sigpipe ihlalini yakaladı ve PUSH'U DURDURDU
+BRIEF_SABLONU        altı şeridin altısı ETİKETLİ raporladı, altısı da
+                     "NE ÖLÇEMEDİN" başlığını DOLDURDU
+```
+
+---
+
+### `§5` · ⛔ BU DALGANIN DERSİ — **DÖRT PROXY ÇÜRÜMESİ**
+
+```
+1  "kaç vaka"   ← tarih+task            → altıda DÖRT yanlış
+2  "türev"      ← başlıktan terim       → dağılım çöktü (203/218)
+3  "aile"       ← anahtar-kelime        → 125/218 gri (desenin ARTIĞI)
+4  "türev"      ← ELLE seçilen anahtar  → Z83 türevi 1 çıktı (gerçek: 81)
+```
+> ### ⛔ İlk üçü *"mekanik proxy yetmez, İNSAN YARGISI gerekir"* diyordu.
+> ### **DÖRDÜNCÜSÜ o cevabı da çürüttü:** anahtarı **elle** seçtim ve **yine** düştü.
+> ### ⇒ Çözüm *"insan yargısı"* değil, ***DOĞRU DİLDE*** insan yargısıdır.
+
+📌 Ve kurtaran kural **ölçtüğüm listenin içindeydi**: *"Arama terimi, **ARANAN YERİN
+DİLİYLE** seçilir"* — türev **12**. `F00`'ın sorusunun en temiz vakası.
+
+#### `5.1` · GRİ BÖLGE BİR BELİRSİZLİK DEĞİLDİ
+`(B)`'de dokuz gri maddenin **hiçbiri bölünmedi ya da birleşmedi** — dokuzu da **tek**
+tetikleyici taşıyordu.
+> ### ⇒ Gri bölge **konudan** değil, **YANLIŞ SORU SORDUĞUMUN İŞARETİNDEN** geliyordu.
+> ### Tetikleyici-ölçütü bir **sınıflandırma** aracı değil, bir **TEŞHİS** aracı çıktı.
+
+---
+
+### `§6` · ⛔ ÖLÇÜLMEDİ — ve adıyla duruyor
+```
+· 133 maddenin TÜREVİ ölçülmedi ⇒ KORUMACI VARSAYIMLA KALIYOR (yanlışsa fazladan
+  madde kalır, hiçbiri yanlışlıkla günlüğe inmez). Ölçüm OLAY-TETİKLİ: bir madde
+  ARANDIĞINDA BULUNAMIYORSA ya da §3.1 metriğinde tekrar-oranı DÜŞMÜYORSA ölçülür.
+· R2'nin ELEME yüzü HİÇ TETİKLENMEDİ — "tetikleyicisi yazılamayan madde" ÇIKMADI
+  ⇒ eleme gücü ÖLÇÜLMEMİŞ BİR VARSAYIM.
+· "Kaskadın dört parçası" türev 30 ama anahtar GENİŞ ⇒ köşe-taşı etiketi DÜŞÜRÜLDÜ,
+  madde KALIR (çok-vakalı zaten). Dar anahtarla ("varsayılan+istisna") bir gün yeniden.
+· S3'ün ihlal sayıları İTİRAF-bazlı ⇒ ALT SINIR: itiraf YAZMAYAN bir kural daha çok
+  ihlal edilmiş olabilir.
+```
