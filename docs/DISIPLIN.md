@@ -387,6 +387,33 @@ düzeltildi** — `§`: *"bir kuralı yazdığın tur, o kuralı en çok ihlal e
 
 > ## 🔎 ne zaman: *"bir şey İDDİA edeceğim — ölçtüm mü, yoksa çıkardım mı?"*
 
+## BİR DÜZELTME, **FARKINDA OLUNMAYAN** BİR RİSKİ DE KAPATABİLİR (ZORUNLU)
+
+`Z94` bir düzeltmenin **kendi kapsamı dışındaki bir KUSURU açığa çıkarabileceğini**
+söylüyordu. Bu onun **TERSİ**: bir düzeltme, kimsenin **bilmediği** bir riski de
+**kapatabilir** — ve o kapanış **ölçülmeden bilinmez**.
+
+**Ölçülmüş vaka (2026-09-09, `T-388`):** Team Lead bir task'a şunu yazdı ve **ölçmedi**:
+> *"1 Ekim sonrası zarflar Q4'e, anlaşmalar Q3'te kalır ⇒ `Z107 §1`'in TAM TEKRARI"*
+
+```
+[ÖLÇÜLDÜ: faketime 2026-10-01, TAM e2e, İKİ DÜNYA + POZİTİF KONTROL]
+  zarflar Q4 · anlaşmalar Q3     → 64/887 ✅ DÜŞEN: HİÇBİRİ
+  zarflar Q4 · anlaşmalar Q4     → 64/887 ✅ DÜŞEN: HİÇBİRİ
+  seed zarfları TAMAMEN YOK      → EXIT 1, 2 suite / 4 test  ⇒ POZİTİF KONTROL TUTTU
+```
+⇒ **e2e seed zarflarının VARLIĞINA bağlı, DÖNEMİNE DEĞİL** — çünkü `Z107 §3` her ilgili
+e2e'yi **kendi zarfını SABİT dönemde kuracak** hâle getirmişti.
+
+> ### ⛔ `Z107` o riski **ÖLDÜRMÜŞTÜ** — ve **kimse bunu bir KAZANÇ olarak YAZMAMIŞTI.**
+> ### Bir tur sonra aynı risk, **VAR SANILARAK** bir task'a uyarı olarak yazıldı.
+
+📌 **Pratik:** bir riski yazmadan önce sor — *"bu risk hâlâ CANLI mı, yoksa araya giren
+bir düzeltme onu KAPATTI mı?"* ⛔ Cevap bir **çıkarım değil**, bir **REPRODÜKSİYONDUR**.
+⚠️ Bu, `§7.1`'in **ZAMAN EKSENLİ** hâli: kardeş **yolları** saymak yetmez, araya giren
+**TURLARI** da saymak gerekir.
+
+
 ### Negatif sonuçlu tarama, POZİTİF KONTROLSÜZ rapor edilemez (ZORUNLU)
 
 **`0 bulgu` çıktısı hiçbir zaman kendini yanlış olarak göstermez.** Onu yakalayan tek şey,
@@ -7215,6 +7242,35 @@ Bir kapının kaynakları arasında **hükmü veren taraf yoksa**, kapı **niyet
 # AİLE F15 — DÜZELTME DİSİPLİNİ
 
 > ## 🔎 ne zaman: *"bir DÜZELTME yapıyorum"*
+
+## GERİ ALMA **TERS İŞLEMLE** DEĞİL, **SNAPSHOT'TAN** YAPILIR (ZORUNLU)
+
+Bir değişikliği geri almanın iki yolu var ve **yalnız biri güvenilir**:
+```
+TERS İŞLEM   x + Δ  →  x + Δ − Δ   ⛔ Δ TERSİNİR OLMAK ZORUNDA — ve çoğu değil
+SNAPSHOT     x kaydedilir → değiştirilir → KAYITTAN geri yazılır → ÇAKIŞTIRILIR
+```
+
+**Ölçülmüş vaka (2026-09-09, `T-388`):**
+```sql
+UPDATE agreements SET end_date = end_date + INTERVAL '3 months'   -- ileri
+UPDATE agreements SET end_date = end_date - INTERVAL '3 months'   -- geri
+```
+```
+[ÖLÇÜLDÜ: snapshot diff]  2026-08-31 → 2026-11-30 (Kasım 30 çeker, CLAMP) → 2026-08-30
+```
+⛔ **Bir gün KAYBOLDU**, ve fark yalnız **snapshot karşılaştırması** sayesinde görüldü.
+
+> ### ⛔ `INTERVAL` aritmetiği **TERSİNİR DEĞİLDİR** — ay-sonu **clamp**'i bilgi yok eder.
+> ### Ve bu, `T-328`'in (`addMonthsClamped`) **SQL YÜZÜDÜR**: aynı sınıf, başka dil.
+
+📌 **Kural zaten kurulmuştu, ama ÖLÇÜM tarafında değil:** `migration-verify.sh`'ın
+`revert` kontrolü **bayt-birebir SNAPSHOT karşılaştırmasıdır**, ters-işlem değil
+(`snapshot0 == snapshot2`). ⇒ Aynı disiplin **veri geri alırken** de geçerli.
+
+⛔ **Pratik:** `git checkout` yasağının (`kopya + shasum -a 256 -c`) **VERİ tarafındaki**
+karşılığı budur. Dosyada **kopya**, veride **snapshot**.
+
 
 ### Bir DÜZELTME, düzelttiği SINIFIN yeni bir vakasını üretebilir (ZORUNLU)
 
