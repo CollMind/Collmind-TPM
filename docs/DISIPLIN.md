@@ -344,6 +344,46 @@ açardı** ve hiçbir yerde **hüküm olarak** yazılı olmazdı.
 
 ---
 
+## OTURUM-HÜKMÜ DE DAMGA İSTER — **DAMGASIZ ÖNCÜL, HÜKÜM-TASLAĞIDIR** (ZORUNLU)
+
+> 🔎 *"bir hüküm yazıyorum ya da kayda geçiriyorum — içindeki AD / ATIF / ENUM ÜYESİ ölçüldü mü?"*
+
+Brief etiket kuralı (`Z108 §3`, hüküm 20) **hükmü vereni de bağlar**. Bir oturumda hızla
+verilen hükmün **öncülleri** — bir red-kodunun adı, bir enum üyesinin anlamı, bir belge
+atfı, bir emsalin rolleri — `[ÖLÇÜLDÜ]` damgası taşımıyorsa, o hüküm **kesin değil
+taslaktır**; Team Lead'in **kayıt-anı ölçümüyle** kesinleşir.
+
+**Ölçülmüş vaka (2026-09-10, `Z111 §10–§11`):** bir veri-karar oturumunda beş hüküm
+yaklaşık bir saatte verildi. Team Lead kayda geçirirken öncülleri ölçtü:
+```
+öncül            hüküm dedi                          ölçüm
+red-kodu         "NEGATIVE_VOLUME, mevcut"           yalnız baseline-volume'da; actuals'ta YOK
+enum anlamı      "EXPIRED = dönem bitişi"            onay zaman-aşımı (K-2.5.10b)
+enum kümesi      "PENDING"                            İKİ üye
+belge atfı       "Excel §4 fark-7"                    tablo 6 kalem; 7. bir NOT
+emsal            "agreement cancel: Planner/CM, gerekçe zorunlu"   {ADMIN,PLANNER} · reason?
+kural atfı       "K-2.2.7c"                           bütçe eşiği kuralı; desenin emsali, kendisi değil
+task/karar atfı  "T-351" · "Z96 §5"                   ikisi de o şeyi ANMIYOR
+```
+**Yedi öncülün yedisi** ölçülmemişti; **yedisi de ad/atıf/enum düzeyindeydi**; **ikisi
+hükmü değiştirdi**. Sınıf `Z86`/`Z87`'ninkidir — *"ad, uç-listesi değil"*.
+
+> ### ⇒ Yakalayan bir KAPI değildi, bir **ALIŞKANLIKTI**: kayda geçirmeden önce öncülü ölçmek.
+> ### Bir önceki kural (*"kapı hükmü veren turu durdurur"*) kapının olduğu yeri kapsar;
+> ### bu kural **kapının olmadığı yeri** — sözlü/oturum hükmünün metin olarak doğduğu anı.
+
+**Pratik — bir oturum-hükmünü kayda geçirirken:**
+```
+1  hükümdeki her AD (kod · enum üyesi · rol · kolon)   → koddan/DB'den ölç
+2  hükümdeki her ATIF (Z-no · T-no · K-no · belge §)   → grep ile aç, SÖYLEDİĞİNİ söylüyor mu
+3  uyuşmayan öncül → hükmü DEĞİŞTİRME; "KARAR DEĞİL" bloğunda listele, F12 ürün sahibinin
+```
+⚠️ Ve ters yön: Team Lead öncülü ölçüp **kendi düzeltmesini hükme yazarsa**, kayıt bir
+*"Team Lead kararı"* doğurur (`Z105 §1`'in kayıp-hüküm sınıfı). Ölçüm **listelenir**, hüküm
+**sahibinde** kalır.
+
+---
+
 ## BİR KAPANIŞ BEYANI, KAPSAMADIĞINI **YAZMADAN** VERİLEMEZ (ZORUNLU)
 
 > **"Uçtan uca" bir ZİNCİR iddiasıdır — ve zincir en zayıf halkası kadar uzundur.**

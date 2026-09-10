@@ -171,7 +171,7 @@ Draft ──→ Planned ──→ Submitted-for-Approval(CM) ──→ Approved 
 - **Approved→Planned dönüşü:** Planner onay-zincirini yeniden yönlendirir ya da iptal eder (şema dip-notu).
 - **Approved → Cancelled:** iptal hattının kaynağı Approved [ürün sahibi teyidi, 2026-08-29] — "locking lead time" notuyla tutarlı: kilit-öncesi Approved iptal edilebilir.
 
-### CTPM fark tablosu (6 kalem)
+### CTPM fark tablosu (~~6~~ 7 kalem — `F12` 2026-09-10, `Z111 §11 Ö4`: satır 172'deki not tabloya girdi)
 | # | Demo kavramı | CTPM bugünü | Not |
 |---|---|---|---|
 | 1 | `Planned` ara-durumu | yok (DRAFT→onay) | "hazır ama gönderilmedi" katmanı — senaryo-eşlemesinde karar |
@@ -180,6 +180,7 @@ Draft ──→ Planned ──→ Submitted-for-Approval(CM) ──→ Approved 
 | 4 | promo locking lead time | yok | zaman-bazlı kilit — yeni kontrol ekseni |
 | 5 | Draft-silme = fiziksel silme | ölçülmeli | ADR-0012 ile uyumlu okunabilir: finansal iz doğmadan silme |
 | 6 | Simülasyon ×3 (araç, durum değil) | yok | BRD'de karşılığı taranacak [VARSAYIM]; muhtemelen Faz-3 aday |
+| 7 | `Approved → Cancelled` (kilit-öncesi iptal) | yok — Plan'da APPROVED son; Agreement'ta `APPROVED/ACTIVE → CANCELLED` var | ⭐ **`Z111 §9` `Z-K6` ile CTPM-plan'da VAR** (İŞ-4a, migration `1834`): rol ADMIN+PLANNER, gerekçe zorunlu, rezerv RELEASE. Kaynak: yukarıdaki satır 172 notu (ürün sahibi teyidi 2026-08-29) |
 
 ---
 

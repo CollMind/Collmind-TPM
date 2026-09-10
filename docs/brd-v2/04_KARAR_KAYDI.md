@@ -11204,3 +11204,276 @@ tetikleyici taşıyordu.
 · S3'ün ihlal sayıları İTİRAF-bazlı ⇒ ALT SINIR: itiraf YAZMAYAN bir kural daha çok
   ihlal edilmiş olabilir.
 ```
+
+---
+
+## `Z111` — VERİ-KARAR OTURUMU: **BEŞ KARAR, TEK KAYIT**
+### (ürün sahibi + Fable, 2026-09-10)
+
+Halka-2 *"match-ready"* üretti, *"matched"* değil (`Z98 §0`). Bu oturum eşleştirmenin ve
+hakedişin **ürün kararlarını** verdi. Aşağıdaki `§1–§5` **karardır**; `§7` kayıt anında
+Team Lead'in ölçtükleridir ve **karar değildir**.
+
+---
+
+### `§1` · `Z-K1` — PLAN TEKİLLİĞİ
+```
+CPL × FU × dönem-aralığı için EN FAZLA BİR aktif plan.
+⇒ eşleştirme motoru TIE'SIZ çalışır (tie doğamaz — dal yazılmaz, K-2.2.1 / 1831 dersi)
+her indirim BİR ANLAŞMAYA bağlıdır; bağlanamayan indirim ANOMALİDİR
+```
+> ⭐ **`F12` (aynı gün) — *"aktif plan"* TANIMLANDI: `Z-K6` (`§9`).** Tekillik **onay-anı**
+> kısıtıdır; DRAFT/PENDING'de uyarıdır. Bkz. `§8 F12-b`. *(Yukarıdaki metin silinmedi.)*
+
+### `§2` · `Z-K2` — İADE → `FAZ-3`
+```
+ayrı-satır ilkesi · "kapanan kapandı" (kapanmış dönem/hakediş geriye açılmaz)
+bugün iade satırı ⇒ AÇIK RED (sessiz kabul yok, sessiz atlama yok — §2.5)
+```
+
+### `§3` · `Z-K3` — HAKEDİŞ MODELİ
+```
+BEKLENEN      sistem hesaplar: plan × taktik × FU × CPL × dönem
+ON-INVOICE    actuals'la OTOMATİK kapanır · tolerans YOK
+              fark = PLANSIZ on-invoice, AYRI görünür
+OFF-INVOICE   müşteri faturası arayüzü · dönem seçimli · çoklu-fatura · KISMİ kapanış
+              entegrasyon FAZ-3
+GRAIN         CPL × kategori × FU × dönem
+TOLERANS      min(%1, ₺1.000) · tenant-konfig
+FAZLA FATURA  RED
+EKSİK FATURA  AÇIK kalır · Finans ELLE kapatır · otomatik kapama YOK
+```
+> ### ⛔ İLK MADDE — ACTUALS-SÖZLEŞMESİ YENİDEN
+> On-invoice indirim **actuals satırıyla gelir**. Ayrı on-invoice bacağı **ölçülür:
+> türev ya da ölüm.** `INV-R-001` / `INV-R-002` **taşınır** (kaybolmaz, yaşayan bacağa bağlanır).
+
+### `§4` · `Z-K4` — EŞLEŞMEYENLER
+```
+NO_PLAN         normal · saklanır · herkes görür · ROI girdisi
+NO_AGREEMENT    ANOMALİ · yalnız görünür · raporda "planlanmayan harcamalar"
+NO_EXPECTED     RED
+GRAIN_MISMATCH  ASKI
+```
+> ⭐ **`F12` (aynı gün) — `NO_EXPECTED` → HALKA-4.** Halka-3 üç üyeyle iner. Bkz. `§8 F12-a`.
+> *(Yukarıdaki dört satırlık liste silinmedi; üyelik doğru, SIRA düzeltildi.)*
+
+### `§5` · `Z-K5` — PLANSIZ HARCAMA
+```
+kategori zarfından CONSUME
+REZERVASYON = TAAHHÜT ⇒ bloke EDİLEMEZ
+available = allocated − reserved − consumed_plansız
+%100 yalnız YENİ RESERVE'i reddeder (tüketimi değil)
+```
+
+---
+
+### `§6` · BRIEF-AİLESİ — hepsi `Z111`'e atıfla
+```
+HALKA-3  EŞLEŞTİRME
+  1  actuals-sözleşmesi ölçümü (Z-K3 ⛔ ilk madde)
+  2  grain-resolver (gövde)
+  3  NotMatched dört üye — ÜRETİCİLERİYLE (Z91)
+  4  plan-tekilliği kısıtı (Z-K1)
+HALKA-4  HAKEDİŞ
+  1  beklenen-hesap · 2 fatura-girişi · 3 tolerans-eşleştirme · 4 kapanış/defter
+  5  planner izleme yüzeyi
+İlk brief: halka-3, ilk madde actuals-sözleşmesi. T-388-kalan PARALEL.
+```
+
+---
+
+### `§7` · KAYIT ANINDA ÖLÇÜLENLER (Team Lead, 2026-09-10) — ⛔ KARAR DEĞİL
+Brief'e girdi olsun diye koddan **ve DB'den** ölçüldü (DB: Docker açıldıktan sonra; hayalet
+`tpm` projesi `collmind-tpm-frontend`/`-backend` Docker'la birlikte **kendiliğinden kalktı**,
+ölçümden önce durduruldu).
+```
+[ÖLÇÜLDÜ: SELECT count(*) FROM main.on_invoice_entries]                          → 0
+[ÖLÇÜLDÜ: SELECT status,count(*) FROM main.on_invoice_batches GROUP BY 1]         → satır yok
+[ÖLÇÜLDÜ: SELECT count(*) FROM main.ledger_entries WHERE idempotency_key LIKE 'LEDGER|ON_INVOICE|%'] → 0
+  ⇒ ayrı bacağın CANLI VERİSİ YOK — göç maliyeti sıfır; ⛔ ama 0 satır bir TÜKETİCİ
+    yokluğu DEĞİLDİR (verinin yokluğu örter — §2.7 #6 simetriği)
+[ÖLÇÜLDÜ: SELECT count(*),count(discount_amount),sum(discount_amount),count(sku_id),count(invoice_no) FROM main.sales_actuals]
+  → 3 · 3 · 65000.00 · 0 · 0     ⇒ actuals indirimi bugün DOLU geliyor, SKU/fatura kırılımı YOK
+[ÖLÇÜLDÜ: pg_constraint (u/x/c) + pg_indexes UNIQUE + pg_trigger, main.plans/plan_fus/plan_skus]
+  → yalnız UNIQUE INDEX (tenant_id,plan_code) · (plan_id,fu_id) · (plan_fu_id,sku_id); kısıt 0, trigger 0
+[ÖLÇÜLDÜ: plans×plan_fus self-join, aynı tenant+CPL+FU, daterange(start,end,'[]') &&]
+  → çakışan çift 0 (plans: APPROVED 1 · PENDING_APPROVAL 1) · pozitif kontrol (self-pair dahil) → 2
+  ⇒ Z-K1 kısıtının önünde bugün VERİ KİLİDİ YOK
+```
+```
+[ÖLÇÜLDÜ: sales-actual.entity.ts:31-35,100-108]
+  actuals'ta discount_amount VAR (nullable) — JSDoc: "asla ledger'a yazılmaz … çift sayım"
+  discount_type YOK · agreement_id YOK
+[ÖLÇÜLDÜ: on-invoice-entry.entity.ts:14-18,95-108,142-143]
+  on-invoice bacağı: müşteri × fatura × SKU · discount + discount_type (3 üye) · agreement_id nullable
+[ÖLÇÜLDÜ: grep -rn "agreementId\|agreement_id" src/modules/modes/actuals-first/on-invoice → BOŞ]
+  (pozitif kontrol: aynı dizinde budgetEnvelopeId → 2) ⇒ on-invoice'ta agreement_id YAZARI YOK
+[ÖLÇÜLDÜ: iki yönlü grep, sales-actuals ↔ on-invoice dizinleri → ikisi de BOŞ]
+  ⇒ iki bacak KODDA BİRBİRİNİ TANIMIYOR
+[ÖLÇÜLDÜ: plan.entity.ts:36,301]  tekillik yalnız (tenant, planCode) ve (plan, fu)
+  ⇒ CPL × FU × dönem-aralığı tekilliği ENTITY'DE YOK — ve DB kataloğunda da YOK (yukarıdaki blok)
+```
+⚠️ **İki gerginlik — ürün sahibine soru olarak gider, burada ÇÖZÜLMEDİ:**
+```
+G1  NO_EXPECTED'ın üreticisi "beklenen-hesap" = HALKA-4 madde 1.
+    Halka-3 madde 3 dört üyeyi "üreticileriyle" ister ⇒ Z91 ("üretici yoksa üye yok")
+    ile SIRA ÇELİŞKİSİ.
+G2  actuals-resolver.types.ts:74-75 "beklenen ilk küme NOT_AGGREGATABLE · GRAIN_MISMATCH"
+    diyor; Z-K4'te NOT_AGGREGATABLE YOK ⇒ yorum bir İDDİA, Z111 ile bayatladı.
+```
+⇒ `L2` metinleri (`K-2.2.*` plan tekilliği · `K-2.13.*` hakediş · `K-2.1.8*` actuals
+sözleşmesi) bu kayıtla **açılır**; halkaların kapanışında **Team Lead yazar**.
+
+---
+
+### `§8` · `F12` — ürün sahibi, 2026-09-10 (aynı gün, `§7` ölçümünden sonra)
+```
+F12-a  Z-K4 SIRASI — NO_EXPECTED → HALKA-4.   Z91 KAZANIR.
+       Dört sebep AYNI enum-ailesinde, ama İKİ AYRI eşleştirmenin üyesi:
+         actuals → plan      halka-3   NO_PLAN · NO_AGREEMENT · GRAIN_MISMATCH   (üreticileri halka-3'te)
+         fatura  → beklenen  halka-4   NO_EXPECTED                              (üreticisi beklenen-hesap)
+       ⇒ halka-3 ÜÇ üyeyle iner, dördüncü halka-4'te üreticisiyle.
+       ⇒ §7 G1 bir çelişki DEĞİL, bir HALKA-SINIRI. Brief-ailesi (§6) bunu zaten sıralıyordu.
+F12-b  Z-K1 "aktif plan" tanımı → Z-K6 (§9).
+F12-c  Z-K2 ve Z-K5 brief'e ÖLÇÜMLE girer:
+         Z-K2 → halka-3 İŞ 1 (actuals-sözleşmesi) — iade satırı red MESAJI "bu sürümde kapsam dışı"
+         Z-K5 → halka-4 kapanış/defter maddesi — "ölçülecek: bugünkü v_budget_summary ↔ Z-K5";
+                Z-K5 fiilen o maddenin TANIMIDIR; hüküm ölçümden SONRA kesinleşir,
+                formülde çelişki çıkarsa ürün sahibine
+```
+> ⭐ **`F12` (aynı gün, `§11 Ö1`/`Ö7`) — yukarıdaki metin silinmedi:**
+> `Z-K2` artık *"yalnız mesaj"* **DEĞİL** → YENİ red-kodu `NEGATIVE_AMOUNT` (gross<0),
+> `INVALID_GROSS_AMOUNT` yalnız *"okunamadı"*, gross = 0 **ölçülür**.
+> `Z-K5` uygulaması halka-4'te **üç parça**: defter satırına `plan_id` · `CONSUME` üreticisi ·
+> `v_budget_summary → Z-K5`.
+📌 `§7 G2` (`NOT_AGGREGATABLE` bayat yorumu) için hüküm **verilmedi**; `Z-K4` kanonik
+olduğundan yorum, halka-3 `İŞ 3`'ün dokunduğu dosyada hizalanır *(Team Lead notu)*.
+
+---
+
+### `§9` · `Z-K6` — PLAN İPTALİ ve "AKTİF" TANIMI (ürün sahibi, 2026-09-10)
+```
+CANCELLED üyesi PlanStatus'a — ÜRETİCİSİYLE: APPROVED→CANCELLED aksiyonu (Planner/CM, gerekçe
+  zorunlu, denetim izi); rezerv RELEASE. Z-K5'in "taahhüt bloke edilemez" kuralıyla çelişmez:
+  iptal BİLİNÇLİ aksiyondur, aşım-blokajı değil. Excel §4 fark-7 kapanır. Agreement'ın mevcut
+  APPROVED→CANCELLED yolu emsal — iki nesne aynı soruya aynı cevabı verir.
+AKTİF = APPROVED ∧ ¬CANCELLED ∧ dönem-aralığı içinde. (EXPIRED yazıcısız kalır — dönem-bitişi
+  otomasyonu zamanlayıcı-dalgasının işi; bugün "aktif" hesapta dönem-kontrolü tarih-kıyasıyla)
+TEKİLLİK (Z-K1): APPROVED-düzeyinde KISIT — aynı grain'de ikinci plan ONAYLANAMAZ (onay-anı
+  kontrolü, açık red); DRAFT/PENDING'de GÖRÜNÜR UYARI, bloklamaz (K-2.2.7c). İptal edilen plan
+  grain'i serbest bırakır (yeni plan onaylanabilir).
+EŞLEŞTİRME yalnız AKTİF planlara.
+```
+> ⭐ **`F12` (aynı gün, `§11`) — yukarıdaki metin silinmedi; şu satırlar ÜSTÜNE YAZILDI:**
+> ```
+> "Planner/CM"                  → ADMIN + PLANNER (CM çıkar) · agreement emsali de gerekçe-ZORUNLU'ya çekilir   (Ö5)
+> "Excel §4 fark-7 kapanır"     → satır 172'deki not tabloya 7. kalem olarak girer                          (Ö4)
+> "EXPIRED … dönem-bitişi"      → EXPIRED = onay zaman-aşımı (K-2.5.10b); dönem-bitişi ayrı, bugün yok    (Ö2)
+> "DRAFT/PENDING'de uyarı"      → PENDING = PENDING_APPROVAL ∧ PENDING_FINANCE_REVIEW; kısıt → APPROVED geçişinde (Ö3)
+> "(K-2.2.7c)"                  → "uyar, durdurma" DESENİNİN emsali; kuralın kendisi değil                  (Ö6)
+> AKTİF tanımı                  → DEĞİŞMEDİ
+> ```
+
+---
+
+### `§10` · `§8`/`§9` KAYIT ANINDA ÖLÇÜLENLER (Team Lead, 2026-09-10) — ⛔ KARAR DEĞİL
+Hükümlerin **öncülleri** ölçüldü. Yedisinden altısı metinle **uyuşmuyor**; hiçbiri hükmü
+değiştirmez — hangisinin `F12` gerektirdiği **ürün sahibinindir**.
+```
+Ö1  Z-K2 "NEGATIVE_VOLUME — mevcut red-kodu, yalnız mesaj"
+    [ÖLÇÜLDÜ: grep -rn NEGATIVE_VOLUME collmind.backend/src]  → YALNIZ baseline-volume
+        (baseline-volume-import-batch-row.entity.ts:22 · baseline-volume.service.ts:343 · remediation.ts:36)
+    [ÖLÇÜLDÜ: sales-actuals-validation.service.ts:76-90]  actuals red kodları 14 üye — NEGATIVE_VOLUME YOK
+    [ÖLÇÜLDÜ: grep -rn -i volume src/modules/modes/actuals-first/sales-actuals | grep -v spec]  → yalnız yorum
+        ⇒ actuals yüklemesi HACMİ HİÇ OKUMUYOR (entity'de kolon var, yazarı yok)
+    [ÖLÇÜLDÜ: sales-actuals-validation.service.ts:128,400]  tutar <= 0 → INVALID_GROSS_AMOUNT
+        ⇒ actuals'ta iade satırını BUGÜN reddeden kod bu; mesajı "okunamadı ya da <= 0"
+Ö2  Z-K6 "EXPIRED yazıcısız — dönem-bitişi otomasyonu"
+    [ÖLÇÜLDÜ: plan.entity.ts:26-32 · L2_03_onay_yetki_uyum.md:140 (K-2.5.10b)]
+        EXPIRED = PENDING_APPROVAL → EXPIRED, ONAY ZAMAN AŞIMI — dönem bitişi DEĞİL
+    ⇒ AKTİF tanımı EXPIRED'a dayanmıyor (tarih-kıyası) — TANIM etkilenmez, METİN etkilenir
+Ö3  Z-K6 "DRAFT/PENDING'de uyarı"
+    [ÖLÇÜLDÜ: plan.entity.ts:20-25]  PENDING iki üye: PENDING_APPROVAL · PENDING_FINANCE_REVIEW
+Ö4  Z-K6 "Excel §4 fark-7 kapanır"
+    [ÖLÇÜLDÜ: docs/research/DEMO_EXCEL_KPI_TACTIC_REFERANSI.md:174-182]  fark tablosu 6 KALEM — #7 YOK
+    [ÖLÇÜLDÜ: aynı dosya :172]  "Approved → Cancelled … [ürün sahibi teyidi, 2026-08-29]" — TABLODA değil NOTTA
+Ö5  Z-K6 emsal "Agreement APPROVED→CANCELLED"
+    [ÖLÇÜLDÜ: agreement.controller.ts:40,234-256]  POST :id/cancel · MODES_SUBMIT = {ADMIN, PLANNER} — CM YOK
+    [ÖLÇÜLDÜ: agreement.service.ts:1160-1165]      reason?: string — gerekçe OPSİYONEL
+    [ÖLÇÜLDÜ: agreement.controller.ts:241 · agreement.service.ts ~1220 releaseAgreementReservation · ~1260 audit]
+        APPROVED|ACTIVE iptal edilir · net rezerv (RESERVE+COMMIT−RELEASE) RELEASE · audit
+    ⇒ emsal İKİ eksende hükümden farklı: rol (Planner/CM ↔ ADMIN/PLANNER) · gerekçe (zorunlu ↔ opsiyonel)
+Ö6  Z-K6 atıf K-2.2.7c
+    [ÖLÇÜLDÜ: L2_01_veri_butce_defter_hesaplama.md:630-633]  "Eşikler yalnız PLAN ve TAAHHÜT tarafına
+        uygulanır" — gerçekleşen hakedişin eşiğe takılmaması
+    ⇒ tekillik uyarısını DOĞRUDAN kapsamıyor; "işaretle, durdurma" deseninin EMSALİ olarak okunur
+Ö7  Z-K5 öncülleri — halka-4 ölçümüne GİRDİ
+    [ÖLÇÜLDÜ: SELECT pg_get_viewdef('main.v_budget_summary'::regclass, true)]
+        reserved  = Σ(RESERVE+COMMIT) − Σ RELEASE        (POSTED, deleted_at IS NULL)
+        consumed  = Σ ledger (DEBIT − CREDIT), zarfa bağlı TÜM kayıtlar
+        available = allocated − reserved − consumed
+    Z-K5    available = allocated − reserved − consumed_plansız
+    [ÖLÇÜLMEDİ — ölçülecek: halka-4]  planlı tüketim rezervden düşmüyorsa bugünkü formül planlıyı İKİ KEZ düşer
+    [ÖLÇÜLDÜ: pg_enum budget_transactions_tx_type_enum]  CONSUME üyesi VAR
+    [ÖLÇÜLDÜ: SELECT tx_type,count(*) FROM main.budget_transactions]  ALLOCATE 2 · COMMIT 1 · RESERVE 4 — CONSUME 0 · RELEASE 0
+    [ÖLÇÜLDÜ: information_schema.columns main.ledger_entries]  plan_id YOK (agreement_id · tactic_id var)
+        ⇒ "plansız" bugün bir KOLONLA ayırt edilemiyor
+    [ÖLÇÜLDÜ: SELECT count(*) FILTER (WHERE consumed_amount<>0) FROM main.budget_envelopes]  0 / 10
+    [ÖLÇÜLDÜ: grep -F consumed_amount .claude/backlog/tasks/T-351.md → boş]  T-351 bu kolonu ANMIYOR
+        (başlığı: "Altı yazarsız *_spend kolonu")
+    [ÖLÇÜLDÜ: grep -F CONSUME docs/brd-v2/04_KARAR_KAYDI.md → yalnız Z111]
+        "RESERVE→CONSUME hiç yazılmıyordu" Z96'da BULUNAMADI — atıf DOĞRULANMADI
+```
+
+---
+
+### `§11` · `Z111` `F12`'LERİ — `§10`'un YEDİ ÖNCÜLÜNE (Fable, 2026-09-10)
+Yedisi de hüküm-metninin **ölçülmemiş öncülleriydi**; hepsine `F12`, **ikisi hükmü değiştiriyor**
+(`Ö1` yeni red-kodu · `Ö5` rol + emsalin zorunluya çekilmesi).
+```
+Ö1  Z-K2 (3)  NEGATIVE_VOLUME actuals'ta YOK → YENİ red-kodu NEGATIVE_AMOUNT (üreticisiyle,
+              gross<0: "iade satırı — bu sürümde kapsam dışı"); INVALID_GROSS_AMOUNT
+              yalnız "okunamadı"; gross = 0 → ÖLÇ (veride var mı? Z77-tersi: gerçek sıfır
+              reddedilmez — sıfır-satış ayı meşru olabilir) — şeridin iki-taraflı fixture'ı
+Ö2  Z-K6      EXPIRED = onay zaman-aşımı (K-2.5.10b) — cümle düzeltilir; "dönem bitişi" ayrı
+              kavram, bugün yok. AKTİF tanımı DEĞİŞMEZ (tarih-kıyası).
+Ö3  Z-K6      PENDING = PENDING_APPROVAL ∧ PENDING_FINANCE_REVIEW — uyarı ikisinde; kısıt
+              ikisinden APPROVED'a geçişte
+Ö4  Z-K6      "fark-7" → fark-tablosu altındaki not (Excel §4 satır 172, 2026-08-29 teyidi);
+              o not tabloya 7. kalem olarak GİRER — "Approved→Cancelled: Excel var, CTPM-plan
+              Z-K6 ile var"
+Ö5  Z-K6      İPTAL EMSALİYLE HİZALANIR: rol ADMIN + PLANNER (CM ÇIKAR — iptal plan-sahibinin;
+              "onayı geri çekme" ayrı ve bugün yok); GEREKÇE ZORUNLU — ve emsal (agreement,
+              reason?) de zorunluya çekilir: iki nesne aynı cevap; çağıran-listesi ölçülerek
+Ö6  Z-K6      K-2.2.7c → "uyar, durdurma" DESENİNİN emsali; kuralın kendisi değil
+Ö7  Z-K5      atıflar yanlış: "RESERVE→CONSUME hiç yazılmıyordu" Z96'da YOK (benim); T-351
+              consumed_amount'ı anmıyor → T-351'e ÜYE (10/10 zarf sıfır, yazarsız).
+              Z-K5 formülü TANIMDIR; uygulaması halka-4 ölçümüyle üç parça:
+              (i) defter satırına plan_id (tanım→yazar→kısıt) — "plansız" ancak böyle ayırt edilir
+              (ii) CONSUME üreticisi (enum var, satır yok — Z91)
+              (iii) v_budget_summary → Z-K5 (çift-düşüm şüphesi: planlı tüketim rezervden
+                   düşülmüyorsa iki kez — halka-4 ÖLÇER, hüküm ölçümden sonra)
+```
+
+#### `11.1` · ⭐ KAYIT (`F00`) — **OTURUM-HÜKMÜ DE DAMGA İSTER**
+> *"Oturumda beş hükmü ~bir saatte verdim; yedi öncül ölçülmemişti ve hepsi
+> isim/atıf/enum düzeyindeydi — tam `Z86`/`Z87` sınıfı (**"ad, uç-listesi değil"**).
+> Kural: oturum-hükümleri de `[ÖLÇÜLDÜ]`-damgası ister; **damgasız öncül
+> hüküm-taslağıdır**, Team Lead'in ölçümüyle kesinleşir — bugün tam öyle oldu, sistem
+> işledi."* — ürün sahibi
+```
+hüküm-20 (Z108 §3, brief etiket kuralı)  HÜKMÜ VERENİ DE BAĞLAR
+vaka          Z111 §1–§9: 7 öncül · 7'si ölçülmemiş · 7'si ad/atıf/enum düzeyinde
+yakalayan     Team Lead'in kayıt-anı ölçümü (§7 · §10) — bir KAPI değil, bir ALIŞKANLIK
+emsal sınıfı  Z86 ("hükmü veren yanıldı, kapı durdurdu") · Z87 ("iki metrik iki ad")
+```
+
+#### `11.2` · İŞLENDİĞİ YERLER (Team Lead, aynı gün)
+```
+Ö1            halka-3 brief §3.6 (ölçüm: gross<0 / gross=0 / okunamadı — iki taraflı fixture)
+Ö2 · Ö3 · Ö5  halka-3 brief §9 İŞ 4a/4b · migration 1834000000000 tahsisi
+Ö4            docs/research/DEMO_EXCEL_KPI_TACTIC_REFERANSI.md §4 fark tablosu → 7 kalem
+Ö6            bu kayıt (Z-K6 metnine F12 izi)
+Ö7            .claude/backlog/tasks/T-351.md EK 3 · halka-3 brief §10 (halka-4 girdisi, üç parça)
+11.1          docs/DISIPLIN.md F00
+```
