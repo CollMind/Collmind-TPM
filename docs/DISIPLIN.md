@@ -382,6 +382,24 @@ hükmü değiştirdi**. Sınıf `Z86`/`Z87`'ninkidir — *"ad, uç-listesi deği
 *"Team Lead kararı"* doğurur (`Z105 §1`'in kayıp-hüküm sınıfı). Ölçüm **listelenir**, hüküm
 **sahibinde** kalır.
 
+### ⇒ İKİNCİ VAKA (`Z111 §12–§13`, 2026-09-10) — ve bu kez öncül **YÖN** de değiştirdi
+
+Bir sonraki hüküm turunda üç ölçümsüz öncül daha çıktı; ürün sahibi üçünü de kayda yazdı:
+```
+öncül                               hüküm dedi                         ölçüm
+atıf/benzetme  "NET kolonu YOK (INV-B-009)"  net_amount + net_total VAR; INV-B-009 BÜTÇE "available" kuralı
+sayı           "donmuş-BRD 5. ölçümlü düzeltme"   "dördüncü" K-2.2.1'in KENDİ sayacı — sayı silindi, LİSTE
+mekanizma      "araç tasarım gereği ÇARPAR"   harness pg_enum'a BAKMIYOR ⇒ IF NOT EXISTS + boş down()
+                                                 SESSİZ YEŞİL — GERÇEK DAHA KÖTÜ
+```
+> ### ⚠️ Üçüncüsü ilk vakadan farklı: öncül yalnız **yanlış** değildi, **iyimser** yöndeydi.
+> ### *"Kapı çarpar"* inancı, kapının **kör olduğu** bir yerde **güven** üretiyordu —
+> ### `F01`: *"beklenen YÖNE yanılan bir hata, ters yöne yanılandan tehlikelidir."*
+
+📌 Ve ürün sahibinin kaydı kuralın **işlediğini** söylüyor: *"F00 damgası hüküm-vereni bağlıyor,
+ölçen düzeltiyor; sistem işliyor."* İki vakada da **yakalayan aynı alışkanlıktı** — kayda
+geçirmeden önce öncülü ölçmek — ve iki vakada da **hüküm sahibinde kaldı**.
+
 ---
 
 ## BİR KAPANIŞ BEYANI, KAPSAMADIĞINI **YAZMADAN** VERİLEMEZ (ZORUNLU)
@@ -4723,6 +4741,31 @@ tarihi yazılı değildi**.
 **Pratik:** bir işi *"bugün veri yok"* diye ertelerken **ertelemenin KOŞULUNU yaz**
 (*"`ledger_entries > 0` olduğu gün yeniden ölç"*) — ve mümkünse o koşulu **bir kapıya bağla**.
 Yazılmamış bir koşul, **hatırlanmayan** bir koşuldur.
+
+### ⇒ VE KURALIN ÖNCÜLÜ **SEED**'SE, SEED DEĞİŞİNCE KURAL **YENİDEN ÖLÇÜLÜR** (ZORUNLU)
+
+> 🔎 *"bu kural bir ÖLÇÜMDEN doğdu — o ölçüm GERÇEK veriye mi, SEED'e mi yapıldı?"*
+
+Bir iş kuralı ölçümle doğabilir ve ölçüm **doğru** olabilir — ama ölçülen şey **kurgu seed
+verisiyse**, kural gerçeğin değil **seed'in** özelliğini kodlamış olur.
+
+**Ölçülmüş vaka (`Z111 §12 §4`, 2026-09-10):** `K-2.13.14h6` (2026-08-13) *"indirim satış
+tablosunun indirim alanından değil"* dedi. Gerekçe bir ölçümdü: `CHECK (net = gross − discount)`
+**3/3 satırda** reddedildi, sapma `Σ 63.000`. Ölçüm doğruydu — ama o 3 satır **seed'di**.
+Ürün sahibi: *"öncülü seed-kalitesiydi (Σ63.000, kurgu)"*. Kural **alanın anlamını** değil
+**seed'in tutarsızlığını** kodlamıştı; yerini bir **tutarlılık kısıtı** aldı.
+```
+ölçüm      3/3 satır CHECK'i ihlal ediyor           ← DOĞRU
+çıkarım    "bu alan ticari indirim DEĞİL"            ← seed'in özelliğini ALANA yükledi
+doğru okuma "bu VERİ tutarsız"                       ← veri seed ⇒ kural değil, kısıt
+```
+📌 Ve bu kuralın bir **sessiz** yanı var: seed değişince (düzeltilince, yeniden kurulunca,
+gerçek veriyle yer değiştirince) kural **kendiliğinden** bayatlar — üstteki kuralın *"örtü
+kalkar, kayıt kalkmaz"* şeklinin **kural katmanındaki** hâli.
+
+**Pratik:** ölçümden bir kural yazarken **evreni adıyla yaz** — *"3/3 SEED satırı"*, *"3/3
+satır"* değil. Kuralın gerekçesinde **seed** kelimesi geçiyorsa, o kural bir **seed değişikliği
+turunun kabul listesine** girer.
 
 ---
 

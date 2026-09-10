@@ -729,11 +729,31 @@ here so they are designed in rather than retrofitted.
   quarantine exists for a documented double-counting reason (T-003/T-017). Recognition that
   reads `discount_amount` without addressing that history reintroduces the bug.
 - **Source:** audit candidate #16, spec gap 6
+- ⭐ **`F12` (2026-09-10, `Z111 §12 §4`) — AÇIKÇA DEVRİLDİ, yerine `INV-R-005b`.** Yukarıdaki metin
+  silinmedi. Çifte sayım gerekçesi (T-003/T-017) **ayakta** — değişen şey karantinanın biçimi:
+  mutlak yasak yerine **kısıttan geçen tek yol**.
+
+### INV-R-005b — An on-invoice discount enters the ledger **only** through the consistency constraint.
+- **Status:** 🟡 **DEFINED, NOT YET ENFORCED** — `Z111 §12` (2026-09-10); üreticisi HALKA-3 İŞ-2
+- **Rule:** indirim deftere yalnız şu yoldan girer — ERP satırı kabul kurallarını geçer
+  (`net = brüt − indirim`, tolerans yok; indirim ≤ brüt; negatif yok; aynı grain'de SALE var) →
+  `ON_INVOICE_DISCOUNT` olay satırı → eşleştirme → defter. Başka hiçbir yol (ayrı on-invoice
+  bacağı dahil) indirimi deftere yazamaz.
+- **Guard:** **NONE** → target: modül-sınırı testi (`INV-R-005`'in `sales-actuals.module.spec.ts`
+  deseni) + kabul kurallarının e2e'si. ⚠️ `HALKA3_IS1_KAPANIS.md`: türetme ayrı bir modüle
+  konursa eski sınır testi **yeşil kalır ama anlam olarak ölür** — guard yeni yolu adlandırmalı.
+- **Supersedes:** `INV-R-005` · **Source:** `Z111 §12` · `L2_04 K-2.13.14h6` F12
 
 ### INV-R-006 — A sales-actuals row is rejected if `net_amount > gross_amount`.
 - **Status:** HOLDS
 - **Guard:** TEST → add `DB` (`CHECK`)
 - **Source:** audit candidate #17
+- ⭐ **`F12` (2026-09-10, `Z111 §13` U2) — YAŞAR, KAPSAMI GENİŞLER.** Yukarıdaki metin silinmedi.
+  Olay modelinde `net_amount` bir **girdi kaydıdır** (dosyadan gelen, çapraz doğrulanmış net);
+  hesaplarda kullanılan NET **türevdir** (`Σ SALE − Σ ON_INVOICE_DISCOUNT`). İnvaryantın yeni
+  hâli: **`net_amount` doluysa `net_amount = gross_amount − discount_amount`, tolerans yok** —
+  aksi satır `AMOUNT_RECONCILIATION` ile reddedilir. `net > gross` bu eşitliğin **özel bir
+  ihlalidir** (eski metin onu kapsıyor, yeni metin tamamını). Üreticisi HALKA-3 İŞ-2.
 
 ### INV-R-007 — Recognized on-invoice spend is conserved: `Σ(claims) + Σ(NON_TPM) = actual_discount`, for every scope, always.
 - **Status:** BLOCKED → **D-07**

@@ -11477,3 +11477,252 @@ emsal sınıfı  Z86 ("hükmü veren yanıldı, kapı durdurdu") · Z87 ("iki me
 Ö7            .claude/backlog/tasks/T-351.md EK 3 · halka-3 brief §10 (halka-4 girdisi, üç parça)
 11.1          docs/DISIPLIN.md F00
 ```
+
+---
+
+### `§12` · `Z-K3` `F12-2` — ACTUALS VERİ MODELİ ve SÖZLEŞMESİ — HALKA-3 İŞ-2 GÖREVİ (ürün sahibi + Fable, 2026-09-10)
+İŞ-1 raporunun (`docs/process/HALKA3_IS1_KAPANIS.md`) açıklarını kapatır. **Önceki
+*"kolon-modeli / dağıtım import'ta"* hükmü DÜŞTÜ** (`F12`).
+```
+1 · DEPOLAMA = OLAY SATIRLARI (event_type alanı var; üyeler ÜRETİCİLERİYLE — Z91)
+   SALE                 grain + adet + brüt
+   ON_INVOICE_DISCOUNT  grain + tutar (adet yok)
+   FREE_GOODS           grain + adet + tutar=0, değer = adet × birim-fiyat (DOSYADAN, BPTT-hesabı YOK)
+   RETURN               Faz-3 (üye eklenmez)
+   "NET" TÜRETİLİR (Σ SALE − Σ DISCOUNT, sorgu) — kolon YOK (INV-B-009)
+   İndirimsiz satış = yalnız SALE satırı. Olay-tipi GİRDİ DEĞİL, TÜREV: ERP satırı →
+   SALE (+ indirim>0 ise DISCOUNT; indirim=brüt ∨ fiyat=0 ∨ bedelsiz-işaret ⇒ FREE_GOODS).
+
+2 · DOSYA-SÖZLEŞMESİ = ERP-DOĞAL (iç kavram istenmez; ERP ekibi export'u buna göre üretir)
+   ÜRÜN     SKU-kodu YA DA FU-kodu (biri zorunlu; SKU→FU türetilir; FU'dan SKU ASLA)
+   MÜŞTERİ  müşteri-kodu YA DA CPL-kodu (biri zorunlu; müşteri→CPL master-data; CPL'den müşteri ASLA)
+   fatura-tarihi (→ dönem 'YYYY-MM' TÜRETİLİR; "bütçe dönemi" istenmez) · fatura-no (opsiyonel,
+   ERP drill-down referansı) · adet · birim-fiyat (ZORUNLU, bedelsizde de) · brüt · indirim
+   (SATIRA DAĞITILMIŞ — fatura-altı dağıtımı ERP yapar) · net (varsa ÇAPRAZ, yoksa türetilir)
+   DOSYADA OLMAYANLAR: eşleştirme-kodu · anlaşma/plan/taktik ref · bütçe-dönemi · olay-tipi
+   KARIŞIK DÜZEY meşru (satır-bazlı türetme).
+   GRAIN: aylık-toplam (varsayılan, az veri) / fatura-satırı — aynı format, aynı depolama;
+   fatura-satırı gelirse aylık toplama biz yaparız (aşağıdan yukarı).
+
+3 · KABUL KURALLARI (red-sözlüğü, mevcut enum-ailesi; üye + üretici aynı turda)
+   CPL_NOT_FOUND / SKU_NOT_FOUND (master-data eşlemesi yok) · INVALID_PERIOD/DATE ·
+   MISSING_REQUIRED_FIELD (ürün-anahtarı yok / müşteri-anahtarı yok / birim-fiyat yok) ·
+   AMOUNT_RECONCILIATION → RED'E TERFİ (net ≠ brüt − indirim, tolerans YOK) ·
+   DISCOUNT_EXCEEDS_GROSS (indirim > brüt) · HEADER_DISCOUNT_UNALLOCATED (grain'siz indirim satırı) ·
+   NEGATIVE_AMOUNT (herhangi alan < 0: "iade — bu sürümde kapsam dışı"; Z-K2) ·
+   DISCOUNT_WITHOUT_SALE (aynı grain'de SALE olmadan indirim — batch-içi) ·
+   GRAIN_MISMATCH (tenant-politikası ince, satır kaba — NOT_AGGREGATABLE'ın actuals yüzü)
+   gross = 0: ÖLÇÜLDÜ (0/3 canlı, 0/3 seed) — korumacı red durur, hüküm ilk gerçek dosyayla.
+
+4 · BRD/İNVARYANT F12'LERİ
+   K-2.13.14h6 F12 (donmuş-BRD 5. ölçümlü düzeltme): öncülü seed-kalitesiydi (Σ63.000, kurgu);
+   yerini tutarlılık-kısıtı alır. INV-R-005 → INV-R-005b: "indirim deftere yalnız kısıttan
+   geçerek girer". Seed'in 3 tutarsız satırı DÜZELTİLİR (Z107 emsali).
+   F05 kaydı: "kuralın öncülü seed'se, seed değişince kural yeniden ölçülür".
+
+5 · İŞ-1 AÇIKLARININ HÜKÜMLERİ
+   ANLAŞMA BAĞI  actuals'a alan EKLENMEZ; bağ eşleştirmeyle türer. Z-K1 tekilliği ANLAŞMALARA
+                 GENİŞLER (CPL×FU×dönem-aralığı, en fazla bir aktif anlaşma; onay-anı kısıtı,
+                 Z-K6 deseni). Çakışan APPROVED×APPROVED çift: seed — ölçülür, düzeltilir.
+   posting_date  DÖNEMİN SON GÜNÜ (tenant-TZ) — deterministik; yeniden-yükleme aynı posting
+   ZARF YOK      satırda match_status + reason; NO_ENVELOPE üyesi (ASKI, ERROR değil) — üretici bu dalga
+   YENİDEN YÜKLEME batch-süpersede → eski türev defter satırları TERS-KAYIT (append-only)
+   CPL'SİZ MÜŞTERİ CPL_NOT_FOUND; cpl_id NULL defter satırı doğamaz (§2.5); 2/29 master-data borcu adıyla
+   ON-INVOICE BACAĞI (İŞ-1: türev ayakta değil) → ÖLÜM koşulları sağlandı: actuals olay-modeli
+                 deftere gereken her şeyi taşıyor (posting_date hükmüyle); on_invoice_* yolu ölür,
+                 INV-R-001/002 e2e-kanıtı olay-modeline TAŞINIR (kaybolmaz). Tüketici-taraması liste.
+   T-388 İŞ-2    (a) kapandı — tüketicisi yok; code-reviewer → commit → push.
+
+6 · ÇIKTILAR
+   a  İŞ-2 brief'i: depolama + türetme + kabul + iki fixture-seti (aylık-toplam / fatura-satırı,
+      SKU+müşteri / FU+CPL, üç bedelsiz-işaret şekli) + on-invoice-bacağı ölümü + migration
+      (event_type üyeleri, match_status/reason, posting_date; enum-ekleme geri-alınamazlığı
+      harness'ta ölçülür — 1834 notu) + Z-K1 anlaşma-tekilliği
+   b  docs/domain/ACTUALS_IMPORT_SOZLESMESI_v1.md — DIŞ-YÜZ (ERP ekibi için, domain dili):
+      amaç/ilke · alan listesi (zorunlu/opsiyonel/ikisinden-biri, tip, örnek) · satır-tipleri ·
+      kurallar · grain seçenekleri · red-kodları ERP-diliyle · örnek CSV ×4 · v1 sürüm notu
+      (iade v2). Fable son okur; Wella/ilk-müşteri ERP ekibine gönderilir.
+   c  ERP-export'u elimizde YOK — ölçülmez; sözleşme yayınlanır, import her ihlali adıyla reddeder,
+      ilk gerçek dosya sözleşmenin sınavıdır (beyanda "kapsanmadı: gerçek export ile sınanmadı").
+
+KURALLAR: brief-etiketi · reprodüksiyon-önce · migration-verify.sh · mutate.sh/scan.sh ·
+qa ayrı el · code-reviewer → push-order → Z112 (üç sütun) → İŞ-3/4 brief'leri
+```
+
+#### `12.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-10) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  §1 event_type     [ÖLÇÜLDÜ: information_schema.columns + pg_enum] sales_actuals.event_type (nullable) ·
+                    sales_actuals_event_type_enum = {SALE} — alan VAR, tek üye
+  §2 kanal türevi   [ÖLÇÜLDÜ: SELECT count(*),count(channel_id) FROM main.cpls WHERE deleted_at IS NULL] 29 · 29,
+                    channel_id NOT NULL ⇒ kanal CPL'den BELİRSİZSİZ türer (dosyada kanal gerekmez)
+  §2 kategori türevi [ÖLÇÜLDÜ: information_schema forecasting_units.gu_id · generic_units.category_id]
+                    FU → GU → kategori zinciri VAR (1828'in backfill zinciri)
+  §3 ad ailesi      [ÖLÇÜLDÜ: grep -rn -o "'[A-Z]+_NOT_FOUND'" src] CPL_NOT_FOUND · SKU_NOT_FOUND
+                    baseline-volume ailesinde (Z87) VAR · INVALID_PERIOD aynı ailede ·
+                    INVALID_DATE common/row-parsing/pick-cell.ts:115
+  §5 on-invoice     [ÖLÇÜLDÜ: pg_constraint confrelid on_invoice_*] dışarıdan gelen FK YOK (yalnız entries→batches)
+                    · iki tablo 0 satır ⇒ ADR 0012 (kayıt fiziksel silinemez) SİLİNECEK KAYIT BULMAZ
+  §4 F05            [ÖLÇÜLDÜ: grep "^# AİLE F05" docs/DISIPLIN.md] "GEREKÇENİN YAŞAM DÖNGÜSÜ —
+                    bu GEREKÇE hâlâ geçerli mi?" — kayıt ailesine UYUYOR
+
+UYUŞMAYANLAR (F12 ürün sahibinin)
+  U1  §5 "Çakışan APPROVED×APPROVED çift: seed"
+      [ÖLÇÜLDÜ: grep -rn -F STA-2026-003 src/database/seeds] → yalnız agreement.seed.ts:409 YORUMU:
+      "STA-2026-003/STA-2026-004'ün AKSİNE" ⇒ seed ÜRETMİYOR (T-277 reprodüksiyon artığı, T-376)
+      [ÖLÇÜLDÜ: ledger_entries/budget_transactions source_id sayımı] STA-2026-003 ledger 1 · STA-2026-004 ledger 2
+      ⇒ "düzeltmek" DEFTERİ GERİYE YAZMAK olur — 1832 kaydı bu yüzden "DOKUNULMAZ" demişti
+  U2  §1 "NET kolon YOK (INV-B-009)"
+      [ÖLÇÜLDÜ: information_schema.columns] sales_actuals.net_amount VAR (nullable) · sales_actual_batches.net_total VAR
+      [ÖLÇÜLDÜ: SYSTEM_INVARIANTS.md "### INV-B-009"] INV-B-009 BÜTÇE "available" tek-taşıyıcı ilkesi —
+      NET için DOĞRUDAN kural değil, İLKENİN emsali
+      ⇒ "kolon YOK" = mevcut iki kolonun ÖLÜMÜ; INV-R-006 (net > gross red) bu kolona DAYANIYOR
+  U3  §4 "donmuş-BRD 5. ölçümlü düzeltme"
+      [ÖLÇÜLDÜ: grep "ölçümlü düzeltme" 04_KARAR_KAYDI.md L2_01] "DÖRDÜNCÜ" K-2.2.1'in KENDİ sayacı
+      (Z105 · L2_01:472) — BRD-geneli bir sayaç BULUNAMADI ⇒ "5." sayısı ÖLÇÜLMEDİ
+  U4  §3 "mevcut enum-ailesi" — İKİ aile var
+      [ÖLÇÜLDÜ: sales-actuals-validation.service.ts:76-90] actuals: UNKNOWN_CPL · UNKNOWN_SKU · UNKNOWN_FU ·
+      UNKNOWN_CATEGORY · AMBIGUOUS_CATEGORY · CHANNEL_MISMATCH · SKU_WITHOUT_FU · FU_SKU_MISMATCH ·
+      FU_CATEGORY_MISMATCH · INVALID_{GROSS,NET,DISCOUNT}_AMOUNT · NET_EXCEEDS_GROSS · MISSING_REQUIRED_FIELD
+      ⇒ hüküm baseline ailesini (*_NOT_FOUND) seçiyor ⇒ actuals adları DEĞİŞİR; ve listede OLMAYAN
+        yedi kodun kaderi YAZILI DEĞİL (kategori/kanal dosyadan kalkınca bir kısmı doğal ölür;
+        UNKNOWN_FU · SKU_WITHOUT_FU · FU_SKU_MISMATCH anlamlı KALIR)
+
+BOŞLUKLAR (hüküm tanımlamıyor — ürün sahibine soru)
+  B1  BATCH-SÜPERSEDE KAPSAMI
+      [ÖLÇÜLDÜ: SYSTEM_INVARIANTS.md:682 INV-R-003] tek ACTIVE batch / (tenant, fiscal_period, cpl, category, channel)
+      [ÖLÇÜLDÜ: upload-sales-actuals-query.dto.ts] dönem SORGU parametresi ya da dosya adı
+      ⇒ yeni sözleşmede dönem SATIR başına (fatura-tarihi), dosya çok-CPL/çok-dönem — yeni dosya NEYİ süpersede eder?
+  B2  GRAIN_MISMATCH'in TENANT POLİTİKASI
+      [ÖLÇÜLDÜ: information_schema tenants ~ grain|policy] → yalnız timezone ⇒ alan YOK
+      ⇒ tanım → yazar → kısıt (Z98 §3): varsayılan ne, kim yazar
+  B3  MÜŞTERİ YOLUNDA KANAL
+      [ÖLÇÜLDÜ: information_schema customers] customers.channel (metin, NOT NULL) · customers.cpl_id (nullable)
+      ⇒ müşteri-kodlu satırın kanalı CPL'den mi müşteriden mi; ikisi çelişirse ne olur
+  B4  FREE_GOODS'un DEFTER etkisi — değer (adet × birim-fiyat) bütçe tüketimi mi, yalnız bilgi mi
+```
+
+#### `12.2` · İŞLENDİĞİ YERLER (Team Lead, aynı gün)
+```
+§4 K-2.13.14h6 F12     docs/brd-v2/03_IS_KURALLARI/L2_04_hakedis_ai_kurulum.md
+§4 INV-R-005 → 005b    docs/contracts/SYSTEM_INVARIANTS.md
+§4 F05 kaydı           docs/DISIPLIN.md F05
+§5 T-388 İŞ-2 (a)      .claude/backlog/tasks/T-388.md
+§6a                    docs/process/HALKA3_IS2_ACTUALS_OLAY_MODELI_BRIEF.md · MIGRATION_SEQUENCE 1835–1837
+§6b                    docs/domain/ACTUALS_IMPORT_SOZLESMESI_v1.md (TASLAK — Fable son okur)
+```
+
+---
+
+### `§13` · `§12.1`'İN CEVAPLARI — DÖNEM KAYNAĞI · ENUM · U1–U4 · B1–B6 (ürün sahibi + Fable, 2026-09-10)
+
+```
+DÖNEM KAYNAĞI [ürün sahibi, 2026-09-10]
+ACTUALS (satış/indirim)   dönem fatura-TARİHİNDEN TÜRER — kullanıcı seçmez, dosyada istenmez
+OFF-INVOICE FATURA        hakediş/bütçe DÖNEMİ KULLANICI SEÇER (zorunlu) — fatura Ağustos
+                          hakedişi için Ekim'de gelir; fatura-tarihi ayrı alan, dönem ayrı alan;
+                          eşleştirme seçilen döneme (beklenen-hakediş grain'i), tarihe değil
+```
+
+**Onaylar:** İŞ-2 belgelerini commit et → `854ebe1` ile birlikte push — `ABORT_ON_DIRTY=0`
+bayrağı **kullanılmaz** (kapı doğru durdu; çözüm commit, gevşetme değil). **Enum:** tipi
+yeniden yaratmak (ölçülen tek geri-alınabilir yol) + harness enum-körlüğü ayrı küçük şerit,
+1834/1835'ten ÖNCE (`pg_enum` snapshot'a; bilinen-kırmızı = `IF NOT EXISTS` + boş-down →
+kırmızı); ve ölçümün sonucu: enum-ekleme ile kullanım ayrı migration dosyaları (aynı
+transaction'da kullanılamaz — 1834 yalnız üye, 1835 kullanım). Notum (*"araç tasarım gereği
+çarpar"*) çürüdü — gerçek daha kötüydü (sessiz yeşil); kayda, F00.
+
+```
+U1  çakışan APPROVED×APPROVED çift GERÇEK, defter taşıyor → düzeltme YOK (defter geriye yazılmaz).
+    Tekillik kısıtı İLERİYE DÖNÜK (onay-anı). Mevcut çift KAYITLI İSTİSNA (Z29-deseni: adıyla);
+    motor o grain'de AMBIGUOUS_AGREEMENT → ASKI (üye+üretici bu dalga); çözüm Finans'ın:
+    birini CLOSED/CANCELLED eder (Z-K3 elle-kapatma emsali). Sertaç'a bilgi: iki anlaşma
+    çakışıyor, Finans karar verir.
+U2  net_amount / net_total ÖLMEZ — INV-B-009 benzetmem yanlıştı (F12). Anlamı: "dosyadan gelen,
+    çapraz-doğrulanmış net" = GİRDİ-KAYDI (denetim); hesaplarda kullanılan net = TÜREV (Σ SALE −
+    Σ DISCOUNT). İkisi eşit olmak zorunda — INV-R-006 tam bu kısıtın invaryantı olur (yaşar).
+U3  "5. ölçümlü düzeltme" — sayı yazdım, doğrulanamadı: silinir, LİSTE (K-2.2.8c · K-2.2.1 ·
+    K-2.2.2/3 · K-2.13.14h6). Onbirinci+ elle-sayı vakası, yazan ben.
+U4  MEVCUT SÖZLÜK KAZANIR (Z87): actuals UNKNOWN_* kanonik (yazıcısı var); yeni kodlar o ada uyar
+    (UNKNOWN_CUSTOMER…); baseline'ın *_NOT_FOUND ailesi AD-BORCU (T-351), birleştirme ayrı tur.
+    7 mevcut kod LİSTE olarak KALIR — kaderi "korunur".
+```
+```
+B1  BATCH = TEK DÖNEM. Dönem satırdan türer ama dosya tek dönem taşır; farklı dönem satırı →
+    RED: MIXED_PERIOD (sözleşmeye kural: çok-dönemli export bölünerek yüklenir). Süpersede
+    batch-düzeyi kalır, mevcut kısmi UNIQUE geçerli — index değişmez. Sade.
+B2  tenant.settings.match_grain (jsonb, timezone emsali): tanım + yazar (seed: FU_CPL_MONTH)
+    bu dalga; kısıt/UI olay-tetikli. GRAIN_MISMATCH üreticisi bunu okur.
+B3  KANAL = CPL'İN KANALI (tek kaynak; 29/29 dolu). Müşterinin kendi kanal alanı varsa
+    ÖLÇ: customer.channel ↔ cpl.channel eşit mi (GU-tutarlılık emsali); çelişki → ad-borcu,
+    müşteri-kanalı türev-kolon adayı (T-351).
+B4  BEDELSİZ MAL = TÜKETİM, bilgi değil (trade-spend'dir): değer adet × birim-fiyat →
+    on-invoice bedelsiz-ürün taktiğiyle eşleşir → zarftan (planlı: rezervden; plansız: available'dan — Z-K5)
+B5/B6  "fiyat = 0" ŞEKLİ KABUL EDİLMEZ — F12: bedelsiz satır fiyatını taşır ve indirim = brüt
+    (%100) ya da satır-tipi bayrağı + fiyat > 0; fiyat=0 → RED: FREE_GOODS_UNPRICED
+    (değer hesaplanamaz). Sıfır-brüt reddi KORUNUR; çelişki kalkar. "Üç şekil kabul" → iki.
+```
+**Sertaç'a tek bilgi (karar değil):** U1'deki çakışan iki anlaşma gerçek veri — Finans birini
+kapatacak; hangisi, Sertaç'ın/Finans'ın.
+
+**Kayıt:** *"bu turda benden üç ölçümsüz öncül daha çıktı (INV-B-009 benzetmesi, "5.", "tasarım
+gereği çarpar") — F00 damgası hüküm-vereni bağlıyor, ölçen düzeltiyor; sistem işliyor."*
+**Sıra:** commit → push → enum-şeridi → İŞ-2 bloke-olmayan çekirdek açılır.
+
+#### `13.1` · `§12` SATIRLARINA `F12` İZLERİ (yukarıdaki metin silinmedi)
+```
+§12 §1  "NET TÜRETİLİR … kolon YOK (INV-B-009)"   → U2: kolonlar KALIR (girdi kaydı); NET hesabı türev; eşitlik kısıtı
+§12 §3  "CPL_NOT_FOUND / SKU_NOT_FOUND"           → U4: UNKNOWN_CPL / UNKNOWN_SKU (mevcut sözlük)
+§12 §3  "gross = 0 … korumacı red durur"           → B5/B6 ile çelişki KALKTI (fiyat=0 şekli kabul edilmez)
+§12 §4  "donmuş-BRD 5. ölçümlü düzeltme"          → U3: sayı SİLİNDİ, liste
+§12 §5  "Çakışan APPROVED×APPROVED çift: seed"     → U1: gerçek, KAYITLI İSTİSNA, düzeltme yok
+§12 §6a "üç bedelsiz-işaret şekli"                → B5/B6: İKİ şekil
+§12.1   U1–U4 · B1–B6                              → yukarıda cevaplandı
+```
+
+#### `13.2` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  B1  [ÖLÇÜLDÜ: sales-actuals.service.ts:141-172 scopeGroups.set(scopeKey, group)] ingest dosyayı
+      KAPSAM başına gruplayıp her gruba batch açıyor ⇒ tek dönemli çok-CPL dosya mevcut
+      ux_sales_actual_batches_active_scope ile UYUMLU — "index değişmez" TUTUYOR
+  B2  [ÖLÇÜLDÜ: information_schema tenants] settings jsonb VAR · timezone varchar (1826 terfisi)
+  B3  [ÖLÇÜLDÜ: customers ⋈ cpls ⋈ channels, ACTIVE ∧ silinmemiş ∧ cpl dolu, c.channel::text = ch.code]
+      27 · eşit 27 · farklı 0 — customers_channel_enum üyeleri = channels.code kümesi (8/8)
+      ⇒ bugün ÇELİŞKİ YOK; müşteri kanalı türev-kolon ADAYI (T-351 EK 4)
+  U3  [ÖLÇÜLDÜ: grep -A40 "**K-…**" L2_*.md | grep -c "F12|ölçümlü düzeltme"] K-2.2.8c 1 · K-2.2.1 4 ·
+      K-2.2.2 2 · K-2.2.3 2 · K-2.13.14h6 1 — listedeki beşinin YAKININDA F12 izi VAR
+      (⚠️ 40-satır penceresi DESTEKLEYİCİ bir proxy'dir, taşıyıcı değil)
+  U1  [ÖLÇÜLDÜ: grep -n "^## Z29" 04_KARAR_KAYDI.md] Z29 VAR ("Ratchet'ler kendi BAŞARILARINI …") ·
+      istisna disiplini atfı :5273 ("Z29 istisna disipliniyle")
+  U4  [ÖLÇÜLDÜ: sed -n 8443,8456p 04_KARAR_KAYDI.md] Z87 "AD-BORCU" kavramının kaynağı — emsal TUTUYOR
+
+UYUŞMAYANLAR (F12 ürün sahibinin)
+  N1  B4 "on-invoice bedelsiz-ürün taktiğiyle eşleşir"
+      [ÖLÇÜLDÜ: SELECT code,name FROM main.mechanics · main.tactics] 6 mekanik · 5 taktik —
+      CPP_OFF_PCT · CPP_ON_PCT · DISPLAY_FEE · MEC-DISCOUNT · PRICE_SUP · VIS_LS /
+      TAC-OFF-DISCOUNT · TAC-ON-DISCOUNT · TAC-PRICE-SUPPORT · TAC-PROMO · TAC-VISIBILITY
+      ⇒ BEDELSİZ-ÜRÜN taktiği/mekaniği YOK ⇒ eşleşme HEDEFİ tanımsız (tanım → yazar gerekir)
+  N2  "1834 yalnız üye, 1835 kullanım"
+      [ÖLÇÜLDÜ: MIGRATION_SEQUENCE.md:109-110] 1834 = PlanStatus.CANCELLED (İŞ-4a) · 1835 = actuals
+      olay modeli — İKİ AYRI enum'a ekleme; biri diğerinin "kullanımı" DEĞİL
+      ⇒ İLKE uygulanır (ekleme ile kullanım ayrı dosya), NUMARA eşlemesi uygulanamaz:
+         1835 = event_type YALNIZ üyeler · sözleşme kolonları/match_* → 1838 (yeni tahsis)
+         1834 = CANCELLED YALNIZ üye · kullanım migration'ı YOK (üretici uygulama kodu)
+  N3  U4 "*_NOT_FOUND AD-BORCU (T-351)"
+      [ÖLÇÜLDÜ: grep -m1 ^title: T-351.md] "Altı yazarsız *_spend kolonu — ya yazar kazanır ya ölür"
+      ⇒ T-351 yazarsız/türev KOLON ailesi; ad-borcu SINIF olarak yakın, KAPSAM olarak farklı —
+         EK olarak girdi (T-351 EK 4), ayrı task açılmadı
+```
+
+#### `13.3` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+U2              L2_04 K-2.13.14h6 F12 bloğu · SYSTEM_INVARIANTS INV-R-006
+F00 kaydı       docs/DISIPLIN.md F00 "OTURUM-HÜKMÜ DE DAMGA İSTER" — ikinci vaka
+enum · N2       MIGRATION_SEQUENCE 1834 · 1835 (yalnız üye) · 1838 (yeni: kolonlar)
+U1 U2 U4 B1–B6  HALKA3_IS2_ACTUALS_OLAY_MODELI_BRIEF.md §0.0
+B1 B5/B6 U4     docs/domain/ACTUALS_IMPORT_SOZLESMESI_v1.md
+U4 B3 N3        .claude/backlog/tasks/T-351.md EK 4
+enum şeridi     docs/process/HARNESS_PG_ENUM_KORLUGU_BRIEF.md
+```
+

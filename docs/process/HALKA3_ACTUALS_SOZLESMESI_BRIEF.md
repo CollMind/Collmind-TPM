@@ -212,6 +212,17 @@ gross = 0   → ÖLÇ: veride var mı? Z77-tersi — GERÇEK SIFIR REDDEDİLMEZ 
               ⇒ bugünkü `grossAmount <= 0` (validation.service.ts:400) sıfırı da reddediyor —
                 bu bir BULGU mu, meşru mu: iki taraflı fixture karar verir, TERCİH değil
 ```
+⭐ **gross = 0 ÖLÇÜTÜ — önceden yazılı (ürün sahibi, 2026-09-10, `Z111 §11 Ö1` notu):**
+```
+Z77-tersi: "0 VERİDE VARSA, reddetmek MEŞRU SIFIRI yok eder."
+İLK SORU   canlı + seed actuals'ta gross_amount = 0 satırı VAR MI
+  VARSA    <= 0 reddi meşru sıfırı yok ediyor ⇒ bulgu, hüküm ölçümden sonra
+  YOKSA    "kusur mu meşru mu" BUGÜN CEVAPSIZ ⇒ <= 0 reddi KORUMACI VARSAYIMLA DURUR
+           (yanlışsa FAZLADAN RED — sessiz kabul DEĞİL); hüküm ölçümden sonra
+```
+[ÖLÇÜLMEDİ — ölçülecek: SELECT count(*) FILTER (WHERE gross_amount = 0) FROM main.sales_actuals
+ + seed dosyalarında gross_amount 0 üreten satır — şerit ölçüyor]
+
 ⚠️ **Bu `F12` şerit başladıktan SONRA geldi** — şerit eski metinle ölçüyor. Ölçümün kendisi
 (`1`–`3` aşağıda) değişmedi; **yorumu** Team Lead bu `F12`'ye göre yapar.
 ⚠️ **Hükmün öncülü ölçümle uyuşmuyor** (`Z111 §10 Ö1`) — sen **yeniden ölç**, devralma:
@@ -330,6 +341,10 @@ Koşulmaz — kod değişmiyor.
          e2e, seed; gerekçesiz çağıran varsa zorunluya çekmek onu KIRAR ⇒ liste ÖNCE]
       ⭐ MIGRATION NUMARASI TAHSİS EDİLDİ: 1834000000000 (.claude/backlog/MIGRATION_SEQUENCE.md)
         ⛔ yalnız data-engineer yazar · enum ADD VALUE geri alınabilirliği ÖLÇÜLMEDEN şablon yok
+        ⚠️ ürün sahibi notu (2026-09-10) [REVIEW İDDİASI — DOĞRULANMADI]: Postgres'te enum DROP VALUE
+          yok ⇒ down() CANCELLED'ı silemez ⇒ harness'ın dört-durum assert'i TASARIM GEREĞİ çarpar
+          ("silen-migration'ın tersi: geri alınamayan EKLEME"). Aday çözümler: harness'ta 5. durum
+          `irreversible-add` · ya da statü enum'u TABLO-TABANLI (Faz-3). ŞİMDİ KARAR YOK — İŞ-4a'da ölçülür
 İŞ 4b plan-tekilliği (Z-K1 · Z-K6 · §11 Ö3) — ONAY-ANI kontrolü, AÇIK RED; DRAFT/PENDING'de UYARI, bloklamaz
       AKTİF = APPROVED ∧ ¬CANCELLED ∧ dönem-aralığı içinde · iptal grain'i serbest bırakır
       PENDING = PENDING_APPROVAL ∧ PENDING_FINANCE_REVIEW — UYARI ikisinde;
@@ -376,3 +391,23 @@ Z-K5            kapanış/defter maddesinin TANIMI (Z111 §8 F12-c) — hüküm 
 ⚠️ atıf düzeltmeleri (§11 Ö7): "RESERVE→CONSUME hiç yazılmıyordu" Z96'da YOK · consumed_amount
    T-351'e ÜYE olarak girdi (T-351.md EK 3, 10/10 zarf sıfır)
 ```
+
+---
+
+## 11 · `F12` — ŞERİDİN BULDUĞU ÜÇ BRIEF KUSURU (Team Lead, 2026-09-10, bağımsız doğrulandı)
+
+Kusurlu metin **silinmedi**; bir sonraki brief bu listeyi okur.
+```
+B1  §3.1 "customer / sku … actuals grain CPL × kategori × kanal × dönem, sku_id nullable"
+    ETİKETSİZ ve EKSİK: sales_actuals.fu_id NOT NULL (M2 · 1825)
+    [ÖLÇÜLDÜ: sales-actual.entity.ts:118-125 · information_schema.columns main.sales_actuals]
+    ⇒ şerit DUR yerine devam etti, sapmayı KAYDETTİ — satır bir soru-şablonuydu, §0 okuması düzeltiyordu
+B2  §2.2 "12 dosya" listesi EKSİK: on-invoice.controller.ts · on-invoice-validation.service.ts
+    (+ app.module.ts · capabilities.ts). Desen ENTITY/TABLO adı arıyordu; bu dosyalar
+    OnInvoiceService / OnInvoiceDiscountType kullanıyor
+    ⇒ DISIPLIN: "sembol evreni ≠ yetenek evreni" — brief'i YAZAN turda, UYARIYI YAZDIĞIM SATIRIN altında
+B3  §3.4 yalnız INV-R-001/002 sayıyordu; bacağa bağlı DİĞERLERİ: INV-R-005 · INV-R-007 ·
+    INV-B-003 · INV-B-005 · INV-B-006 · INV-L-006 kapsamı
+    [ÖLÇÜLDÜ: grep -n "^### INV-R-" docs/contracts/SYSTEM_INVARIANTS.md · :725-730 INV-R-005]
+```
+📌 `B2` ve `B3` aynı şekil: **brief bir LİSTE verdi, EVRENİ tanımlamadı** — `BRIEF_SABLONU §3.4`.

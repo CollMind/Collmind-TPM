@@ -328,6 +328,27 @@ tablosunun indirim alanından değil.
 > **Çifte sayım gerekçesi ayakta:** brüt taban, fatura-içi indirimin uygulandığı ciroya
 > ikinci kez prim öder. Gerekçe doğruydu; **işaret ettiği alan yanlıştı.**
 
+> ⭐ **`F12` (2026-09-10, `Z111 §12` — `Z-K3 F12-2`, ölçümlü düzeltme).** Yukarıdaki
+> düzeltme notu **silinmedi**. Öncülü **seed kalitesiydi**: `CHECK (net = gross − discount)`
+> reddedilen 3/3 satır ve `Σ 63.000` sapma, **kurgu seed verisinin** tutarsızlığıydı — alanın
+> anlamının değil. **Yerini bir TUTARLILIK KISITI alır:**
+> ```
+> fatura-içi ticari indirim, ERP dosyasında SATIRA DAĞITILMIŞ indirim alanından gelir ve
+> bir ON_INVOICE_DISCOUNT olay satırı olarak saklanır
+> net ≠ brüt − indirim  ⇒  satır REDDEDİLİR (tolerans YOK)
+> ~~NET bir kolon değil, TÜRETİLEN bir değerdir: Σ SALE − Σ ON_INVOICE_DISCOUNT~~
+> ```
+> ⭐ **`F12-2` (`Z111 §13` U2, 2026-09-10):** yukarıdaki üstü çizili satır **yanlıştı**. NET'in
+> **iki temsili** vardır ve ikisi de yaşar:
+> ```
+> GİRDİ KAYDI  dosyadan gelen, çapraz doğrulanmış net (sales_actuals.net_amount · batch net_total) — denetim
+> TÜREV        hesaplarda kullanılan NET = Σ SALE − Σ ON_INVOICE_DISCOUNT
+> KISIT        ikisi EŞİT olmak zorunda — INV-R-006 bu eşitliğin invaryantıdır
+> ```
+> ⇒ *"satış tablosunun indirim alanından değil"* cümlesinin **gerekçesi** (tutarsız alan)
+> kısıtla ortadan kalkar; **çifte sayım gerekçesi ayakta kalır** ve `INV-R-005b` ile korunur
+> (*"indirim deftere yalnız kısıttan geçerek girer"*). Seed'in 3 tutarsız satırı düzeltilir.
+
 **K-2.13.14h6a** — ⛔ Beslendiği kaynak [[T-209]] ölçümüne bağlı. Tanımın kendisi
 alan-bağımsızdır ve ölçüm sonucundan **etkilenmez** — hangi alanın onu doldurduğu değişir.
 
