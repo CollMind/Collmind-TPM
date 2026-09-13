@@ -315,6 +315,92 @@ if [ "${PUSH_ORDER_SELFTEST_DONE:-0}" != "1" ]; then
   echo "-- koşulmadı: TAM E2E (Team Lead'de — T-325 kilidi, dakikalarca sürer, push-order'a KONMADI)"
   echo
 
+  # --- beyanlı migration beyanı (`docs/process/BEYANLI_MIGRATION_RATCHET_BRIEF.md
+  # §3.2/§9.1`) ---------------------------------------------------------------
+  # KAYNAK: YALNIZ MIGRATION_SEQUENCE.md'nin "BEYANLI MİGRATION'LAR" listesi —
+  # guard (`declared-migrations.sh --check`, `run-all.sh` içinde ÜSTTE, AYNI
+  # koşumda) liste↔kod eşitliğini ZATEN doğruladığı için liste burada GÜVENİLİR
+  # kaynaktır; push-order kendi ikinci bir doğrulamasını YAPMAZ.
+  # ⛔ satırlar kapı zinciri YEŞİL olsa da KIRMIZI olsa da basılır (GATE_FAIL
+  # kontrolünden ÖNCE, koşulsuz).
+  echo "=== push-order: beyanlı migration'lar (MIGRATION_SEQUENCE.md, TEK KAYNAK) ==="
+  DECLARED_LIST_FILE="$ROOT/.claude/backlog/MIGRATION_SEQUENCE.md"
+  DECLARED_BEGIN='<!-- declared-migrations:begin -->'
+  DECLARED_END='<!-- declared-migrations:end -->'
+  declared_line_count=0
+  # S1 (brief §10.1/§10.2): liste OKUNAMAZSA (dosya yok · OKUMA İZNİ yok ·
+  # işaretçi sayısı ≠ 1 · işaretçiler TERS SIRADA · grep -c beklenmedik/
+  # sayısal-olmayan çıktı) "-- beyanlı migration: yok" BASILMAZ — bu sessiz
+  # bir "yok" değil, bir OKUMA HATASIDIR.
+  # R-1 (brief §10.2, reviewer 🔴-1): bu blok ARTIK KENDİSİ `GATE_FAIL=1`
+  # yapar — "guard zaten ÖLÇEMEDİM döner, GATE_FAIL zaten set edilmiştir"
+  # varsayımı YANLIŞTI: chmod 000 bir listede guard'ın kendisi de `-r`
+  # kontrolü OLMADAN sessizce YEŞİL dönebiliyordu (BİLEŞİMSEL FAIL-OPEN —
+  # her iki taraf "öbürü yakalar" varsayıyordu, HİÇBİRİ yakalamıyordu).
+  # Bu blok artık guard'ın sonucuna GÜVENMEZ, kendi okuma hatasını KENDİSİ
+  # bloklar.
+  declared_list_unreadable=""
+  if [ ! -f "$DECLARED_LIST_FILE" ]; then
+    declared_list_unreadable="dosya yok: $DECLARED_LIST_FILE"
+  elif [ ! -r "$DECLARED_LIST_FILE" ]; then
+    declared_list_unreadable="dosya okunamadı (izin): $DECLARED_LIST_FILE"
+  else
+    declared_begin_count="$(grep -cF "$DECLARED_BEGIN" "$DECLARED_LIST_FILE")"
+    declared_end_count="$(grep -cF "$DECLARED_END" "$DECLARED_LIST_FILE")"
+    # R-1: grep -c çıktısı sayısal olarak doğrulanır — boş/sayısal-olmayan
+    # değer aşağıdaki `-ne 1` karşılaştırmasına sessizce sızmasın.
+    case "$declared_begin_count" in ''|*[!0-9]*) declared_begin_count="" ;; esac
+    case "$declared_end_count" in ''|*[!0-9]*) declared_end_count="" ;; esac
+    if [ -z "$declared_begin_count" ] || [ -z "$declared_end_count" ]; then
+      declared_list_unreadable="işaretçi sayımı ayrıştırılamadı (grep -c beklenmedik çıktı verdi)"
+    elif [ "$declared_begin_count" -ne 1 ] || [ "$declared_end_count" -ne 1 ]; then
+      declared_list_unreadable="işaretçi sayısı beklenmedik (begin=$declared_begin_count end=$declared_end_count, ikisi de 1 olmalı)"
+    else
+      declared_begin_line="$(grep -nF "$DECLARED_BEGIN" "$DECLARED_LIST_FILE" | cut -d: -f1)"
+      declared_end_line="$(grep -nF "$DECLARED_END" "$DECLARED_LIST_FILE" | cut -d: -f1)"
+      if [ "$declared_begin_line" -ge "$declared_end_line" ]; then
+        declared_list_unreadable="işaretçiler TERS SIRADA (begin=$declared_begin_line end=$declared_end_line)"
+      else
+        declared_body_start=$((declared_begin_line + 1))
+        declared_body_end=$((declared_end_line - 1))
+        if [ "$declared_body_end" -ge "$declared_body_start" ]; then
+          while IFS= read -r declared_content; do
+            [ -z "$declared_content" ] && continue
+            declared_line_count=$((declared_line_count + 1))
+            declared_dosya="${declared_content%%|*}"
+            declared_rest="${declared_content#*|}"
+            declared_export_pair="${declared_rest%%|*}"
+            declared_sebep="${declared_rest#*|}"
+            case "$declared_export_pair" in
+              REVERSIBILITY=IRREVERSIBLE_ADD)
+                echo "-- geri-alınamaz migration: $declared_dosya $declared_sebep"
+                ;;
+              EFFECT=NONE_BY_DESIGN)
+                echo "-- etkisiz beyanlı migration: $declared_dosya $declared_sebep"
+                ;;
+              EFFECT=DATA_CONDITIONAL)
+                echo "-- koşullu-veri migration: $declared_dosya"
+                ;;
+              EFFECT=DATA_VOLATILE_INSERT)
+                echo "-- veri-kolu ÖLÇÜLEMEZ migration: $declared_dosya $declared_sebep"
+                ;;
+              *)
+                echo "-- TANINMAYAN beyan satırı (push-order kaynağa güvenir, KENDİ doğrulamasını yapmaz — kaynak: declared-migrations.sh, run-all.sh içinde): $declared_content"
+                ;;
+            esac
+          done < <(sed -n "${declared_body_start},${declared_body_end}p" "$DECLARED_LIST_FILE")
+        fi
+      fi
+    fi
+  fi
+  if [ -n "$declared_list_unreadable" ]; then
+    echo "!! beyanlı migration listesi OKUNAMADI: $declared_list_unreadable" >&2
+    GATE_FAIL=1
+  elif [ "$declared_line_count" -eq 0 ]; then
+    echo "-- beyanlı migration: yok"
+  fi
+  echo
+
   if [ "$GATE_FAIL" -ne 0 ]; then
     echo "!! pre-push kapı zinciri KIRMIZI — PUSH YAPILMADI (exit 1)" >&2
     exit 1

@@ -1,0 +1,6 @@
+# declared-migrations baseline — BEYANLI_MIGRATION_RATCHET_BRIEF.md §9.2 ratchet referansı
+# date:    2026-09-13
+# commit:  c60a5bc
+# guard:   declared-migrations v1 (meta)
+# total:   0 beyanlı migration, 89 dosya taranan
+# format:  <EXPORT>=<DEĞER> <sayı>

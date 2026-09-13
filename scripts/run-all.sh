@@ -49,6 +49,13 @@ run "sigpipe-hygiene · self-test" bash scripts/guards/sigpipe-hygiene.sh --self
 # BLOKLAMAZ; baseline'da OLMAYAN yeni bir vaka BLOKLAR (T-212 deseni).
 run "sigpipe-hygiene · ratchet" bash scripts/guards/sigpipe-hygiene.sh --ratchet
 
+# `docs/process/BEYANLI_MIGRATION_RATCHET_BRIEF.md` — beyanlı migration listesi
+# (`.claude/backlog/MIGRATION_SEQUENCE.md` "BEYANLI MİGRATION'LAR") ile gerçek
+# kod (`collmind.backend/src/database/migrations/*.ts`) EŞİT mi. Doğum şartı
+# (Z83) önce.
+run "declared-migrations · self-test" bash scripts/guards/declared-migrations.sh --self-test
+run "declared-migrations · check" bash scripts/guards/declared-migrations.sh --check
+
 echo "==================="
 if [ "$FAIL" -eq 0 ]; then
   echo "✅ Meta guard zinciri temiz"
