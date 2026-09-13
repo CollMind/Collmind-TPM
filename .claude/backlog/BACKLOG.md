@@ -97,6 +97,7 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-400]] | **1835** — event_type enum'a ON_INVOICE_DISCOUNT · FREE_GOODS (yalnız enum, down tipi yeniden yaratır, beyansız) — harness/pin/ratchet'in ilk gerçek müşterisi · 1834 boşa düştü → İŞ-4a 1839 (`Z111 §35`) | P1 | data-engineer | done (`d19e068`) |
 | [[T-397]] | declared-migrations guard: **sebep zorunluluğu kümesi elle** (G5) — harness'a yeni değer girince kod tarafı sessiz yeşil (`Z111 §33`, öncelikli) | P1 | backend-engineer | todo |
 | [[T-398]] | declared-migrations: liste parse'ı **iki kopya** · json_field kaçış · alt dizin · notlar (`Z111 §33`) | P2 | backend-engineer | todo |
 | [[T-399]] | **ARAÇ:** guard'larda "atanmış ama okunmamış rc" statik taraması — F12 onuncu üyenin üçüncü vakası (`Z111 §33`) | P2 | backend-engineer | todo |

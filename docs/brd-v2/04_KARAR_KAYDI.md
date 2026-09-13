@@ -12940,3 +12940,99 @@ kayıt 2   docs/DISIPLIN.md F03 "hüküm-atıflı self-test" kuralına ilk uygul
 push      commit planı Z111 §34 · scripts/push-order.sh
 ```
 
+### `§35` · 1834 BOŞA DÜŞER, İŞ-4a 1838 SONRASINA · TAHSİS KURALI · 1835 BRIEF TEYİDİ (ürün sahibi + Fable, 2026-09-13)
+
+**(b) — onaylı.** 1834'ün numarası 1838'den sonraya kaydırılır, **1834 boş kalır**, MIGRATION_SEQUENCE'te F12 iziyle. Gerekçe:
+İŞ-4a (iptal aksiyonu) **ayrı dalga**, 1835/1838 zinciri ondan bağımsız; ve harness'ın *"yalnız HEAD"* sınırı **her migration'da**
+korunmalı — (c) dokuz turluk kapıyı ilk gerçek müşterilerinden birinde **bilerek kör** bırakmak olurdu; (a) bağımsız bir dalgayı sıra
+uğruna öne çekmek.
+
+**Kural (MIGRATION_SEQUENCE'e):** *tahsis edilmiş ama yazılmamış bir numara, kendisinden büyük bir numara uygulandığı anda BOŞA DÜŞER —
+yazılacaksa YENİ numara alır.* Harness'ın HEAD sınırının **tahsis katmanına** yansıması; T-391 ailesi gibi bir bilgi satırıyla değil,
+**sıra kuralıyla**.
+
+**Üç teyit:**
+1. **N47** (`ON_INVOICE_DISCOUNT` adı `MechanicCategory`'de de var, küçük harf, başka kavram) — *ad ≠ kavram* ailesine kayıt; migration
+   yorumunda ayrım; ileride iki enum'dan birinin adı **ad-borcu listesine** (hangisi kanonik, ölçülür).
+2. *"Down açık hata verir"* — §13'te yoktu, ürün sahibinin **ölçümsüz cümlesiydi**; 1816 emsaliyle brief'e girmesi doğru düzeltme. Bu hafta
+   sayı/atıf sınıfında bir vaka daha — **F00 damgası hüküm veren tarafta hâlâ eksik uygulanıyor** (kayıt).
+3. *Beyansız doğuş + "revert etkisiz"de beyanla susturulmaz, down düzeltilir* — `§32` ile tutarlı; harness'ın ilk gerçek müşterisinde **en
+   önemli satır**.
+
+**Şerit:** kod + derleme şimdi; karar geldi → `migration:run` + harness dört kol (koşuldu / ölçüldü / ölçemedim + sebep). Rapor: dört kolun
+her birinin söylediği. **Sonra T-395 / T-397 → 1838 → İŞ-2.**
+
+#### `35.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "İŞ-4a ayrı dalga"               [ÖLÇÜLDÜ] MIGRATION_SEQUENCE 1834 = HALKA-3 İŞ-4a, PlanStatus CANCELLED (üreticisiyle aynı dalgada, Z91) ·
+                                   1835/1838 = İŞ-2 actuals — ortak dosya/tip YOK ✓
+  "harness yalnız HEAD"            [ÖLÇÜLDÜ] migration-verify.sh :714 ORDER BY timestamp DESC LIMIT 1 · :721 hedef ≠ HEAD → ÖLÇEMEDİM ✓
+  "1838 sonrası ilk boş numara"    [ÖLÇÜLDÜ] MIGRATION_SEQUENCE'te 1838'den büyük tahsis YOK ⇒ İŞ-4a → 1839000000000
+
+UYUŞMAYANLAR
+  N48  (TEAM LEAD'İN KENDİ ATFI — ürün sahibi tekrarladı) "1836/1837 emsali"
+       [ÖLÇÜLDÜ: MIGRATION_SEQUENCE 1836/1837 satırları] 1836: "Kullanılmazsa BOŞ kalır" = BOŞ NUMARA emsali ✓ · 1837: numara kaydırma izi YOK ✗
+       ⇒ İŞİN BAŞKA NUMARAYA TAŞINMASININ gerçek emsali 1835 satırı ("kolon kısmı 1838'e taşındı", Z111 §13.2 N2)
+       ⇒ Team Lead önerisinde ölçülmeden yazılmış bir atıf — F00 KAYIT TARAFINDA da bir vaka; emsal satırına "1835→1838 · 1836 boş kalma" yazıldı
+  N49  "ad-borcu listesi (T-351 ailesi)"
+       [ÖLÇÜLDÜ] T-351 = "Altı yazarsız *_spend kolonu — T-270 kuralı: ya yazar kazanır ya ölür" — YAZARSIZ kolon sınıfı, AD borcu DEĞİL
+       ⇒ ad-borcu için ayrı liste bugün YOK [ÖLÇÜLMEDİ: repo genelinde "ad borcu" araması yapılmadı] ⇒ N47 kaydı adıyla durur, liste doğunca girer
+  N50  (TEAM LEAD'İN KENDİ BRIEF'İ) 1835 brief §3.1 "IF NOT EXISTS YOK — değer zaten varsa AÇIK hata"
+       [ÖLÇÜLDÜ: MIGRATION_SEQUENCE "HER ŞEMA-DOKUNUŞLU MIGRATION'IN KABUL KRİTERİ" §1] up() ÜÇ durumu ayırt eder: beklenen → işlem ·
+       ZATEN UYGULANMIŞ → NO-OP ("taze/prod DB'de TIKANMAMALI") · beklenmeyen → İPTAL
+       ⇒ brief "zaten uygulanmış"ı HATAYA çeviriyordu — bağlayıcı kabul kriteriyle ÇELİŞKİ · Z111 §13'ün bilinen-kırmızısı "IF NOT EXISTS + BOŞ down"
+         — kusur boş down'dır, idempotent up değil ⇒ brief F12 ile düzeltildi: up() etiket kümesini ÖLÇER ve üç duruma göre davranır
+  N51  İŞ-4a'nın TASK DOSYASI YOK [ÖLÇÜLDÜ: grep 1834 tasks/ → yalnız T-386'da bir SATIR NUMARASI "budget.service.ts:1834"] ⇒ numara kaymasının
+       kanonik kaydı YALNIZ MIGRATION_SEQUENCE; İŞ-4a brief'i yazıldığında 1839'u oradan alır
+```
+
+#### `35.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+1834 boş · 1839 İŞ-4a · tahsis kuralı    .claude/backlog/MIGRATION_SEQUENCE.md (1834 F12 · 1839 satırı · kural bölümü)
+DUR-1 kalktı · N50 up() düzeltmesi       docs/process/M1835_EVENT_TYPE_UYELERI_BRIEF.md §3.1 · §5 · .claude/backlog/tasks/T-400.md
+```
+
+### `§36` · 1835: ŞABLON KAZANIR ({SALE} = "hiçbiri") · udt_schema DAR DÜZELTMESİ · COMMIT + PUSH ONAYLI · İLK GERÇEK MİGRATION (ürün sahibi + Fable, 2026-09-13)
+
+**Madde 1: (b) — şablon kazanır.** Gerekçe iki katlı: Z100'ün üç-durum şablonu **bağlayıcı kabul kriteri** (ve *"zaten geri alınmış"* dalı
+tam bu vaka için doğdu); ve **tutarlılık** — N50'de aynı çelişkide şablon kazandı, iki karar iki yöne gitmez. `{SALE}` = **"hiçbiri"**:
+down başarılı-idempotent döner, kayıt silinir, veri kaybı yok; **kısmi** küme hata (ihlal dalı). Brief'e F12: *"eksik = hata"* satırı
+yanlıştı — **"eksik" ile "hiçbiri" karıştırılmış; kısmi ≠ hiçbiri.** **Kayıt (F00):** brief yazanın şablonla **ikinci** çelişkisi, aynı sınıf —
+**brief'ler şablon atfıyla yazılır, kendi kabul kriterini icat etmez.**
+
+**Madde 2: dar düzeltme onaylı** — `udt_schema` koşulu + yorum daraltma; DoD (*"katalog sorguları şema-nitelendirilmiş"*) ve şema-kör sayım
+dersi. Sonra harness yeniden (dört kol) → **commit + `push-order.sh` onaylı** (backend migration + meta kayıtlar + pointer).
+
+**Kayıt değeri:** harness'ın ilk gerçek müşterisi dört kolda **"koşuldu · ölçüldü", sıfır ÖLÇEMEDİM** — ve **bağımsız çapraz kanıt**: S0 etki
+hash'i, sabah 1833 koşumunun H'siyle **bayt-birebir** (`c43900b30f…`) — iki ayrı koşum, aynı DB durumu, aynı hash: down'ın gerçekten
+1835 öncesine döndürdüğünün **harness-dışı** kanıtı. On turluk doğumun ilk işi tam olarak beklenen şekli verdi: **sürpriz yok, her kol konuştu.**
+Ratchet ön filtresinin yorumdaki kelimeyle tetiklenip iki okuyucunun uyuşması — zararsız; T-task notu doğru (**ön filtre yorum-kör olsun**).
+
+**Sıra:** dar düzeltme → harness → commit → push → T-395 / T-397 (P1) → 1838 → İŞ-2 backend ∥ QA. **Halka-3'ün ilk gerçek migration'ı indi.**
+
+#### `36.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "Z100 üç-durum şablonu"          [ÖLÇÜLDÜ: MIGRATION_SEQUENCE "MIGRATION ŞABLONU — KALICI SATIRLAR"] "1 ASSERT ÜÇ DURUM AYIRT EDER — hepsi /
+                                   hiçbiri / KISMİ ⇒ throw" + "hiçbiri'ne DÖNEMEZ ⇒ … KISMİ sayıp THROW" eki ✓
+  "N50'de şablon kazandı"          Z111 §35.1 N50 — brief up() "zaten uygulanmış = hata" yazıyordu, kabul kriteri §1'e F12 ile hizalandı ✓
+  "S0 hash = sabah 1833 H hash'i"  [ÖLÇÜLDÜ] REAL-1833 (tl-verify-pinfix sonrası, Team Lead) effect-hash S0/H c43900b30f… · 1835 bağımsız harness
+                                   S0 c43900b30f… ✓
+  "ön filtre yorumla tetiklendi"   [ÖLÇÜLDÜ: grep -w REVERSIBILITY|EFFECT 1835 dosyası → 1 yorum satırı · ratchet --check rc=0, taranan 90] ✓
+
+UYUŞMAYAN (F12 ürün sahibinin — karar ETKİLENMEZ)
+  N52  "main-şema dersi (BL-1: pg_class şema-kör sayım)"
+       [ÖLÇÜLDÜ: grep BL-1] BL-1 = Faz-2'nin İLK GERÇEK-VERİ TABLOSU ölçümü (Z84 "BL-1 ŞEMA HÜKMÜ", 2026-09-02) — pg_class sayımı DEĞİL
+       ⇒ şemaya bakmayan pg_class sayımı dersi harness pin review'unun D2 maddesiydi (brief §9.12.6 · Z111 §24) ⇒ atıf oraya
+  N53  "dört-durum ekiyle" — şablonda "üç durum" + "hiçbiri'ne dönemez" eki var [ÖLÇÜLDÜ]; ekin kendi adı "dört durum" DEĞİL — kayda "üç durum + ek" olarak geçti
+```
+
+#### `36.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+madde 1 F12                    docs/process/M1835_EVENT_TYPE_UYELERI_BRIEF.md §3.1 down adım 1
+madde 2 dar düzeltme           data-engineer şeridi (T-400) — udt_schema + yorum · harness · bilinen-kırmızı
+ön filtre yorum-kör            .claude/backlog/tasks/T-398.md madde 11
+commit + push                  şerit + reviewer/doğrulama sonrası
+```
+
