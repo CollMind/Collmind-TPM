@@ -11,7 +11,7 @@
 
 | ne | kanıt |
 |---|---|
-| **`1833`** `agreements.category_id NOT NULL` — `Z98 §3`'ün son halkası (`tanım → yazar → kısıt`) | `[ÖLÇÜLDÜ: migration-verify.sh → exit 0 · 33s · snapshot0==snapshot2 · snapshot1==snapshot3]` |
+| **`1833`** `agreements.category_id NOT NULL` — `Z98 §3`'ün son halkası (`tanım → yazar → kısıt`) | `[ÖLÇÜLDÜ: migration-verify.sh → exit 0 · 33s · snapshot0==snapshot2 · snapshot1==snapshot3]` ⚠️ **`F12` şerhi (`Z111 §16`, 2026-09-11):** veri bayt-birebir: **tek tablo (`_t019_backfilled_tx`) — KISMİ** — harness'ın veri/T-047 döngüsü `docker exec -i` stdin'i yüzünden 51 tablonun yalnız ilkini gördü (`Z111 §15.2 N8`). **Kolon/kısıt kanıtı AYAKTA** (döngüde değil). 1833 HEAD olduğu için **düzeltilmiş harness'la yeniden koşulur** — kayıt gerçek kanıta döner |
 | **`T-378`** — `resolveEffectiveCategoryId`'nin FU→GU fallback'i **öldü** | `[ÖLÇÜLDÜ: private, İKİ çağrı yeri, ikisi de findById (relations, select YOK)]` |
 | **aynı yeteneğin SQL kardeşi** — `COALESCE` + iki `leftJoin` düştü | `[ÖLÇÜLDÜ: is_nullable='NO' ⇒ COALESCE(a,b)≡a · rg "scopeFu\|scopeGu" → üç satır, hepsi burada]` |
 | **`T-383` ŞEKİL 2** — `off/on-invoice` kopya guard'ı tek mekanizmaya indi | `[ÖLÇÜLDÜ: reprodüksiyon — TZ=UTC ↔ Europe/Istanbul, tenant BUGÜNÜ olan fatura YANLIŞLIKLA reddediliyordu]` |
@@ -98,7 +98,7 @@ DUR                 1            1            0           2
 ```
 tsc 0 · lint 0 · guards 0 (manager-ratchet DAHİL: temiz)
 unit 88 suite / 1551 test · e2e 64 suite / 887 test · [T-047 invariant] PASS
-migration-verify.sh 1833 → exit 0
+migration-verify.sh 1833 → exit 0   ⚠️ F12 şerhi (Z111 §16): veri kısmı TEK TABLO (_t019) — kısmi; kolon/kısıt ayakta; düzeltilmiş harness'la yeniden koşulur
 ⛔ hepsi TEAM LEAD'in KENDİ koşumu — İŞ C şeridi eşzamanlı iki `npm test` çalıştırdığını
   AÇIKÇA bildirdi, sonucu DEVRALINMADI.
 ```

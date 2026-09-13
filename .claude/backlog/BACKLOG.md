@@ -97,6 +97,15 @@ status: active        # planned | active | closed
 ## Açık Task'lar (todo / in-progress / review)
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
+| [[T-397]] | declared-migrations guard: **sebep zorunluluğu kümesi elle** (G5) — harness'a yeni değer girince kod tarafı sessiz yeşil (`Z111 §33`, öncelikli) | P1 | backend-engineer | todo |
+| [[T-398]] | declared-migrations: liste parse'ı **iki kopya** · json_field kaçış · alt dizin · notlar (`Z111 §33`) | P2 | backend-engineer | todo |
+| [[T-399]] | **ARAÇ:** guard'larda "atanmış ama okunmamış rc" statik taraması — F12 onuncu üyenin üçüncü vakası (`Z111 §33`) | P2 | backend-engineer | todo |
+| [[T-395]] | Pin: S0'da görülen pinsiz imza KIRMIZI değil — override unutulursa fixture **sessiz yeşil** · ⛔ **1838 harness koşumundan ÖNCE** (`Z111 §31`) | P1 | data-engineer | todo |
+| [[T-396]] | Harness **retro-tarama** (F04 yeni kural): "gözlenen ≠ beklenen" basıp rengi değiştirmeyen satırlar + pin notları (`Z111 §31`) | P2 | data-engineer | todo |
+| [[T-391]] | Harness: rc'si **okunmayan** dosya yardımcıları — yazma hatasında beyanlı `DATA_VOLATILE_INSERT` **sahte yeşil** · ⛔ 1835 beklenmedik sonuç verirse **ilk şüpheli** (`Z111 §28`) | P2 | data-engineer | todo |
+| [[T-392]] | Harness başlığı **satır numarasıyla** atıf veriyor — numara bayat, M4 mutasyonu yanlış yere düşer (`Z111 §28`) | P3 | data-engineer | todo |
+| [[T-393]] | Harness başlığı dokuzuncu turun semantiğini anlatmıyor — geniş-maske SINIRI + N28 dalları (`Z111 §28`) | P3 | data-engineer | todo |
+| [[T-394]] | Harness dokuzuncu tur notları — ölü atama · payda view kolonlarını sayıyor · HEAD rc · çağrı bloğu (`Z111 §28`) | P3 | data-engineer | todo |
 | [[T-205]] | `submittedById` bir yolda **boşaltılıyor** — `K-2.5.16` ihlali, bypass'ı sıfır maliyetle açıyor | P1 | backend-engineer | todo |
 | [[T-207]] | **`S13`** — `plans.last_modified_by`: `K-2.5.11` kapsamının ikinci veri ayağı | P1 | data-engineer | todo |
 | [[T-206]] | `sales_actuals`'ta SKU/hacim yokluğu: **veri kaynağı sınırı mı, domain kararı mı** | P2 | architect | done <!-- DALGA 0 2026-08-31: indeks `todo` idi; dosya `done` + kapanış bölümü taşıyor -->|

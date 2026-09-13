@@ -99,6 +99,26 @@ dosya `T-359b` ile meta köküne taşınmıştı. Şerit ölçtü, bildirdi, bri
 docker ps --filter "label=com.docker.compose.project=tpm"    # hayalet proje → DURDUR
 ```
 
+### `2.6` · ⛔ KOŞUM BİÇİMİ — uzun süren araç/DB koşumları (`Z111 §25` kayıt 2)
+
+```bash
+bash <araç> <hedef> </dev/null > /tmp/<etiket>.log 2>&1; echo "rc=$?"   # ✅ stdin KAPALI · çıktı DOSYAYA · exit AYRI
+npm run typeorm -- migration:run -d <ds> </dev/null > /tmp/x.log 2>&1; echo "rc=$?"
+docker exec -i <container> psql -U <u> -d <db> -At </dev/null -c "…"
+```
+⛔ **`</dev/null` OLMADAN başlatılan koşum girdi bekleyip ASILABİLİR** — `npm` ve `docker exec -i` stdin tüketir
+(`DISIPLIN F12`: *"`while read … done < dosya` İÇİNDE `docker exec -i` döngünün girdisini yutar"* — bu, onun **koşum-tarafı
+kardeşi**). Ölçülmüş vaka (2026-09-12, harness yedinci turu): bir şerit **üç kez** düştü, ikisi *"600 sn ilerleme yok"*,
+biri **DB'yi yarım bırakarak** (hedef revert edilmiş, yeniden uygulanmamış). Aynı koşumları `</dev/null` ile yapan Team Lead
+betiği 29 vakayı sorunsuz koşturdu.
+
+```
+çok-vakalı ölçüm (N koşum · regresyon listesi)  →  TEK BETİĞE yaz, betiği `</dev/null` ile koştur, yalnız ÖZETİ grep'le
+uzun adım                                       →  arka planda başlat, bitince LOGU oku (boş dönüp bekleme)
+araç erken çıkarsa ORTAM YARIM KALIR            →  tabanı geri getirmek KOŞANIN işidir; tur taban geri gelmiş hâlde biter
+                                                   ve bu, raporda ÖLÇÜMLE yazılır
+```
+
 ---
 
 ## 3 · ⛔ ZORUNLU BÖLÜMLER — biri eksikse brief BOZUK

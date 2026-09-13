@@ -135,8 +135,9 @@
 | TPR/Drives Lumpsum | DriveTPR | Off-Invoice | Lumpsum |
 | WS TPR On-invoice% | WSTPR | On-Invoice | Rate Based (%) |
 | WS TPR Off-invoice% | WSTPR | Off-Invoice | Rate Based (%) |
+| ⭐ **Bedelsiz Ürün** *(Excel'de yok — `Z111 §14`, 2026-09-11)* | CPPON | On-Invoice | Rate Based (**per-unit**; girdi = bedelsiz ADET, değer = adet × BPTT) — ~~Price Support'un on-invoice karşılığı~~ Price Support ile **aynı calc-type**, **farklı girdi birimi** (o: birim başına TL × planlanan hacim) — `F12` `Z111 §15` |
 
-**Yapı:** 9 tactic → 6 mekanik ailesi. Tactic'in karakteri = `mechanic + spending-type + calc-type` üçlüsü. **"Rate Based" iki alt-tip taşır:** %-rate (taban-üstünden) ve per-unit-rate (hacim-üstünden) — motor tasarımında ayrı ele alınmalı.
+**Yapı:** ~~9 tactic~~ **10 tactic** (`F12`, `Z111 §14`: 10. satır ürün sahibi tanımı, Excel örnek-setinde değil) → 6 mekanik ailesi. ⚠️ Tenant isterse ikinci biçim **"Bedelsiz Ürün %"** (CPPON · On-Invoice · Rate Based %) — ayrı satır açılmadı, tenant seçimi. Tactic'in karakteri = `mechanic + spending-type + calc-type` üçlüsü. **"Rate Based" iki alt-tip taşır:** %-rate (taban-üstünden) ve per-unit-rate (hacim-üstünden) — motor tasarımında ayrı ele alınmalı.
 
 **Grid'deki yaşam biçimi (Short Term Promotion Plan sheet):** mekanikler *instance* olarak sütunlaşır (`M-123/M-124/M-125`, Add/Delete düğmeleri); her instance başlığı: M-ID → mechanic → invoice-yönü → calc-tipi → tactic-adı; **değerler SKU-satırı düzeyinde farklılaşabilir** (aynı mekanik R15'te 0.16, R14'te 0.18). ⇒ Mekanik değeri plan-başlığının değil, plan-satırının özniteliğidir.
 

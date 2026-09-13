@@ -400,6 +400,50 @@ mekanizma      "araç tasarım gereği ÇARPAR"   harness pg_enum'a BAKMIYOR ⇒
 ölçen düzeltiyor; sistem işliyor."* İki vakada da **yakalayan aynı alışkanlıktı** — kayda
 geçirmeden önce öncülü ölçmek — ve iki vakada da **hüküm sahibinde kaldı**.
 
+### ⇒ ÜÇÜNCÜ VAKA (`Z111 §16–§17`, 2026-09-11) — ve kural **MEKANİZMAYA** döndü
+
+Aynı gün iki öncül daha düştü, ikisi de **sayı/numara** sınıfından:
+```
+öncül                                       ölçüm
+"1822/1823 geriye alınamaz — şerh kalır"   harness kanıtı taşıyan ürün migration'ları 1832 ve 1833;
+                                            1822/1823 harness'tan ÖNCE — şerh düşecek satırı YOK
+"araç-hatası ailesinin YEDİNCİ üyesi"       F12 ailesi var ama o yedili LİSTE hiçbir belgede yazılı değil
+```
+Ürün sahibinin kaydı: *"F00-damgası benim için de mekanizma olmalı, kural olarak yetmiyor."*
+
+> ### ⭐ MEKANİZMA — hüküm VEREN tarafta:
+> ### hüküm metninde bir **numara ya da sayı** geçiyorsa yanına **`[ölçülmedi — Team Lead ölçer]`**
+> ### yazılır. **Damgasız sayı yazılmaz.**
+
+📌 Kural artık iki uçta birden işliyor: hüküm veren sayıyı **damgalar**, kayda geçiren **ölçer**.
+Birinci ve ikinci vakada yakalayan yalnız kayıt tarafının alışkanlığıydı — tek uçlu bir kontrol,
+o uç atlandığı gün **hiç** çalışmaz.
+
+### ⇒ DÖRDÜNCÜ VAKA (`Z111 §26–§27`, 2026-09-13) — damga da yetmedi: **SAYI YAZILMAZ, SINIF YAZILIR**
+
+Damga kuralı yazıldıktan **iki gün sonra** üç öncül daha düştü — üçü de **sayı**, üçü de **damgasız**:
+```
+öncül                      ölçüm
+"F12'ye sekizinci üye"     aile bugün dokuz üyeli — yeni kural onuncu
+"beyan-ratchet'i (2)"      beyan taşıyan migration 0/89 · "2" hiç ölçülmemiş bir bloktan geliyordu
+"zincir 3-7 Ekim'e kayar"  ölçülmüş bir takvim kaynağı yok
+```
+Ürün sahibinin kaydı: *"kural yeterli değil, mekanizma gerekiyor — ve mekanizma kayıt tarafında zaten işliyor."*
+
+> ### ⭐ MEKANİZMA (hüküm VEREN taraf, damganın yerine geçer): **sayı yazılmaz, SINIF yazılır.**
+> ```
+> "sekizinci üye"      →  "yeni üye"                        sırayı LİSTE söyler
+> "ratchet (2)"        →  "ratchet ilk ölçümle doğar"       eşiği ÖLÇÜM koyar
+> "3-7 Ekim"           →  "harness-süresi kadar kayar"      tarihi TAKVİM DOSYASI taşır
+> ```
+
+📌 **Neden damga yetmedi:** damga, sayıyı **yazdıktan sonra** hatırlanması gereken bir ektir — yani yine hatırlamaya
+bağlıdır. Sınıf yazımı sayıyı **hiç üretmez**: yanlış olabilecek şey metne girmez. Kayıt tarafının öncül-ölçümü ikinci
+uç olarak kalır.
+
+⚠️ **Ratchet desenine uzanımı:** bir ratchet'in eşiği bir hükümde ya da brief'te **önceden yazılmaz** — eşik ratchet'in
+**ilk ölçümüyle doğar** ve baseline dosyası onu taşır (`§4.2` baseline kuralının **doğum** anı).
+
 ---
 
 ## BİR KAPANIŞ BEYANI, KAPSAMADIĞINI **YAZMADAN** VERİLEMEZ (ZORUNLU)
@@ -1633,6 +1677,30 @@ orada korunan şey bir kusurdu, burada korunan şey bir **kusurun yokluğu iddia
 
 > ## 🔎 ne zaman: *"bir DESEN yazdım ve bir SAYI aldım"*
 
+### `information_schema.columns` bir TABLO evreni değil, bir İLİŞKİ evrenidir (ZORUNLU)
+
+> 🔎 *"information_schema'dan bir kolon SAYISI aldım — içinde view'lar var mı?"*
+
+`information_schema.columns` (ve `.tables`) **view'ların kolonlarını da** listeler. `table_type` /
+`relkind` filtresi olmadan sayılan bir "kolon" evreni, tablo evreninden **geniştir** — ve view kolonunun
+varsayılanı, kısıtı, sahipliği **olamaz**.
+
+**Ölçülmüş vaka (`Z111 §20.1 N16` · `§21`, 2026-09-11):** *"48 updated_at kolonunun 1'i varsayılansız"* —
+o kolon `v_budget_summary.updated_at` idi, bir **view** kolonu. Hüküm onu *"T-351'e: varsayılan eklenir"*
+diye bir tabloya ait sandı; madde **düştü**.
+```
+[ÖLÇÜLDÜ 2026-09-11: information_schema.columns ⋈ information_schema.tables, main, column_name='updated_at', sentetik _mv% HARİÇ]
+  table_type='BASE TABLE'   47 kolon · 47'sinde varsayılan   ← tablo evreni
+  table_type='VIEW'          1 kolon ·  0 varsayılan          (v_budget_summary)
+  filtresiz toplam          48 — "1 varsayılansız" bu 48'in içindeki VIEW kolonuydu
+pg_class relkind='r'  (katalog tarafının karşılığı)   tablo · 'v' view · 'm' mat.view
+```
+⚠️ **Ve sayının kendisi koşula bağlı:** aynı sorgu, çalışan bir sentetik fixture tablosu varken `BASE TABLE`
+**48** verdi (biri `_mv%`). Bu notu yazan tur da sayıyı önce **koşulsuz** yazmıştı —
+*"Bir ÖLÇÜMÜN geçerliliği koşullarına bağlıdır — koşulu ölçümle birlikte yaz"* (F01).
+**Pratik:** kolon/tablo sayarken **ilişki türünü** filtrele ya da sayının yanına yaz. Bir sayının içinde
+view varsa, o sayıdan **tabloya uygulanan** bir karar (varsayılan, kısıt, migration) türetilmez.
+
 ### Ve yokluk iddiası için üçüncü soru: HANGİ BÖLÜM (ZORUNLU)
 
 *"Hangi belge"* ([[T-142]]) ve *"hangi PDF"* (yukarısı) yetmedi. Üçüncüsü **bölüm
@@ -2599,6 +2667,16 @@ eksik kalırdı.**
 *"`@Roles` yoksa geç"* dalı yıllardır doğru; `CapabilityGuard`'ın *"yetenek yoksa
 geç"* dalı bilinçli. Kusur **hiçbirinde değil, aralarında.**
 
+📌 **Kapı katmanında yeni vaka (2026-09-13, ratchet review `🔴-1` · `Z111 §34`):**
+```
+1  guard: liste okunamaz → [ "" -ne 1 ] hata → koşul yanlış → "beyanlı migration: yok", exit 0   (tek başına: yanlış ama "kapı başka yerde" sanıldı)
+2  push-order: aynı liste okunamaz → "beyanlı migration: yok"; yorum: "GATE_FAIL zaten guard'dan set edilmiştir"
+──────────────────────────────────────────────────
+   guard YEŞİL · push-order kendi kapısını guard'a DEVRETMİŞ  ⇒ push DEVAM ederdi
+```
+⇒ Düzeltme **iki parçanın ikisinde de**: guard ÖLÇEMEDİM verir **ve** push-order kapıyı **kendisi** kapatır (`GATE_FAIL=1`).
+> **Bir kapı, kendi girdisinin okunamadığı durumu BAŞKA bir kapıya devretmez** — devrettiği kapı aynı girdiyle aynı yoldan kör olabilir.
+
 **Aile:** `T-273` (cascade — grep'e görünmeyen yazma yolu) · `T-254` (boş kapsam →
 `[]`) aynı sınıftan. `S2`'nin farkı: **henüz hiç yaşanmadan** yakalandı — `W1`'de
 gerçekleşecekti, review onu bir **kapıya** çevirdi.
@@ -3366,6 +3444,53 @@ KAPSAMASI tam değilken bir yargıya girdi olamaz.** Ölçülmüş vaka (aynı t
 bir alt kümenin `SUM`'ı tesadüfen `0`'a düşebilir; `0`'ı *"yok"* diye okumak `§2.5`
 ihlalidir. Kapsama koşulu **yargının yanına** yazılır.
 
+## ⇒ PİN KÖR-NOKTA AİLESİNİN YENİ TÜRÜ: **KİMLİK KÖRLÜĞÜ** — bir KÜME-pininin gücü, ÜYENİN KİMLİK tanımına bağlıdır (ZORUNLU)
+
+⭐ **`F12` — TERFİ ETTİ (2026-09-13, `Z111 §30` kayıt 2):** aday iki gün önce günlüğe girmişti; **ikinci vaka** geldi.
+```
+vaka 1 (2026-09-11, Z111 §22-§23)  TANIM hâli   "tür" fonksiyon-başına tanımlansaydı stable-cast sabit ({timestamp})
+                                                mevcut bir üyeye GÖMÜLÜRDÜ — kolon-başına imza seçildi
+vaka 2 (2026-09-13, pin review B-2) KOD hâli    imza, SQLVALUEFUNCTION :op'unu regexp_match ile İLK eşleşmeden okuyordu
+                                                GREATEST(LOCALTIMESTAMP, …) → önce MINMAXEXPR :op 0 → imza "op0"
+                                                ⇒ LOCALTIMESTAMP (op 7) pinli bir üyeye GÖMÜLDÜ, sessizce kabul
+```
+> ### ⛔ Bir küme-pini, üyenin kimliği KABA (tanım) ya da EKSİK (kod: ilk eşleşme) çıkarılırsa yeni biçimi mevcut üyeye gömer
+> ### ve YEŞİL kalır. **Kimlik TAM çıkarılır — ilk eşleşme değil, TÜM ilgili düğümler.**
+
+📌 Seviye körlüğüyle farkı: orada kural **başka bir yerde** yaşıyor, pin bakmıyor; burada pin **doğru yere** bakıyor ama
+**neyin aynı olduğunu** yanlış tanımlıyor. ⚠️ Ve zaman ekseni (`Z111 §30` D-4): kaybolan bir üye pine yazılmazsa, geri
+geldiğinde **pinli sayılır** — kimlik körlüğünün **zamanda** yaşayan hâli ⇒ bayat pin satırı KIRMIZIDIR (*"pini daralt"*).
+
+🔎 **Tetikleyici:** *"bir kümeyi pinliyorum — üyenin kimliği ne, ve onu TAM mı çıkarıyorum (ilk eşleşme mi, hepsi mi)?"*
+
+⛔ **GÖVDE (vaka 1 tablosu) `docs/process/GOZLEM_GUNLUGU.md`'DE KALIR** (F12 iziyle) — ilk kayıt 2026-09-11, `Z111 §23`.
+*(İlk stub metni — 2026-09-11, aday iken:* ~~"İkinci vakasında TERFİ EDER — pin kör-nokta ailesinin yedinci türü olarak."~~
+*⇒ ikinci vaka 2026-09-13'te geldi, terfi yukarıda. Metin silinmedi, üstü çizildi — `F12` deseni.)*
+
+## BİR TESTİN/SELF-TEST'İN HER BEKLENTİSİ BİR **HÜKME** ATIF TAŞIR — aksi hâlde bugünkü davranışın **FOTOĞRAFIDIR** (ZORUNLU)
+
+⭐ **Doğum (`Z111 §33` kayıt 2, 2026-09-13)** — iki vaka, iki katmanda:
+```
+vaka 1 (Z107, e2e)          A13/A13b  `not.toBe(403)` testin NİYETİYDİ (rol kontrolü); yanına `toBe(404)` yazıldı — "şu an ne dönüyorsa"
+                            ⇒ gözlem SÖZLEŞMEYE döndü; ürün düzeltilince test "kırıldı"  (04_KARAR_KAYDI :10569)
+vaka 2 (ratchet self-test)  s10 "baseline YOK → bilgi satırı" beklentisi — guard'ın O ANKİ davranışını pinledi, DOĞRU davranışı değil
+                            ⇒ reviewer B4: doğru davranış ÖLÇEMEDİM (money-float/sigpipe emsali, DISIPLIN F04) — self-test kusuru KORUYORDU
+```
+> ### ⛔ "Bu beklenti yeşil çünkü ___" cümlesinin boşluğu bir HÜKÜM (Z-no, K-no, ADR, DISIPLIN kuralı) ile dolmalı.
+> ### Boşluk "çünkü kod böyle yapıyor" ile doluyorsa, test bir ŞARTNAME değil bir FOTOĞRAFTIR — ve kusuru ratchet'ler.
+
+📌 Pin kör-nokta ailesiyle bağı: *echo* türü girdiyi geri okur; bu tür **çıktıyı** geri okur — testin beklentisi, test edilen kodun
+**kendi çıktısından kopyalanmış**. Mekanizma aynı sonuca varır: **test ölçtüğü şeyle birlikte bozulur.**
+⚠️ Pratik: yeni bir test/self-test yazarken beklentiyi **koddan koşup kopyalamadan önce** hükümden yaz; sonra koş. Beklenti ile koşum
+uyuşmazsa **ikisinden biri yanlıştır ve hangisi olduğu ÖLÇÜLÜR** — kodun çıktısı kazanmaz.
+
+🔎 **Tetikleyici:** *"bu beklentiyi nereden aldım — hükümden mi, koşumun çıktısından mı?"*
+
+⭐ **İlk uygulama (2026-09-13, `Z111 §34` kayıt 2) — self-test RENGİ değil SEBEBİ pinliyor:** ratchet guard'ında liste okunabilirlik kontrolü
+mutasyonla öldürüldü. Mutasyonlu guard **yine exit 2** verdi — ama başka bir aşamadan, başka bir sebeple. Senaryonun beklentisi hükümden
+yazılmıştı: *"exit 2 **+** 'liste dosyası okunamadı'"*. Self-test **FAIL** verdi. Yalnız rengi (exit 2) sınayan bir beklenti bu mutasyonu
+**görmezdi** — `DISIPLIN` *"KANIT RENGİN KENDİSİ DEĞİL, RENGİN SEBEBİDİR"*'in test tasarımına yapısal girişi.
+
 ---
 
 ## BİR İNVARYANT BOŞ KÜMEDE SAĞLANIYORSA, HİÇ ÖLÇÜLMEMİŞTİR (ZORUNLU)
@@ -3768,6 +3893,26 @@ yanlış yere düştü"* neyse, burada *"prob yanlış yüzeyde koştu"* odur.
 **Pratik:** bir kapı yazarken sor — ***"probun başarısı, asıl kontrolün koşabileceğini
 GERÇEKTEN kanıtlıyor mu?"*** İkisi farklı bir yetki/kapsam yüzeyindeyse, cevap **hayır**.
 
+### ⇒ VE YÜZEY AYNI OLSA DA: prob, asıl kontrolün **KOPYASINI** değil **KODUNU** çağırmalıdır (ZORUNLU)
+
+**Ölçülmüş vaka (2026-09-11, migration harness altıncı tur · `Z111 §24` kayıt 2):** volatil-kolon canlılık probu,
+sınıflandırıcı yüklemini **ikinci kez metin olarak** yazıyordu (`migration-verify.sh` :410 ↔ :863).
+```
+mutasyon  ASIL maskeden provolatile 's' dışlandı
+ölçüldü   maske 145 → 123 kolon · prob "✓ 4 volatil + 2 değil" · koşum YEŞİL
+```
+⇒ Prob **kendi kopyasını** doğruluyordu — asıl sınıflandırıcı bozulduğunda **yeşil kaldı**. `CLAUDE.md §2.7 #8`'in
+(*"testin, sınadığı kontrolü yeniden uygulaması"*) **kapı-içi** hâli.
+
+> **Prob asıl kontrolün KODUNU çağırır (tek yer); BAĞIMSIZ olan BEKLENEN değerdir** (elle kurulmuş bilinen girdiler).
+> ⛔ *"Prob bağımsız bir yol olmalı"* **ikinci bir UYGULAMA** diye okunursa bu vakayı **yeniden kurar**.
+
+⚠️ Ve beklenen değerin kolları **her dalı ayrı** sınamalı: aynı vakada probun `CURRENT_TIMESTAMP` kolonu `timestamp` cast'i
+üzerinden funcid dalına da düştüğü için SQLVALUEFUNCTION dalını **hiç** sınamıyordu; negatif kolonları funcid taşımadığı
+için sınıflandırıcının `'i'`'ye genişlemesini **göremezdi** (reviewer, ölçüldü).
+
+🔎 **Tetikleyici:** *"bu prob, bozulduğunda asıl kontrolü de bozan AYNI satırı mı koşuyor?"*
+
 ---
 
 ## BİR SELF-TEST, KAPININ **DAVRANIŞINI** DEĞİL **SÖZLEŞMESİNİ** SINAR (ZORUNLU)
@@ -4052,6 +4197,78 @@ BİLİNEN KIRMIZI  kasten bozuk bir örnek      → guard İHLAL demeli
 ⛔ Ve **mock'la yapılmaz**: `Z85 §1`'in kusuru tam olarak **mock ile gerçeğin ayrışması**ydı.
 Fixture **gerçek yüzeyden** gelir (canlı katalog, geçici şema, `ROLLBACK`'li sentetik kayıt).
 > **Bir self-test, sınadığı şeyin GERÇEK ÇIKTISINI görmüyorsa, kendi varsayımını sınıyordur.**
+
+---
+
+## ⇒ KAPI DOĞUM KURALI **KONTROL-KOLU BAŞINA** İŞLER (ZORUNLU — `Z83` tamamlayıcısı)
+
+> 🔎 *"bu kapının KAÇ kontrol kolu var — HER BİRİ ayrı bir bilinen-kırmızı gördü mü?"*
+
+Bir kapı **tek** bir bilinen-kırmızıyla *"doğmuş"* sayılmaz. Birden çok kontrol kolu taşıyan bir
+kapıda (kolon · kısıt · veri · sayım …) **her kol ayrı doğar**: bir kolun kırmızısı, komşu kolun
+çalıştığını **kanıtlamaz**.
+
+**Ölçülmüş vaka (`Z111 §15.2 N8` · `§17`, 2026-09-11):** `migration-verify.sh` `Z109`'da `Z83`'e uyarak
+doğdu — bilinen-yeşil (1832) **ve** bilinen-kırmızı (sentetik NULL-collapse CHECK'i, `K4`). Ama o
+kırmızı **kısıt kolunu** sınıyordu. **Veri kolu** (tablo satır-hash'i) ve **iç T-047 sayım kolu**
+hiç bilinen-kırmızı görmedi — ve ikisi de `docker exec -i` döngü-stdin'i yüzünden 51 tablonun yalnız
+ilkini ölçüyordu. Kapı *"doğmuş"* kabul edildi, kolların biri **ölü doğmuştu**.
+```
+kol            bilinen-kırmızı (Z109)     gerçek durum
+kolon/kısıt    ✅ K4 NULL-collapse         ÇALIŞIYOR
+veri (hash)    ⛔ YOK                      1 / 51 tablo
+T-047 (iç)     ⛔ YOK                      1 / 51 tablo
+```
+
+**Pratik — bir kapı doğarken:**
+```
+1  kapının kontrol KOLLARINI adıyla LİSTELE (kapının kendi çıktı bölümlerinden)
+2  her kol için AYRI bir bilinen-kırmızı fixture — "bu kol neyi yakalamak için var?"
+3  bir kol bir EVREN üzerinde dönüyorsa (tablolar, dosyalar): taranan eleman SAYISINI bas ve evrenle karşılaştır
+4  kırmızısı olmayan kol "doğmamış" işaretlenir — kapının YEŞİLİ o kol için kanıt DEĞİLDİR
+```
+📌 `F12`'deki *"`while read` içinde `docker exec -i`"* kuralı bu vakanın **araç** yüzüdür; bu kural
+**kapı tasarımı** yüzü. İkisi ayrı sorulara cevap verir: *"komut ne yaptı?"* ↔ *"kapı neyi kanıtladı?"*
+
+### ⇒ KALICI ÖRNEK: **KAPI YAZILMIŞ ≠ KAPI İŞLİYOR** — uyarıyı basıyordu, RENGİ değiştirmiyordu (`Z111 §26`–`§29`)
+
+Aynı harness, iki tur sonra, **bu kuralın en çıplak vakasını** üretti. Boş hash'i yasaklayan kontrol (`D4`) yazılmıştı —
+ama **bilinen-kırmızısı hiç kurulmamıştı**, ve kontrol **komut ikamesinin alt kabuğunda** çalışıyordu (`F12`).
+**Gerçek harness koşumunda** (izole kopyada değil) mutasyonla yeniden üretildi (2026-09-13):
+```
+mutasyon   shasum çıktısı BOŞ bırakıldı · vaka: NONE_BY_DESIGN (boş hash'ler tüm eşitlikleri geçer)
+ÖNCE       stderr: SEKİZ kez "?? ÖLÇEMEDİM: … shasum BOŞ çıktı verdi"
+           stdout: "-- ✓ snapshot0 == snapshot2"  ·  "✅ YEŞİL"          exit 0
+SONRA      ilk boş hash'te "?? ÖLÇEMEDİM"                              exit 2
+```
+> ### ⛔ Bir kapının UYARI METNİNİ basması, KARARINI vermesi değildir.
+> Kapının kanıtı **çıkış kodu ve renktir**; stderr'deki satır bir **tanık**tır, hüküm değil.
+> **Bir kontrol, bilinen-kırmızısı KAPININ RENGİNİ değiştirene kadar doğmuş sayılmaz.**
+
+🔎 **Tetikleyici:** *"bu kontrolün bilinen-kırmızısı çıktıya bir SATIR mı ekliyor, yoksa ÇIKIŞ KODUNU mu değiştiriyor?"*
+📌 İlk vakayla farkı: orada kol **ölçmüyordu** (1/51 tablo); burada kol **ölçüyordu ve söylüyordu** — ama kapı **dinlemiyordu**.
+
+## BİR KAPININ ÇIKTISINDA *"GÖZLENEN ≠ BEKLENEN"* ASLA **BİLGİ SATIRI** OLAMAZ — ya KIRMIZI ya ÖLÇEMEDİM (ZORUNLU)
+
+⭐ **Terfi (`Z111 §30` kayıt 1, 2026-09-13):** *"uyarıyı basıyor, rengi değiştirmiyor"* deseninin **aynı haftada ikinci vakası.**
+```
+vaka 1  boş-hash kapısı (D4)   stderr SEKİZ kez "ÖLÇEMEDİM: shasum BOŞ" · stdout "✓ snapshot0 == snapshot2" · ✅ YEŞİL · exit 0
+vaka 2  tür-kümesi pini (K8)   "gözlenen (snapshot H): 0 imza / 145 kolon" · imzalar "bayat pin" / "maske daraldı (BİLGİ)" · ✅ YEŞİL · exit 0
+```
+İkisinde de kapı tutarsızlığı **gördü** ve **adıyla yazdı** — ama onu bir **bilgi satırına** koydu ve rengi değiştirmedi.
+
+> ### ⛔ Bir kapı "gözlenen, beklenenle uyuşmuyor" dediği anda o satır KIRMIZI ya da ÖLÇEMEDİM'dir.
+> ### **"Bilgi" etiketi yalnız TUTARLI bir durumun notu içindir** (ör. "N kolon maskelendi" — bir sayım, bir çelişki değil).
+
+📌 **Ratchet kuralı bu kuralın özel hâlidir:** kapanmamış bir iyileşme (*"baseline 12, ölçülen 9"*) bir **gözlenen ≠ beklenen**'dir —
+bilgi olarak basılırsa ratchet o satırda **kör** kalır. Emsal `money-float.sh` (`Z82` iş 1: `improved` bir **kapıdır**).
+⚠️ Repoda bilinçli bir istisna var: `sigpipe-hygiene.sh` `improved`'ı kapı yapmaz (`T-359b §4`) ve kapanmamış işi `CLAUDE.md §4.2`'nin
+*"iyileştiren tur"* kuralına bırakır — istisna **gerekçesi yazılı** olduğu için meşru; gerekçesiz bir bilgi satırı değildir (`Z111 §30.1 N38`).
+
+⚠️ **Zaman ekseni** (`Z111 §30` D-4): pinde olup gözlenende olmayan bir imza *"maske daraldı (bilgi)"* diye geçerse, o imza **geri geldiğinde
+pinli sayılır** ve sessizce kabul edilir ⇒ **"pini daralt" KIRMIZIDIR.**
+
+🔎 **Tetikleyici:** *"bir tutarsızlık gördüm ve bilgi olarak basıyorum"* — dur: bu satırın rengi ne?
 
 ---
 
@@ -4938,6 +5155,29 @@ numaraları kayar, o gün **mekanizma adları** aranır.
 # AİLE F06 — AD ≠ SINIF
 
 > ## 🔎 ne zaman: *"bu ADIN kapsadığı şey GERÇEKTEN bu mu?"*
+
+### Bir KANIT ADI iki mekanizmada geçiyorsa, "hangisi bozuldu" ADLA değil MEKANİZMAYLA sorulur (ZORUNLU)
+
+> 🔎 *"bir kusur raporu bir kanıtın ADINI anıyor — bu ad kaç ayrı mekanizmanın adı?"*
+
+Aynı ad birden çok mekanizmayı taşıyabilir. Bir kusur raporu yalnız **adı** anarsa, okuyan
+**en geniş** mekanizmayı düşünür — ve kusurun kapsamı olduğundan **büyük** okunur (ya da ters yönde,
+küçük).
+
+**Ölçülmüş vaka (`Z111 §16–§17`, 2026-09-11):** Team Lead raporu *"T-047 satır sayımı da diğer 50
+tabloyu görmüyordu"* dedi. **"T-047" iki mekanizmanın adıydı:**
+```
+mekanizma                                   durum
+test/helpers/e2e-row-count.js               Node pg · dinamik evren · açık hata — SAĞLAM
+  (gerçek e2e invaryantı)                    [ÖLÇÜLDÜ: :115, :197-213, :278-303]
+migration-verify.sh "T-047: TABAN ROWCOUNT"  docker exec -i döngüsü — 1 / 51 tablo — BOZUK
+  (harness'ın kendi kopyası)                  [ÖLÇÜLDÜ: :238-252]
+```
+Rapor ayrımı yazmadı; ürün sahibi *"tüm e2e invaryant kanıtları etkilendiyse ayrı bir P0"* diye
+sordu — soru **doğruydu**, doğmasının sebebi raporun **adla** konuşmasıydı.
+
+**Pratik:** bir kusuru raporlarken kanıtın **adını değil yerini** yaz (`dosya:satır` ya da komut).
+Bir ad iki yerde geçiyorsa ikisini de adıyla say ve **hangisinin** bozuk olduğunu ölçerek belirt.
 
 ### Test dosyası TASK NUMARASI değil SÖZLEŞME ADI taşır (ZORUNLU)
 
@@ -6846,6 +7086,97 @@ ve o gün yine *"neden kırmızı?"* diye sorulacak. **Zamanlı bir kırmızı, 
 
 > ## 🔎 ne zaman: *"bir KOMUT / ARAÇ koşuyorum"*
 
+### `while read … done < dosya` İÇİNDE `docker exec -i` DÖNGÜNÜN GİRDİSİNİ YUTAR (ZORUNLU)
+
+> 🔎 *"bir döngü bir DOSYADAN okuyor ve gövdesinde stdin açık bir komut (`docker exec -i`, `ssh`, `psql` …) çağırıyor"*
+
+`docker exec -i` konteynere **stdin'i bağlar**. Bir `while read` döngüsünün gövdesinde çağrılırsa,
+döngünün okuduğu dosyanın **geri kalanını** konteynere akıtır — döngü **ilk turdan sonra biter**,
+hata vermez, çıkış kodu **0**'dır.
+```
+[ÖLÇÜLDÜ: Team Lead 2026-09-11, 3 satırlık dosya, gövdede SELECT 1]
+  docker exec -i …                 → tur = 1
+  docker exec -i … </dev/null      → tur = 3     (pozitif kontrol)
+  docker exec … (−i yok)           → tur = 3
+```
+**Ölçülmüş vaka (`Z111 §15.2 N8` · `§16`):** `collmind.backend/scripts/migration-verify.sh`'ın veri-hash
+ve iç T-047 satır-sayım döngüleri (`:241-249`, `:302-310`) harness **doğduğu günden beri** 51 tablonun
+**yalnız ilkini** (`_t019_backfilled_tx`) ölçtü. Harness'la verilen *"veri bayt-birebir"* kanıtları
+tek tabloya dayanıyordu. Yakalayan: `code-reviewer` (enum turunun diff'i) — kodu okuyarak;
+harness'ın hiçbir koşumu **şikâyet etmedi**.
+
+> ### ⚠️ Sessizliğin sebebi kapının DOĞUM ŞARTINDA: veri döngüsünün bir **bilinen-kırmızısı**
+> ### hiç kurulmamıştı (`Z83`). Kolon/kısıt kısmının kırmızısı vardı; veri kısmının yoktu.
+
+📌 **Kapsam — ölçülerek daraltıldı:** gerçek e2e T-047 invaryantı (`test/helpers/e2e-row-count.js`)
+**etkilenmedi**: Node `pg` istemcisi, `for…of` + `client.query`, stdin döngüsü YOK
+`[ÖLÇÜLDÜ: e2e-row-count.js:115,197-213,278-303]`. Aynı adı (**"T-047"**) taşıyan iki sayım
+vardı ve yalnız **harness-içi kopya** bozuktu — *"Bir AD, koruduğu SINIFTAN dar olabilir"*in
+tersi: **aynı ad, iki mekanizma**.
+
+**Pratik:**
+```
+1  dosyadan okuyan döngünün gövdesinde stdin açık komut → </dev/null ya da -i'siz
+2  bir döngünün KAÇ TUR döndüğünü BAS ve evrenle karşılaştır (51 tablo → 51 satır)
+3  bir kapının VERİ kısmı için de bilinen-kırmızı kur — kolon kısmının kırmızısı onu KAPSAMAZ
+```
+
+### ⇒ VE KOŞUM TARAFI: `</dev/null` OLMADAN BAŞLATILAN KOŞUM ASILIR (ZORUNLU)
+
+Yukarıdaki kural **döngü içinde** stdin yutulmasını anlatır. Aynı mekanizmanın **koşum tarafı**: bir aracı
+`</dev/null` vermeden başlatmak, aracın çağırdığı `npm`/`docker exec -i` girdi beklediğinde **sonsuz askıda** bırakır.
+
+**Ölçülmüş vaka (2026-09-12, migration harness yedinci turu):** bir şerit **üç kez** düştü — ikisi *"600 sn ilerleme
+yok"*, biri **DB'yi yarım bırakarak** (hedef revert edilmiş, yeniden uygulanmamış; Team Lead `migration:run` ile geri
+getirdi). Aynı koşumları **her çağrıda `</dev/null`** ile yapan Team Lead betiği **29 vakayı** sorunsuz koşturdu.
+
+```
+bash <araç> <hedef> </dev/null > <log> 2>&1; echo "rc=$?"     ← stdin KAPALI · çıktı DOSYAYA · exit AYRI (§2.6)
+```
+⇒ Tam şekil ve kardeş maddeleri (çok-vakalı ölçüm tek betikten · uzun adım arka planda · **araç erken çıkarsa ortamı
+geri getirmek koşanın işidir**) `docs/process/BRIEF_SABLONU.md` `§2.6`'da — brief şablonuna girdi, yani her yeni şerit
+bunu **hatırlamak zorunda değil, okuyor**.
+
+🔎 **Tetikleyici:** *"uzun sürecek bir aracı başlatıyorum"* — stdin'i kapattım mı?
+
+### `$( )` İÇİNDE HATA-ÇIKIŞI ANA SÜRECİ DURDURMAZ — hata yolu olan fonksiyon DEĞER DÖNDÜRMEZ, rc AYRI OKUNUR (ZORUNLU)
+
+```bash
+f() { …; [ -z "$h" ] && unmeasured "boş hash"; printf '%s' "$h"; }   # unmeasured = exit 2
+H0="$(f a)"; H2="$(f b)"      # ⛔ exit 2 yalnız ALT KABUĞU öldürür — ana süreç H0="" H2="" ile DEVAM EDER
+[ "$H0" != "$H2" ] || echo "✓ eşit"   # ⛔ iki boş dizge EŞİT ⇒ SAHTE YEŞİL, çıkış kodu 0
+```
+**Ölçülmüş vaka (2026-09-12, migration harness sekizinci tur review'u · `Z111 §26`):** `sha256_file` boş/hatalı hash'te
+`unmeasured` çağırıyordu; **sekiz çağrının sekizi de `$( )` içindeydi**. Reviewer mekanizmayı izole betikte üretti:
+stderr'e iki `ÖLÇEMEDİM` satırı düşerken ana süreç *"snapshot0 == snapshot2"* yeşilini bastı, **exit 0**. Aynı sınıf iki
+yardımcıda daha: bir global hata bayrağı alt kabukta set edilip çağıranda **hiç görünmedi** (bir kapı ölü kaldı).
+⇒ Boş hash'i yasaklamak için yazılmış kapı (`D4`) **tam olarak yasakladığı şeye izin veriyordu** — ve **hiç ateşlenmemişti**
+(bilinen-kırmızısı doğumda yoktu, `F04` kol-başına-doğum).
+
+> ### ⛔ Hata yolu olan bir fonksiyon değerini STDOUT'tan döndürmez.
+> **Değeri bir dosyaya/global'e yazar, rc döndürür; hata çağıranda ele alınır** — `psql_val` / `psql_val_rc` deseni.
+
+⚠️ **VE BİR DOSYADA İKİ DESEN VARSA:** doğru desen bu dosyada **zaten vardı** (`psql_val`'ün kendi yorumu tuzağı adıyla
+anlatıyordu) ve yeni yardımcılar **yanlışını** yazdı. ⇒ **Yanlış olan doğru olana hizalanır; üçüncü bir desen YAZILMAZ.**
+
+📌 Aile: `pipefail`+SIGPIPE (`grep -q` erken kapanır, başarılı ölçüm kırmızı görünür) ile **aynı mekanizma sınıfı** — kabuk
+bir değerin **nereden** geldiğini değil, **son** komutun kodunu taşır. Orada sahte **kırmızı**, burada sahte **yeşil**.
+
+🔎 **Tetikleyici:** *"bu fonksiyon hem bir değer döndürüyor hem de hata yolunda çıkıyor mu?"* — ve *"bu dosyada aynı iş için
+başka bir desen var mı?"*
+
+### ⇒ ÜÇÜNCÜ VAKA — rc ATANIYOR ama OKUNMUYOR · kural ARACA dönüyor (`Z111 §33` kayıt 3, 2026-09-13)
+```
+vaka 1  harness sha256_file      $( ) alt kabuğunda unmeasured          → rc KAYBOLDU    → iki boş hash "eşit" → sahte YEŞİL
+vaka 2  harness effect_data_wide  rc HİÇ okunmuyor                      → yazma hatasında boş dosyalar "eşit" (T-391)
+vaka 3  ratchet --baseline        rc=$? ATANIYOR, sonraki satır OKUMUYOR → ölçemediği hâlde "0 beyanlı, 0 dosya" baseline yazdı, exit 0
+```
+Üç mekanizma farklı görünüyor (alt kabuk · hiç okunmayan · atanıp okunmayan) — **sonuç aynı**: hatanın kodu kapıya **ulaşmıyor**.
+⇒ Yeni üye DEĞİL, **aynı kuralın üçüncü vakası** — ve `GÖZLEM → İKİNCİDE KURAL → ÜÇÜNCÜDE ARAÇ` (F00 bölümü) gereği **araç**:
+guard dosyalarında *"atanmış ama okunmamış rc"* statik taraması, evren **türetilmiş** (`scripts/guards/**`, iki kök) → **`T-399`**.
+⚠️ Aracın kendisi de ölçülür: *"okunmamış"* bir veri akışı özelliğidir; tek satırlık bir desenin ayırt etme gücü `scan.sh`'ın pozitif/negatif
+konumlarıyla kanıtlanmadan araç doğmuş sayılmaz (`Z111 §33.1 N43`).
+
 ### Yan etkisi olan bir aracı İZOLE hedefte sına (ZORUNLU)
 
 > **Yan etkisi olan bir aracı sınamak, o yan etkiyi ÜRETMEYİ gerektirir — sınav izole bir
@@ -7322,6 +7653,40 @@ Bir kapının kaynakları arasında **hükmü veren taraf yoksa**, kapı **niyet
 
 ---
 
+## ŞERİT-İÇİ SÜRE ÖLÇÜMÜ KANIT DEĞİLDİR — KANIT **SESSİZ A/B**'DİR (ZORUNLU)
+
+⭐ **Doğum (`Z111 §31`, 2026-09-13):** bir şeridin kendi koşumunda raporladığı süre, sessiz ortamda alınan ardışık A/B ile
+**iki kez** çürüdü:
+```
+şerit iddiası (kendi koşumunda)             sessiz A/B (Team Lead · başka koşum yok · ardışık · aynı hedef)
+yedinci tur   "38 s → 487 s, ~13× yavaşlama"   tur öncesi 95 s   ↔  tur sonrası 104 s
+pin düzeltme  "gerçek 1833 477 s"              pin öncesi 72·71 s ↔  şimdiki 72·73 s
+```
+İkisinde de şeridin koşumu **başka süreçlerle eşzamanlıydı** (paralel izleme, reviewer'ın DB okumaları, şeridin kendi arka plan
+koşumları). Birincisinde iddia bir **performans düzeltme turu** doğurmak üzereydi — ölçülmemiş bir kusuru "düzeltmek".
+
+> ### ⛔ Paralel yük altında alınan süre, sürenin ölçümü DEĞİLDİR.
+> ### Bir süre iddiası ancak **sessiz A/B** ile kanıt olur: başka koşum yok (`pgrep` ile ölçülür) · ardışık · aynı hedef · **önce/sonra
+> ### ikisi de** · en az iki tekrar.
+
+📌 Şerit brief'lerine: şerit süre **basabilir** (bilgi), ama süreye dayanan bir **öneri** (daraltma, optimizasyon, "regresyon")
+Team Lead'in sessiz A/B'si olmadan **işlenmez**.
+⚠️ **Sınır:** Team Lead'in kendi doğrulama koşumunda görülen ve sebebi ölçülmemiş süre sıçraması (aşağıdaki gözlem) bu kuralın
+vakası **değildir** — o bir iddia değil, **sebepsiz bir gözlem**; ikinci vakasında çekişme ölçümü ister.
+
+🔎 **Tetikleyici:** *"bir süre farkı gördüm / bana raporlandı"* — o koşum sırasında başka ne çalışıyordu, ve A/B sessiz miydi?
+
+---
+
+## Harness koşum SÜRESİ ardışık vakalarda sıçradı — sebep ÖLÇÜLMEDİ (GÖZLEM — tek vaka)
+
+⛔ **GÖVDE `docs/process/GOZLEM_GUNLUGU.md`'DE** (2026-09-13, türev **0**, `Z111 §29`) — doğrudan günlüğe yazıldı.
+**Özet:** beş ardışık vaka normalin katlarca uzun sürdü, sonuçları değişmedi; **sebep yazılmadı** (aday: eşzamanlı DB okuması —
+ölçülmedi). 🔎 *"bir koşum beklenenden çok uzun sürdü — o sırada aynı DB'yi başka kim kullanıyordu?"*
+⇒ ⛔ **İkinci vakasında** `T-353`-emsali çekişme ölçümü; fark ölçülürse bu aileye **kural** olur.
+
+---
+
 # AİLE F15 — DÜZELTME DİSİPLİNİ
 
 > ## 🔎 ne zaman: *"bir DÜZELTME yapıyorum"*
@@ -7353,6 +7718,24 @@ UPDATE agreements SET end_date = end_date - INTERVAL '3 months'   -- geri
 
 ⛔ **Pratik:** `git checkout` yasağının (`kopya + shasum -a 256 -c`) **VERİ tarafındaki**
 karşılığı budur. Dosyada **kopya**, veride **snapshot**.
+
+### ⇒ VE DOSYA TARAFINDA: `git restore` = `git checkout` — KOMUT ADI DEĞİŞİR, MEKANİZMA DEĞİŞMEZ (ZORUNLU)
+
+```
+git checkout -- <dosya>   tracked dosyayı HEAD'e döndürür → commit edilmemiş iş SİLİNİR
+git restore <dosya>       AYNI mekanizma, yeni ad          → commit edilmemiş iş SİLİNİR
+```
+**İki vaka, aynı şerit sınıfı (2026-09-11, migration harness turları):** beşinci turun raporu geri alma planı olarak
+`git checkout -- scripts/migration-verify.sh` önerdi (brief §9.12.5'te ihlal diye işaretlendi); **altıncı turun
+raporu**, o uyarıyı okuduktan sonra, *"`git restore` ile geri alınabilir"* yazdı. Dosyada **beş turluk commit
+edilmemiş iş** vardı. İkisi de uygulanmadı.
+
+> ### ⛔ Bir yasak KOMUT ADIYLA yazılırsa, eşdeğer komut yasağın dışında KALIR.
+> Yasak **mekanizmadır** (tracked dosyayı HEAD'e döndürmek); geri alma **yalnız snapshot-kopyadan**:
+> `cp <dosya> <kopya>` → değiştir → `cp <kopya> <dosya>` → `shasum -a 256 -c`.
+
+🔎 **Tetikleyici:** *"bir dosyayı eski hâline döndüreceğim"* — hangi komutla olursa olsun: önce **kopyası var mı?**
+📌 Aile: `F06` *"ad ≠ mekanizma"*'nın **yasak** tarafındaki yüzü. *(`Z111 §24` kayıt 3.)*
 
 
 ### Bir DÜZELTME, düzelttiği SINIFIN yeni bir vakasını üretebilir (ZORUNLU)

@@ -9,8 +9,9 @@
 > ### ⛔ `§0.0`'I OKUMADAN HİÇBİR ŞERİT BAŞLAMAZ
 > ~~Hükmün **altı öncülü/boşluğu** kayıt anında ölçüldü ve **ürün sahibinin cevabını bekliyor**.~~
 > ⭐ `Z111 §13` (2026-09-10/11) blokelerin cevaplarını verdi — `§0.0` tablosu `§0.2`'nin ve `§3`'teki
-> ilgili satırların **üstüne yazar**. Hâlâ bloke: **N1** (bedelsiz malın defter/eşleşme kısmı —
-> bedelsiz-ürün taktiği yok). ⛔ **1835 ve sonrası migration'lar, harness enum-körlüğü şeridi
+> ilgili satırların **üstüne yazar**. ~~Hâlâ bloke: **N1** (bedelsiz malın defter/eşleşme kısmı —
+> bedelsiz-ürün taktiği yok).~~ ⭐ **N1 KAPANDI (`Z111 §14`) — bloke iş KALMADI.** Sıra: harness enum
+> şeridi → 1835 → 1838 → backend ∥ QA; seed turunda bedelsiz taktik + 3 tutarsız actuals satırı. ⛔ **1835 ve sonrası migration'lar, harness enum-körlüğü şeridi
 > (`docs/process/HARNESS_PG_ENUM_KORLUGU_BRIEF.md`) inmeden BAŞLAMAZ.**
 
 ---
@@ -80,10 +81,18 @@ B2    tenant.settings.match_grain (jsonb) — tanım + yazar (seed:     §3.3 GR
       FU_CPL_MONTH) BU DALGA; kısıt/UI olay-tetikli                   [ÖLÇÜLDÜ: tenants.settings jsonb VAR]
 B3    KANAL = CPL'İN KANALI (tek kaynak)                              §3.2 müşteri-kodu yolu AÇIK
       [ÖLÇÜLDÜ: customers ⋈ cpls ⋈ channels] 27 · eşit 27 · farklı 0 ⇒ çelişki yok
-B4    BEDELSİZ MAL = TÜKETİM (trade-spend): değer adet × birim-fiyat  ⛔ N1 — HÂLÂ BLOKE (defter kısmı):
-      → on-invoice bedelsiz-ürün taktiğiyle eşleşir → zarftan         [ÖLÇÜLDÜ: main.mechanics 6 · main.tactics 5]
-      (planlı: rezervden; plansız: available'dan — Z-K5)              bedelsiz-ürün taktiği/mekaniği YOK ⇒ hedef tanımsız
-                                                                     ⇒ depolama + türetme AÇIK; defter/eşleşme DUR
+B4    BEDELSİZ MAL = TÜKETİM (trade-spend): değer adet × birim-fiyat  ~~⛔ N1 — HÂLÂ BLOKE (defter kısmı)~~
+      → on-invoice bedelsiz-ürün taktiğiyle eşleşir → zarftan         ⭐ N1 KAPANDI (Z111 §14): taktik "Bedelsiz Ürün" —
+      (planlı: rezervden; plansız: available'dan — Z-K5)              on-invoice · birim-rate (girdi: bedelsiz ADET) · beklenen
+                                                                     = plan adet × BPTT · gerçekleşen = Σ FREE_GOODS, tolerans YOK
+                                                                     ⇒ depolama + türetme + defter + eşleşme AÇIK
+                                                                     ⛔ SEED TURU (ŞERİT A): seed'e bedelsiz taktik + mekanik
+                                                                       (~~seed'de 6., Excel'de 10.~~ — F12 Z111 §15: seed için sayı
+                                                                       YAZILMAZ) + 3 tutarsız actuals satırı
+                                                                       AYNI turda · ⛔ category / tactic_type / evidence_class
+                                                                       mevcut üyeden SEÇİLİR — tüketicileri ölçülür, LİSTE ürün
+                                                                       sahibine (§14.1 N5), sessizce seçilmez
+SIRA  Z111 §14                                                        harness enum şeridi → 1835 → 1838 → backend ∥ QA
 B5/B6 "fiyat = 0" KABUL EDİLMEZ → RED FREE_GOODS_UNPRICED;            §3.2: bedelsiz İKİ şekil (indirim = brüt · bayrak +
       sıfır-brüt reddi KORUNUR; iki şekil                             fiyat > 0) · §3.3 FREE_GOODS_UNPRICED · §4.1 fixture
 ENUM  down() = TİPİ YENİDEN YARAT · harness enum-körlüğü şeridi       §3.1: ⛔ ŞERİT A 1835'e ancak HARNESS ŞERİDİ
@@ -422,6 +431,13 @@ grep → ugrep: karmaşık -E "complexity limits" → grep -F -e … -e …
 --include=*.ts zsh'de glob açılır → --include="*.ts"
 scratchpad'den backend modülü koşmak: NODE_PATH=<backend>/node_modules + -r <backend>/node_modules/ts-node/register/transpile-only
 git -C MUTLAK yolla · exit kodunu boruya sokma · kök script'leri MUTLAK yolla (cwd kayar)
+⛔ TypeORM query() DÖNÜŞ BİÇİMİ KOMUT TİPİNE BAĞLI (Z111 §18.1 T1):
+  [ÖLÇÜLDÜ: node_modules/typeorm/driver/postgres/PostgresQueryRunner.js:172-211, typeorm 0.3.28]
+  UPDATE · DELETE (RETURNING olsun olmasın)  → [rows, rowCount]   ⇒ .length HEP 2 — etkilenen satır sayısı DEĞİL
+  INSERT … RETURNING · SELECT                → düz rows dizisi
+  ⇒ satır sayacı (MIGRATION_AFFECTED_ROWS, 1836 UPDATE, 1838 backfill) yazan her yer:
+    queryRunner.query(sql, params, true).affected   ya da   [rows, count] AÇIKÇA ayrıştır
+  ⇒ ve sayacın kendisine bir bilinen-kırmızı: N=0 ile N=1'i AYIRT ettiğini göster
 ```
 
 ---

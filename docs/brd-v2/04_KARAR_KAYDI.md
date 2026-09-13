@@ -10985,6 +10985,8 @@ TARİFİN KANITIDIR.**
 
 ```
 [ÖLÇÜLDÜ: Team Lead kendi koşumu]  bilinen-YEŞİL   1832 → exit 0 · 38 s
+  ⚠️ F12 şerhi (Z111 §16, 2026-09-11): veri bayt-birebir TEK TABLO (_t019) — KISMİ (docker exec -i
+     döngü stdin'i, §15.2 N8); kolon/kısıt kısmı AYAKTA · 1832 HEAD değil ⇒ yeniden koşulamaz, şerh KALIR
 [ÖLÇÜLDÜ: Team Lead kendi koşumu]  bilinen-KIRMIZI sentetik → exit 1
                                    "(∅) NULL vektörü: GEÇTİ (NULL-collapse — Z87)
                                     fixture EXPECT_NULL=reject bekliyordu, GERÇEK=pass"
@@ -11724,5 +11726,1217 @@ U1 U2 U4 B1–B6  HALKA3_IS2_ACTUALS_OLAY_MODELI_BRIEF.md §0.0
 B1 B5/B6 U4     docs/domain/ACTUALS_IMPORT_SOZLESMESI_v1.md
 U4 B3 N3        .claude/backlog/tasks/T-351.md EK 4
 enum şeridi     docs/process/HARNESS_PG_ENUM_KORLUGU_BRIEF.md
+```
+
+---
+
+### `§14` · N1 KAPANDI — BEDELSİZ ÜRÜN TAKTİĞİ (ürün sahibi + Fable, 2026-09-11)
+```
+YENİ AİLE YOK · YENİ ALAN YOK — mevcut yapı (Mechanic · Spending Type · Calc Type) yeterli:
+  Tactic "Bedelsiz Ürün"   Mechanic CPPON   Spending On-Invoice   Calc Rate Based (BİRİM-rate)
+  = Price Support'un aynası (o: CPPOFF · Off-Invoice · birim-rate); spending yönü farklı.
+PLAN-GİRDİSİ  diğer birim-rate taktiklerle aynı: birim başına değer (bedelsiz ADET);
+              "10+1" oranını planner adede çevirir ya da tenant ikinci taktiği yüzde-rate
+              tanımlar ("Bedelsiz Ürün %" — CPPON · On-Invoice · Rate Based %) — ikisi de
+              mevcut yapıda, tenant'ın seçimi.
+BEKLENEN      planlanan-bedelsiz-adet × birim-fiyat (plan: BPTT; gerçekleşen: ERP fiyatı —
+              fark plansız-indirim satırında görünür, Z-K3-ek deseni)
+GERÇEKLEŞEN   Σ FREE_GOODS olayı (adet × birim-fiyat), aynı grain; tolerans YOK (on-invoice)
+SEED          örnek-setin 10. taktiği; referans-belge §2 tablosuna satır
+⇒ İŞ-2 eşleşme/defter kısmının blokajı KALKTI. Sıra: enum-şeridi → 1835 → 1838 → backend ∥ QA
+   (seed: 10. taktik + 3 tutarsız actuals satırı düzeltmesi aynı seed-turunda).
+ÜRÜN-SAHİBİNE BİLGİ (karar değil): U1 — çakışan iki APPROVED anlaşma gerçek veri, Finans birini
+kapatacak; motor o grain'de AMBIGUOUS_AGREEMENT → askı
+```
+
+#### `14.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "yeni alan yok"   [ÖLÇÜLDÜ: information_schema main.mechanics USER-DEFINED + pg_enum]
+                    mechanic_type {PERCENT, AMOUNT, AMOUNT_PER_UNIT} · spending_type {on_invoice, off_invoice, both} ·
+                    category {on_invoice_discount, off_invoice_discount, per_unit_support, lumpsum_spend,
+                    long_term_agreement} · input_type {percentage, currency, units, boolean}
+                    ⇒ bedelsiz ADET girdisi (input_type = units) ve on-invoice yönü MEVCUT üyelerle ifade edilir
+  "CPPON/CPPOFF"    [ÖLÇÜLDÜ: DEMO_EXCEL_KPI_TACTIC_REFERANSI.md:127-139] Excel'in "Mechanic (aile)" adları —
+                    CTPM'de aile KOLONU yok; karşılığı mechanic_type + spending_type + category üçlüsü
+  "yüzde-rate"      [ÖLÇÜLDÜ: SELECT … FROM main.mechanics] CPP_ON_PCT = PERCENT · on_invoice · percentage ·
+                    on_invoice_discount ⇒ "Bedelsiz Ürün %" şekli MEVCUT
+  "10. taktik"      [ÖLÇÜLDÜ: DEMO_EXCEL_KPI_TACTIC_REFERANSI.md:139] "9 tactic → 6 mekanik ailesi" ⇒ referans
+                    belgede 10. satır DOĞRU
+  "plan: BPTT"      [ÖLÇÜLDÜ: grep -rn BPTT src/database/migrations/1780000000000-FixKpiBrdFormulas.ts:290,309]
+                    KPI değişkeni (BASE_VOL * BPTT · PLAN_VOL * BPTT) · [ÖLÇÜLDÜ: information_schema skus] unit_price VAR
+
+UYUŞMAYANLAR / NOTLAR (F12 ürün sahibinin)
+  N4  "SEED: örnek-setin 10. taktiği"
+      [ÖLÇÜLDÜ: SELECT code FROM main.tactics · grep "code: 'TAC-" mechanic.seed.ts:40-66]
+      seed 5 taktik (TAC-ON-DISCOUNT · TAC-OFF-DISCOUNT · TAC-VISIBILITY · TAC-PRICE-SUPPORT · TAC-PROMO)
+      · 6 mekanik ⇒ SEED'de bedelsiz taktik 6., Excel örnek-setinde 10. — iki sayı iki EVREN
+  N5  "Price Support'un aynası … spending yönü farklı"
+      [ÖLÇÜLDÜ: mechanic.seed.ts:228-248] PRICE_SUP = AMOUNT_PER_UNIT · OFF_INVOICE · per_unit_support ·
+      input_type CURRENCY · unit_symbol TRY/unit · formül entered_value * PLANNED_VOLUME · evidence DERIVABLE
+      [ÖLÇÜLDÜ: mechanic.seed.ts:57-62] TAC-PRICE-SUPPORT tactic_type OTHER
+      ⇒ ayna YÖN'den fazlasında kırılır: bedelsizde girdi ADET (input_type units, TRY/unit DEĞİL) ve
+        taban BİRİM-FİYAT (entered_value * BPTT, PLANNED_VOLUME DEĞİL)
+      ⇒ category enum'unda ve tactics_tactic_type_enum'da BEDELSİZ üyesi YOK — mevcut üyeden SEÇİM:
+        category per_unit_support ↔ on_invoice_discount · tactic_type OTHER ↔ DISCOUNT ·
+        evidence_class OBSERVED (on-invoice gözlenir) ↔ DERIVABLE
+        ⇒ "yeni alan yok" TUTUYOR; bu seçimler seed turunda ÖLÇÜLÜR (tüketiciler hangi category'yi okuyor)
+          ve LİSTE olarak ürün sahibine gelir — sessizce seçilmez
+```
+
+#### `14.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+N1 kapandı · sıra · seed turu   HALKA3_IS2_ACTUALS_OLAY_MODELI_BRIEF.md §0.0 (B4 satırı + üst uyarı)
+10. taktik                     docs/research/DEMO_EXCEL_KPI_TACTIC_REFERANSI.md §2
+A7                             docs/domain/ACTUALS_IMPORT_SOZLESMESI_v1.md §9
+```
+
+---
+
+### `§15` · HARNESS: ÖNCE GENELLEŞTİR · N4/N5 F12 (ürün sahibi + Fable, 2026-09-11)
+
+**Harness: ÖNCE GENELLEŞTİR** — TL tercihi onaylı, ve gerekçesi kendi kuralımız: K_ENUM
+metin-eşleşmesi araç-hatası ailesinin tanıdık üyesi (yorumda "ADD VALUE" → yanlış kırmızı;
+dinamik SQL → kaçırma); ve kör nokta enum'dan geniş — idempotent up + boş down her yerde aynı
+sessiz yeşil. Genel kontrol iki parça, üçüncüsüyle:
+```
+her migration için üç snapshot: S0 (öncesi) · A (up sonrası) · B (revert sonrası)
+  S0 ≠ A   up GERÇEKTEN bir şey değiştirdi   (no-op up → kırmızı: "migration etkisiz")
+  B == S0  revert GERÇEKTEN geri aldı         (boş/eksik down → kırmızı: "revert etkisiz")
+  (A ≠ B zaten ikisinden türer)
+BİLEREK GERİ ALINAMAZ migration: yanlış kırmızı DEĞİL, doğru kırmızı — çünkü o yazım
+  YASAK (Z: down ya tipi yeniden yaratır ya "geri alınamaz ekleme" adıyla aracın kendi
+  durumu). Adıyla tanımlı durum = dördüncü/beşinci durum (S1-revert-sonrası emsali),
+  metin değil BEYAN (migration dosyasında export edilen bir işaret, harness okur)
+Z83: bilinen-kırmızı = CREATE TABLE IF NOT EXISTS + boş down (enum-dışı örnek — genellik
+  kanıtı) · bilinen-yeşil = mevcut 89 migration aynı sonuç · K_ENUM metin-kontrolü SİLİNİR
+```
+Küçük değişiklik, 1838 dahil her migration'ın doğrulamasını kanıta çevirir; **1835 buna kadar
+bekler (bir tur).**
+
+**N4/N5 — F12 küçük, hüküm değişmez:** N4: "10." referans-belge için doğru; seed için sayı
+yazılmaz — "seed'e bedelsiz taktik" (onbirinci+ elle-sayı, yazan ben). N5: "Price Support'un
+aynası" cümlesi daraltılır: aynı calc-type (Rate Based, birim-rate), farklı girdi-birimi —
+Price Support birim-başına TL × planlanan hacim; Bedelsiz Ürün adet × birim-fiyat. Hüküm
+(CPPON · On-Invoice · Rate Based) değişmez. Kategori/taktik-tipi enum'larında bedelsiz
+karşılığı: önce mevcut değerlerden seçim (CPPON → ON_INVOICE_DISCOUNT kategorisi doğal),
+yetmezse üye — ama "yeni alan yok" dedi Sertaç, enum-değeri alan değil; seed-şeridi listeyi
+getirsin, hüküm listeyle.
+
+**Commit:** harness genelleştirilmiş haliyle (reviewer + Z83 sonrası) + N1 kayıtları — tek push.
+Sonra 1835 → 1838 → İŞ-2 backend ∥ QA. *"Düzeltme öncesi yeşil"* reprodüksiyonunu üretememen
+dürüstçe kayıtta; genelleştirme sonrası bilinen-kırmızı enum-dışı örnekle yeniden kurulur, o
+boşluk kapanır.
+
+#### `15.1` · `§14` SATIRLARINA `F12` İZLERİ (yukarıdaki metin silinmedi)
+```
+§14.1 N4 "SEED'de bedelsiz taktik 6."           → sayı YAZILMAZ: "seed'e bedelsiz taktik"
+§14   "= Price Support'un aynası"                → aynı calc-type (Rate Based, birim-rate), FARKLI girdi birimi
+§14.1 N5 kategori/taktik-tipi seçimi              → önce mevcut değer (CPPON → on_invoice_discount doğal);
+                                                   yetmezse enum ÜYESİ (alan değil); seed şeridi LİSTE getirir
+```
+
+#### `15.2` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+Kaynaklar: Team Lead ölçümü + `code-reviewer` (harness enum diff'i) — reviewer'ın karar üreten
+iddiaları **bağımsız yeniden üretildi**.
+```
+TUTANLAR
+  "S1-revert-sonrası emsali"  [ÖLÇÜLDÜ: grep docs/DISIPLIN.md:5501] "dört durum S0 ilk · S1 revert-sonrası ·
+                              S2 tam · ELSE throw" — migration assert şablonunun durum adları VAR
+  "kör nokta enum'dan geniş"  [ÖLÇÜLDÜ: grep -l -F "IF NOT EXISTS" src/database/migrations/*.ts | wc -l] 40 / 89
+                              [ÖLÇÜLDÜ: migration-verify.sh:550,580] yalnız 0==2 ve 1==3 assert'i; "etki etti mi" YOK
+  "bilerek geri alınamaz"     [ÖLÇÜLDÜ: 1776000000000-AddDistributorCustomerChannel.ts:19-25] down() BİLEREK no-op
+                              (enum değeri) — hükmün artık yasakladığı yazımın zincirdeki EMSALİ
+
+UYUŞMAYANLAR / ÖNKOŞULLAR (F12 ürün sahibinin)
+  N8  ⛔ EN AĞIRI — HARNESS'IN VERİ KONTROLÜ DOĞDUĞU GÜNDEN BERİ 51 TABLONUN YALNIZ İLKİNİ GÖRÜYOR
+      [ÖLÇÜLDÜ: migration-verify.sh:64-82] psql_out/psql_val → docker exec -i (stdin açık)
+      [ÖLÇÜLDÜ: migration-verify.sh:241-249, 302-310] while read tbl … done < $ALL_TABLES_OUT — gövde psql_val çağırır
+      [ÖLÇÜLDÜ: Team Lead, 3 satırlık dosya, SELECT 1 döngüsü] docker exec -i → 1 tur · </dev/null → 3 tur · -i yok → 3 tur
+      [ÖLÇÜLDÜ: SELECT count(*), min(tablename) FROM pg_tables WHERE schemaname='main'] 51 · _t019_backfilled_tx
+      ⇒ ## DATA hash'i ve T-047 rowcount karşılaştırması YALNIZ _t019_backfilled_tx'i ölçtü
+      ⇒ harness'la verilmiş "veri bayt-birebir" kanıtları (1833 dahil) TEK TABLOYA dayanıyordu
+      ⇒ yan etki: [ÖLÇÜLDÜ: information_schema + migrations_id_seq] migrations.id = nextval · max 400 · seq 408
+        ⇒ düzeltme sonrası migrations tablosu id'siyle hash'lenirse HER koşum 1≠3 KIRMIZI (sinyal sabitlenir)
+      ⇒ "S0 ≠ A" kontrolü bu düzeltme OLMADAN yazılamaz — veri migration'ı hep "etkisiz" görünür
+  N6  "bilinen-yeşil = mevcut 89 migration aynı sonuç"
+      [ÖLÇÜLDÜ: harness ÖLÇEMEDİM mesajı] "harness yalnız DB HEAD'indeki migration'ı destekler"
+      ⇒ 89'u koşmak zinciri HEAD'den geriye REVERT etmeyi gerektirir — veri taşıyan migration'larda yıkıcı
+      ⇒ uygulanabilir bilinen-yeşil: gerçek HEAD (1833) + mevcut sentetikler; 89'un tamamı UYGULANAMAZ
+  N7  "no-op up → kırmızı" ile snapshot'ın GÖRMEDİĞİ kataloglar
+      [ÖLÇÜLDÜ: 1789000000000-FixBudgetSummaryCommitDoubleCounting.ts:30-32,132-134] up/down YALNIZ CREATE OR REPLACE VIEW
+      [ÖLÇÜLDÜ: grep pg_views|pg_proc|pg_sequence migration-verify.sh → boş] snapshot view/fonksiyon görmüyor
+      ⇒ 1789 tipi bir migration S0 == A görür → YANLIŞ "migration etkisiz" kırmızısı
+      ⇒ ve reviewer'ın saydığı MEŞRU etkisiz migration'lar: eşleşmeyen backfill · yalnız assert eden migration
+        — bunlar kırmızı mı, ÖLÇEMEDİM mi, beyan mı: hüküm "bilerek geri alınamaz" için beyan diyor;
+          "bilerek etkisiz up" için SESSİZ
+```
+
+#### `15.3` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+genelleştirme + N8 önkoşulu + N7 + reviewer S2–S6   docs/process/HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9
+N4                                                 HALKA3_IS2_ACTUALS_OLAY_MODELI_BRIEF.md §0.0 B4
+N5                                                 docs/research/DEMO_EXCEL_KPI_TACTIC_REFERANSI.md §2
+```
+
+---
+
+### `§16` · ÜÇ KARAR + DÖRDÜNCÜ SORU — BEYAN TÜRLERİ · ÇIKIŞ KODU · ÖNCEKİ KANITLAR · T-047 AYRIMI (ürün sahibi + Fable, 2026-09-11)
+
+**1 · Bilerek etkisiz up:** üç durum, üç çıktı — beyansız etkisizlik KIRMIZI kalır.
+```
+beyansız etkisiz up            → KIRMIZI  (bilinmeyen no-op — kontrolün varlık sebebi)
+assert-only migration          → BEYAN: EFFECT='NONE_BY_DESIGN' export'u; harness okur,
+                                  YEŞİL + zorunlu çıktı satırı ("etkisiz — beyanlı: assert-only")
+sıfır-satır backfill           → ÖLÇEMEDİM (koşul bu ortamda kurulamadı: değiştirecek satır yok);
+                                  beyan EFFECT='DATA_CONDITIONAL' + migration kendi "N etkilendi"
+                                  sayacını basar; N=0 ⇒ ölçüm koşulsuz, yeşil değil
+```
+**2 · Beyanın çıkış kodu:** YENİ KOD YOK, ama sessiz de değil. "Geri alınamaz ekleme" beyanı hata
+değil bilinçli durum → YEŞİL + zorunlu görünür satır (`GERİ ALINAMAZ — beyanlı: <sebep>`), ve satır
+push-order beyanına taşınır ("koşulmadı:"-satırı gibi: `geri-alınamaz migration: 1834 <sebep>`).
+Kötüye-kullanım güvencesi: beyanlı migration'lar MIGRATION_SEQUENCE'te adıyla listeli + ratchet
+(liste artışı = ayrı commit, gerekçeli) — her no-op'a beyan yazma yolu kapalı.
+
+**3 · Önceki kanıtların kaydı:** DISIPLIN F12 (araç-hatası) üye + kanıtlara F12-şerhi. `docker exec
+-i` döngü-stdin'ini yutması araç-hatası ailesinin yedinci üyesi (npx · glob · grep -c · cwd ·
+rg-ril · SIGPIPE · exec -i); kuralı aile zaten taşıyor (pozitif kontrol: 3 satır → 3 tur). Önceki
+harness-kanıtlarına şerh: "veri bayt-birebir: tek tablo (_t019) — kısmi"; 1833 HEAD olduğu için
+düzeltilmiş harness'la yeniden koşulur, kaydı gerçek kanıta döner; 1822/1823 geriye alınamaz —
+şerh kalır (kolon/kısıt kanıtları etkilenmedi, o kısım ayakta).
+
+**4 · Netleştirilecek — en ağır soru:** *"T-047 satır sayımı da diğer 50 tabloyu görmüyordu" — bu
+harness'ın kendi sayımı mı, yoksa gerçek e2e T-047 invaryantı (`e2e-row-count.js`, T-324'te
+app_migrate ile 48/48 doğrulanan) mı? İkincisiyse tüm e2e invaryant-kanıtları etkilenir ve bu ayrı
+bir P0. Harness-içi kopyaysa yalnız harness. Ölçülmeden hiçbir şey yazılmaz.*
+
+**Onaylar:** genelleştirme sırası onaylı (B1 → S0≠A/B==S0 → beyan → view/fonksiyon snapshot → reviewer
+S2-S6 → enum-dışı bilinen-kırmızı, harness-kopyası scripts/ altına geçici). View/fonksiyon-snapshot
+kararı Team Lead'in — doğru sınır, adıyla kayıtta. Uygulanabilir bilinen-yeşil = HEAD (1833) +
+sentetikler; *"89" sayısı benim ölçülmemiş yazımımdı — F12.*
+
+#### `16.1` · ⭐ DÖRDÜNCÜ SORUNUN CEVABI — ÖLÇÜLDÜ: **YALNIZ HARNESS, P0 DEĞİL** (Team Lead, 2026-09-11)
+```
+[ÖLÇÜLDÜ: test/helpers/e2e-row-count.js:115]          const { Client } = require('pg')
+[ÖLÇÜLDÜ: e2e-row-count.js:197-213]                    evren = pg_class relkind='r' ∧ nspname=main, yetki FİLTRESİZ;
+                                                       göremediği tablo → AÇIK hata (:215-219)
+[ÖLÇÜLDÜ: e2e-row-count.js:278-303]                    for (const {table} of countable) → client.query(count(*)) — stdin döngüsü YOK
+[ÖLÇÜLDÜ: grep -rn -F "docker exec" collmind.backend/test]  yalnız YORUM satırları (db-role-*.e2e-spec.ts)
+[ÖLÇÜLDÜ: migration-verify.sh:238-252]                 "T-047: TABAN ROWCOUNT (harness öncesi)" — harness'ın KENDİ kopyası
+⇒ yutulan sayım HARNESS-İÇİ kopya; gerçek e2e T-047 invaryantı ETKİLENMEDİ
+⇒ "T-047" ADI iki mekanizmayı taşıyordu — Team Lead raporu ayrımı YAZMADI, soruyu o doğurdu
+```
+
+#### `16.2` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+UYUŞMAYANLAR (F12 ürün sahibinin)
+  N10  §3 "1822/1823 geriye alınamaz — şerh kalır"
+       [ÖLÇÜLDÜ: grep "ÖLÇÜLDÜ: migration-verify" docs .claude/backlog (pozitif kontrol DALGA_A_KAPANIS:14 → 1)]
+       + gevşek tarama ("migration-verify" ∧ "exit 0" · 183x ∧ harness ∧ YEŞİL)
+       ⇒ harness kanıtı taşıyan ürün migration'ları: YALNIZ 1832 ve 1833
+         1832  Z109 "[ÖLÇÜLDÜ: Team Lead kendi koşumu] bilinen-YEŞİL 1832 → exit 0 · 38 s" (harness'ın DOĞUM şartı)
+         1833  DALGA_A_KAPANIS.md:14 · :101
+       [ÖLÇÜLDÜ: Z87 tarihi 2026-09-02 · Z109 (harness doğumu) 2026-09-08] 1822/1823 harness'tan ÖNCE —
+         harness kanıtları YOK ⇒ şerh düşecek harness satırı YOK
+       ⇒ hükmün ayrımı AYNEN uygulanır, numaralar DÜZELİR: 1833 HEAD → yeniden koşulur · 1832 HEAD DEĞİL → şerh KALIR
+  N11  §3 "araç-hatası ailesinin YEDİNCİ üyesi (npx · glob · grep -c · cwd · rg-ril · SIGPIPE · exec -i)"
+       [ÖLÇÜLDÜ: grep -n -F "rg-ril" docs/DISIPLIN.md docs/process/GOZLEM_GUNLUGU.md → boş ·
+                 grep "npx" ∧ ("SIGPIPE" ∨ "glob") DISIPLIN.md → boş]
+       ⇒ F12 ailesi VAR, üyeleri AYRI kurallar; bu yedili LİSTE hiçbir belgede YAZILI DEĞİL ⇒ "yedinci" ÖLÇÜLMEDİ
+       ⇒ DISIPLIN'e kural SAYISIZ yazıldı (elle-sayı kuralı)
+```
+
+#### `16.3` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+§1 · §2 beyan türleri, çıkış kodu, push-order satırı, ratchet   HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.3 F12
+§3 DISIPLIN F12 üyesi                                           docs/DISIPLIN.md F12 "while read … docker exec -i"
+§3 şerh 1833                                                     docs/process/DALGA_A_KAPANIS.md :14 · :101
+§3 şerh 1832                                                     bu kayıt Z109 (satır altına iz)
+§4                                                               §16.1 · DISIPLIN F12 kuralının kapsam notu
+1833 yeniden koşum                                               harness genelleştirme şeridi §9.6 bilinen-yeşil
+push-order satırı + MIGRATION_SEQUENCE ratchet                   ⛔ AÇIK İŞ — şerit ÖNERİR, Team Lead/ayrı şerit yazar
+```
+
+---
+
+### `§17` · ÜÇ KALICI DERS (ürün sahibi + Fable, 2026-09-11)
+
+> *"İyi — P0 değil, ve sebebi öğretici: aynı ad ("T-047") iki mekanizmayı taşıyordu — gerçek
+> invaryant (Node-pg, dinamik evren, açık hata) sağlam; yutulan sayım harness'ın kendi kopyasıydı.
+> Ad≠sınıf ailesine: bir kanıt-adı iki yerde geçiyorsa, "hangisi bozuldu" sorusu adla değil
+> mekanizmayla sorulur — raporda ayrımın yazılmaması soruyu doğurdu, doğru teşhis."*
+
+> *"İki öncülüm daha düştü ve ikisi de aynı sınıf: 1822/1823 → 1832/1833 (numaraları ölçmeden
+> yazdım) ve "yedinci üye" (liste hiçbir belgede yokken sayı yazdım). Bugün hüküm-katmanından üç
+> ölçümsüz-sayı — F00-damgası benim için de mekanizma olmalı, kural olarak yetmiyor: hüküm-metnimde
+> numara/sayı geçiyorsa yanına [ölçülmedi — Team Lead ölçer] yazarım, damgasız sayı yazmam."*
+
+> *"Kalıcı ders — Z83'e ek: "kapının veri kısmının hiç bilinen-kırmızısı kurulmamıştı" —
+> kapı-doğum-kuralı kontrol-kolu başına işler: kolon-kısıt kolu bilinen-kırmızı görmüştü, veri-kolu
+> görmemişti; bir kapı tek bilinen-kırmızıyla "doğmuş" sayılmaz, her kolu ayrı doğar. DISIPLIN
+> F04'e (kapı-doğum) bu tamamlayıcı satır."*
+
+**Sıra (aynen):** genelleştirme (şerit beyan-kısmında DUR → §9.3 tablosuyla tamamlanır) → reviewer +
+bağımsız doğrulama (1833 yeniden, enum-dışı bilinen-kırmızı, 51-tablo sayımı basılarak) →
+push-order-satırı + MIGRATION_SEQUENCE-ratchet'i (Team Lead ya da ayrı şerit) → tek push → 1835 →
+1838 → İŞ-2 backend ∥ QA.
+
+#### `17.1` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+ad ≠ mekanizma            docs/DISIPLIN.md F06 "bir KANIT ADI iki mekanizmada geçiyorsa"
+hüküm-veren mekanizması   docs/DISIPLIN.md F00 "OTURUM-HÜKMÜ DE DAMGA İSTER" — üçüncü vaka + mekanizma
+Z83 kontrol-kolu          docs/DISIPLIN.md F04 "KAPI DOĞUM KURALI KONTROL-KOLU BAŞINA İŞLER"
+```
+📌 Bu kaydın kendi sayıları: ürün sahibinin *"bugün üç ölçümsüz-sayı"* ifadesi `§13` (INV-B-009
+benzetmesi · "5." · "tasarım gereği çarpar") ve `§16.2` (N10 · N11) kayıtlarıyla **karşılaştırılmadı** —
+hangi üçünün kastedildiği metinden okunamıyor ⇒ sayı **alıntı olarak** kaldı, ölçüm iddiası değil.
+
+---
+
+### `§18` · BEYAN YAPISAL ÇELİŞKİSİ: **A** · `jq` HÜKMÜ · TypeORM TUZAĞI (ürün sahibi + Fable, 2026-09-11)
+
+**A** — beyan iki kontrolü birlikte affeder; gerekçesi şeridin bulduğu gibi tek olgu: "revert
+etkisiz" ile "migration etkisiz" burada aynı gerçeğin iki yüzü — etki kalıcı, harness'ın
+revert-önce döngüsü up'ın etkisini yapısal olarak ölçemez (etki revert'ten sağ çıkıyor). B ölü
+özellik üretir; A ise kanıt-gücünün sınırını çıktıda adıyla taşır — üç-meşru-çıktı yasasının
+ruhu: ölçemediğini söyleyen yeşil, sessiz yeşil değildir.
+```
+IRREVERSIBLE_ADD (beyanlı, sebepli) → YEŞİL + iki zorunlu satır:
+  "GERİ ALINAMAZ — beyanlı: <sebep>"
+  "up etkisi bu döngüde ÖLÇÜLEMEZ — etki revert'ten sağ çıkıyor (harness sınırı)"
+  + HARNESS_DECLARED|IRREVERSIBLE_ADD|… satırı push-order'a
+sebepsiz → kırmızı (değişmedi)
+```
+**İki kayıt:** (1) Brief-kuralın ("migration etkisiz kontrolü yine istenir") Z111-§16'da yoktu —
+Team Lead'in eklemesiydi ve şerit ölçümle çürüttü: hüküm-katmanı disiplini brief-yazana da işledi,
+doğru gramerle rapor edildi. (2) Harness-sınırı kayda: geri-alınamaz migration'ın up-etkisi ancak
+taze DB'de (S_pre → up) ölçülebilir — bu harness'ın modeli değil; **Faz-3 harness-adayı
+("taze-DB kolu")**, bugün beyan sınırı yeter (1834/1835 zaten tipi-yeniden-yaratan down kullanacak
+— beyan nadir yol).
+
+**Ek hüküm:** jq-okunamayan beyan → "beyansız" (kırmızı) DEĞİL, ÖLÇEMEDİM — "beyan var ama
+okunamadı" ile "beyan yok" farklı olgular; ilkini ikinciye düşürmek güvenli yöne ama sessiz
+(§2.5). Şeridin "bozuk beyan dosyası → ÖLÇEMEDİM" satırıyla tutarlı olsun; jq-boş-alan dalı o
+yola bağlanır.
+
+**TypeORM tuzağı:** `query()` → `[rows, count]`, `.length` hep 2 — 1836/1838 brief'lerine uyarı
+satırı; yan bulgu, ileride sayaç yazan ilk şeridi kurtarır.
+
+**Sıra:** A-düzeltmesi → reviewer + bağımsız doğrulama (1833 yeniden, enum-dışı bilinen-kırmızı
+önce/sonra, 51 basılı, koşulmamış 5 fixture) → push-order-satırı + ratchet → tek push → 1835 →
+1838 → İŞ-2.
+
+#### `18.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "üç-meşru-çıktı yasası"   [ÖLÇÜLDÜ: grep "## BİR KAPININ ÜÇ MEŞRU ÇIKTISI VARDIR" docs/DISIPLIN.md] F04'te VAR
+  "1834/1835 tipi yeniden yaratan down"  Z111 §13 enum hükmü · MIGRATION_SEQUENCE 1835 F12 satırı
+  "jq-boş-alan dalı"        [ÖLÇÜLDÜ: collmind.backend/scripts/migration-verify.sh:341-349]
+                            jq -r … 2>/dev/null ⇒ jq başarısızsa alan "" ⇒ "beyan YOK … BEYANSIZ yola düşer"
+                            satırını basıyor — hükmün tarif ettiği sessiz düşüş BİREBİR bu
+
+KAPSAMI DÜZELEN
+  T1  "RETURNING-tuzağı — query() → [rows, count]"
+      [ÖLÇÜLDÜ: collmind.backend/node_modules/typeorm/package.json:3 → 0.3.28]
+      [ÖLÇÜLDÜ: node_modules/typeorm/driver/postgres/PostgresQueryRunner.js:172-211 query()]
+        switch (raw.command) { case "DELETE": case "UPDATE": result.raw = [raw.rows, raw.rowCount];
+                               default: result.raw = raw.rows; }  · useStructuredResult=false ⇒ return result.raw
+      ⇒ tuzak RETURNING'e DEĞİL KOMUT TİPİNE bağlı: UPDATE ve DELETE (RETURNING olsun olmasın) → [rows, rowCount];
+        INSERT … RETURNING ve SELECT → düz rows dizisi
+      ⇒ 1836 bir UPDATE (seed tutarsızlığı düzeltmesi) — tuzak ona TAM oturuyor
+      ⇒ güvenli okuma: query(sql, params, true) → result.affected (useStructuredResult) — ya da [rows, count] AÇIKÇA ayrıştır
+
+TEAM LEAD YORUMU — ürün sahibinin itiraz hakkı AÇIK
+  Y1  harness bugün iki durumu daha "beyansız"a düşürüyor [ÖLÇÜLDÜ: migration-verify.sh:350-360]:
+        tanınmayan değer   (REVERSIBILITY='FOO' · EFFECT='BAR')           → "?? … BEYANSIZ gibi işlem görecek"
+        çelişen kombinasyon (REVERSIBILITY ∧ EFFECT birlikte)              → aynı
+      ⇒ ikisi de "beyan VAR ama anlaşılamadı" — hükmün "okunamadı ≠ yok" ilkesinin AYNI sınıfı
+      ⇒ şeride ÖLÇEMEDİM olarak UYGULATILDI (HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.10) — itiraz gelirse geri alınır
+```
+
+#### `18.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+A · jq · Y1 · taze-DB kolu (Faz-3 adayı)   docs/process/HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.10
+TypeORM tuzağı (T1)                        HALKA3_IS2_ACTUALS_OLAY_MODELI_BRIEF.md §5.1 · MIGRATION_SEQUENCE 1836 · 1838
+```
+
+---
+
+### `§19` · SON REVIEW'UN İKİ DUR'U: B-2 · B-3 · BAYAT BEYAN · S-10 ÖN-HÜKMÜ (ürün sahibi + Fable, 2026-09-11)
+
+**B-2: (a)+(b)** — ve üçüncü bir güvence, ratchet: sebep zorunlu (beyan bir iddiadır, sebepsiz iddia
+yok — F00 ilkesi) + yeşile "up etkisi bu döngüde ölçülemez" satırı (kanıt-sınırı adıyla) +
+NONE_BY_DESIGN beyanlı migration'lar MIGRATION_SEQUENCE listesinde gerekçeli, ratchet'li — kapıyı
+dolanmak mümkün ama görünmez değil: her beyan listede, listenin artışı ayrı-commit + gerekçe.
+(c) reddi: her meşru assert-only koşumu ÖLÇEMEDİM'e düşürmek gürültü üretir, gürültü kapıyı öldürür
+(Z83). Taze-DB kolu Faz-3-adayı olarak kayıtta — o gelince (a)-satırı ölçüme döner.
+
+**B-3: (a)+(b):** af yalnız H == S0'a (etki gerçekten kalıcıysa; down bir şey geri alıp up yeniden
+uygulamıyorsa bu "geri alınamaz" değil "yarım down" — kırmızı). (b) beyandan bağımsız her koşumun
+son kontrolü: başlangıç-snapshot == son-snapshot — "harness iz bırakmaz" invaryantı;
+general-known-red'in bıraktığı kalıntı tam bu kontrolün yakalayacağı şey.
+
+**Bayat beyan** (IRREVERSIBLE_ADD ama geri alınabiliyor): **KIRMIZI.** Beyan ile ölçülen davranış
+çelişiyor — "çelişen beyan" sınıfı burada ÖLÇEMEDİM değil kırmızı, çünkü ölçüm tam: H≠S0 ölçüldü,
+beyan yanlış. Yeşil+bilgi sessiz-bayatlık; kırmızı beyanı düzelttirir (listeden düşer, ratchet azalır).
+
+**S-10 ön-hüküm** (şerit ölçüp seçenek listeleyecek, uygulamayacak — doğru): 51-tablo hash'inde
+volatile kolonlar (sequence-id, now()-default, updated_at) tekrarlanabilirliği bozar —
+migrations.id'nin genel hali. Çözüm-yönü: volatile-kolon listesi TÜRETİLMİŞ
+(information_schema.columns.column_default ~ nextval|now|CURRENT_TIMESTAMP + updated_at-sınıfı),
+hash o kolonları dışlar; elle liste yasak (G5). 1836/1838 bu sınıfa girer — ölçüm onlardan önce,
+şeridin listesiyle hüküm.
+
+**Onay ve sıra:** B-1 (döngü-satırı sayımı + stdin-mutasyonu → ÖLÇEMEDİM) ve S-1..S-9
+karar-gerektirmiyor, beşinci tur doğru. Sıra: beşinci tur → B-2/B-3/bayat-beyan düzeltmesi (küçük
+altıncı tur) → son diff reviewer + bağımsız doğrulama → push-order-satırı + ratchet → tek push →
+1835 → 1838 → İŞ-2. Beyan-sistemi bittiğinde harness'ın üç kolu (kolon/kısıt · veri · beyan) üçü de
+bilinen-kırmızılı doğmuş olacak — F04-kuralının ilk tam uygulaması.
+
+#### `19.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "elle liste yasak (G5)"   [ÖLÇÜLDÜ: grep G5 04_KARAR_KAYDI.md:6626] "G5 yasası: yazılmış < taranmış < türetilmiş"
+  "gürültü kapıyı öldürür"  [ÖLÇÜLDÜ: grep docs/DISIPLIN.md:3930] F04 "ÖNCE BORÇ, SONRA KAPI — KIRMIZI DOĞAN KAPI ÖLÜR"
+  "updated_at-sınıfı"       [ÖLÇÜLDÜ: information_schema.columns main, column_name='updated_at'] 48 kolon ·
+                            47'sinde default now() ⇒ default'tan türetme sınıfın 47/48'ini KAPSAR; 1 kolon default'suz
+
+UYUŞMAYANLAR / BAĞIMLILIK (F12 ürün sahibinin)
+  N12  B-3 (b) "general-known-red'in bıraktığı kalıntı tam bu kontrolün yakalayacağı şey"
+       [ÖLÇÜLDÜ: Team Lead doğrulama betiği] kalıntı HARNESS BİTTİKTEN SONRA, betiğin kendi geri alma adımında
+       (npm run typeorm -- migration:revert, boş down) doğdu — harness'ın son adımı run2 ⇒ son snapshot'ta tablo VAR,
+       başlangıç H'de de tablo VAR ⇒ başlangıç == son EŞİT ⇒ bu kontrol o kalıntıyı YAKALAMAZ
+       ⇒ kontrol B-3 senaryosu (H≠S0 ∧ S0==A → son ≠ H) için DOĞRU; kalıntı ise fixture TEMİZLİK belgesinin (S-6) konusu
+  N13  S-10 "column_default ~ nextval|now|CURRENT_TIMESTAMP"
+       [ÖLÇÜLDÜ: information_schema.columns main, column_default sınıflandırması]
+         uuid üretici (uuid_generate_* / gen_random_uuid)   48 kolon · 48 tablo   ⛔ DESENDE YOK
+         zaman (now() / CURRENT_TIMESTAMP / CURRENT_DATE)    96 kolon · 48 tablo
+         sequence (nextval)                                   1 kolon  (migrations.id)
+         sabit (enum/literal — deterministik)               122 kolon · 39 tablo
+       ⇒ INSERT eden her migration her koşumda YENİ uuid üretir — uuid üreticileri türetilmiş listeye girmeden
+         tekrarlanabilirlik sorunu ÇÖZÜLMEZ (bu bir TÜRETME eksiği, elle liste gerekçesi DEĞİL)
+  BAĞ  B-3 (b) "başlangıç-snapshot == son-snapshot" da AYNI volatil kolonlara takılır:
+       H (hedefin İLK uygulanışı) ile son snapshot (harness'ın run2'si) INSERT'li migration'da farklı uuid/zaman taşır
+       ⇒ (b) kontrolü S-10'un volatil maskesi olmadan yanlış KIRMIZI üretir ⇒ (b) S-10 hükmüyle AYNI turda iner
+```
+
+#### `19.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+B-2 · B-3 · bayat beyan · (b)↔S-10 bağı   docs/process/HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.12 (altıncı tur)
+NONE_BY_DESIGN sebep + liste               docs/process/BEYANLI_MIGRATION_RATCHET_BRIEF.md · MIGRATION_SEQUENCE beyan bloğu biçim notu
+S-10 ön-hüküm yönü + N13                   HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.12
+```
+
+---
+
+### `§20` · N13 · S-10 HÜKMÜ · N12 TEYİDİ (ürün sahibi + Fable, 2026-09-11)
+
+**N13: EVET** — uuid üreticileri girer; ve ölçüt ad/desen değil, katalog-türevi olsun: "volatil kolon" =
+`column_default`'u volatile fonksiyon çağıran kolon — `pg_attrdef` → fonksiyon → `pg_proc.provolatile = 'v'`.
+`nextval`, `now()`, `CURRENT_TIMESTAMP`, `gen_random_uuid`, `uuid_generate_v4` hepsi bu ölçütle kendiliğinden
+girer; yarın bir `random()`-default de girer — desen yazılmaz (G5 tam: türetilmiş). Benim
+`nextval|now|CURRENT_TIMESTAMP` desenim yazılmış-evrendi; N13 onu çürüttü — F12.
+```
+VOLATİL MASKE   hash'ten dışlanan kolonlar = provolatile='v' default'lu kolonlar (türetilmiş);
+                satır SAYIMI maskelenmez (satır var mı/yok mu ölçülür); maskelenen kolonlar
+                çıktıda LİSTELENİR (görünür maske — sessiz değil; "n kolon maskelendi")
+SINIR (adıyla)  maskelenen kolonda gerçek bir değişim ölçülemez — harness veri-DEĞERİNİ değil
+                şema + satır-yapısını doğrular; volatil değer tanım gereği tekrarlanamaz
+VARSAYILANSIZ updated_at (1 kolon)   harness'ta özel-durum DEĞİL — kolonun kendisi T-351'e:
+                varsayılan eklenir (ad-borcu/tutarsızlık); migration açıkça now() yazıyorsa
+                hash yakalar, düzeltme kolonda
+"BAŞLANGIÇ == SON"   maske ile birlikte iner; maske yoksa ÖLÇEMEDİM (altıncı turun kararı doğru)
+```
+**N12 teyit** — öncül yanlıştı, F12: "başlangıç==son" kontrolü B-3 (yarım-down) için doğru,
+general-known-red kalıntısı ise harness-sonrası betiğin işi (S-6). Kontrolün ne yakalamadığı sınırıyla kayda.
+
+**Sıra:** beşinci tur → altıncı tur (B-2/B-3/bayat + S-10 maske + başlangıç==son) → reviewer + bağımsız
+doğrulama (kol başına bilinen-kırmızı: sebepsiz-NONE · dolanma-görünür · yarım-down · bayat-beyan ·
+maske-öncesi/sonrası) → push-order-satırı + ratchet → tek push → 1835 → 1838 → İŞ-2.
+
+#### `20.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "yarın random() da girer"   [ÖLÇÜLDÜ: SELECT proname, provolatile FROM pg_proc] random 'v' · clock_timestamp 'v'
+  "gen_random_uuid · uuid_generate_v4 · nextval girer"   gen_random_uuid 'v' (pg_catalog + public) ·
+                              uuid_generate_v4 'v' · nextval 'v'
+
+UYUŞMAYANLAR (F12 ürün sahibinin)
+  N14  "now() · CURRENT_TIMESTAMP provolatile='v' ölçütüyle kendiliğinden girer"
+       [ÖLÇÜLDÜ: pg_proc] now 's' · transaction_timestamp 's' · statement_timestamp 's'  ⛔ VOLATILE DEĞİL, STABLE
+       [ÖLÇÜLDÜ: pg_get_expr(pg_attrdef) main] CURRENT_TIMESTAMP 74 · now() 22 · uuid_generate_v4() 48 · nextval 1
+       ⇒ provolatile='v' ölçütü 96 ZAMAN kolonunun HİÇBİRİNİ yakalamaz — S-10 sorunu INSERT'li migration'da SÜRER
+  N15  "pg_attrdef → fonksiyon" izi
+       [ÖLÇÜLDÜ: pg_depend classid=pg_attrdef, refclassid=pg_proc] uuid_generate_v4() 48/48 · now() 0 · nextval 0 ·
+       CURRENT_TIMESTAMP 0 — yerleşik fonksiyonlar PINNED, bağımlılık kaydı TUTULMUYOR (yalnız eklenti fonksiyonu görünür)
+       [ÖLÇÜLDÜ: pg_attrdef.adbin düğüm ağacı] CURRENT_TIMESTAMP bir fonksiyon çağrısı DEĞİL: {SQLVALUEFUNCTION :op 3}
+       (dış sarmalayıcı timestamptz→timestamp cast'i FUNCEXPR :funcid 2027)
+       ⇒ pg_depend yolu: nextval bile DÜŞER, kalan yalnız 48 uuid kolonu
+  N16  "VARSAYILANSIZ updated_at (1 kolon) — kolonun kendisi T-351'e: varsayılan eklenir"
+       [ÖLÇÜLDÜ: information_schema.columns main, column_name='updated_at' ∧ column_default IS NULL]
+         → v_budget_summary.updated_at — bir VIEW kolonu (değeri budget_envelopes'tan) · view kolonuna varsayılan EKLENEMEZ
+       ⇒ tablo updated_at kolonlarının HEPSİ varsayılanlı · T-351'e girecek kolon YOK · "1 kolon" information_schema'nın
+         view'ları da listelemesinden doğdu (evren = tablolar değil, ilişkiler)
+
+YAPISAL TÜRETME — UYGULANABİLİRLİK (ölçüm, seçim DEĞİL)
+  [ÖLÇÜLDÜ: pg_attrdef.adbin::text'ten ':funcid N' düğümleri → pg_proc.provolatile · SQLVALUEFUNCTION düğümü; main, sentetik hariç]
+    fonksiyonsuz (enum/sayı/boolean sabit)      77 kolon
+    i  (immutable cast'li sabit)               45
+    s  now()                                   22
+    s + SQLVALUEFUNCTION  CURRENT_TIMESTAMP    74
+    v  uuid_generate_v4()                      48
+    iv nextval (migrations.id)                  1
+  SEÇENEKLER
+    (A) provolatile IN ('v','s') ∨ SQLVALUEFUNCTION düğümü; funcid'ler DÜĞÜM AĞACINDAN (metin deseni YOK)
+        → 145 kolon (uuid · sequence · now() · CURRENT_TIMESTAMP) · sabitler ve immutable cast'ler DIŞARIDA · bugün yanlış-maske 0
+        sınır: sabit bir değerin STABLE cast'i de maskelenir (değişimi GİZLEME yönünde) · düğüm ağacı biçimi Postgres İÇ formatı
+    (B) yalnız provolatile='v' (hüküm metni)     → 49 kolon · 96 zaman kolonu maskesiz ⇒ INSERT'li migration'da 1==3 KIRMIZI sürer
+    (C) (B) + pg_depend izi (hüküm metninin "pg_attrdef → fonksiyon")   → 48 kolon · nextval da düşer
+  ⇒ Team Lead önerisi (A) — karar ürün sahibinin; altıncı turda bu nokta DUR
+```
+
+#### `20.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+S-10 hükmü · N14–N16 · seçenekler   HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.12.2 (ölçüt DUR)
+N12 teyidi                         §19.1 N12 aynen — şerh gerekmedi
+N16                                T-351'e EK YAZILMADI (girecek kolon yok)
+```
+
+---
+
+### `§21` · ÖLÇÜT (A) ONAYLI · İKİ SINIRA İKİ GÜVENCE · N16 TEYİDİ (ürün sahibi + Fable, 2026-09-11)
+
+**A) — onaylı:** düğüm-ağacından fonksiyon-kimlikleri → `provolatile ∈ {'v','s'}` ∨ `SQLVALUEFUNCTION` düğümü;
+145 kolon, sabitler ve immutable-cast'ler dışarıda. Benim ölçütüm ("`provolatile='v'`") ilkesi doğru, içeriği
+yanlıştı — `now()`'un STABLE olduğunu ölçmeden yazdım; N14 çürüttü, N15 pg_depend yolunu kapattı, Team Lead
+katalogun asıl türetim-yüzeyini (adbin düğüm-ağacı) buldu — "katalog-türevi, desen yazılmaz" ilkesi ancak
+böyle karşılanıyor. F12.
+```
+SINIR 1  stable-cast'li sabit maskelenir (gizleme yönü) — bugün yok; güvence: maskelenen
+         kolon LİSTESİ çıktıda (görünür maske) + self-test'te "maskelenen kolon sayısı 145"
+         bilinen-yeşil olarak PİNLİ — yeni bir sabit-stable kolon girerse sayı değişir,
+         insan bakar (ratchet-benzeri: artış gerekçe ister)
+SINIR 2  adbin metin biçimi Postgres-iç; sürüm yükseltmesinde değişebilir — harness
+         Postgres-sürümünü ÖLÇER ve self-test'in düğüm-ayrıştırma vakası (dört varsayılan
+         türü) sürüm değişince kırmızı/ÖLÇEMEDİM verir — bilinen-yeşil bunu korur; kabul
+```
+**N16 teyit:** "1 varsayılansız updated_at" bir view kolonuydu — information_schema'nın view'ları da listelemesi;
+T-351'e girecek kolon yok, madde düşer. Evren-dersi: tablo ≠ view, `table_type` filtresi olmadan sayılan "kolon"
+evreni fazla — F02'ye küçük not.
+
+**Sıra:** beşinci tur → altıncı tur (B-2/B-3/bayat + maske-(A) + başlangıç==son) → reviewer + bağımsız doğrulama
+(maske-öncesi/sonrası bilinen-kırmızı: satır-ekleyen sentetik migration) → push-order-satırı + ratchet → tek push →
+1835 → 1838 → İŞ-2.
+
+#### `21.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "harness Postgres sürümünü ölçer"  [ÖLÇÜLDÜ: SELECT version(), current_setting('server_version_num')]
+                                     PostgreSQL 16.15 · 160015
+  "dört varsayılan türü"             [ÖLÇÜLDÜ: (A) ölçütü, main, sentetik hariç] maskelenen İFADE TÜRLERİ:
+                                     CURRENT_TIMESTAMP 74 · uuid_generate_v4() 48 · now() 22 ·
+                                     nextval('main.migrations_id_seq') 1 — dört tür, hepsi relkind 'r'
+
+UYUŞMAYANLAR (F12 ürün sahibinin)
+  N17  SINIR 1 güvencesi "maskelenen kolon SAYISI 145 pinli — yeni sabit-stable kolon girerse sayı değişir"
+       [ÖLÇÜLDÜ: (A) ile maskelenen kolonların tablo başına dağılımı]
+         3 kolon 46 tablo · 1 kolon 1 · 2 kolon 1 · 4 kolon 1 — toplam 145 · 49 tablo
+       ⇒ tipik tablo = uuid kimlik + created_at + updated_at ⇒ YENİ TABLO ekleyen HER migration sayıyı +3 değiştirir
+       ⇒ sayı pini "stable-cast sabit sızdı" ile "meşru yeni tablo geldi"yi AYIRT ETMEZ — her yeni tabloda
+         gerekçe isteyen bir alarm (gürültü; §19'un (c) reddinin gerekçesiyle AYNI sınıf)
+       ⇒ Team Lead önerisi: pin = maskelenen İFADE TÜRÜ KÜMESİ (bugün 4); sayı yalnız bilgi satırı — sızan
+         stable-cast YENİ bir tür olarak görünür, yeni tablo mevcut türleri TEKRAR eder
+  N18  SINIR 1-2 güvenceleri "self-test'te pinli · self-test'in düğüm-ayrıştırma vakası"
+       [ÖLÇÜLDÜ: ls collmind.backend/scripts/ | grep migration-verify · grep -- --self-test migration-verify.sh → boş]
+       ⇒ harness'ın SELF-TEST MODU YOK — bilinen-yeşiller fixture koşumları, ayrı bir self-test değil
+       ⇒ Team Lead teknik kararı (yer — hükmün niyetini karşılayan): harness HER KOŞUMDA geri alınan bir transaction
+         içinde dört varsayılan türünü taşıyan geçici tablo kurar, adbin'i ayrıştırır, sınıflandırma beklenen değilse
+         ÖLÇEMEDİM verir ve Postgres sürümünü basar — DISIPLIN F04 "CANLILIK PROBU, ASIL KONTROLÜN YÜZEYİNDE KOŞMALIDIR"
+       ⇒ pin'in YERİ bu karara bağlıdır; pin'in ŞEKLİ N17'ye (ürün sahibinin)
+```
+
+#### `21.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+(A) · SINIR 1-2 · N17 (DUR) · N18 (canlılık probu)   HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.12.2 ikinci F12
+N16 evren dersi                                      docs/DISIPLIN.md F02 "information_schema.columns bir İLİŞKİ evrenidir"
+```
+
+### `§22` · N17 KAPANDI — PİN = MASKELENEN İFADE-TÜRLERİNİN KÜMESİ · SAYI YALNIZ BİLGİ (ürün sahibi + Fable, 2026-09-11)
+
+**N17: onay** — pin, maskelenen ifade-**türlerinin kümesi**; sayı yalnız bilgi. *"145 pinli"* önerisi bir
+**değer-pini** idi — ürün sahibinin kendi kuralının (ilişki-pini > değer-pini, `Z56`) ihlali; yeni tablo ekleyen her
+migration'ı kırmızıya çevirirdi. Tür-kümesi pini **sınır-1'i** (stable-cast'li sabit) daha iyi korur: kümeye yeni bir
+tür girerse (bugün dört: `uuid_generate_v4` · `nextval` · `now()` · `CURRENT_TIMESTAMP`) pin **kırmızı** → insan bakar
+*"bu tür maskelenmeli mi"*; sayı değişimi ise gürültü. **F12 ürün sahibinin satırına.**
+
+Pin **ayrı küçük adım** — altıncı turda yazılmaz. İlk denemenin kota-düşüşünün hiçbir şeyi değiştirmediğinin dört
+ölçümle (dosya-zamanı · 42 kayıt · DB-tabanı · hayalet-yok) gösterilmesi: yarım-devir yasasının temiz uygulaması.
+
+**Sıra:** altıncı tur → reviewer + bağımsız doğrulama (kol başına bilinen-kırmızı + prob-kırma) → **tür-kümesi pini
+(küçük)** → push-order-satırı + ratchet → tek push → 1835 → 1838 → İŞ-2.
+
+#### `22.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "ilişki-pini > değer-pini, Z56"   [ÖLÇÜLDÜ: grep 04_KARAR_KAYDI Z56 gövdesi] "%90-pini DEĞER-pini değil,
+                                    İLİŞKİ-pini olsun" · ayrıca DISIPLIN "⇒ VE ÇÖZÜMÜN BİÇİMİ: DEĞER-pini değil,
+                                    İLİŞKİ-pini" · Z57 §1a "en somut kanıt"
+  "bugün dört tür"                   [ÖLÇÜLDÜ: kolon başına volatil/stable düğüm-anahtarlarının sıralı birleşimi,
+                                    main, relkind 'r', sentetik hariç] DÖRT imza · toplam 145:
+                                      SQLVALUEFUNCTION(op 3 = CURRENT_TIMESTAMP)+timestamp  74 kolon · 37 tablo
+                                      now+timestamp                                        22 kolon · 11 tablo
+                                      uuid_generate_v4                                     48 kolon · 48 tablo
+                                      nextval                                               1 kolon ·  1 tablo
+  TEMP tablo pg_attrdef'i doldurur   [ÖLÇÜLDÜ: BEGIN; CREATE TEMP TABLE …; ROLLBACK — sonra to_regclass → yok]
+                                    (brief §9.12.2 prob sorusunun bir yarısı; prob yerini şerit kendisi ölçüyor)
+
+UYUŞMAYAN (karar değil — ölçüm + Team Lead teknik kararı, N18 emsaliyle)
+  N19  "TÜR" KİMLİĞİ TANIMSIZ — üç aday, üçü ölçüldü:
+       (i)   ifade METNİ (pg_get_expr)  — §21: metin sınıflandırmada YASAK · nextval('<sequence>') sequence ADINI
+             taşır ⇒ serial kolonlu yeni tablo = yeni "tür" ⇒ değer-pininin gürültüsü GERİ GELİR
+       (ii)  FONKSİYON başına anahtar   [ÖLÇÜLDÜ] küme = {CURRENT_TIMESTAMP, now, timestamp, nextval, uuid_generate_v4}
+             = BEŞ — zaman kolonlarının 96'sında CURRENT_TIMESTAMP/now() bir STABLE `timestamp` cast'iyle sarılı
+             [ÖLÇÜLDÜ: geri alınan TEMP tablo] DEFAULT '2020-01-01'::timestamptz (timestamp kolonda) → {timestamp}
+             ⇒ kümede ZATEN VAR ⇒ stable-cast'li sabit pini KIRMIZIYA ÇEVİRMEZ ⇒ SINIR 1'İ KAÇIRIR
+       (iii) KOLON başına İMZA          (volatil/stable anahtarların sıralı birleşimi) — bugün DÖRT (yukarıda)
+             [ÖLÇÜLDÜ: aynı prob] '2020-01-01'::timestamptz → {timestamp} = YENİ imza ⇒ pin KIRMIZI ✓
+             nextval imzası sequence adı taşımaz ⇒ serial'lı yeni tablo gürültü DEĞİL ✓
+       ⇒ Team Lead teknik kararı: (iii) — hükmün niyetini ("kümeye yeni tür girerse kırmızı") ölçülmüş olarak
+         karşılayan TEK biçim; ürün sahibi aksini derse değişir
+       ⚠️ (iii)'nin gürültü yönü [ÖLÇÜLDÜ: aynı prob] — meşru yeni BİÇİMLER de yeni imzadır:
+             timestamptz kolon + CURRENT_TIMESTAMP → {CURRENT_TIMESTAMP} (cast'siz) · CURRENT_DATE → {op 0} ·
+             now()::date → {date+now} · stable to_char(…) → {to_char}
+         ⇒ bunlar da kırmızı verir — hükmün "insan bakar" yönü; sıklık bugün ÖLÇÜLMEDİ (bilgi, karar değil)
+```
+
+#### `22.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+N17 onayı · N19 (iii) · pin adımı brief'i   HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.12.2 üçüncü F12 + §9.13
+```
+
+### `§23` · N19 ONAYLI (KOLON-BAŞINA İMZA) · KAYBOLAN İMZA ÖN-HÜKMÜ · KURAL ADAYI GÜNLÜĞE (ürün sahibi + Fable, 2026-09-11)
+
+**N19: kolon-başına imza — onay.** Gerekçe: *"kümeye yeni tür girerse kırmızı"* niyetini ölçülmüş olarak karşılayan
+tek tanım — fonksiyon-başına tanım stable-cast'li sabiti (`'2020-01-01'::timestamptz`) mevcut `{timestamp}` imzasına
+gömüp sınır-1'i kaçırıyordu; ifade-metni ise `nextval('<seq>')` yüzünden her serial-tabloda gürültü.
+**Bedel kabul** (meşru yeni biçimin kırmızı vermesi: cast'siz `CURRENT_TIMESTAMP` · `CURRENT_DATE` · `now()::date`) —
+yanlış-yön güvenli: kırmızı bir insana *"bu imza maskelenmeli mi"* diye sordurur, pin-artefaktına gerekçeyle girer
+(ratchet-deseni). Sıklık ölçülmedi — **pin doğduktan sonra ilk iki haftada sayılır; gürültü yüksekse tanım daraltılır**
+(kural: gürültü kapıyı öldürür).
+
+**"Kaybolan imza" ön-hükmü (şerit ölçüp raporlar):** kırmızı DEĞİL — **ÖLÇEMEDİM-sınıfı uyarı + çapraz-kontrol.**
+Kaybolma iki şey olabilir: migration o türden kolonları gerçekten kaldırdı (meşru, maske daralır) ya da harness o
+tabloları göremedi (körlük — tek-tablo hatasının kardeşi). Ayıran: **tablo-sayımı** — sabitken imza kayboldu → meşru,
+bilgi; tablo-sayısı da düştü → körlük şüphesi → ÖLÇEMEDİM. Şerit bu ayrımı ölçer.
+
+**Kural önerisi — GÜNLÜĞE, aday olarak; DISIPLIN'e ikinci vakada.** *"Bir küme-pininin ayırt etme gücü, küme üyesinin
+kimlik tanımına bağlıdır"* — doğru ve keskin, ama "gözlem → ikinci vakada kural" bugün tek vaka görüyor. `F03`
+ailesinde yakın emsal: **seviye-körlüğü** (aynı kural iki seviyede, pin birinde); bu ise **kimlik-körlüğü** (küme-üyesi
+kaba tanımlanınca pin kör). İkinci vakada `F03`'ün **yedinci türü** olur; tetikleyici hazır:
+🔎 *"bir kümeyi pinliyorum — üyenin kimliği ne?"* Günlüğe bu tetikleyiciyle girer; terfi otomatik.
+
+**Sıra değişmedi:** altıncı tur → reviewer + bağımsız doğrulama → §9.13 pin-adımı (kolon-imza, artefakt gerekçeli) →
+push-order-satırı + ratchet → tek push → 1835 → 1838 → İŞ-2.
+
+#### `23.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "F03 pin-kör-noktası ailesi"       [ÖLÇÜLDÜ: grep DISIPLIN] "# AİLE F03 — PİN ve KÖR NOKTA" (:2555)
+  "seviye-körlüğü emsali"            [ÖLÇÜLDÜ] DISIPLIN :3380 "PİN KÖR-NOKTA AİLESİNİN ALTINCI TÜRÜ: SEVİYE KÖRLÜĞÜ"
+                                     ⇒ "yedinci tür" sayımı bu satıra göre DOĞRU
+  "gözlem → ikinci vakada kural"     [ÖLÇÜLDÜ] DISIPLIN :262 "GÖZLEM → İKİNCİ VAKADA KURAL → ÜÇÜNCÜDE ARAÇ"
+  "günlük"                           [ÖLÇÜLDÜ: find] docs/process/GOZLEM_GUNLUGU.md · başlık: "her madde DISIPLIN'de
+                                     başlığı ve tek satırlık özetiyle DURUYOR" ⇒ aday DISIPLIN F03'te STUB ile girer
+                                     (mevcut desen :5727 · :7061) — gövde günlükte
+
+UYUŞMAYANLAR (F12 ürün sahibinin)
+  N20  "51 sabitken imza kayboldu → meşru"
+       [ÖLÇÜLDÜ: pg_tables schemaname='main', HEAD 1833] 51 — ama "51" bir DEĞER: tablo ekleyen ilk migration'dan
+       sonra çürür (Z56 · §22'nin kendi gerekçesi)
+       ⇒ ayrımın İLİŞKİ biçimi: aynı koşumda tablo-sayısı(S0) ile tablo-sayısı(H) karşılaştırılır — sabit sayı YAZILMAZ
+       ⇒ [ÖLÇÜLMEDİ — şerit ölçer] "kaybolan"ın referansı: pin artefaktı mı, S0'daki imza kümesi mi
+         (imza S0'da da yoksa kaybolma bu migration'dan DEĞİL — bayat pin)
+  N21  tablo-sayımı ayrımının KÖR KALDIĞI yol — ad filtresi
+       [ÖLÇÜLDÜ: Team Lead'in §22.1 ölçüm sorgusu] imza türetimi sentetikleri AD DESENİYLE dışlıyordu
+       (relname NOT ILIKE '%synth%' / '\_mv%')
+       ⇒ harness sınıflandırıcısı böyle bir ad filtresi taşıyorsa: desene uyan GERÇEK bir tablo imza türetiminden
+         düşer, filtresiz tablo-sayımında KALIR ⇒ sayı sabit + imza kayboldu ⇒ "meşru, bilgi" — YANLIŞ YEŞİL
+         (F06 ad ≠ mekanizma · DISIPLIN F02 kapsam maskelemesi)
+       ⇒ [ÖLÇÜLMEDİ — şerit ölçer] altıncı turun sınıflandırıcısında ad filtresi var mı; çapraz-kontrol sayımı imza
+         türetimiyle AYNI evren tanımından mı geliyor
+  N22  "ilk iki haftada sayılır"
+       ⇒ sayımın KAYNAĞI tanımsız: [ÖLÇÜLMEDİ] harness koşumları kalıcı bir yere yazılmıyor olabilir
+       ⇒ Team Lead önerisi: türetilebilir kaynak = pin artefaktının git log'u (gerekçeli her kabul bir commit) —
+         reddedilen kırmızılar orada GÖRÜNMEZ ⇒ pin doğduğu commit'te tarihli bir TASK açılır
+         (DISIPLIN: "Bilinen eksiklik TODO ile değil, TASK ile kaydedilir")
+  N23  DISIPLIN :3003 başlığı "PİN KÖR-NOKTA AİLESİ — dört tür" · tablosu BEŞ satır · :3380 "ALTINCI"
+       ⇒ elle yazılmış üye-sayısı BAYAT (DISIPLIN "Elle yazılmış üye-sayısı: dokuzda dokuz") — onuncu vaka
+       ⇒ Team Lead önerisi: başlıktan sayı düşer ("Dokümanda sayı yazma"); düzeltme bu kayıtla YAPILMADI
+```
+
+#### `23.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+N19 onayı · kaybolan-imza ön-hükmü · N20–N22   HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.13.1 (F12) + §9.13.5
+kural adayı (kimlik-körlüğü)                   docs/process/GOZLEM_GUNLUGU.md (gövde + envanter 4) · DISIPLIN F03 stub
+```
+
+### `§24` · ALTINCI TUR SONRASI ÜÇ KARAR · YEDİNCİ TUR ONAYLI (ürün sahibi + Fable, 2026-09-11)
+
+**K1: (a)** — kapsam DEFAULT'ta kalır; `s10-update-now` bilinen-kırmızı olur, adı mekanizmayı söyler; ve FK-notu
+harness'ın sınırını **kapı-sözleşmesine** yazdırır. Gerekçe: maskenin işi tekrarlanabilirliği korumak, migration-gövdesinin
+ürettiği değerleri tahmin etmek değil — `SET updated_at = now()` kapsama alınırsa harness gövdeyi okumak zorunda kalır
+(desen yazılır, G5 ihlali). Ama reviewer'ın notu asıl sınırı gösteriyor: uuid-kimlikli tabloya veri yazan her migration
+(parent+child, 147 FK) maskeyle de kırmızı — harness'ın *"veri byte-birebir"* kolu uuid-veri-üreten migration'larda
+**ölçemez**. Kusur değil **sınır**, ama adıyla: veri-kolu çıktısı **üç değerli** — *"veri: byte-birebir / kırmızı /
+ÖLÇEMEDİM: migration volatile-kimlikli satır üretiyor (N satır, tablo listesi)"*; beyan-sistemi burada da işler:
+`EFFECT=DATA_VOLATILE_INSERT` beyanlı + sebepli → veri-kolu ÖLÇEMEDİM, şema-kolu tam. 1836/1838 (olay-satırı üreten
+migration'lar) bu sınıfa girecek — sınır şimdi yazılmazsa orada tur ortasında DUR doğar.
+
+**K2: KIRMIZI** — altıncı tur kazanır; beşinci turun kuralına F12. ÖLÇEMEDİM *"beyan var, okunamadı"* (bozuk dosya/jq)
+içindir; boş ya da yalnız-boşluk sebep **okundu ve geçersiz** — *"beyan yok"*la aynı sınıf (sebepsiz iddia), kırmızı.
+Beşinci turun *"jq-boş-alan → ÖLÇEMEDİM"* satırı okunamayan-alan içindi, boş-değer için değil — sınır şerhle.
+
+**K3: sıra onaylı** — altıncı tur → **yedinci tur** (iki bloklayıcı + sınıflandırıcı tek yer + fonksiyon-kimlikli sabit
+negatif + 8 bulgu + üç yeni kalıcı fixture: SON-KONTROL, maske-kapalı, uuid-tabloya-iki-satır) → tür-kümesi pini
+(kolon-imza) → push-order-satırı + ratchet → tek push → 1835 → 1838 → İŞ-2.
+
+**Üç kayıt:**
+1. Bloklayıcı-1 (maskeli hash, maskelenmemiş sıralama) — kanıt tek satır eklediği için görmedi: ***"bilinen-kırmızı,
+   kusurun doğduğu kardinalitede kurulur"*** — tek-satır fixture sıralama-kusurunu yapısal olarak göremez (T-332'nin
+   kardinalite-hali); reviewer'ın 10-koşum ölçümü doğru yöntem.
+2. Bloklayıcı-2 (prob = sınıflandırıcının kopyası → mutasyonla "✓" derken maske 145→123) — kapı-kopyasının kendi
+   kapısını doğrulaması: F8'in kapı-hali; *"prob, ölçtüğü şeyin bağımsız bir yolu olmalı"* — F04'e.
+3. `git restore` ikinci vaka → kural: *"tracked dosyada git restore = git checkout; geri alma yalnız snapshot-kopyadan"* —
+   DISIPLIN F15'e terfi, tetikleyici: 🔎 *"bir dosyayı eski hâline döndüreceğim"*.
+
+*"İkisi de yeşil olur"* cümlesi Team Lead'in ölçmeden yazdığı bir varsayımdı ve kendisi yakaladı — hüküm-katmanı
+disiplini hüküm-vereni ve brief-yazanı aynı şekilde bağlıyor; bu turda ikisinden de birer tane çıktı, ikisi de raporda.
+
+#### `24.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-11) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "147 FK"                 [ÖLÇÜLDÜ: pg_constraint contype='f', referans kolonu uuid, main] 147
+  "F15'e"                  [ÖLÇÜLDÜ] DISIPLIN :7465 "AİLE F15 — DÜZELTME DİSİPLİNİ" · :7469 "GERİ ALMA TERS İŞLEMLE DEĞİL,
+                           SNAPSHOT'TAN" — kural VAR; git restore onun ikinci dosya-vakası (ilki: beşinci tur git checkout
+                           önerisi, brief §9.12.5) ⇒ terfi = mevcut kurala tetikleyicili ek
+  "F04'e"                  [ÖLÇÜLDÜ] DISIPLIN :3794 "CANLILIK PROBU, ASIL KONTROLÜN YÜZEYİNDE KOŞMALIDIR" — ev VAR
+  "kapı-sözleşmesi"        [ÖLÇÜLDÜ: grep docs/.claude/scripts] "KAPI SÖZLEŞMESİ" adlı bir belge/bölüm YOK · harness
+                           başlığında "KAPSAM/SINIR" (:16) ve "BEYAN SÖZLEŞMESİ" (:46) VAR
+                           ⇒ Team Lead yorumu: sınır bu iki başlık bölümüne yazılır (ürün sahibi aksini derse değişir)
+
+UYUŞMAYANLAR (F12 ürün sahibinin)
+  N24  "1836/1838 (olay-satırı üreten migration'lar)"
+       [ÖLÇÜLDÜ: MIGRATION_SEQUENCE :111, :113]
+         1836 = M-B SEED TUTARSIZLIĞI DÜZELTMESİ — 3 satırın UPDATE'i (satır ÜRETMEZ; "kullanılmazsa BOŞ kalır")
+         1838 = M-A2 SÖZLEŞME KOLONLARI + EŞLEŞME DURUMU (tanım) — kolon ekler, olası backfill UPDATE
+       ⇒ ikisinin de satır-metninde uuid-kimlikli SATIR ÜRETİMİ YOK — olay satırını kimin ürettiği (migration mı, import
+         kodu mu) bugün ÖLÇÜLMEDİ ⇒ DATA_VOLATILE_INSERT sınırı yine yazılır (sınıf gerçek), ama "1836/1838 girer" öncülü
+         düşer; hangi migration'ın gireceği o migration'ın brief'inde ölçülür
+  N25  "F8'in kapı-hali"
+       [ÖLÇÜLDÜ] DISIPLIN :5619 "AİLE F08 — SESSİZ VARSAYILAN" — prob-kopyası o aile DEĞİL
+       ⇒ kastedilen büyük olasılıkla CLAUDE.md §2.7 #8 ("testin, sınadığı kontrolü YENİDEN UYGULAMASI") — adıyla düzeltilir
+  N26  "prob, ölçtüğü şeyin BAĞIMSIZ bir yolu olmalı" ↔ K3 "sınıflandırıcı TEK YER" ↔ F04 :3794 "asıl kontrolün YÜZEYİNDE"
+       ⇒ "bağımsız YOL" ikinci bir UYGULAMA diye okunursa Bloklayıcı-2'nin kendisini yeniden kurar
+       ⇒ Team Lead yorumu (F04 notuna böyle yazıldı): prob asıl kontrolün KODUNU çağırır (kopya değil) — BAĞIMSIZ olan
+         BEKLENEN değerdir (bilinen girdiler, elle kurulmuş). Ürün sahibi aksini derse değişir
+  N27  K2 "beşinci turun 'jq-boş-alan → ÖLÇEMEDİM' satırı okunamayan-alan içindi, boş-değer için değil"
+       [ÖLÇÜLDÜ: brief §9.11.2 S-1 :510-511 · §9.11.4 :546] metin: "REVERSIBILITY='' · EFFECT='null' (string) ·
+       REVERSIBILITY=false · sahipsiz REVERSIBILITY_REASON ⇒ … ÖLÇEMEDİM" — "boş string" AÇIKÇA YAZILI, ama TİP alanı için
+       ⇒ K2 SEBEP alanına uygulanır (boş/yalnız-boşluk sebep → KIRMIZI "beyan sebepsiz"); TİP alanındaki boş string
+         S-1'de ÖLÇEMEDİM KALIR (tip okunamadı ≈ tanınmayan beyan) — Team Lead yorumu, ürün sahibi aksini derse değişir
+  N28  DATA_VOLATILE_INSERT ÇIKIŞ KODU yazılmadı ("veri-kolu ÖLÇEMEDİM, şema-kolu tam")
+       ⇒ Team Lead yorumu, Z111 §16 ("YENİ KOD YOK · beyanlı YEŞİL + zorunlu görünür satırlar") emsaliyle:
+         beyanlı+sebepli ∧ tespit VAR   → exit 0 + zorunlu satır "veri-kolu ÖLÇEMEDİM: … (N satır, tablolar)" + HARNESS_DECLARED
+         beyansız ∧ tespit VAR          → exit 2 ÖLÇEMEDİM (aynı satır + beyan önerisi)
+         beyanlı ∧ tespit YOK           → KIRMIZI "bayat beyan" (§19 bayat-beyan emsali)
+       ⇒ yedinci tur bu eşlemeyle yazar; ürün sahibi aksini derse küçük değişiklik
+
+ULAŞAN METİN — ÖLÇÜLMÜŞ DURUMA DAYANMIYOR (aynı mesajda, K1–K3'ten sonra) — ⛔ UYGULANMADI
+  N29  metin: "Push onaylı · yedinci tur kanıtı temiz (28/28 …)" · "pin'in kırılma-testi … self-test'te yakalandı" ·
+       "6/89 beyansız" · "H1 6 → 2 ratchet · H2 beyan-tipi sütunu · H3 push-order ratchet üyeliği" · "§9.14 (ratchet …)"
+       [ÖLÇÜLDÜ 2026-09-11 20:32]
+         meta HEAD c60a5bc == origin/staging · backend HEAD 59c1a35 == origin/staging  ⇒ push YOK
+         migration-verify.sh sha256 0b861963… (16:31, altıncı tur) ⇒ yedinci tur KOŞMADI
+         scripts/verification/volatile-mask-signatures.txt YOK ⇒ pin YOK · brief'te §9.14 YOK
+         beyan export'u taşıyan migration: 0 / 89 dosya ⇒ "6/89" TUTMUYOR
+       ⇒ bu bloklar başka bir oturumun ya da ileri bir anın metni olabilir — KARAR olarak İŞLENMEDİ; push YAPILMADI.
+         İçerdiği hükümler (beyan-ratchet'i, beyan-tipi sütunu, push-order üyeliği, (c) temizliği, HR günlük kaydı)
+         ölçülmüş durum oluştuğunda ürün sahibine yeniden sunulur
+```
+
+#### `24.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-11)
+```
+K1 · K2 · K3 · kayıt 1 · N24 · N27 · N28   HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.14 (yedinci tur) + §9.11.4 S-1 şerhi
+kayıt 2 · N25 · N26                        docs/DISIPLIN.md F04 :3794 altına not
+kayıt 3                                    docs/DISIPLIN.md F15 :7469 altına ikinci vaka + 🔎
+```
+
+### `§25` · YEDİNCİ TUR KAPANMADI · PERFORMANS İDDİASI ÇÜRÜDÜ · SEKİZİNCİ TUR (KANIT) ONAYLI (ürün sahibi + Fable, 2026-09-12)
+
+**Onay:** sekizinci tur **dar ve yalnız kanıt; performansa DOKUNULMAZ.** Team Lead'in A/B ölçümü (95 s → 104 s, sessiz
+ortam, ardışık koşum) iddiayı çürüttü: **~%10**, 13× değil. Ölçülmemiş bir kusuru "düzeltmek" `Z69 §4c`'nin tersi olurdu;
+şeridin 487 s'si **ölçümün koşulları** dersinin (`F14`) canlı vakası — *paralel süreç yükü altında alınan süre, sürenin
+ölçümü değildir.*
+
+**Üç kayıt:**
+1. Yedinci tur **"kod indi, kanıt inmedi — tur kapanmadı"**: şeridin bunu adıyla yazması ve Team Lead'in kapanmış
+   saymaması doğru. **Kod-düzeyi doğrulama (B1/B2 tutuyor) REPRODÜKSİYON DEĞİLDİR**; davranışsal kanıt yoksa düzeltme
+   doğrulanmamıştır — `Z83`'ün *"kod var, bilinen-kırmızı yok"* hâli.
+2. Üç düşüş (ikisi watchdog, biri DB yarım) ⇒ **koşum-biçimi kuralı brief ŞABLONUNA**: her harness/TypeORM çağrısı
+   `</dev/null` · çıktı log-dosyasına · exit ayrı okunur · çok-vakalı ölçüm tek betikten, yalnız özet okunur · uzun adım
+   arka planda · harness erken çıkarsa **tabanı geri getirmek şeridin işi**. Bu, `docker exec -i` stdin-yutmasının
+   **koşum-tarafı kardeşi** — aynı aile, aynı panzehir; ikinci vaka geldi, kural.
+3. `'X'::varchar` planlayıcıda **katlanıp fonksiyon-kimliğini kaybediyor** — prob-negatifi `varchar(10)` ile: *"ölç"* diye
+   bırakılan sorunun cevabı **brief-varsayımını düzeltti**; kanıt-fixture'ında **gerekçe satırı** olsun (bir sonraki okuyan
+   *"neden 10"* diye sormasın).
+
+**Sekizinci tur (§9.15):** üç kalıcı fixture · dört-uçlu prob-kırma + tek-yer kanıtı (asıl sınıflandırıcı bozulunca prob
+da ÖLÇEMEDİM) · B1 10-koşum + eski-sıralama mutasyonu · D6 · tam regresyon + gerçek 1833. Sentetik migration'lar
+**data-engineer**, koşumlar **Team Lead'in koşum biçimiyle**. Sonra reviewer + bağımsız doğrulama → pin → push-order-satırı
++ ratchet → push → 1835.
+
+#### `25.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-12) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "F14 = ölçümün koşulları"   [ÖLÇÜLDÜ: grep] DISIPLIN :7317 "AİLE F14 — ORTAM ve BAYATLIK" ·
+                              ilk üyesi "Ölçüm ortamının bayatlığı da bir maskeleme sınıfıdır" — 487 s vakası bu aileye girer
+  "brief ŞABLONU"             [ÖLÇÜLDÜ: ls + başlıklar] docs/process/BRIEF_SABLONU.md · §2 "HAZIR TARAMA DESENLERİ" ·
+                              §2.3 zaten "exit kodunu boruya sokma" ⇒ koşum biçimi §2.6 olarak AYNI bölüme girer
+  A/B ölçümü                  [ÖLÇÜLDÜ: aynı makine, ardışık, harness dışı yük yok] tur öncesi kopya 95 s (sha 0b861963…,
+                              scripts/ altına geçici kondu ve SİLİNDİ) · yeni harness 104 s · ikisi de rc=0 YEŞİL, maske 145
+
+UYUŞMAYANLAR (F12 ürün sahibinin)
+  N30  "F12 yedinci üye"      [ÖLÇÜLDÜ: AİLE F12 gövdesindeki başlıklar] F12 = "ARAÇ HATASI" · bugün SEKİZ üye
+                              (stdin-yutma o ailenin ÜYESİ, ama sırası yedinci DEĞİL) ⇒ yeni kural DOKUZUNCU üye olarak yazıldı
+                              — "elle yazılmış üye-sayısı" ailesinin bir vakası daha (DISIPLIN)
+  N31  "Z69 §4c'nin tersi"    [ÖLÇÜLDÜ: Z69 gövdesi] §4c = "HÜKÜM-GEREKÇE KATMANI — bir hükmün gerekçesi, altındaki
+                              mekanizma değişince …" ⇒ konu HÜKÜM-GEREKÇE; "ölçülmemiş kusuru düzeltmek" ile bağı BENZETME,
+                              atıf değil ⇒ kayda benzetme olarak geçti, kural atfı YAPILMADI
+```
+
+#### `25.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-12)
+```
+onay + kayıt 1 + kayıt 3     HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.15 (sekizinci tur) · §9.14.7 (A/B ölçümü)
+kayıt 2                      docs/process/BRIEF_SABLONU.md §2.6 + docs/DISIPLIN.md AİLE F12'ye yeni üye
+```
+
+### `§26` · DOKUZUNCU TUR ONAYLI — SON TUR · İKİ BLOKLAYICI + BEŞ MADDE + REGRESYON (ürün sahibi + Fable, 2026-09-13)
+
+**Onay:** dokuzuncu tur **dar** — iki bloklayıcı + beş madde + regresyon; **kapsam genişlemez.**
+
+**İki bloklayıcı gerçek, ikisi de tanıdık ailelerden:**
+1. `unmeasured` **komut-ikamesi içinde** → `exit 2` yalnız alt-kabuğu öldürür, ana süreç boş hash'le devam eder, iki boş
+   hash eşit → **sahte yeşil**. `pipefail`+SIGPIPE'ın kardeşi: kabuk-mekaniği araç-hatası — **F12 ailesine üye**:
+   *"`$( )` içinde hata-çıkışı ana süreci durdurmaz; hata-yolu yazan fonksiyon değer döndürmez, rc ayrı okunur."*
+   Doğru desen dosyada zaten vardı (`psql_val` / `psql_val_rc`) — **kural: bir dosyada iki desen varsa yanlış olan doğru
+   olana hizalanır, üçüncüsü yazılmaz.** Bilinen-kırmızısı (shasum-bozan mutasyon → ÖLÇEMEDİM) D4'ün doğumunda eksikti —
+   kol-başına-doğum dersi (F04) bir kez daha: D4 yazıldı ama hiç ateşlenmemişti; ***"kapı yazılmış ≠ kapı işliyor"***.
+2. Bayat-beyan **koşullu `if` içinde** → fark yokken beyan sınanmıyor ve gerçek *"1≠3"* kusuru *"beyan bayat"* diye
+   etiketleniyor — teşhis yanlış yöne: **kırmızının rengi doğru, sebebi yanlış** (*"kanıt rengin sebebidir"*). Koşulsuz
+   *"beyan sınandı mı"* bayrağı + kırmızı etiketleri gerçek kusurun adıyla — `IRREVERSIBLE_ADD` tarafındaki koşulsuz-`else`
+   emsal.
+
+**Kayıt — harness dokuz turda:** her tur gerçek bir körlük buldu; hiçbiri *"kozmetik"* değildi. Ama `Z110` metriği açısından
+dürüst not: bu araç bir **doğruluk yatırımı**, süre kazandırmadı; 1835'e kadar harcanan süre halka-3'ün **gecikmesi** olarak
+takvime yansır (zincir uçtan uca ~3-7 Ekim'e kayar, Kasım-ortası hedefi hâlâ korunur).
+
+**⛔ DOKUZUNCU TUR SON OLMALI:** reviewer'da yeni bloklayıcı çıkarsa **dar-düzeltme + push**, onuncu tur **açılmaz**; kalan
+bulgular **T-task** olarak harness'ın ilk gerçek müşterisinden sonra — *kapı işletmede öğrenir.*
+
+**Sıra:** §9.16 → reviewer + bağımsız doğrulama (33 vaka + iki yeni bilinen-kırmızı) → pin (kolon-imza, §9.13) →
+push-order-satırı + beyan-ratchet'i (2) → tek push → 1835 (beyanlı) → 1838 → İŞ-2.
+
+#### `26.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "Z110 metriği"            [ÖLÇÜLDÜ: grep] 04_KARAR_KAYDI :11077 "Z110 — ADIM-4 KAPANDI: BULUNABİLİRLİK, VE ÜÇ METRİĞİN TABANI"
+  "kanıt rengin sebebidir"  [ÖLÇÜLDÜ] DISIPLIN :863 "KANIT RENGİN KENDİSİ DEĞİL, RENGİN SEBEBİDİR"
+  "doğru desen dosyada vardı" [ÖLÇÜLDÜ: migration-verify.sh] psql_val değeri yazar · psql_val_rc ayrı okunur · unmeasured
+                            ÇAĞIRANDA (:630-635 yorumu komut-ikamesi tuzağını ADIYLA anlatıyor)
+  "D4 hiç ateşlenmemişti"   [ÖLÇÜLDÜ: grep] sha256_file'ın 8 çağrısının 8'i $( ) içinde · D4 için bilinen-kırmızı fixture/mutasyon YOK
+
+UYUŞMAYANLAR (F12 ürün sahibinin)
+  N32  "F12 ailesine SEKİZİNCİ üye"
+       [ÖLÇÜLDÜ: AİLE F12 gövdesindeki başlıklar] bugün DOKUZ üye (Z111 §25 kayıt 2'nin koşum-tarafı kuralı dokuzuncuydu)
+       ⇒ yeni kural ONUNCU üye olarak yazıldı — "elle yazılmış üye-sayısı" ailesinin bir vakası daha (N30'un tekrarı)
+  N33  "beyan-ratchet'i (2)"
+       [ÖLÇÜLDÜ: grep BEYANLI_MIGRATION_RATCHET_BRIEF.md] "2" YOK · beyan export'u taşıyan migration 0/89
+       ⇒ "2" sayısı Z111 §24.1 N29'da ÖLÇÜLMÜŞ DURUMA DAYANMADIĞI kaydedilen blokta geçiyordu ("H1 6 → 2") — hiç ölçülmedi
+       ⇒ ratchet eşiği o şeridin İLK ÖLÇÜMÜYLE doğar (beyansız evren = harness'ın gördüğü evren, sayı ölçülür, yazılmaz)
+  N34  "Z107-dersi: kanıt rengin sebebidir"
+       [ÖLÇÜLDÜ] kuralın evi DISIPLIN :863, vakaları T-121 ve N1 (2026-08-24) · Z107 (:10412) = "DEMO DÖNEMİ 2026 Q3 · VE BİR
+       KUSUR ON SUITE'LİK BİR YEŞİLİ TAŞIYORMUŞ" — farklı ders ⇒ atıf DISIPLIN :863'e verildi
+  N35  "zincir ~3-7 Ekim'e kayar, Kasım-ortası korunur" — [ÖLÇÜLMEDİ — ürün sahibinin tahmini] takvim kaynağı ölçülmedi;
+       kayda TAHMİN olarak geçti
+```
+
+#### `26.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+onay · iki bloklayıcı · son-tur kuralı      HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.16
+F12 üyesi + "iki desen" kuralı             docs/DISIPLIN.md AİLE F12 — onuncu üye
+```
+
+### `§27` · F00 DÖRDÜNCÜ VAKA — HÜKÜM METNİ SAYI DEĞİL SINIF YAZAR · RATCHET EŞİĞİ İLK ÖLÇÜMLE DOĞAR (ürün sahibi + Fable, 2026-09-13)
+
+Üç öncül çürüdü ve üçü de **sayı**: *"sekizinci"* · *"(2)"* · *"3-7 Ekim"* (`§26.1` N32 · N33 · N35). F00 kuralı
+(*"hüküm-metninde sayı geçiyorsa `[ölçülmedi — Team Lead ölçer]`"*) iki gün önce yazıldı, iki gün sonra **üç kez** ihlal
+edildi. **Kural yeterli değil, mekanizma gerekiyor** — ve mekanizma kayıt tarafında zaten işliyor (öncül-ölçümü her hükmü
+yakalıyor).
+
+**Hüküm veren taraftaki uygulama — sayı yazılmaz, SINIF yazılır:**
+```
+yerine                         yazılan
+"F12'ye sekizinci üye"         "F12'ye yeni üye"                         (kaçıncı olduğunu LİSTE söyler)
+"beyan-ratchet'i (2)"          "beyan-ratchet'i ilk ölçümle doğar"       (eşik YAZILMAZ)
+"zincir 3-7 Ekim'e kayar"      "zincir tahmini: harness-süresi kadar kayar" (tarih yazılmaz — tarihi TAKVİM DOSYASI taşır)
+```
+
+**Ratchet desenine kural:** *N33'ün düzeltmesi* — **ratchet eşiği ilk ölçümle doğar, önceden yazılmaz.**
+
+**Sıra değişmedi:** §9.16 → reviewer + doğrulama (33 + 2) → pin → push-order-satırı + beyan-ratchet'i (eşik ilk ölçümle) →
+tek push → 1835.
+
+#### `27.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "F00 kuralını yazdım"      [ÖLÇÜLDÜ: grep] DISIPLIN :403 "ÜÇÜNCÜ VAKA (Z111 §16–§17, 2026-09-11) — ve kural MEKANİZMAYA döndü"
+                             · :415 "hüküm metninde bir numara ya da sayı geçiyorsa yanına [ölçülmedi — Team Lead ölçer]"
+  "iki gün sonra"            2026-09-11 → 2026-09-13 ✓
+  "üç öncül, üçü de sayı"    Z111 §26.1 N32 ("sekizinci") · N33 ("(2)") · N35 ("3-7 Ekim") ✓
+  "mekanizma kayıt tarafında işliyor" §21.1'den §26.1'e her kayıtta öncül-ölçümü bloğu VAR ✓
+UYUŞMAYAN — yok
+```
+
+#### `27.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+F00 dördüncü vaka + sınıf-yazımı mekanizması   docs/DISIPLIN.md AİLE F00, :403 "ÜÇÜNCÜ VAKA" bölümünün altına
+ratchet eşiği ilk ölçümle doğar                docs/process/BEYANLI_MIGRATION_RATCHET_BRIEF.md §0.1 hüküm-atıf tablosu + not
+```
+
+### `§28` · DOKUZUNCU TUR REVIEW'U TEYİDİ — DÖRT MADDE T-TASK · ONUNCU TUR YOK (ürün sahibi + Fable, 2026-09-13)
+
+**Teyit — hüküm işliyor:** reviewer'ın dört düzeltilmeli maddesi **T-task**; onuncu tur açılmaz.
+
+**İki not:**
+1. **R1'in kanıtı izole betikle değil GERÇEK harness'ta yeniden alınır** — *fonksiyonun kopyası kopyayı doğrular, harness'ı
+   değil* (B2'nin prob-dersinin **kanıt** hâli). `NONE_BY_DESIGN` vaka seçimi gerekçeli: beyansız vaka boş hash'lerle
+   *"migration etkisiz"* kırmızısına düşer — yanlış sebepli kırmızı; doğru sebeple ÖLÇEMEDİM görmek için beyanlı vaka
+   gerekiyordu. ***"Kanıt rengin sebebidir"*** kuralı test tasarımını yönlendirdi — kuralın en olgun kullanımı.
+2. **T-task-1** (rc okunmayan yardımcılar → yazma hatasında yanlış *"tespit var"*) R1'in aynı sınıfı; T-task kalır. Harness'ın
+   ilk gerçek müşterisi (**1835**) ÖLÇEMEDİM/kırmızı verirse bu madde **ilk şüpheli** olarak brief'te **adıyla** durur
+   (*"yanlış tespit, bilinen aday: rc-okunmayan yardımcı"*) — sahte-kırmızıyı sahte-yeşil kadar hızlı tanımak için.
+
+**Sıra:** doğrulama temiz → pin (§9.13, kolon-imza, artefakt gerekçeli) → push-order-satırı + beyan-ratchet'i (eşik ilk
+ölçümle doğar) → tek push → 1835 (beyanlı; harness'ın ilk gerçek müşterisi) → 1838 → İŞ-2.
+
+#### `28.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "R1 kanıtı gerçek harness'ta"   Team Lead doğrulama betiği tl-verify-r9.sh: R1a ÖNCE (round9-pre kopyası) / SONRA
+                                  (şimdiki kod) — shasum çıktısı boş bırakılır, vaka declaration-nbd-green ✓ (koşum SÜRÜYOR)
+  "dört madde T-task"             T-391 (P2) · T-392 · T-393 · T-394 (P3) açıldı, BACKLOG indeksinde ✓
+
+UYUŞMAYAN (F12 ürün sahibinin)
+  N36  "T-task-1 … kırmızı-yönlü — güvenli yön, bu yüzden T-task"
+       [ÖLÇÜLDÜ: migration-verify.sh k1_tespit_var + effect_data_wide okundu]
+         k1_tespit_var = strip_data_section A/B → diff -q → diff -q wideA wideB → rc 0 "tespit VAR"
+         effect_data_wide = tek `awk … > "$2"`, rc okunmuyor
+         yazma hatası ⇒ dört dosya BOŞ ⇒ iki diff "eşit" ⇒ tespit VAR
+           beyanlı DATA_VOLATILE_INSERT → YEŞİL + "veri-kolu ÖLÇEMEDİM" satırı   ⛔ YEŞİL YÖNÜ (fail-open)
+           beyansız                     → exit 2
+       ⇒ "kırmızı yönlü" öncülü BEYANLI yolda TUTMUYOR — reviewer'ın 🟡-1 senaryosu da bunu söylüyordu
+       ⇒ T-task kararının İKİNCİ gerekçesi ayakta: erişilebilirlik düşük (aynı yazma hatası önceki psql_out snapshot'larını da
+         büyük olasılıkla ÖLÇEMEDİM'e düşürür) — [ÖLÇÜLMEDİ]
+       ⇒ Team Lead önerisi: T-task KALIR (P2), ama brief ve MIGRATION_SEQUENCE notu İKİ YÖNÜ de adıyla yazar:
+         "beklenmedik ÖLÇEMEDİM/kırmızı YA DA beyanlı yolda beklenmedik YEŞİL → ilk şüpheli T-391"
+         Ürün sahibi yön düzeltmesiyle kararı değiştirmek isterse (push'tan önce dar-düzeltme) — karar senin
+```
+
+#### `28.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+dört T-task                          .claude/backlog/tasks/T-391…T-394 + BACKLOG.md "Açık Task'lar"
+1835 ilk-şüpheli notu (iki yön)      HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.16.6 · .claude/backlog/MIGRATION_SEQUENCE.md 1835 satırı
+not 1 (kanıt gerçek harness'ta)      HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.16.6
+```
+
+### `§29` · DOKUZUNCU TUR KAPANIŞI TEYİDİ — R1 KALICI ÖRNEK · SÜRE ANOMALİSİ GÜNLÜĞE · PUSH ONAYI PİN RAPORUNDA (ürün sahibi + Fable, 2026-09-13)
+
+**Kapanış temiz** — R1'in gerçek-harness reprodüksiyonu turun asıl kanıtı: stderr'e sekiz *"ÖLÇEMEDİM"* basarken
+*"✅ YEŞİL"* yazıp **exit 0** — sahte-yeşilin en çıplak hâli; artık ilk boş hash'te exit 2. Bu vaka DISIPLIN'de
+***"kapı yazılmış ≠ kapı işliyor"*** kuralının **kalıcı örneği** olur (F04): **kapı uyarısını basıyordu, rengi
+değiştirmiyordu.**
+
+**Süre anomalisi** (beş vaka, dakikalar süren koşum, sonuç değişmedi): sebep yazılmaması doğru. Tek kayıt: *"ölçülmedi —
+aday: eşzamanlı DB okuması (reviewer)"*; ikinci kez görülürse `T-353`-emsali çekişme-ölçümü (tek başına koşum ↔ paralel).
+**Bugün T-task bile değil — günlük.**
+
+**Pin şeridinin brief'i tam** — özellikle *"sentetik set pin yüzünden kırmızı verirse beklenen sonucu kendisi değiştirmez,
+DUR ile sorar"* satırı: *"fixture düzeltilemez → test silinir"* tuzağının panzehiri, brief'te.
+
+**Onay:** pin inince doğrulama → push-order-satırı + beyan-ratchet'i (eşik ilk ölçümle) → **tek push için onay hazır —
+rapor geldiğinde verilir.** Sonra 1835: harness'ın ilk gerçek müşterisi.
+
+#### `29.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "R1 gerçek-harness reprodüksiyonu"  [ÖLÇÜLDÜ: tl-verify-r9.sh R1a-ONCE] rc=0 · "✓ snapshot0 == snapshot2" + "✅ YEŞİL" ·
+                                      stderr'de sekiz "ÖLÇEMEDİM: … shasum BOŞ çıktı" · SONRA rc=2 (brief §9.16.7) ✓
+  "F04"                               [ÖLÇÜLDÜ] DISIPLIN :3477 "AİLE F04 — KAPI ve DOĞUM" · :4153 "KAPI DOĞUM KURALI KONTROL-KOLU
+                                      BAŞINA İŞLER" — örneğin evi ✓
+  "T-353-emsali çekişme-ölçümü"       [ÖLÇÜLDÜ] T-353 "Frontend test suite YÜK ALTINDA KARARSIZ — kapı sinyali koşumdan
+                                      koşuma değişiyor" (done) ✓
+  pin şeridi durumu                   [ÖLÇÜLDÜ 15:28] önceki oturum kapanırken DURDU · harness sha = tur öncesi kopya, diff 0 ·
+                                      artefakt YOK · DB tabanı sağlam ⇒ şerit hiçbir şey değiştirmemişti — SÜRDÜRÜLDÜ
+
+UYUŞMAYAN (F12 ürün sahibinin)
+  N37  "T-291'in 'fixture düzeltilemez → test silinir' tuzağı"
+       [ÖLÇÜLDÜ: T-291.md] T-291 = "lta-calculation.service — SESSİZ SIFIR (§2.5) finansal hesap yolunda" · gövdede "silin" /
+       "fixture" GEÇMİYOR
+       [ÖLÇÜLDÜ: grep DISIPLIN] tuzağın metni DISIPLIN :5013 — "HÜKÜM BEKLERKEN: ÜÇÜNCÜ YOL — DİZİNİN KORUYUCU SEÇENEĞİYLE
+       İNDİR", Z100 kalem 8: "(a) fixture düzeltilir + yeni kuralın testi eklenir ← KORUYUCU · (b) test silinir"
+       ⇒ atıf DISIPLIN :5013 / Z100'e düzeltildi; ders aynı (koruyucu seçenek: test SİLİNMEZ, sonuç SESSİZCE değiştirilmez)
+```
+
+#### `29.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+R1 kalıcı örneği             docs/DISIPLIN.md F04 :4153 "KONTROL-KOLU BAŞINA" bölümünün altına
+süre anomalisi               docs/process/GOZLEM_GUNLUGU.md envanter 5 + gövde · DISIPLIN F14 stub
+```
+
+### `§30` · PİN DAR DÜZELTMESİ ONAYLI · BAYAT PİN = KIRMIZI "PİNİ DARALT" · İKİ TERFİ (ürün sahibi + Fable, 2026-09-13)
+
+**Karar (D-4): (c) — kırmızı, "pini daralt"; ratchet-tutarlılığı.** Gerekçe kendi desenimiz: ratchet'te kapanmamış
+iyileşme bir kapıdır (baseline'a yazılmamış azalma) — **pin de bir ratchet**; kaybolan imza pine yazılmazsa *"iyileşme
+askıda"* kalır ve **geri gelen imza sessizce kabul edilir** (kimlik-körlüğünün **zaman ekseni**). Önceki hükümle ayrım
+korunur:
+```
+tablo sayısı DÜŞTÜ     → ÖLÇEMEDİM "körlük şüphesi"          (Z111 §23, DEĞİŞMEZ)
+tablo sayısı SABİT     → KIRMIZI "pini daralt"                (ayrı commit, gerekçe)
+(a) bilgi              → sessiz bayatlık — REDDEDİLDİ
+(b) ÖLÇEMEDİM          → gerçek kusuru ÖLÇEMEDİM'e gömer — REDDEDİLDİ
+```
+
+**Dar düzeltme onaylı** — beş madde, `§26` hükmüyle (bloklayıcı → dar düzeltme + push, **onuncu tur değil**). Kanıtlar
+**gerçek harness'ta**; gerçek 1833'te *"pin eşleşti"* görülmeli.
+
+**Üç kayıt — ikisi terfi:**
+1. *"Gözlenen: 0 imza / 145 kolon"* basıp YEŞİL — *"uyarıyı basıyor, rengi değiştirmiyor"* deseninin **aynı haftada ikinci
+   vakası** (D4 boş-hash, pin boş-küme) → **kural, F04:** bir kapının çıktısında *"gözlenen ≠ beklenen"* tespiti **asla
+   bilgi satırı olamaz** — ya kırmızı ya ÖLÇEMEDİM; *"bilgi"* etiketi yalnız **tutarlı-durum** notu içindir.
+   🔎 *"bir tutarsızlık gördüm ve bilgi olarak basıyorum"*. Ratchet kuralı bu kuralın **özel hâli**.
+2. Reviewer B-2 (`regexp_match` ilk `:op` → `GREATEST(LOCALTIMESTAMP…)` imzası `op0`, LOCALTIMESTAMP sessiz kabul) — günlükteki
+   aday kural *"küme-pininin ayırt etme gücü, üyenin kimlik tanımına bağlıdır"* **ikinci vakasını buldu** (kolon-imza kararı
+   birinci, bu kod hâli ikinci) → **F03'e terfi: kimlik-körlüğü, yeni tür.** İmza **tüm** SQLVALUEFUNCTION düğümlerinden —
+   kimlik **tam** olmalı, ilk eşleşme değil.
+3. Volatilite kümesinin pin kodunda **ikinci kopyası** — B2'nin (prob kopyası) aynı haftada kardeşi; mutasyon betiğinin
+   *"desen 2 kez geçiyor"* diye durması **aracın doğru davranışı**: kopya **ölçülerek** bulundu. *"Tek sınıflandırıcı"* kuralı
+   pin türetimini de kapsar — madde 5.
+
+**Sıra:** brief → şerit → doğrulama → push-order-satırı + beyan-ratchet'i → tek push (onay hazır) → 1835.
+
+#### `30.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "aynı haftada ikinci vaka"     D4 boş-hash (2026-09-12 review, 2026-09-13 reprodüksiyon) · pin boş-küme (2026-09-13) ✓
+  "F03'e yeni tür"               [ÖLÇÜLDÜ] DISIPLIN :3380 "PİN KÖR-NOKTA AİLESİNİN ALTINCI TÜRÜ: SEVİYE KÖRLÜĞÜ" ⇒ kimlik körlüğü
+                                 bir sonraki tür · aday stub :3437 · günlük gövdesi GOZLEM_GUNLUGU.md :122 ✓
+  "mutasyon betiği durdu"        [ÖLÇÜLDÜ: tl-verify-pin.sh] "DUR: mutasyon probe-s — desen 2 kez geçiyor" ✓
+
+UYUŞMAYAN (karar DEĞİŞMEZ — gerekçenin kapsamı)
+  N38  "ratchet'te kapanmamış iyileşme kırmızıdır (baseline'a yazılmamış azalma)"
+       [ÖLÇÜLDÜ: grep improved]
+         collmind.backend/scripts/guards/money-float.sh :288-349  "improved" bir KAPI (Z82 iş 1) ✓ — emsal GERÇEK
+         scripts/guards/sigpipe-hygiene.sh :263-267             "[[T-359b]] §4 BİLE BİLE FARKLI" — improved KAPI DEĞİL,
+                                                                 kapanmamış işi CLAUDE.md §4.2'nin "iyileştiren tur" kuralı izler
+       ⇒ "ratchet'te kırmızıdır" GENEL değil: repoda İKİ bilinçli biçim var ⇒ (c)'nin emsali money-float (Z82), evrensel ratchet kuralı değil
+       ⇒ karar etkilenmez; kayda "emsal: money-float Z82" olarak geçti
+```
+
+#### `30.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+D-4 kararı · dar düzeltme · kanıt listesi     HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.13.7
+kayıt 1 (kural)                               docs/DISIPLIN.md F04 — "KALICI ÖRNEK" bölümünün altına
+kayıt 2 (terfi)                               docs/DISIPLIN.md F03 stub → gövde · GOZLEM_GUNLUGU.md madde 4 F12 terfi izi
+```
+
+### `§31` · PİN ADIMI KAPANDI · S0 İMZASI = KIRMIZI (T-TASK, 1838 ÖNCESİ) · F14 DESENİ · HARNESS İŞLETMEYE (ürün sahibi + Fable, 2026-09-13)
+
+**S0 imzası kararı: KIRMIZI.** Tutarlılık gereği *"pinde olmayan imza → kırmızı"* kuralı imzanın **nerede görüldüğünden
+bağımsız** olmalı; S0'da görülen yeni imza ya **bayat pin** ya **unutulmuş override** — ikisi de pin ile gerçeğin çeliştiği
+durum, ikisi de kırmızı. ÖLÇEMEDİM burada gerçek kusuru (pin bayat) gömer.
+
+**T-task olması kabul** — 1835'te override yok, S0 imzaları gerçek DB'nin imzaları, risk o koşumda sıfır; ama pin adımının
+**kapanış beyanında adıyla**: *"kapsanmadı: S0-imza kontrolü — override unutulursa fixture sessiz yeşil"*, ve T-task
+**tarihli: pinin ikinci gerçek müşterisinden (1838) önce.**
+
+**Kayıtlar:**
+- *"Tek uyuşmazlık iyileşme yönünde"* (sayım tutarlılığı maskenin çöküşünü 1≠3'ten önce yakalıyor) — **kapıların sırası: önce
+  ölçüm koşulu, sonra ölçüm** — doğru katmanlama; beklenen sonucun güncellenmesi **meşru çünkü sebep ölçüldü**.
+- Sessiz A/B (pin öncesi ↔ şimdiki) şeridin süre iddiasını bir kez daha ortam yüküne indirdi — **F14'e desen: şerit-içi süre
+  ölçümü kanıt değildir; sessiz A/B'dir.**
+- Yeni F04 kuralının ilk taraması (dosyada önceden var olan *"bilgi satırı"* adayları) T-task'ta — **kuralın doğduğu gün
+  retro-tarama**, doğru refleks.
+
+**Sıra:** ek (Y-2 + Y-3) → push-order-satırı + beyan-ratchet'i (eşik ilk ölçümle) → tek push (**onay hazır — raporla birlikte
+verilir**) → 1835. **Harness ve pini işletmeye geçiyor; on turluk doğum burada bitiyor.**
+
+#### `31.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "1835'te override yok, S0 imzaları gerçek DB'nin"  [ÖLÇÜLDÜ] MIGRATION_SEQUENCE 1835 = yalnız enum üyeleri · S0 = 1835 öncesi gerçek
+                                                     DB · REAL 1833 koşumunda gözlenen imza kümesi == pin (4 imza, tl-verify-pinfix) ✓
+  "beklenen sonucun güncellenmesi meşru"             [ÖLÇÜLDÜ] MUT mask-off → "imza dosyası satır sayısı (146) ≠ maskelenmiş kolon sayısı (0)"
+                                                     — sebep satırı basıldı, renk ÖLÇEMEDİM (fail-closed) ✓
+  "sessiz A/B"                                       [ÖLÇÜLDÜ: pgrep boş, ardışık] pin öncesi 72 s · 71 s — şimdiki 72 s · 73 s ✓
+
+UYUŞMAYAN (F12 ürün sahibinin — karar ETKİLENMEZ)
+  N39  "sessiz A/B … ÜÇÜNCÜ kez 'şeridin süre-iddiası ortam yükü'"
+       [ÖLÇÜLDÜ: brief §9.14.7 · §9.16.7 · §9.13.8]
+         şerit iddiası → sessiz A/B ile ÇÜRÜDÜ   yedinci tur "38→487 s, ~13×"  ↔  A/B 95 → 104 s
+                                                 pin dar düzeltme "477 s"      ↔  A/B 72/71 → 72/73 s
+         aradaki vaka (dokuzuncu tur, beş vaka dakikalarca) Team Lead'in KENDİ doğrulama koşumuydu ve SEBEBİ ÖLÇÜLMEDİ (günlük madde 5)
+       ⇒ şeritten gelip A/B ile çürüyen süre iddiası İKİ; kural iki vakayla doğar — F14'e öyle yazıldı (sayı yerine vaka listesi — F00 dördüncü vaka)
+```
+
+#### `31.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+S0 imzası kararı + tarih           .claude/backlog/tasks/T-395.md (1838 öncesi) · MIGRATION_SEQUENCE 1838 satırı · brief §9.13.8 kapanış beyanı
+F04 retro-tarama                   .claude/backlog/tasks/T-396.md
+F14 deseni                         docs/DISIPLIN.md AİLE F14 — yeni üye
+ek (Y-2 + Y-3)                     HARNESS_PG_ENUM_KORLUGU_BRIEF.md §9.13.9
+```
+
+### `§32` · "BEYANSIZ ARTAMAZ" RATCHET'İ YOK · BEYAN BİR İSTİSNA MEKANİZMASIDIR (ürün sahibi + Fable, 2026-09-13)
+
+**Karar: HAYIR** — *"beyansız artamaz"* ratchet'i olmaz; ve önceki hüküm satırı bu yüzden düşer. Gerekçe şeridin ölçümünde
+saklı: **beyan bir istisna mekanizmasıdır** — geri-alınamaz ekleme, assert-only, veri-koşullu, volatile-insert. **Sağlıklı bir
+migration** (tam geri-alınabilir, up etkili, revert etkisiz) **beyan taşımaz** ve genel kontrolden geçer. *"Beyansız"*
+**varsayılan-sağlıklı** durumdur; ona ratchet koymak her migration'a gereksiz iddia yazdırır (ölü vaat, 89 dosyada).
+**Ratchet zaten doğru yerde:** beyanlı sayı (istisnalar) artışı gerekçe ister. Beyansız sayı **bilgi** — şeridin kararı doğru.
+
+**Düzeltme kaydı (`F12`):** *"beyansız migration sayısı N'den artamaz"* satırı — **N ölçülmemişti** (`§24.1 N29`, `§26.1 N33`) ve
+**ilkesi yanlıştı**. Yeni migration'ların beyan zorunluluğu: **istisna durum taşıyorlarsa geçerli, taşımıyorlarsa beyansız doğarlar**
+ve genel kontrol onları doğrular. Daha temiz.
+
+**Kayıt:** `$?`-döngü notu (pin okuyucusunda geçici dosyaya yazma hatası "okunamadı" diye yanlış adlanır, kapı kapalı kalır) →
+**T-391'in kardeşi, listeye.**
+
+**Sıra:** doğrulama → ratchet şeridi (beyanlı sayı + liste↔kod eşitliği; baseline ilk koşumla) → tek push (onay hazır) → 1835.
+
+#### `32.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "89 dosya beyansız"          [ÖLÇÜLDÜ: grep ^export const (REVERSIBILITY|EFFECT) migrations/] 0 beyanlı · 89 dosya ✓
+  "dört istisna türü"          harness başlığı BEYAN SÖZLEŞMESİ · ratchet brief §9.1 tablosu ✓
+  "önceki hüküm satırı"        Z111 §24.1 N29'da ölçülmüş duruma dayanmadığı kaydedilen blok (H1 "6 → 2") · §26 sıra satırı "beyan-ratchet'i (2)" ✓
+
+UYUŞMAYANLAR (F12 ürün sahibinin — karar ETKİLENMEZ)
+  N40  "T-249-sınıfı ölü vaat"
+       [ÖLÇÜLDÜ] T-249 = "app_runtime sekiz tabloda YETKİSİZ — üçünün CANLI rotası var, hepsi 500 döner" — ölü vaat sınıfının emsali DEĞİL
+       ⇒ en yakın kayıtlı emsal CLAUDE.md §1 T-232 ("ölü artefakt, YETKİLİ görünüyor") — atıf oraya; sınıfın kendi adı ölçülmedi
+  N41  "yeni migration'ların beyan zorunluluğu (1834/1835/1838 brief'leri)"
+       [ÖLÇÜLDÜ: grep "beyan zorunlu" MIGRATION_SEQUENCE.md + HALKA3_IS2 brief · ls docs/process 1834/1835/1838] → HİÇBİR YERDE YOK,
+       bu numaralara ayrı brief yok ⇒ düzeltilecek metin YOK; kural İLERİYE dönük kayda geçti
+       ⚠️ 1835 notu: hüküm "down = tipi yeniden yaratmak" (Z111 §13) ⇒ geri alınabilir tasarlanmış — beyanlı mı beyansız mı doğacağı
+          1835'in brief'inde harness sonucuyla ÖLÇÜLÜR, varsayılmaz
+```
+
+#### `32.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+(c) REDDEDİLDİ                  docs/process/BEYANLI_MIGRATION_RATCHET_BRIEF.md §9.2
+$?-döngü kardeşi                .claude/backlog/tasks/T-391.md
+```
+
+### `§33` · RATCHET: BASELINE HER ZAMAN GERÇEK SAYIYA EŞİT (ARTTI + AZALDI = KIRMIZI) · DAR DÜZELTME ONAYLI · ÜÇ KAYIT (ürün sahibi + Fable, 2026-09-13)
+
+**Karar: (3) — ikisi de kırmızı; baseline her zaman gerçek sayıya eşit.** Gerekçe: *"pini daralt"* ile aynı desen (kapanmamış
+iyileşme = bayat baseline = kırmızı) ve `§16 §2`'nin *"liste artışı ayrı gerekçeli commit"* hükmünü **kağıttan kapıya** taşır.
+**Bedel kabul** (beyanlı migration başına iki satırlık baseline commit'i) — beyan istisna mekanizması, **nadir**; nadir şeyin
+pahalı olması istenen davranış (**sürtünme, beyanı düşündürür**). (1) sessiz bayatlık, (2) yarım ratchet — reddedildi.
+
+**Dar düzeltme onaylı** — yedi madde (B1 · B2 · B3 · B4 · S1 · S5 · N1+N4), her biri **çıkış kodunu değiştiren** bilinen-kırmızıyla.
+Kalanlar T-task: liste-parse iki kopya · **elle yazılmış sebep kümesi (G5 ihlali — T-task'ta ÖNCELİKLİ)** · `json_field` kaçış · alt-dizin tarama.
+
+**Üç kayıt:**
+1. F04'ün *"tutarsızlık bilgi olamaz"* kuralı **doğduğu gün üç yerde tetiklendi** (baseline yok · bozuk baseline · boş evren) — kural
+   doğru, retro-tarama T-task'ta doğru; *"kapı yazan tur kapının koruduğu hatayı yapar"* desenine bu tur da girdi.
+2. *"Self-test yanlış davranışı sabitlemiş"* — test **mevcut** davranışı pinledi, **doğru** davranışı değil: A13'ün `not.toBe(403)`
+   vakasının **self-test hâli** (*gözlem sözleşmeye dönmüş*). **Self-test'in her beklentisi bir hükme atıf taşır** (*"bu yeşil
+   çünkü §X"*), aksi hâlde bugünkü davranışın **fotoğrafıdır** → F03.
+3. Baseline yazımının dönüş değerini atayıp okumaması (T-391 sınıfı) — R1'in (alt kabuk) kardeşi, F12'de **aynı madde**; yeni üye
+   değil, **aynı kuralın üçüncü vakası** → **araç:** guard dosyalarında *"atanmış ama okunmamış rc"* statik taraması (`scan.sh`'a bir
+   desen — evren türetilmiş: `scripts/guards/**`); üçüncü vaka kuralı işliyor.
+
+**Sıra:** dar düzeltme → reviewer + doğrulama → tek push (onay hazır) → 1835. **Ratchet ve harness birlikte işletmeye giriyor;
+1835 ikisinin de ilk gerçek müşterisi.**
+
+#### `33.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "üç yerde tetiklendi"        ratchet brief §10: B2 boş evren · B3 bozuk baseline · B4 baseline yok (TL de ÖLÇTÜ: rc=0 bilgi) ✓
+  "A13 not.toBe(403) vakası"   [ÖLÇÜLDÜ: grep] 04_KARAR_KAYDI :10569 "not.toBe(403) testin NİYETİYDİ; yanına yazılan toBe(404)
+                               'şu an ne dönüyorsa'ydı" · docs/process/Z107_C_PINI_BRIEF.md :21 ✓
+  "F12'de aynı madde"          [ÖLÇÜLDÜ] AİLE F12 onuncu üye başlığı "… hata yolu olan fonksiyon DEĞER DÖNDÜRMEZ, rc AYRI OKUNUR" ✓
+                               vakalar: D4 sha256_file (alt kabuk, rc kayboldu) · T-391 effect_data_wide (rc hiç okunmuyor) ·
+                               ratchet B1 --baseline (rc atanıyor, okunmuyor) — üç vaka ✓
+  "scan.sh"                    [ÖLÇÜLDÜ: ls] collmind.backend/scripts/scan.sh · --pattern '<ERE>' + --positive/--negative konum ✓
+  "evren scripts/guards/**"    [ÖLÇÜLDÜ: ls] meta scripts/guards/ 5 dosya · collmind.backend/scripts/guards/ 59 dosya — İKİ kök ⇒ tarama ikisini de kapsar
+
+UYUŞMAYAN (F12 ürün sahibinin — karar ETKİLENMEZ)
+  N42  "F03: 'gözlem sözleşmeye dönmüş' — ikinci vaka, TERFİ"
+       [ÖLÇÜLDÜ: grep "sözleşmeye dön" DISIPLIN + GOZLEM_GUNLUGU → boş · AİLE F03 aralığında A13 yok]
+       ⇒ A13 vakası DISIPLIN'de ya da günlükte bir KURAL/ADAY olarak YOK — yalnız karar kaydında (Z107 bölgesi) · terfi edecek kayıt YOK
+       ⇒ A13 = vaka 1 · ratchet self-test s10 = vaka 2 ⇒ kural İKİ vakayla DOĞRUDAN F03'e DOĞDU (terfi değil, doğum)
+  N43  "scan.sh'a bir desen" — "atanmış ama okunmamış rc" bir VERİ AKIŞI özelliğidir; tek satırlık ERE'yle ayırt edilemeyebilir
+       (rc=$? sonraki satırda da okunabilir) [ÖLÇÜLMEDİ] ⇒ T-task desenin AYIRT ETME GÜCÜNÜ Z83 ile ölçer: pozitif = ratchet B1'in
+       düzeltme öncesi satırı · negatif = psql_val_rc deseni; ERE yetmezse "araç scan.sh değil" diye DUR
+```
+
+#### `33.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+(3) kararı · dar düzeltme kapsamı         docs/process/BEYANLI_MIGRATION_RATCHET_BRIEF.md §10.1
+kayıt 2 (kural)                           docs/DISIPLIN.md AİLE F03 — yeni kural
+kayıt 3 (üçüncü vaka + araç)              docs/DISIPLIN.md AİLE F12 onuncu üye altına · .claude/backlog/tasks/T-399.md
+T-task'lar                                T-397 (sebep kümesi, G5, P1) · T-398 (parse kopyası · json_field · alt dizin · notlar) · T-399 (araç)
+```
+
+### `§34` · PUSH ONAYI — HARNESS + PİN + RATCHET İŞLETMEYE · İKİ KAYIT (ürün sahibi + Fable, 2026-09-13)
+
+**Onay:** commit planı ve `push-order.sh` ile push. Plan doğru katmanlanmış: backend **yalnız `scripts/`** (uygulama koduna dokunulmadı —
+ayrı beyan), meta **üç commit** (ratchet · kayıtlar · pointer), **seçici add**; push-order'ın yeni beyan satırı (*"beyanlı migration:
+yok"*) **ilk kez basılacak — kapının kendi doğum satırı.**
+
+**İki kayıt:**
+1. **Bileşimsel fail-open** (her parça masum, bileşim açık — guard yeşil + push-order "yok") deseni DISIPLIN'de ölçülmüş olarak duruyor;
+   **yeni vaka geldi** — kapı katmanında: bir kapı kendi okunamazlığını başka kapıya devretmiş.
+2. *"Mutasyonlu guard yine exit 2 verdi ama başka sebeple — self-test sebebi de sınadığı için yakaladı"*: ***"kanıt rengin sebebidir"*** kuralının
+   **test tasarımına yapısal girişi** — self-test rengi değil **sebebi** pinliyor; F03'e giren *"hüküm-atıflı self-test"* kuralının **ilk uygulaması**.
+
+**Sonra 1835** — harness, pin ve ratchet'in ilk gerçek müşterisi. Beyanlı doğarsa ratchet ilk baseline artışını gerekçeli commit'le alır;
+beyansız doğabilir de (enum ekliyor, down tipi yeniden yaratıyor, uuid verisi üretmiyor) — **1835'in brief'i karar verir.** Harness kolon /
+kısıt / veri / beyan kollarını ölçer. T-391…T-399 adıyla kuyrukta; **T-395 ve T-397 P1, 1838'den önce.**
+
+#### `34.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "backend yalnız scripts/"          [ÖLÇÜLDÜ: git -C collmind.backend status --porcelain] 73 kayıt, hepsi scripts/ altında ✓
+  "self-test sebebi pinliyor"         [ÖLÇÜLDÜ: ratchet brief §10.3] MUT R-1 → guard exit 2 (başka sebep) · self-test FAIL "[R-1/liste-okunamaz] … exit=2" ✓
+  "T-395 ve T-397 P1"                 [ÖLÇÜLDÜ: task dosyaları] ikisi de priority P1 · T-395 due "1838 harness koşumundan ÖNCE" ✓
+  "1835 uuid verisi üretmiyor"        [ÖLÇÜLDÜ: MIGRATION_SEQUENCE 1835 satırı] yalnız enum üyeleri ekler, "aynı dosyada o değerleri kullanan hiçbir şey YOK" ✓
+
+UYUŞMAYAN (F12 ürün sahibinin — karar ETKİLENMEZ)
+  N44  "bileşimsel fail-open … ikinci vaka geldi, KURAL"
+       [ÖLÇÜLDÜ: DISIPLIN "### BİLEŞİMSEL FAIL-OPEN — her parça masum, boşluk BİLEŞİMDE (ZORUNLU)" — Dalga-M S2 vakası · ayrıca :1027 ve
+       "AYNA VAKASI" bölümleri] ⇒ kural ZATEN (ZORUNLU); bu bir terfi değil, var olan kurala KAPI KATMANINDA yeni vaka — öyle eklendi
+       ("bir kapı kendi okunamazlığını başka kapıya devretmez")
+  N45  "harness üç kolla" ↔ aynı mesaj "harness kolon / kısıt / veri / beyan dört kolu ölçer"
+       ⇒ sayı iki kez iki farklı yazıldı (F00 dördüncü vaka: sayı değil sınıf) — kayda sınıf olarak geçti: kol listesi harness başlığında
+```
+
+#### `34.2` · İŞLENDİĞİ YERLER (Team Lead, 2026-09-13)
+```
+kayıt 1   docs/DISIPLIN.md "BİLEŞİMSEL FAIL-OPEN" bölümüne kapı-katmanı vakası
+kayıt 2   docs/DISIPLIN.md F03 "hüküm-atıflı self-test" kuralına ilk uygulama notu
+push      commit planı Z111 §34 · scripts/push-order.sh
 ```
 

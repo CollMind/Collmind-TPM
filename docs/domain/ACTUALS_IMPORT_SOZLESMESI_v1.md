@@ -188,7 +188,7 @@ Reddedilen her satır için size **satır numarası + red kodu + açıklama** d�
 | A4 | ~~Red kodu adları~~ | ✅ **KAPANDI** (`Z111 §13` U4): mevcut CollMind sözlüğü (`UNKNOWN_*`) |
 | A5 | **`free_goods` işaretinin adı, değerleri ve bedelsiz satırda brüt/indirim/net'in doldurulması** — Wella ERP'sinde bedelsiz bilgisi nasıl duruyor? | ⏳ açık — ERP ekibiyle |
 | A6 | **Sıfır brüt** (`gross_amount = 0`, bedelsiz dışı) — bugün reddediliyor; ilk gerçek dosyada meşru bir sıfır görülürse karar yeniden verilir. | ⏳ açık — ilk gerçek dosya |
-| A7 | **Bedelsiz malın hangi promosyona sayılacağı** — CollMind'da bugün bedelsiz-ürün tipi bir taktik tanımlı değil; ERP dosyasını etkilemez, iç tanım. | ⏳ açık — iç (`Z111 §13.2` N1) |
+| A7 | ~~Bedelsiz malın hangi promosyona sayılacağı~~ | ✅ **KAPANDI** (`Z111 §14`): "Bedelsiz Ürün" taktiği (fatura üzeri, birim bazlı) — ERP dosyasını etkilemez |
 
 ---
 

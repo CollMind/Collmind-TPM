@@ -17,6 +17,8 @@
 1  KÖR-NOKTA TÜRLERİ MUTASYON TÜRÜNE GÖRE AYRIŞIR   türev 0   (A)'nın ölçümü
 2  Bir YÖNLENDİRME sessiz olamaz                     türev 0   2026-09-08 yazıldı
 3  Bir DOSYA YOLU da bir iddiadır — ve BAYATLAR      türev 0   2026-09-08 yazıldı
+4  Bir KÜME-pininin gücü, ÜYE KİMLİĞİNE bağlıdır      ⭐ TERFİ ETTİ 2026-09-13 → DISIPLIN F03 (Z111 §30) — ikinci vaka: pin B-2
+5  Harness koşum SÜRESİ ardışık vakalarda sıçradı      türev 0   2026-09-13 GÖZLEM (Z111 §29) — sebep ÖLÇÜLMEDİ, F14
 ```
 📌 **`2` ve `3` bu oturumda yazıldı ve AYNI OTURUMDA günlüğe indi.** Bu bir çelişki
 değil, ölçütün **kendi yazarını elemesi** — ve `R1`'in çalıştığının kanıtı.
@@ -116,6 +118,54 @@ genişlemesi: kural yalnız **sayılara** değil, **işaret eden her şeye** uyg
 **yorum kirliliği**dir ve zaten kayıtlıdır; bu, onun **brief** tarafındaki yüzü.
 
 ---
+
+## Bir KÜME-pininin ayırt etme gücü, ÜYENİN KİMLİK tanımına bağlıdır (ADAY — tek vaka)
+
+> ⭐ **`F12` — TERFİ ETTİ (2026-09-13, `Z111 §30` kayıt 2):** ikinci vaka pin review'unda (B-2: `regexp_match` ilk `:op` →
+> `GREATEST(LOCALTIMESTAMP…)` imzası `op0`). Kural artık DISIPLIN `F03`'te **gövdeyle**: *"KİMLİK KÖRLÜĞÜ"*. Bu kayıt **silinmez** —
+> vaka 1'in tablosu burada kalır (`GERİ TERFİ NASIL OLUR` §2).
+
+**Durum:** `ADAY` · 2026-09-11 · `Z111 §22.1` N19 · `§23` · türev **0** · DISIPLIN `F03`'te stub'ı var.
+⛔ DISIPLIN'den **taşınmadı** — doğrudan günlüğe yazıldı (ürün sahibi: *"günlüğe, aday olarak; DISIPLIN'e ikinci vakada"*).
+
+Ölçülmüş vaka (migration harness volatil maskesinin pini): *"maskelenen ifade türlerinin kümesi"* pinlenecekti.
+"Tür"ün kimliği üç biçimde tanımlanabiliyordu, üçü ölçüldü:
+
+| kimlik | bugünkü küme | stable-cast'li sabit `'2020-01-01'::timestamptz` | serial'lı yeni tablo |
+|---|---|---|---|
+| ifade metni | `nextval('<seq>')` sequence adını taşır | yeni üye | **yeni üye — gürültü** |
+| fonksiyon başına | `timestamp` cast'i zaten üye | `{timestamp}` **mevcut üyeye gömülür — pin YEŞİL, kör** | mevcut üye |
+| kolon başına imza | dört imza | `{timestamp}` **yeni imza — pin KIRMIZI** | mevcut imza |
+
+> **Bir küme-pini, üyesi kaba tanımlanırsa yeni bir biçimi mevcut bir üyeye gömer ve yeşil kalır.**
+> Pinin gücü kümenin **büyüklüğünden** değil, **üye kimliğinin inceliğinden** gelir — ve fazla ince kimlik gürültü üretir.
+
+**Ailesi:** `F03` — PİN ve KÖR NOKTA. En yakın emsal **seviye körlüğü** (aynı kural iki seviyede, pin birinde); bu
+**kimlik körlüğü** (küme üyesi kaba tanımlı, pin kör). İkinci vakada ailenin **yedinci** türü.
+
+🔎 **Tetikleyici:** *"bir kümeyi pinliyorum — üyenin kimliği ne?"* ve *"yeni bir biçim, mevcut bir üyeye gömülebilir mi?"*
+
+---
+
+## Harness koşum SÜRESİ ardışık vakalarda sıçradı — sebep ÖLÇÜLMEDİ (GÖZLEM — tek vaka)
+
+**Durum:** `GÖZLEM` · 2026-09-13 · `Z111 §29` · türev **0** · DISIPLIN `F14`'te stub'ı var.
+⛔ **Kural adayı DEĞİL** — bir **ölçülmemiş anomalinin kaydı**. Ürün sahibi: *"bugün T-task bile değil, günlük."*
+
+```
+[ÖLÇÜLDÜ: tl-verify-r9.sh, SUMMARY — vaka başına süre]
+normal vaka               ~ bir dakika
+beş ARDIŞIK vaka          on dakikadan bir saate kadar
+  (declaration-irr-stale-red · nbd-green · nbd-red · nbd-s0a-red · data-zero)
+öncesi ve sonrası          normal · beş vakanın SONUCU beklendiği gibi, DEĞİŞMEDİ
+```
+⛔ **Sebep yazılmadı** (`DISIPLIN`: *"sayım farkı kaynağı gösterilmeden yorumlanamaz"* · `F14`).
+**Aday — ölçülmedi:** aynı saatlerde code-reviewer'ın **eşzamanlı salt-okuma DB sorguları**. Zaman örtüşmesi bir **bağ değildir**.
+
+**İkinci vakada:** `T-353`-emsali **çekişme ölçümü** — aynı vaka listesi **tek başına** ↔ **paralel okuma yükü altında**, süre
+dağılımı karşılaştırılır. Fark ölçülürse `F14`'e kural; ölçülmezse aday düşer.
+
+🔎 **Tetikleyici:** *"bir koşum beklenenden çok uzun sürdü — o sırada aynı DB'yi başka kim kullanıyordu?"*
 
 ---
 
