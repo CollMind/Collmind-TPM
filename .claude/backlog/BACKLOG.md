@@ -98,9 +98,11 @@ status: active        # planned | active | closed
 | ID | Başlık | Öncelik | Assignee | Durum |
 |---|---|---|---|---|
 | [[T-400]] | **1835** — event_type enum'a ON_INVOICE_DISCOUNT · FREE_GOODS (yalnız enum, down tipi yeniden yaratır, beyansız) — harness/pin/ratchet'in ilk gerçek müşterisi · 1834 boşa düştü → İŞ-4a 1839 (`Z111 §35`) | P1 | data-engineer | done (`d19e068`) |
-| [[T-397]] | declared-migrations guard: **sebep zorunluluğu kümesi elle** (G5) — harness'a yeni değer girince kod tarafı sessiz yeşil (`Z111 §33`, öncelikli) | P1 | backend-engineer | todo |
+| [[T-397]] | declared-migrations guard: **sebep zorunluluğu kümesi elle** (G5) — harness'a yeni değer girince kod tarafı sessiz yeşil (`Z111 §33`, öncelikli) — dar düzeltme (🔴-2/🟡-1/🟡-2/🔵) uygulandı | P1 | backend-engineer | review |
 | [[T-398]] | declared-migrations: liste parse'ı **iki kopya** · json_field kaçış · alt dizin · notlar (`Z111 §33`) | P2 | backend-engineer | todo |
 | [[T-399]] | **ARAÇ:** guard'larda "atanmış ama okunmamış rc" statik taraması — F12 onuncu üyenin üçüncü vakası (`Z111 §33`) | P2 | backend-engineer | todo |
+| [[T-401]] | declared-migrations: sebep kümesi **izin** satırından türetiliyor, **zorunluluk** kapısından değil (`Z111 §38` 🟡-3) | P2 | backend-engineer | todo |
+| [[T-402]] | Harness pin üç-dal notları — ölü S0_UNEXPECTED kolu · N57 yorum · KALDIRILDI satırı erken · tablo-sayısı vekili yeşil ekseninde (`Z111 §38`) | P2 | data-engineer | todo |
 | [[T-395]] | Pin: S0'da görülen pinsiz imza KIRMIZI değil — override unutulursa fixture **sessiz yeşil** · ⛔ **1838 harness koşumundan ÖNCE** (`Z111 §31`) | P1 | data-engineer | todo |
 | [[T-396]] | Harness **retro-tarama** (F04 yeni kural): "gözlenen ≠ beklenen" basıp rengi değiştirmeyen satırlar + pin notları (`Z111 §31`) | P2 | data-engineer | todo |
 | [[T-391]] | Harness: rc'si **okunmayan** dosya yardımcıları — yazma hatasında beyanlı `DATA_VOLATILE_INSERT` **sahte yeşil** · ⛔ 1835 beklenmedik sonuç verirse **ilk şüpheli** (`Z111 §28`) | P2 | data-engineer | todo |

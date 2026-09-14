@@ -20,15 +20,58 @@
 # kelimesi geçen HER dosya (desene takılsın takılmasın) read-declaration.ts
 # ile AYRICA okunur; iki okuyucu ÇELİŞİRSE KIRMIZI.
 #
-# TANINAN ALAN ADLARI VE DEĞERLER — İKİ AYRI LİSTE ELLE YAZILMAZ, TÜRETİLİR:
+# TANINAN ALAN ADLARI, DEĞERLER VE SEBEP ZORUNLULUĞU — ÜÇ AYRI KÜME ELLE
+# YAZILMAZ, HEPSİ TÜRETİLİR (T-397 — eskiden SEBEP ZORUNLULUĞU kümesi ELLEYDİ,
+# bu G5 ihlaliydi):
 #   - alan adları (REVERSIBILITY/REVERSIBILITY_REASON/EFFECT/EFFECT_REASON)
 #     `read-declaration.ts`'in KENDİ `mod.<ALAN>` referanslarından
 #   - tanınan DEĞERLER (IRREVERSIBLE_ADD · NONE_BY_DESIGN · DATA_CONDITIONAL ·
 #     DATA_VOLATILE_INSERT) `migration-verify.sh`'ın "tanınmıyor" REDDİNİ
-#     yazan İKİ satırından (913/917 civarı, `[ -n "$DECL_X" ] && [ "$DECL_X"
-#     != "…" ]` zinciri) — DOSYA İÇERİĞİNDEN, satır numarasından DEĞİL.
-#   Türetme başarısızsa (harness şekli değiştiyse) guard KENDİ tanıma
-#   kümesini UYDURMAZ — ÖLÇEMEDİM (exit 2).
+#     yazan İKİ satırından (`[ -n "$DECL_X" ] && [ "$DECL_X" != "…" ]`
+#     zinciri) — DOSYA İÇERİĞİNDEN, satır numarasından DEĞİL.
+#   - SEBEP ZORUNLULUĞU (hangi DEĞER REASON alanını "sahiplenir") harness'ın
+#     KENDİ "sahipsiz REASON" ÖLÇEMEDİM satırlarından (`"$DECL_..._REASON_
+#     EXPORTED" -eq 1 ] && [ "$DECL_X" != "…"` zinciri) — bu, harness'ın
+#     KENDİSİNİN kullandığı sahiplik kümesidir, guard'ın bir TAHMİNİ/KOPYASI
+#     değil. Eskiden guard bunu `IRREVERSIBLE_ADD`/`NONE_BY_DESIGN`/
+#     `DATA_VOLATILE_INSERT` diye ELLE yazıyordu — harness'a sebep isteyen
+#     yeni bir değer eklendiğinde guard bunu SESSİZCE KAÇIRIRDI (kod tarafı
+#     sebep istemez, liste tarafı isterdi — iki taraf ZIT davranırdı).
+#   HER türetme TEK bir satırla eşleşmek ZORUNDADIR (`grep -c` ile SAYILIR,
+#   `grep -m1` ile ilk eşleşen satır ALINMAZ) — 0 ya da >1 eşleşme
+#   türetilemedi SAYILIR (DISIPLIN F12: harness'a aynı metni taşıyan bir
+#   YORUM eklenirse ilk eşleşme yanlış satıra hizalanabilir).
+#   Türetme başarısızsa (harness şekli değiştiyse ya da eşleşme sayısı ≠1
+#   ise) guard KENDİ tanıma/sebep kümesini UYDURMAZ — ÖLÇEMEDİM (exit 2).
+#
+# T-397 DAR DÜZELTME (`Z111 §38`, 2026-09-14) — birleşme sonrası reviewer bir
+# 🔴 iki 🟡 buldu, ÜÇÜ TEK TURDA:
+#   🔴-2  LİSTE tarafındaki sebep kontrolü (aşağıda "liste tarafı") hâlâ
+#         `!= "DATA_CONDITIONAL"` diye ELLE yazılıydı — yukarıdaki paragrafın
+#         "HEPSİ TÜRETİLİR" iddiası KOD tarafı için doğruydu, LİSTE tarafı
+#         için DEĞİLDİ. Artık liste tarafı da `reason_required_{rev,eff}_
+#         values` kümesine (KOD tarafıyla AYNI türetilmiş küme) bakıyor.
+#   🟡-1  anahtar-kelime ön filtresi (`keyword_pattern`) yalnız BİRİNCİL
+#         export adlarından (REVERSIBILITY/EFFECT) kuruluyordu; `\b…\b` bir
+#         `_REASON` eki taşıyan dosyada asla eşleşmez (`_` kelime karakteri).
+#         Yalnız `EFFECT_REASON`/`REVERSIBILITY_REASON` export eden bir
+#         dosya bu yüzden hiç OKUNMUYORDU (rc=0 "beyanlı yok" — harness aynı
+#         dosyada ÖLÇEMEDİM derdi). Artık `keyword_pattern` TÜM alan adlarını
+#         (REASON dahil) kapsıyor; `anchor_pattern` (iki-okuyucu çelişkisi
+#         testi için) hâlâ yalnız BİRİNCİL adlardan.
+#   🟡-2  `derive_unique_line` yalnız İLK fiziksel satırı okuyordu — harness
+#         koşulu `\` ile bölünürse eşleşme SAYISI hâlâ 1 kalıyor (satırın
+#         İLK parçası eşleşiyor) ama içerik EKSİK — hiçbir ÖLÇEMEDİM
+#         tetiklenmeden küme SESSİZCE dar kalıyordu. Artık eşleşen satır
+#         `validate_condition_line` ile biçim doğrulamasından geçiyor
+#         (satır sonu `\` yok · `; then` ile bitiyor · `[ … ]` blok sayısı
+#         `!=` sayısıyla tutarlı); aksi ÖLÇEMEDİM. Aynı doğrulama
+#         `derive_recognized_*` fonksiyonlarında da geçerli — HEPSİ AYNI
+#         `derive_unique_line` yardımcısından geçiyor.
+#   🔵    harness dosyası OKUNAMAZSA (izin) sebep artık "0 ya da >1 eşleşme"
+#         diye YANLIŞ adlanmıyor — `derive_unique_line` bunu ayrı bir rc ile
+#         (2: okunamadı, 3: TEK eşleşti ama biçim geçersiz, 1: 0/>1 eşleşme)
+#         işaretliyor ve çağıran taraf mesajı SEBEBİNE göre seçiyor.
 #
 # MODLAR:
 #   declared-migrations.sh              --check (varsayılan) — run-all çağırır
@@ -89,22 +132,94 @@ derive_field_names() { # → stdout: alan adları, satır satır, sıralı-tekil
   printf '%s\n' "$out"
 }
 
-derive_recognized_reversibility() { # → stdout: tanınan REVERSIBILITY değerleri, satır satır · rc 1: türetilemedi
-  [ -f "$HARNESS_FILE" ] || return 1
-  local line out
-  line="$(grep -m1 -E '\[ -n "\$DECL_REVERSIBILITY" \] && \[ "\$DECL_REVERSIBILITY" != "' "$HARNESS_FILE")"
-  [ -n "$line" ] || return 1
+# T-397 🟡-2: eşleşen satırın TEK BAŞINA TAMAMLANMIŞ bir if/elif koşulu
+# olduğunu sınar. Harness'taki koşul satırı `\` ile İKİ FİZİKSEL satıra
+# bölünürse `grep -E` (satır-satır çalışır) yalnız İLK parçayı eşleştirir —
+# eşleşme SAYISI hâlâ 1'dir ama İÇERİK EKSİKTİR (sonraki `!= "…"` koşulları
+# ikinci fiziksel satırdadır ve SESSİZCE kaybolur). Bu fonksiyon olmadan
+# derive_unique_line "tek eşleşme buldum" der ve küme sessizce dar kalırdı.
+# Doğrulama: (a) satır `\` ile BİTMİYOR (devam karakteri yok) · (b) `; then`
+# ile BİTİYOR (bu dosyadaki tüm hedef satırlar tek-satırlık if/elif'tir) ·
+# (c) `[ … ]` blok sayısı `!=` belirteç sayısıyla TUTARLI (blok = != + 1;
+# ilk blok her zaman `-n`/`-eq` gibi bir ön-koşuldur, `!=` taşımaz).
+validate_condition_line() { # <satır>  → rc 0: biçim geçerli · rc 1: değil
+  local line="$1" n_brackets n_ne
+  case "$line" in
+    *'\') return 1 ;;
+  esac
+  case "$line" in
+    *'; then') ;;
+    *) return 1 ;;
+  esac
+  n_brackets="$(grep -oE '\[ ' <<< "$line" | wc -l | tr -d ' ')"
+  n_ne="$(grep -oE '!= ' <<< "$line" | wc -l | tr -d ' ')"
+  case "$n_brackets" in ''|*[!0-9]*) return 1 ;; esac
+  case "$n_ne" in ''|*[!0-9]*) return 1 ;; esac
+  [ "$n_brackets" -eq $((n_ne + 1)) ] || return 1
+  return 0
+}
+
+# T-397 (DISIPLIN F12): TEK satırla eşleşme ZORUNLULUĞU — `grep -c` ile
+# SAYILIR, yalnız ilk eşleşen satır (`grep -m1`) ALINMAZ. 0 ya da >1 eşleşme
+# → türetilemedi (harness'a aynı metni taşıyan bir yorum eklenirse `-m1`
+# ilk eşleşmeyi alır ve bu çoğu zaman o yorumun KENDİSİDİR — yanlış satıra
+# sessizce hizalanmak yerine burada ÖLÇEMEDİM'e düşer).
+# rc AYRIMI (T-397 🔵): 2 = dosya yok/OKUNAMADI (izin) · 3 = TEK eşleşti ama
+# BİÇİMİ geçersiz (T-397 🟡-2, bölünmüş satır olabilir) · 1 = 0 ya da >1
+# eşleşme. Üç ayrı sebep ÜÇ ayrı rc — çağıran taraf "okunamadı"yı "0 ya da >1
+# eşleşme" ile KARIŞTIRMASIN diye (reviewer 🔵).
+derive_unique_line() { # <regex-desen> <dosya>  → stdout: eşleşen TEK satır
+  local pattern="$1" file="$2" n line
+  [ -f "$file" ] || return 2
+  [ -r "$file" ] || return 2
+  n="$(grep -cE "$pattern" "$file")"
+  case "$n" in ''|*[!0-9]*) return 1 ;; esac
+  [ "$n" -eq 1 ] || return 1
+  line="$(grep -E "$pattern" "$file")"
+  validate_condition_line "$line" || return 3
+  printf '%s\n' "$line"
+}
+
+derive_recognized_reversibility() { # → stdout: tanınan REVERSIBILITY değerleri, satır satır · rc 1/2/3: derive_unique_line rc'si
+  local line rc out
+  line="$(derive_unique_line '\[ -n "\$DECL_REVERSIBILITY" \] && \[ "\$DECL_REVERSIBILITY" != "' "$HARNESS_FILE")"
+  rc=$?
+  [ "$rc" -eq 0 ] || return "$rc"
   out="$(printf '%s\n' "$line" | grep -oE '"\$DECL_REVERSIBILITY" != "[A-Z_]+"' | grep -oE '"[A-Z_]+"$' | tr -d '"')"
   [ -n "$out" ] || return 1
   printf '%s\n' "$out"
 }
 
-derive_recognized_effect() { # → stdout: tanınan EFFECT değerleri, satır satır · rc 1: türetilemedi
-  [ -f "$HARNESS_FILE" ] || return 1
-  local line out
-  line="$(grep -m1 -E '\[ -n "\$DECL_EFFECT" \] && \[ "\$DECL_EFFECT" != "' "$HARNESS_FILE")"
-  [ -n "$line" ] || return 1
+derive_recognized_effect() { # → stdout: tanınan EFFECT değerleri, satır satır · rc 1/2/3: derive_unique_line rc'si
+  local line rc out
+  line="$(derive_unique_line '\[ -n "\$DECL_EFFECT" \] && \[ "\$DECL_EFFECT" != "' "$HARNESS_FILE")"
+  rc=$?
+  [ "$rc" -eq 0 ] || return "$rc"
   out="$(printf '%s\n' "$line" | grep -oE '"\$DECL_EFFECT" != "[A-Z_]+"' | grep -oE '"[A-Z_]+"$' | tr -d '"')"
+  [ -n "$out" ] || return 1
+  printf '%s\n' "$out"
+}
+
+# T-397 kusuru — bu iki fonksiyon YENİ: hangi REVERSIBILITY/EFFECT DEĞERİNİN
+# REASON alanını "sahiplendiği" (yani sebep gerektirdiği) artık ELLE
+# yazılmıyor, harness'ın KENDİ "sahipsiz REASON" ÖLÇEMEDİM satırından
+# (§9.11.2 S-1 / §9.12.1 B-2) türetiliyor.
+derive_reason_required_reversibility() { # → stdout: REASON'ı SAHİPLENEN REVERSIBILITY değerleri, satır satır · rc 1/2/3: derive_unique_line rc'si
+  local line rc out
+  line="$(derive_unique_line '"\$DECL_REASON_EXPORTED" -eq 1 \] && ' "$HARNESS_FILE")"
+  rc=$?
+  [ "$rc" -eq 0 ] || return "$rc"
+  out="$(printf '%s\n' "$line" | grep -oE '"\$DECL_REVERSIBILITY" != "[A-Z_]+"' | grep -oE '"[A-Z_]+"$' | tr -d '"' | sort -u)"
+  [ -n "$out" ] || return 1
+  printf '%s\n' "$out"
+}
+
+derive_reason_required_effect() { # → stdout: REASON'ı SAHİPLENEN EFFECT değerleri, satır satır · rc 1/2/3: derive_unique_line rc'si
+  local line rc out
+  line="$(derive_unique_line '"\$DECL_EFFECT_REASON_EXPORTED" -eq 1 \] && ' "$HARNESS_FILE")"
+  rc=$?
+  [ "$rc" -eq 0 ] || return "$rc"
+  out="$(printf '%s\n' "$line" | grep -oE '"\$DECL_EFFECT" != "[A-Z_]+"' | grep -oE '"[A-Z_]+"$' | tr -d '"' | sort -u)"
   [ -n "$out" ] || return 1
   printf '%s\n' "$out"
 }
@@ -167,15 +282,45 @@ run_scan_and_compare() { # ← SCAN_DIR/LIST_FILE/HARNESS_FILE/READER_TS/TS_NODE
   : > "$WORKDIR/list.keys"
 
   # -- türetme --------------------------------------------------------
-  local field_names rev_values eff_values
+  local field_names rev_values eff_values reason_required_rev_values reason_required_eff_values
   if ! field_names="$(derive_field_names)"; then
     echo "ÖLÇEMEDİM: beyan ALAN ADLARI türetilemedi — $READER_TS'ten 'mod.<ALAN>' deseni bulunamadı" >> "$WORKDIR/findings.unmeasured"
   fi
-  if ! rev_values="$(derive_recognized_reversibility)"; then
-    echo "ÖLÇEMEDİM: tanınan REVERSIBILITY DEĞERLERİ türetilemedi — $HARNESS_FILE'ta beklenen 'tanınmıyor' reddi bulunamadı" >> "$WORKDIR/findings.unmeasured"
+  # T-397 🔵: derive_*'nin rc'si (2: okunamadı · 3: tek eşleşti ama biçim
+  # geçersiz [🟡-2] · 1: 0 ya da >1 eşleşme) SEBEBE göre AYRI mesaj üretir —
+  # "okunamadı" ile "0 ya da >1 eşleşme" ARTIK KARIŞTIRILMIYOR.
+  local _drc
+  rev_values="$(derive_recognized_reversibility)"; _drc=$?
+  if [ "$_drc" -ne 0 ]; then
+    case "$_drc" in
+      2) echo "ÖLÇEMEDİM: tanınan REVERSIBILITY DEĞERLERİ türetilemedi — $HARNESS_FILE OKUNAMADI (yok ya da izin)" >> "$WORKDIR/findings.unmeasured" ;;
+      3) echo "ÖLÇEMEDİM: tanınan REVERSIBILITY DEĞERLERİ türetilemedi — $HARNESS_FILE'ta TEK satır eşleşti ama BİÇİMİ geçersiz (satır sonu '\\' ya da '; then' ile bitmiyor, ya da '[ … ]'/'!=' sayacı tutarsız — bölünmüş satır olabilir, T-397 🟡-2)" >> "$WORKDIR/findings.unmeasured" ;;
+      *) echo "ÖLÇEMEDİM: tanınan REVERSIBILITY DEĞERLERİ türetilemedi — $HARNESS_FILE'ta beklenen 'tanınmıyor' reddi TEK satırla bulunamadı (0 ya da >1 eşleşme, T-397)" >> "$WORKDIR/findings.unmeasured" ;;
+    esac
   fi
-  if ! eff_values="$(derive_recognized_effect)"; then
-    echo "ÖLÇEMEDİM: tanınan EFFECT DEĞERLERİ türetilemedi — $HARNESS_FILE'ta beklenen 'tanınmıyor' reddi bulunamadı" >> "$WORKDIR/findings.unmeasured"
+  eff_values="$(derive_recognized_effect)"; _drc=$?
+  if [ "$_drc" -ne 0 ]; then
+    case "$_drc" in
+      2) echo "ÖLÇEMEDİM: tanınan EFFECT DEĞERLERİ türetilemedi — $HARNESS_FILE OKUNAMADI (yok ya da izin)" >> "$WORKDIR/findings.unmeasured" ;;
+      3) echo "ÖLÇEMEDİM: tanınan EFFECT DEĞERLERİ türetilemedi — $HARNESS_FILE'ta TEK satır eşleşti ama BİÇİMİ geçersiz (satır sonu '\\' ya da '; then' ile bitmiyor, ya da '[ … ]'/'!=' sayacı tutarsız — bölünmüş satır olabilir, T-397 🟡-2)" >> "$WORKDIR/findings.unmeasured" ;;
+      *) echo "ÖLÇEMEDİM: tanınan EFFECT DEĞERLERİ türetilemedi — $HARNESS_FILE'ta beklenen 'tanınmıyor' reddi TEK satırla bulunamadı (0 ya da >1 eşleşme, T-397)" >> "$WORKDIR/findings.unmeasured" ;;
+    esac
+  fi
+  reason_required_rev_values="$(derive_reason_required_reversibility)"; _drc=$?
+  if [ "$_drc" -ne 0 ]; then
+    case "$_drc" in
+      2) echo "ÖLÇEMEDİM: SEBEP ZORUNLULUĞU (REVERSIBILITY) türetilemedi — $HARNESS_FILE OKUNAMADI (yok ya da izin)" >> "$WORKDIR/findings.unmeasured" ;;
+      3) echo "ÖLÇEMEDİM: SEBEP ZORUNLULUĞU (REVERSIBILITY) türetilemedi — $HARNESS_FILE'ta TEK satır eşleşti ama BİÇİMİ geçersiz (satır sonu '\\' ya da '; then' ile bitmiyor, ya da '[ … ]'/'!=' sayacı tutarsız — bölünmüş satır olabilir, T-397 🟡-2)" >> "$WORKDIR/findings.unmeasured" ;;
+      *) echo "ÖLÇEMEDİM: SEBEP ZORUNLULUĞU (REVERSIBILITY) türetilemedi — $HARNESS_FILE'ta beklenen 'sahipsiz REVERSIBILITY_REASON' satırı TEK eşleşmeyle bulunamadı (0 ya da >1, T-397)" >> "$WORKDIR/findings.unmeasured" ;;
+    esac
+  fi
+  reason_required_eff_values="$(derive_reason_required_effect)"; _drc=$?
+  if [ "$_drc" -ne 0 ]; then
+    case "$_drc" in
+      2) echo "ÖLÇEMEDİM: SEBEP ZORUNLULUĞU (EFFECT) türetilemedi — $HARNESS_FILE OKUNAMADI (yok ya da izin)" >> "$WORKDIR/findings.unmeasured" ;;
+      3) echo "ÖLÇEMEDİM: SEBEP ZORUNLULUĞU (EFFECT) türetilemedi — $HARNESS_FILE'ta TEK satır eşleşti ama BİÇİMİ geçersiz (satır sonu '\\' ya da '; then' ile bitmiyor, ya da '[ … ]'/'!=' sayacı tutarsız — bölünmüş satır olabilir, T-397 🟡-2)" >> "$WORKDIR/findings.unmeasured" ;;
+      *) echo "ÖLÇEMEDİM: SEBEP ZORUNLULUĞU (EFFECT) türetilemedi — $HARNESS_FILE'ta beklenen 'sahipsiz EFFECT_REASON' satırı TEK eşleşmeyle bulunamadı (0 ya da >1, T-397)" >> "$WORKDIR/findings.unmeasured" ;;
+    esac
   fi
   if [ ! -x "$TS_NODE_BIN" ]; then
     echo "ÖLÇEMEDİM: ts-node binary çalıştırılabilir değil/yok: $TS_NODE_BIN" >> "$WORKDIR/findings.unmeasured"
@@ -221,7 +366,7 @@ run_scan_and_compare() { # ← SCAN_DIR/LIST_FILE/HARNESS_FILE/READER_TS/TS_NODE
     return 2
   fi
 
-  local primary_exports primary_alt anchor_pattern keyword_pattern
+  local primary_exports primary_alt all_alt anchor_pattern keyword_pattern
   primary_exports="$(printf '%s\n' "$field_names" | grep -vE '_REASON$')"
   if [ -z "$primary_exports" ]; then
     echo "ÖLÇEMEDİM: birincil EXPORT adları (REASON-dışı) türetilemedi — $field_names" >> "$WORKDIR/findings.unmeasured"
@@ -230,8 +375,16 @@ run_scan_and_compare() { # ← SCAN_DIR/LIST_FILE/HARNESS_FILE/READER_TS/TS_NODE
     return 2
   fi
   primary_alt="$(printf '%s\n' "$primary_exports" | tr '\n' '|' | sed 's/|$//')"
+  # T-397 🟡-1: anchor_pattern (iki-okuyucu çelişkisi testi) yalnız BİRİNCİL
+  # adlardan — bu, "desen bir birincil export'u GÖRÜYOR mu" sorusudur ve
+  # değişmedi. keyword_pattern (dosyayı ts-node'a GÖNDERİP GÖNDERMEME kararı)
+  # artık TÜM alan adlarından (`$field_names`, REASON dahil) kuruluyor —
+  # eskiden yalnız `primary_alt`'tan kuruluyordu ve `\b…\b` `_` kelime
+  # karakteri yüzünden `EFFECT_REASON`/`REVERSIBILITY_REASON`-YALNIZ bir
+  # dosyada ASLA eşleşmiyordu (dosya hiç OKUNMUYORDU — rc=0 "yok").
+  all_alt="$(printf '%s\n' "$field_names" | tr '\n' '|' | sed 's/|$//')"
   anchor_pattern="^export const (${primary_alt})[[:space:]]*(:.*)?="
-  keyword_pattern="\\b(${primary_alt})\\b"
+  keyword_pattern="\\b(${all_alt})\\b"
 
   local scanned=0 f rel anchored keyword decl_json decl_rc
   local ts_rev ts_rev_rc ts_rev_reason ts_rev_reason_rc ts_eff ts_eff_rc ts_eff_reason ts_eff_reason_rc
@@ -279,6 +432,22 @@ run_scan_and_compare() { # ← SCAN_DIR/LIST_FILE/HARNESS_FILE/READER_TS/TS_NODE
       echo "ÖLÇEMEDİM: $rel — beyan ÇELİŞKİLİ: REVERSIBILITY VE EFFECT birlikte export edilmiş ($decl_json)" >> "$WORKDIR/findings.unmeasured"
       continue
     fi
+
+    # T-397 AC3 — SAHİPSİZ REASON: harness'ın "sahipsiz REASON" ÖLÇEMEDİM'i
+    # (§9.11.2 S-1 / §9.12.1 B-2) burada da uygulanır. `_reason_rc -eq 0`
+    # yalnız REASON alanının STRING olarak export EDİLDİĞİNİ sınar (boş/dolu
+    # FARK ETMEZ — harness'taki `_EXPORTED` bayrağının aynısı). Ana alanın
+    # (REVERSIBILITY/EFFECT) hiç export edilmemiş olması da "sahipsiz" sayılır:
+    # `value_in_set` boş/yok bir değeri hiçbir kümede bulamaz. Harness ile
+    # AYNI SIRADA — ana alanların "tanınmıyor" filtresinden ÖNCE (harness'ta
+    # da sahipsiz-REASON kontrolü, "tanınmıyor" if/elif zincirinden önce).
+    if [ "$ts_rev_reason_rc" -eq 0 ] && ! value_in_set "$ts_rev" "$reason_required_rev_values"; then
+      echo "ÖLÇEMEDİM: $rel — REVERSIBILITY_REASON export edilmiş (\"$ts_rev_reason\") ama REVERSIBILITY='$ts_rev' SEBEP GEREKTİREN kümede değil (harness'tan türetilen küme: $(printf '%s' "$reason_required_rev_values" | tr '\n' ' ')) — sebep SAHİPSİZ" >> "$WORKDIR/findings.unmeasured"
+    fi
+    if [ "$ts_eff_reason_rc" -eq 0 ] && ! value_in_set "$ts_eff" "$reason_required_eff_values"; then
+      echo "ÖLÇEMEDİM: $rel — EFFECT_REASON export edilmiş (\"$ts_eff_reason\") ama EFFECT='$ts_eff' SEBEP GEREKTİREN kümede değil (harness'tan türetilen küme: $(printf '%s' "$reason_required_eff_values" | tr '\n' ' ')) — sebep SAHİPSİZ" >> "$WORKDIR/findings.unmeasured"
+    fi
+
     if [ "$ts_has_rev" -eq 0 ] && [ "$ts_has_eff" -eq 0 ]; then
       continue
     fi
@@ -288,8 +457,11 @@ run_scan_and_compare() { # ← SCAN_DIR/LIST_FILE/HARNESS_FILE/READER_TS/TS_NODE
         echo "ÖLÇEMEDİM: $rel — tanınmayan REVERSIBILITY değeri: '$ts_rev' (tanınan: $(printf '%s' "$rev_values" | tr '\n' ' '))" >> "$WORKDIR/findings.unmeasured"
         continue
       fi
-      if [ "$ts_rev" = "IRREVERSIBLE_ADD" ] && ! is_nonblank "$ts_rev_reason"; then
-        echo "KIRMIZI: $rel — REVERSIBILITY='IRREVERSIBLE_ADD' SEBEPSİZ (REVERSIBILITY_REASON boş/yalnız-boşluk)" >> "$WORKDIR/findings.red"
+      # T-397: literal "= IRREVERSIBLE_ADD" YERİNE harness'tan türetilen
+      # SEBEP GEREKTİREN kümeye üyelik sınanır — yeni bir değer harness'a
+      # sebep isteyen olarak eklenirse bu satır OTOMATİK devreye girer.
+      if value_in_set "$ts_rev" "$reason_required_rev_values" && ! is_nonblank "$ts_rev_reason"; then
+        echo "KIRMIZI: $rel — REVERSIBILITY='$ts_rev' SEBEPSİZ (REVERSIBILITY_REASON boş/yalnız-boşluk, sebep gerektiren küme: $(printf '%s' "$reason_required_rev_values" | tr '\n' ' '))" >> "$WORKDIR/findings.red"
         continue
       fi
       echo "$rel|REVERSIBILITY=$ts_rev" >> "$WORKDIR/code.declared"
@@ -301,8 +473,10 @@ run_scan_and_compare() { # ← SCAN_DIR/LIST_FILE/HARNESS_FILE/READER_TS/TS_NODE
         echo "ÖLÇEMEDİM: $rel — tanınmayan EFFECT değeri: '$ts_eff' (tanınan: $(printf '%s' "$eff_values" | tr '\n' ' '))" >> "$WORKDIR/findings.unmeasured"
         continue
       fi
-      if { [ "$ts_eff" = "NONE_BY_DESIGN" ] || [ "$ts_eff" = "DATA_VOLATILE_INSERT" ]; } && ! is_nonblank "$ts_eff_reason"; then
-        echo "KIRMIZI: $rel — EFFECT='$ts_eff' SEBEPSİZ (EFFECT_REASON boş/yalnız-boşluk)" >> "$WORKDIR/findings.red"
+      # T-397: literal "= NONE_BY_DESIGN || = DATA_VOLATILE_INSERT" YERİNE
+      # harness'tan türetilen SEBEP GEREKTİREN kümeye üyelik sınanır.
+      if value_in_set "$ts_eff" "$reason_required_eff_values" && ! is_nonblank "$ts_eff_reason"; then
+        echo "KIRMIZI: $rel — EFFECT='$ts_eff' SEBEPSİZ (EFFECT_REASON boş/yalnız-boşluk, sebep gerektiren küme: $(printf '%s' "$reason_required_eff_values" | tr '\n' ' '))" >> "$WORKDIR/findings.red"
         continue
       fi
       echo "$rel|EFFECT=$ts_eff" >> "$WORKDIR/code.declared"
@@ -391,7 +565,20 @@ run_scan_and_compare() { # ← SCAN_DIR/LIST_FILE/HARNESS_FILE/READER_TS/TS_NODE
                 continue
               fi
             fi
-            if [ "$value" != "DATA_CONDITIONAL" ]; then
+            # T-397 🔴-2: eskiden `[ "$value" != "DATA_CONDITIONAL" ]` diye
+            # ELLE yazılıydı — harness'a DATA_CONDITIONAL DIŞINDA sebep
+            # İSTEMEYEN yeni bir değer eklenirse (kod tarafı doğru şekilde
+            # sebep istemezken) liste tarafı SESSİZCE onu sebep-gerektiren
+            # sanırdı (iki taraf ZIT davranırdı). Artık KOD tarafıyla AYNI
+            # türetilmiş kümeye (`reason_required_rev_values` /
+            # `reason_required_eff_values`) bakılıyor.
+            local list_reason_required=1
+            if [ "$export_name" = "REVERSIBILITY" ]; then
+              value_in_set "$value" "$reason_required_rev_values" && list_reason_required=0
+            else
+              value_in_set "$value" "$reason_required_eff_values" && list_reason_required=0
+            fi
+            if [ "$list_reason_required" -eq 0 ]; then
               if [ "$sebep" = "-" ] || ! is_nonblank "$sebep"; then
                 echo "KIRMIZI: liste satırı SEBEPSİZ ($export_name=$value): '$content'" >> "$WORKDIR/findings.red"
                 continue
@@ -735,6 +922,239 @@ EOF
     fail=1
   else
     echo "-- [iki-okuyucu-çelişkisi] 'export { X as REVERSIBILITY }' — desen KAÇIRDI, ts-node GÖRDÜ → KIRMIZI"
+  fi
+
+  # 5a) ÖLÇEMEDİM: SAHİPSİZ REASON — T-397 AC3, harness §9.11.2 S-1 / §9.12.1
+  # B-2'nin guard tarafı. İki alt-vaka: (i) tanınan ama SEBEP GEREKTİRMEYEN
+  # bir EFFECT değeriyle REASON export edilmiş, (ii) ana alan (EFFECT) HİÇ
+  # export edilmemişken REASON'ı yalnız başına export edilmiş — VE (T-397
+  # reviewer 🟡-1 düzeltmesi) bu dosya BAŞKA HİÇBİR ana alan (REVERSIBILITY
+  # DAHİL) TAŞIMAZ. Eskiden (ii) fixture'ı AYRICA REVERSIBILITY de taşıyordu
+  # (§2.7 #6 "yanlış şekil"): `keyword_pattern` o zaman zaten REVERSIBILITY
+  # literaliyle eşleşip dosyayı okutuyordu, yani bu senaryo 🟡-1'i (yalnız
+  # `_REASON` taşıyan dosyanın hiç OKUNMAMASI) hiçbir zaman GERÇEKTEN
+  # sınamıyordu — dolaylı olarak "geçiyordu".
+  mkdir -p "$tmp/s5a/migrations"
+  cat > "$tmp/s5a/migrations/Sample5a00000000001.ts" << 'EOF'
+export const EFFECT = 'DATA_CONDITIONAL';
+export const EFFECT_REASON = 'yanlış yapıştırılmış sebep — self-test fixture';
+export class Sample5a00000000001 {}
+EOF
+  cat > "$tmp/s5a/migrations/Sample5a00000000002.ts" << 'EOF'
+export const EFFECT_REASON = 'sahipsiz — ana alan yok, başka anahtar kelime yok';
+export class Sample5a00000000002 {}
+EOF
+  write_list "$tmp/s5a/list.md"
+  local s5a_out s5a_rc s5a_ok=1
+  s5a_out="$(DECLARED_MIGRATIONS_SCAN_DIR="$tmp/s5a/migrations" DECLARED_MIGRATIONS_LIST_FILE="$tmp/s5a/list.md" bash "$DIR/$GUARD_NAME.sh" --check 2>&1 </dev/null)"
+  s5a_rc=$?
+  grep -q "Sample5a00000000001.*sebep SAHİPSİZ" <<< "$s5a_out" || s5a_ok=0
+  grep -q "Sample5a00000000002.*sebep SAHİPSİZ" <<< "$s5a_out" || s5a_ok=0
+  if [ "$s5a_rc" -ne 2 ] || [ "$s5a_ok" -ne 1 ]; then
+    echo "!! self-test FAIL [sahipsiz-reason]: exit 2 + iki dosyanın da 'sebep SAHİPSİZ' ile adlandırılması bekleniyordu, exit=$s5a_rc" >&2
+    printf '%s\n' "$s5a_out" >&2
+    fail=1
+  else
+    echo "-- [sahipsiz-reason] DATA_CONDITIONAL+EFFECT_REASON · yalnız-REASON(ana alan HİÇ YOK, T-397 🟡-1) → ikisi de ÖLÇEMEDİM 'sebep SAHİPSİZ' (T-397 AC3)"
+  fi
+
+  # 5b) BİLİNEN-KIRMIZI: harness'a sebep isteyen YENİ bir değer eklendiğinde
+  # (ör. EFFECT='DATA_NEW_KIND') kod tarafı bunu OTOMATİK sebep-gerektiren
+  # sayar — eski (elle yazılmış) hâlde bu SESSİZCE yeşil kalırdı (T-397 kusuru).
+  # Sentetik/izole bir harness FİXTURE'I kullanılır — gerçek
+  # migration-verify.sh'a dokunulmaz (paralel T-395 şeridiyle çakışma YOK).
+  mkdir -p "$tmp/s5b"
+  cat > "$tmp/s5b/harness.sh" << 'HARNESSEOF'
+#!/usr/bin/env bash
+# T-397 self-test fixture — gerçek migration-verify.sh'ın İLGİLİ dört
+# satırının İZOLE bir kopyası, + YENİ bir sebep-gerektiren değer (DATA_NEW_KIND).
+if [ -n "$DECL_EFFECT" ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_CONDITIONAL" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ] && [ "$DECL_EFFECT" != "DATA_NEW_KIND" ]; then
+  : # tanınmıyor
+fi
+if [ -n "$DECL_REVERSIBILITY" ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # tanınmıyor
+fi
+if [ "$DECL_EFFECT_REASON_EXPORTED" -eq 1 ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ] && [ "$DECL_EFFECT" != "DATA_NEW_KIND" ]; then
+  : # sahipsiz EFFECT_REASON
+fi
+if [ "$DECL_REASON_EXPORTED" -eq 1 ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # sahipsiz REVERSIBILITY_REASON
+fi
+HARNESSEOF
+  mkdir -p "$tmp/s5b/migrations"
+  cat > "$tmp/s5b/migrations/Sample5b00000000001.ts" << 'EOF'
+export const EFFECT = 'DATA_NEW_KIND';
+export class Sample5b00000000001 {}
+EOF
+  write_list "$tmp/s5b/list.md"
+  local s5b_out s5b_rc
+  s5b_out="$(DECLARED_MIGRATIONS_SCAN_DIR="$tmp/s5b/migrations" DECLARED_MIGRATIONS_LIST_FILE="$tmp/s5b/list.md" DECLARED_MIGRATIONS_HARNESS_FILE="$tmp/s5b/harness.sh" bash "$DIR/$GUARD_NAME.sh" --check 2>&1 </dev/null)"
+  s5b_rc=$?
+  if [ "$s5b_rc" -ne 1 ] || ! grep -q "EFFECT='DATA_NEW_KIND' SEBEPSİZ" <<< "$s5b_out"; then
+    echo "!! self-test FAIL [bilinen-kirmizi/yeni-sebep-degeri]: exit 1 + 'DATA_NEW_KIND' SEBEPSİZ bekleniyordu, exit=$s5b_rc" >&2
+    printf '%s\n' "$s5b_out" >&2
+    fail=1
+  else
+    echo "-- [bilinen-kirmizi/yeni-sebep-degeri] harness'a sebep isteyen YENİ değer (DATA_NEW_KIND) eklendi → kod tarafı OTOMATİK KIRMIZI verdi (eski elle-liste sessiz yeşil verirdi, T-397)"
+  fi
+
+  # 5c) türetme eşleşmesi 2 — harness'a AYNI metni taşıyan bir YORUM
+  # eklenirse (DISIPLIN F12) türetme ÖLÇEMEDİM olur, YANLIŞ satıra hizalanmaz.
+  mkdir -p "$tmp/s5c"
+  cat > "$tmp/s5c/harness.sh" << 'HARNESSEOF'
+#!/usr/bin/env bash
+# Yorum: bir önceki turda BUNU yazmıştık — if [ "$DECL_EFFECT_REASON_EXPORTED" -eq 1 ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ]; then
+if [ -n "$DECL_EFFECT" ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_CONDITIONAL" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ]; then
+  : # tanınmıyor
+fi
+if [ -n "$DECL_REVERSIBILITY" ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # tanınmıyor
+fi
+if [ "$DECL_EFFECT_REASON_EXPORTED" -eq 1 ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ]; then
+  : # sahipsiz EFFECT_REASON — GERÇEK satır
+fi
+if [ "$DECL_REASON_EXPORTED" -eq 1 ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # sahipsiz REVERSIBILITY_REASON
+fi
+HARNESSEOF
+  mkdir -p "$tmp/s5c/migrations"
+  cat > "$tmp/s5c/migrations/Sample5c00000000001.ts" << 'EOF'
+export const EFFECT = 'NONE_BY_DESIGN';
+export const EFFECT_REASON = 'assert-only — self-test fixture';
+export class Sample5c00000000001 {}
+EOF
+  write_list "$tmp/s5c/list.md"
+  local s5c_out s5c_rc
+  s5c_out="$(DECLARED_MIGRATIONS_SCAN_DIR="$tmp/s5c/migrations" DECLARED_MIGRATIONS_LIST_FILE="$tmp/s5c/list.md" DECLARED_MIGRATIONS_HARNESS_FILE="$tmp/s5c/harness.sh" bash "$DIR/$GUARD_NAME.sh" --check 2>&1 </dev/null)"
+  s5c_rc=$?
+  if [ "$s5c_rc" -ne 2 ] || ! grep -q "SEBEP ZORUNLULUĞU (EFFECT) türetilemedi" <<< "$s5c_out"; then
+    echo "!! self-test FAIL [turetme-eslesme-2]: exit 2 + 'SEBEP ZORUNLULUĞU (EFFECT) türetilemedi' bekleniyordu, exit=$s5c_rc" >&2
+    printf '%s\n' "$s5c_out" >&2
+    fail=1
+  else
+    echo "-- [turetme-eslesme-2] harness'ta aynı metni taşıyan bir YORUM eklendi → eşleşme sayısı 2, türetilemedi → ÖLÇEMEDİM (DISIPLIN F12, ilk eşleşmeye SESSİZCE hizalanmadı)"
+  fi
+
+  # K-a) BİLİNEN-KIRMIZI → DÜZELDİ: T-397 🔴-2 (Z111 §38). Harness'a
+  # DATA_CONDITIONAL DIŞINDA sebep-İSTEMEYEN yeni bir EFFECT değeri
+  # (DATA_FREE_KIND) eklenir. Eski (ELLE `!= "DATA_CONDITIONAL"`) liste
+  # kontrolü bu değeri SESSİZCE sebep-gerektiren SANIRDI (liste satırı sebep
+  # "-" olunca KIRMIZI verirdi) — kod tarafı aynı değeri doğru şekilde
+  # sebep-gerektirmez sayıyordu, iki taraf ZIT davranırdı. Artık liste tarafı
+  # da KOD tarafıyla AYNI türetilmiş kümeye bakıyor → exit 0.
+  mkdir -p "$tmp/ska"
+  cat > "$tmp/ska/harness.sh" << 'HARNESSEOF'
+#!/usr/bin/env bash
+# T-397 K-a fixture — DATA_FREE_KIND: DATA_CONDITIONAL gibi SEBEP İSTEMEYEN
+# YENİ bir EFFECT değeri (eski elle-yazılmış liste kontrolü bunu SESSİZCE
+# sebep-gerektiren SANIRDI).
+if [ -n "$DECL_EFFECT" ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_CONDITIONAL" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ] && [ "$DECL_EFFECT" != "DATA_FREE_KIND" ]; then
+  : # tanınmıyor
+fi
+if [ -n "$DECL_REVERSIBILITY" ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # tanınmıyor
+fi
+if [ "$DECL_EFFECT_REASON_EXPORTED" -eq 1 ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ]; then
+  : # sahipsiz EFFECT_REASON — DATA_CONDITIONAL VE DATA_FREE_KIND SEBEP İSTEMEZ
+fi
+if [ "$DECL_REASON_EXPORTED" -eq 1 ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # sahipsiz REVERSIBILITY_REASON
+fi
+HARNESSEOF
+  mkdir -p "$tmp/ska/migrations"
+  cat > "$tmp/ska/migrations/SampleKa0000000001.ts" << 'EOF'
+export const EFFECT = 'DATA_FREE_KIND';
+export class SampleKa0000000001 {}
+EOF
+  write_list "$tmp/ska/list.md" "SampleKa0000000001.ts|EFFECT=DATA_FREE_KIND|-"
+  # baseline İZOLE edilir (s9 emsali) — yoksa GERÇEK repo baseline'ı
+  # kullanılır ve "YENİ tür beyan" (KARAR 3) bu senaryoyu KIRMIZIYA çevirir;
+  # bu test yalnız LİSTE tarafının SEBEP kuralını sınamalı.
+  printf '%s\n' "EFFECT=DATA_FREE_KIND 1" > "$tmp/ska/baseline.txt"
+  local ska_out ska_rc
+  ska_out="$(DECLARED_MIGRATIONS_SCAN_DIR="$tmp/ska/migrations" DECLARED_MIGRATIONS_LIST_FILE="$tmp/ska/list.md" DECLARED_MIGRATIONS_HARNESS_FILE="$tmp/ska/harness.sh" DECLARED_MIGRATIONS_BASELINE="$tmp/ska/baseline.txt" bash "$DIR/$GUARD_NAME.sh" --check 2>&1 </dev/null)"
+  ska_rc=$?
+  if [ "$ska_rc" -ne 0 ] || grep -qE "SEBEPSİZ|listede yok|bayat liste" <<< "$ska_out"; then
+    echo "!! self-test FAIL [K-a/liste-sebep-turetilir]: exit 0 (SEBEPSİZ/uyuşmazlık İBARESİ YOK) bekleniyordu, exit=$ska_rc" >&2
+    printf '%s\n' "$ska_out" >&2
+    fail=1
+  else
+    echo "-- [K-a/liste-sebep-turetilir] DATA_FREE_KIND (sebep İSTEMEYEN yeni değer), liste sebebi '-' → exit 0 (eski ELLE '!= DATA_CONDITIONAL' kontrolü KIRMIZI verirdi, T-397 🔴-2)"
+  fi
+
+  # K-c) T-397 🟡-2: harness'taki sahipsiz-REASON (EFFECT) koşulu `\` ile İKİ
+  # FİZİKSEL satıra BÖLÜNMÜŞ — derive_unique_line eski hâlde yalnız İLK
+  # parçayı görür, eşleşme SAYISI 1 kalır (SESSİZCE), küme EKSİK olur ama
+  # HİÇBİR ÖLÇEMEDİM tetiklenmez. validate_condition_line artık satırın TEK
+  # BAŞINA TAMAMLANMIŞ olduğunu (satır sonu `\` YOK, `; then` ile bitiyor)
+  # sınıyor → ÖLÇEMEDİM.
+  mkdir -p "$tmp/skc"
+  cat > "$tmp/skc/harness.sh" << 'HARNESSEOF'
+#!/usr/bin/env bash
+if [ -n "$DECL_EFFECT" ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_CONDITIONAL" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ]; then
+  : # tanınmıyor
+fi
+if [ -n "$DECL_REVERSIBILITY" ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # tanınmıyor
+fi
+if [ "$DECL_EFFECT_REASON_EXPORTED" -eq 1 ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && \
+   [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ]; then
+  : # sahipsiz EFFECT_REASON — T-397 🟡-2 fixture: KOŞUL BÖLÜNMÜŞ (\)
+fi
+if [ "$DECL_REASON_EXPORTED" -eq 1 ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # sahipsiz REVERSIBILITY_REASON
+fi
+HARNESSEOF
+  mkdir -p "$tmp/skc/migrations"
+  cat > "$tmp/skc/migrations/PlainNoDeclarationKc01.ts" << 'EOF'
+export class PlainNoDeclarationKc01 {}
+EOF
+  write_list "$tmp/skc/list.md"
+  local skc_out skc_rc
+  skc_out="$(DECLARED_MIGRATIONS_SCAN_DIR="$tmp/skc/migrations" DECLARED_MIGRATIONS_LIST_FILE="$tmp/skc/list.md" DECLARED_MIGRATIONS_HARNESS_FILE="$tmp/skc/harness.sh" bash "$DIR/$GUARD_NAME.sh" --check 2>&1 </dev/null)"
+  skc_rc=$?
+  if [ "$skc_rc" -ne 2 ] || ! grep -q "SEBEP ZORUNLULUĞU (EFFECT) türetilemedi" <<< "$skc_out" || ! grep -q "bölünmüş satır olabilir" <<< "$skc_out"; then
+    echo "!! self-test FAIL [K-c/bolunmus-satir]: exit 2 + bölünmüş-satır teşhisi bekleniyordu, exit=$skc_rc" >&2
+    printf '%s\n' "$skc_out" >&2
+    fail=1
+  else
+    echo "-- [K-c/bolunmus-satir] harness'taki sahipsiz-REASON koşulu '\\' ile BÖLÜNDÜ → derive_unique_line/validate_condition_line ÖLÇEMEDİM (T-397 🟡-2, sessiz eksik küme YOK)"
+  fi
+
+  # K-d) T-397 🔵: harness dosyası OKUNAMAZ (chmod 000). Eski hâlde bu sebep
+  # "0 ya da >1 eşleşme" diye YANLIŞ adlanıyordu (reviewer ÖLÇTÜ) — artık
+  # derive_unique_line ayrı bir rc (2) ile "OKUNAMADI" der.
+  mkdir -p "$tmp/skd/migrations"
+  cat > "$tmp/skd/migrations/PlainNoDeclarationKd01.ts" << 'EOF'
+export class PlainNoDeclarationKd01 {}
+EOF
+  write_list "$tmp/skd/list.md"
+  cat > "$tmp/skd/harness.sh" << 'HARNESSEOF'
+#!/usr/bin/env bash
+if [ -n "$DECL_EFFECT" ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_CONDITIONAL" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ]; then
+  : # tanınmıyor
+fi
+if [ -n "$DECL_REVERSIBILITY" ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # tanınmıyor
+fi
+if [ "$DECL_EFFECT_REASON_EXPORTED" -eq 1 ] && [ "$DECL_EFFECT" != "NONE_BY_DESIGN" ] && [ "$DECL_EFFECT" != "DATA_VOLATILE_INSERT" ]; then
+  : # sahipsiz EFFECT_REASON
+fi
+if [ "$DECL_REASON_EXPORTED" -eq 1 ] && [ "$DECL_REVERSIBILITY" != "IRREVERSIBLE_ADD" ]; then
+  : # sahipsiz REVERSIBILITY_REASON
+fi
+HARNESSEOF
+  chmod 000 "$tmp/skd/harness.sh"
+  local skd_out skd_rc
+  skd_out="$(DECLARED_MIGRATIONS_SCAN_DIR="$tmp/skd/migrations" DECLARED_MIGRATIONS_LIST_FILE="$tmp/skd/list.md" DECLARED_MIGRATIONS_HARNESS_FILE="$tmp/skd/harness.sh" bash "$DIR/$GUARD_NAME.sh" --check 2>&1 </dev/null)"
+  skd_rc=$?
+  chmod 644 "$tmp/skd/harness.sh"
+  if [ "$skd_rc" -ne 2 ] || ! grep -q "OKUNAMADI" <<< "$skd_out" || grep -q "0 ya da >1 eşleşme" <<< "$skd_out"; then
+    echo "!! self-test FAIL [K-d/harness-okunamaz]: exit 2 + 'OKUNAMADI' ('0 ya da >1 eşleşme' İLE KARIŞTIRILMAMIŞ) bekleniyordu, exit=$skd_rc" >&2
+    printf '%s\n' "$skd_out" >&2
+    fail=1
+  else
+    echo "-- [K-d/harness-okunamaz] harness chmod 000 → sebep 'OKUNAMADI' olarak adlandırıldı, '0 ya da >1 eşleşme' İLE KARIŞTIRILMADI (T-397 🔵)"
   fi
 
   # 6) ÖLÇEMEDİM: dizin yok (Y-3/reviewer 🟡-3: eski ad "boş-evren" sınadığı
@@ -1170,7 +1590,7 @@ EOF
   rm -rf "$tmp"
 
   if [ "$fail" -eq 0 ]; then
-    echo "-- $GUARD_NAME self-test: senaryolar tutuyor (bilinen-yeşil/gerçek [S5], kodda-var, listede-var, değer-farkı, sebepsiz×3, iki-okuyucu, dizin-yok, boş-evren/0-ts [B2], işaretçi/biçim, tanınmayan-değer+çelişki, data-conditional-yeşil, baseline-yok [B4], baseline-ilk-ölçüm, baseline-eşit, baseline-artış [KARAR3], baseline-azaldı [KARAR3], baseline-yeni-tür [KARAR3], baseline-bozuk [B3], baseline-kırmızı+ölçemedim [B1], yinelenen-liste-satırı [N1], türetme-başarısız, liste-okunamaz [R-1a], baseline-okunamaz [R-1b], symlink-dizin [R-2a], yalnız-alt-dizin [R-2b], symlink-dosya [R-2c])"
+    echo "-- $GUARD_NAME self-test: senaryolar tutuyor (bilinen-yeşil/gerçek [S5], kodda-var, listede-var, değer-farkı, sebepsiz×3, sahipsiz-reason [T-397 AC3/🟡-1], bilinen-kirmizi/yeni-sebep-degeri [T-397], turetme-eslesme-2 [T-397/F12], K-a/liste-sebep-turetilir [T-397 🔴-2], K-c/bolunmus-satir [T-397 🟡-2], K-d/harness-okunamaz [T-397 🔵], iki-okuyucu, dizin-yok, boş-evren/0-ts [B2], işaretçi/biçim, tanınmayan-değer+çelişki, data-conditional-yeşil, baseline-yok [B4], baseline-ilk-ölçüm, baseline-eşit, baseline-artış [KARAR3], baseline-azaldı [KARAR3], baseline-yeni-tür [KARAR3], baseline-bozuk [B3], baseline-kırmızı+ölçemedim [B1], yinelenen-liste-satırı [N1], türetme-başarısız, liste-okunamaz [R-1a], baseline-okunamaz [R-1b], symlink-dizin [R-2a], yalnız-alt-dizin [R-2b], symlink-dosya [R-2c])"
     return 0
   fi
   echo "⛔ $GUARD_NAME self-test DÜŞTÜ" >&2

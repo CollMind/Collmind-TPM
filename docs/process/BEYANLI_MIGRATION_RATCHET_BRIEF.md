@@ -367,3 +367,65 @@ TL      [ÖLÇÜLDÜ — gerçek dosyalar, izin + sha geri]
         run-all 0 · push-order-self-test 0 · backend guards 0 · baseline / MIGRATION_SEQUENCE / guard sha başta == sonda
 ```
 ⇒ **RATCHET İŞLETMEDE** (`Z111 §33`). Açık kalanlar: T-397 (P1, G5) · T-398 · T-399. Sıradaki: tek push (onay) → 1835.
+
+## 11 · T-397 DAR DÜZELTMESİ — 🔴-2 + 🟡-1 + 🟡-2 AYRILMAZ (`Z111 §38`, 2026-09-14)
+
+### `11.0` · HÜKÜM VE BAĞLAM
+Birleşme anı yeşil; reviewer T-397'de bir 🔴 iki 🟡 buldu (`Z111 §38`). Üçü **tek turda** — 🟡-2 bugün yalnız 🔴-2'nin elle yazılmış satırıyla
+örtülü (`Z93 §4`), tek başına düzeltilirse açık görünür olur. 🟡-3 (izin kümesi ↔ zorunluluk kümesi) BU TURDA DEĞİL → T-task.
+
+### `11.1` · İŞ
+```
+🔴-2  declared-migrations.sh:465 liste tarafı `!= "DATA_CONDITIONAL"` ELLE → türetilmiş kümeden (export adına göre
+      reason_required_{rev,eff}_values · value_in_set). Başlık "HEPSİ TÜRETİLİR" cümlesi ancak bundan sonra doğru — başlık davranışla hizalanır.
+🟡-1  anahtar-kelime ön filtresi `\b(REVERSIBILITY|EFFECT)\b` — `_` kelime karakteri, YALNIZ `EFFECT_REASON`/`REVERSIBILITY_REASON` export eden
+      dosya taranmıyor (reviewer ÖLÇTÜ: rc=0 "beyanlı yok"; harness aynı dosyada ÖLÇEMEDİM). ⇒ desen tam alan-adı kümesinden türetilir
+      (REASON adları dahil). Self-test 5a(ii) fixture'ı ana alanı TAŞIMAMALI (bugünkü fixture REVERSIBILITY de taşıyor — §2.7 #6 yanlış şekil).
+🟡-2  derive_unique_line yalnız İLK fiziksel satırı okuyor — harness'ta koşul `\` ile bölünürse eşleşme 1 kalır, küme EKSİK ama boş değil,
+      ÖLÇEMEDİM yok (reviewer ÖLÇTÜ). ⇒ eşleşen satırın biçimi doğrulanır (ör. `; then` ile biter · `!=` belirteç sayısı ile `[ … ]` blok
+      sayısı tutarlı); aksi ÖLÇEMEDİM. Aynı açık derive_recognized_* fonksiyonlarında da (T-397 öncesi) — AYNI yardımcıdan geçer, düzeltme ikisini
+      de kapsar. `==`, `-o`, `|| [ … = "X" ]` biçimleri → ÖLÇEMEDİM (sessiz yok sayma değil).
+🔵    okunamayan harness'ta sebep "0 ya da >1 eşleşme" diye yanlış adlanıyor → "okunamadı" ayrı sebep (reviewer ÖLÇTÜ: chmod 000)
+```
+
+### `11.2` · KANIT — `Z83` (her madde için bilinen-kırmızı ÖNCE/SONRA, çıkış kodu değişir — F04)
+```
+K-a  🔴-2: harness kopyasına sebebi ZORUNLU yeni değer (liste tarafı) — ÖNCE ile SONRA ayrışan fixture; ya da DATA_CONDITIONAL dışı
+     sebep-İSTEMEYEN bir değerin eklendiği kopya → liste tarafı `-` sebep: ÖNCE KIRMIZI · SONRA değil (türetilmiş küme)
+K-b  🟡-1: yalnız `export const EFFECT_REASON = …` taşıyan dosya → ÖNCE rc=0 · SONRA rc=2 "sebep SAHİPSİZ" (harness ile aynı)
+K-c  🟡-2: harness kopyası, sahipsiz-REASON koşulu `\` ile iki satıra bölünmüş → ÖNCE sessiz eksik küme · SONRA rc=2 ÖLÇEMEDİM
+K-d  🔵: harness chmod 000 → sebep "okunamadı" · izin + sha geri
+MUT  her yeni kontrol için birer mutasyon (kopyala → mutasyon → satırı BAS → ölç → geri yükle → shasum -a 256 -c) → self-test rc=1
+```
+Önce/sonra için tur-öncesi kopyalar: `scratchpad/t397b-pre/` (guard · baseline · `migration-verify.FROZEN.sh`, SHA256SUMS).
+
+### `11.3` · SINIRLAR · ORTAM · ÇIKTI
+- `touches:` YALNIZ `scripts/guards/declared-migrations.sh` (+ self-test fixture'ları aynı dosyada/altında). ⛔ harness'a (`collmind.backend/scripts/
+  migration-verify.sh`) YAZMA YOK — sıradaki şerit (T-395 eki) ona dokunacak; harness değişikliği gerekirse **DUR**.
+- Gerçek harness'a karşı OKUMA serbest (bu tur paralel şerit yok); mutasyon yalnız KOPYADA.
+- DB'ye yazan hiçbir şey yok (harness/migration:run/revert koşulmaz).
+- ⛔ `git checkout` / `restore` / `stash` yok · npx yok · boru ile exit kodu okuma yok · `</dev/null` · çıktı log'a, rc ayrı (BRIEF_SABLONU §2.6).
+- Kapanış: `--self-test` rc · `--check` rc (baseline/MIGRATION_SEQUENCE sha DEĞİŞMEZ) · `bash scripts/run-all.sh` rc · `push-order-self-test.sh` rc ·
+  K-a..K-d + MUT tablo · "ne ölçmedim". Task status'unu `done` YAPMA — `review` (TL doğrulaması + reviewer sonra). Commit/push YOK.
+
+### `11.4` · ✅ ŞERİT İNDİ — TL BAĞIMSIZ DOĞRULAMA (2026-09-14) · reviewer T-395 eki ile BİRLİKTE
+Guard sha `7c444287…` · baseline `060231e8…` ve harness `75399f05…` DEĞİŞMEDİ · `scratchpad/tl397b/` (tur-öncesi guard ↔ yeni guard, aynı girdi)
+```
+ŞERİT   🔴-2 liste tarafı türetilmiş kümeden · 🟡-1 anahtar deseni tam alan-adı kümesinden, 5a(ii) ana alansız · 🟡-2 validate_condition_line
+        (dört derive_* aynı yardımcıdan) · 🔵 derive_unique_line rc 1/2/3 ayrı sebep · K-a/K-c/K-d senaryoları · her kol MUT → self-test rc=1
+        · --self-test 0 · --check 0 · run-all 0 · push-order-self-test 0 · guards 0
+TL      gerçek zincir      ÖNCE 0 · SONRA 0 "beyanlı migration: yok"
+        K-b yalnız-REASON  ÖNCE 0 "beyanlı yok" · SONRA 2 "EFFECT_REASON export edilmiş … EFFECT='' SEBEP GEREKTİREN kümede değil"
+                           pozitif kontrol: aynı dosyaya EFFECT=NONE_BY_DESIGN → SONRA 1 "listede yok" (okuyucu gerçekten koşuyor)
+        K-c bölünmüş satır ÖNCE 0 (sessiz eksik küme) · SONRA 2 "TEK satır eşleşti ama BİÇİMİ geçersiz … bölünmüş satır olabilir"
+        K-d chmod 000      ÖNCE 2 "0 ya da >1 eşleşme" (yanlış sebep) · SONRA 2 "OKUNAMADI (yok ya da izin)"
+        K-a                koddan: :465 elle karşılaştırma YOK (yalnız yorum/fixture'da) · self-test K-a senaryosu + şeridin MUT'u
+        --self-test gerçek konumda 0
+⚠️ TL    K-b ilk denemesi YANLIŞ SEBEPLE rc=2 verdi — fixture'ım scratchpad'de `typeorm` import'u çözemedi (TS2307). "Kanıt rengin sebebidir":
+        sebep satırı okundu, fixture import'suz yeniden kuruldu, ikinci koşum yukarıdaki doğru sebebi verdi.
+```
+
+### `11.5` · ✅ KAPANDI — REVIEWER BLOKLAYICI YOK · BİRLEŞME YEŞİL (2026-09-14)
+Reviewer bağımsız mutasyonları (liste `!=` geri · keyword birincil adlara · validate devre dışı · `-r` → rc 1) → self-test rc=1, her biri kendi
+senaryosunda · ön filtre ts-node'a giden dosya ÖNCE 1 SONRA 1 (genişleme bugün sıfır) · dört türetme deseni yeni harness'ta 1/1 ve biçim-geçerli.
+Kalanlar → T-398 13–16 · 🟡-3 → T-401. Birleşik ağaç kapıları ve harness tarafı: `HARNESS_PG_ENUM_KORLUGU_BRIEF.md` §9.13.13.

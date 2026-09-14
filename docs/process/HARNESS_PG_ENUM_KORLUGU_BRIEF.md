@@ -1034,6 +1034,66 @@ $?-DÖNGÜ     döngü gövdesinin son komutları continue/printf>> — normalde
 ÇIKTI     1 DİFF (madde başına) · 2 artefakt tam içerik + ölçüm komutu · 3 Z83 (ÖNCE/SONRA · SEBEP satırı) · 4 KAPI · 5 ⛔ NE ÖLÇEMEDİN · 6 taban + kalıntı
 ```
 
+### `9.13.11` · T-395 İNDİ — BİRLEŞME ANI YEŞİL · REVIEWER 🔴: S0-KONTROLÜ + D-4 (c) TÜR KALDIRANA KİLİT (2026-09-14)
+**`scratchpad/harness-verify/tl-verify-merge.sh`** (taban HEAD 1835) · harness sha `75399f05…` · artefakt `c18cdae7…` başta == sonda · `.tlm-*` 0
+```
+BİRLEŞME   ratchet --self-test (env YOK, gerçek harness) 0 · --check 0 · türetme satırları T-395 sonrası 1/1 · run-all 0 · push-order-self-test 0 · guards 0
+TL (gerçek) mutasyonlar 2/2/2 · bayat pin 1 · üretim pini okunamaz 2 · vanish+EXTRA 2 · narrow+EXTRA 1 · override'sız İKİSİ 1 (T-395 hükmü) ·
+            üç yeni tür 1 · 30 set + nullcollapse beklendiği gibi · gerçek HEAD 1835 rc=0 "4 imza" — HER VAKA TUTTU
+REVIEWER   🔴-1 pin={A,X}: X kaybolur → "pini daralt" · pin={A}: X S0'da pinsiz → T-395 KIRMIZI ⇒ tür kaldıran meşru migration'a YEŞİL YOL YOK
+           (kod bloğu sed ile çıkarılıp stub'la ölçüldü; TL kod okumasıyla doğruladı) · 🔵 S0-kırmızısı körlük ÖLÇEMEDİM'ini örter (kabul)
+           · 🔵 :2452 mesajda kapanmayan parantez
+```
+⇒ `Z111 §38`: pin H'yi izler, S0-kontrolü üç dala → §9.13.12.
+
+### `9.13.12` · ⭐ T-395 EKİ — ÜÇ DAL (`Z111 §38`, 2026-09-14) · ⛔ T-397 DAR DÜZELTMESİ İNDİKTEN SONRA
+**Hüküm:** pin migration-SONRASI durumu (H) izler, migration'la **aynı commit'te** daralır. S0'da görülüp pinde olmayan imza için:
+```
+S0'da var · H'de YOK · pinde yok · tablo sabit   → YEŞİL + ZORUNLU satır "imza X bu migration tarafından KALDIRILDI — pin daraltılmış ✓"
+S0'da var · H'de VAR · pinde yok                  → KIRMIZI (bayat pin / unutulmuş override)
+S0'da var · H'de yok · tablo DÜŞTÜ                → ÖLÇEMEDİM körlük şüphesi (§31 kalır)
+```
+**İŞ**
+```
+1  S0 bloğu (:2438) üç dala · yeşil dalın satırı NİHAİ YEŞİL'den önce KOŞULSUZ basılır (sessiz yeşil yok) ve imzayı + kolonları adıyla taşır
+2  N58: dal 2 S0 bloğuna ULAŞMAZ — H−pin "YENİ ifade türü" KIRMIZI (:2415) önce çıkar. ÖLÜ DAL YAZILMAZ; H-kontrolünün mesajı iki sebebi
+   adlandırır ("yeni tür YA DA bayat pin / unutulmuş override"). Şerit ulaşılamazlığı ÖLÇER (kod yolu + fixture); ulaşılabilir çıkarsa DUR
+3  N57: D-4 (c) mesajları (:2473, :2490) "AYRI commit" → "migration'la AYNI commit'te" · :2452 parantez
+4  Başlık/yorumlar (:2236, :2428 civarı) üç dalla hizalı · pin-extra.txt yorumları güncel
+```
+**KANIT — `Z83`** (gerçek harness; ÖNCE = `75399f05…`)
+```
+narrow-default-removed  override YOK → ÖNCE rc=1 S0-kırmızı · SONRA rc=0 + "KALDIRILDI — pin daraltılmış ✓" satırı (grep ile SATIR kanıtı)
+narrow-default-removed  override VAR → rc=1 "pini daralt" DEĞİŞMEZ
+vanish-table-drop       override YOK → ÖNCE rc=1 · SONRA rc=2 körlük şüphesi · override VAR → rc=2 DEĞİŞMEZ
+dal 2                   pin artefaktından gerçek bir imza çıkarılmış kopya (H'de de var) → rc=1, mesaj iki sebebi adlandırır · artefakt sha geri
+gerçek HEAD 1835        rc=0 "4 imza eşleşti", KALDIRILDI satırı YOK
+MUT                     yeşil dalın tablo-sayısı koşulu kaldırılır → vanish override'sız rc=0'a düşer (körlük dalını koruyan satır bu)
+                        · yeşil dalın satırı silinir → narrow override'sız satır kanıtı düşer
+tam regresyon           §9.13.11 listesi, beklentiler bu hükme göre güncel
+```
+**SINIRLAR** `touches:` `collmind.backend/scripts/migration-verify.sh` + `scripts/verification/synthetic-migrations/pin-*` · ⛔ `scripts/guards/`
+YAZILMAZ · migration yok · pin artefaktı KALICI değişmez (mutasyon kopyala→geri yükle→shasum) · ⛔ git checkout/restore/stash · npx yok ·
+koşum BRIEF_SABLONU §2.6 · status `review` · commit/push YOK
+ÇIKTI  1 DİFF · 2 Z83 tablo (ÖNCE/SONRA · SEBEP satırı) · 3 N58 ulaşılamazlık kanıtı · 4 guards/build rc · 5 ⛔ NE ÖLÇMEDİN · 6 taban + kalıntı
+
+### `9.13.13` · ✅ T-395 EKİ KAPANDI — TL GERÇEK HARNESS 45/45 · REVIEWER BLOKLAYICI YOK · BİRLEŞME YEŞİL (2026-09-14)
+**`scratchpad/harness-verify/tl-verify-t395b.sh`** · harness sha `4a3d3307…` · pin artefakt `c18cdae7…` başta == sonda · `.tlb-*` 0 · taban HEAD 1835 n=90
+```
+ŞERİT     üç dal · H−pin mesajı iki sebep · D-4 (c) "AYNI commit" · başlık/pin-extra/fixture YORUMLARI · ⚠️ brief'e aykırı S0_UNEXPECTED kolu
+          (ölü — T-402) · şeridin koşum-bekleme duraklaması iki kez, TL devam ettirdi
+TL        mutasyonlar 2/2/2 · bayat pin 1 · üretim pini okunamaz 2
+(gerçek)  DAL2 (uuid_generate_v4 pinden çıkarıldı, gerçek 1835) rc=1 · "YA DA" satırı 1 · KALDIRILDI 0 ⇒ N58: S0 bloğuna ULAŞILMADI
+          narrow+EXTRA 1 · vanish+EXTRA 2 (DEĞİŞMEDİ)
+          narrow override'sız rc=0 · KALDIRILDI satırı 1 (§38 dal 1) · vanish override'sız rc=2 · körlük şüphesi satırı 1 (§38 dal 3)
+          üç yeni tür 1 · 30 set + nullcollapse beklendiği gibi · gerçek HEAD 1835 rc=0 · KALDIRILDI 0
+          (general-known-red'in bilinen kalıntısı süpürmede temizlendi — önceki koşumlarla aynı)
+KAPILAR   birleşik ağaçta: ratchet --self-test 0 (gerçek harness) · --check 0 · run-all 0 · push-order-self-test 0 · guards 0 · build 0
+REVIEWER  🔴 yok · 🟡-1 ölü kol · 🟡-2 N57'ye aykırı yorum · 🟡-3 KALDIRILDI satırı erken basılıyor · 🟡-4 tablo-sayısı vekili artık
+          yeşil↔ÖLÇEMEDİM seçiyor (hükümle birebir; tablo ADI kümesi ürün sahibine) ⇒ T-402 · guard 🔵'leri ⇒ T-398 13–16
+```
+⇒ **PİN ÜÇ DALLA İŞLETMEDE** (`Z111 §38`). Sıradaki: tek push (onay) → 1838.
+
 ## 9.14 · ⭐ YEDİNCİ TUR — İKİ BLOKLAYICI · TEK SINIFLANDIRICI · VERİ-KOLU SINIRI (`Z111 §24`, 2026-09-11) · ⛔ §9.13 PİNİNDEN ÖNCE
 
 > ⚠️ Numara: bu bölüm §9.13'ten SONRA yazıldı ama ÖNCE koşar — sıra `Z111 §24 K3`: altıncı tur → **yedinci tur (§9.14)** →

@@ -13036,3 +13036,107 @@ madde 2 dar düzeltme           data-engineer şeridi (T-400) — udt_schema + y
 commit + push                  şerit + reviewer/doğrulama sonrası
 ```
 
+### `§37` · T-395 ∥ T-397 PARALEL · BİRLEŞME ANI · 1835 KAPANIŞ KAYITLARI (ürün sahibi + Fable, 2026-09-13)
+
+**Onay:** T-395 ve T-397 şeritleri başlar; dosyaları ayrışıksa **paralel** (T-395 harness pin kolu, T-397 ratchet guard sebep kümesi), **birleşme anı
+kuralıyla** (harness self-test + ratchet self-test **tek koşum**).
+
+**Kayıtlar:** N52/N53 ürün sahibinin atıf/ad hataları (BL-1 ≠ pg_class dersi; "dört durum" diye ad yok) — F00 damgasız cümle bu hafta bir kez
+daha: **kural değil, uygulama açığı** (kayda). Şema koşulu kanıtı down() kodu üzerinden değil SQL eşdeğeriyle alındı — dürüstçe yazılmış sınır,
+kabul (rollback'li, iz sıfır); **T-398'e not:** down()'ın kendi kod yolu için bilinen-kırmızı (harness içi, sentetik şema) ilk fırsatta.
+
+**Zemin:** event_type üç üyeli (SALE · ON_INVOICE_DISCOUNT · FREE_GOODS), harness/pin/ratchet işletmede, ilk gerçek koşumda sıfır ÖLÇEMEDİM.
+**Sıra:** T-395 ∥ T-397 → 1838 (sözleşme kolonları + match_status/reason; beyan gerekirse DATA_VOLATILE_INSERT değil — 1838 satır üretmez, kolon
+ekler) → İŞ-2 backend ∥ QA.
+
+#### `37.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-13) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "dosyaları ayrışık"   [ÖLÇÜLDÜ: task touches] T-395 collmind.backend/scripts/migration-verify.sh + synthetic-migrations/pin-* ·
+                        T-397 scripts/guards/declared-migrations.sh — DOSYA kesişimi YOK ✓
+UYUŞMAYANLAR
+  N54  "kesişmiyor" — DAVRANIŞSAL kesişim VAR [ÖLÇÜLDÜ: declared-migrations.sh tanınan beyan değerlerini migration-verify.sh'ı OKUYARAK türetiyor;
+       T-397'nin işi bu türetmeyi sebep kümesine GENİŞLETMEK] ⇒ T-395 harness'ı düzenlerken T-397 yarım bir harness okuyabilir (CLAUDE.md §4
+       "ağaç paylaşılır, çakışma DOĞRULAMA anında olur")
+       ⇒ Team Lead teknik kararı: T-397 geliştirme boyunca harness'ın TUR ÖNCESİ DONDURULMUŞ KOPYASINI DECLARED_MIGRATIONS_HARNESS_FILE ile okur;
+         gerçek dosyaya karşı ölçüm BİRLEŞME ANINDA (T-395 indikten sonra) tek koşumda · T-397 harness'ı DEĞİŞTİRMEK zorunda kalırsa DUR
+  N55  "1838 satır üretmez, kolon ekler" [ÖLÇÜLDÜ: MIGRATION_SEQUENCE 1838 satırı] "bu migration bir backfill (UPDATE) içerirse … MIGRATION_AFFECTED_ROWS
+       sayacı … N=0 ↔ N=1 ayrımının bilinen-kırmızısı" ⇒ 1838 satır ÜRETMEZ ✓ ama BACKFILL içerirse beyan DATA_CONDITIONAL olabilir — 1838 brief'i ölçer
+  N56  "bu hafta yedinci" — sayı damgasız (F00 dördüncü vaka: sayı değil sınıf) · kayda sınıf olarak geçti
+```
+
+
+### `§38` · PİN H'Yİ İZLER — S0 KONTROLÜ ÜÇ DALA AYRILIR · T-397 DAR DÜZELTMESİ · SIRA (ürün sahibi + Fable, 2026-09-14)
+
+**Bağlam:** birleşme anı yeşil (ratchet self-test gerçek harness'a karşı · run-all · push-order-self-test · guards · tam harness regresyonu —
+her vaka beklenene TUTTU, harness/pin sha başta=sonda). Reviewer iki 🔴: (1) T-395 + D-4 (c) birlikte tür kaldıran meşru migration'a yeşil yol
+bırakmıyor (pin X'i taşırsa "pini daralt", daraltılırsa S0-kırmızısı); (2) T-397 liste tarafı hâlâ elle (`declared-migrations.sh:465`).
+
+**Hüküm 🔴-1: (c) ilke + (b) uygulama — aynı kararın iki yüzü.** `§31`'in öncülü iki sebep sayıyordu (bayat pin ∨ unutulmuş override);
+üçüncüsü eksikti: **pin doğru daraltıldı, imzayı bu migration kaldırdı.** Ratchet mantığı: pin migration-SONRASI durumu (H) izler — baseline
+nasıl commit'lenen kodun durumuysa, pin de **migration'la aynı commit'te** daralır. S0-kontrolü:
+```
+S0'da var · H'de YOK · pinde yok · tablo sayısı sabit  → YEŞİL + ZORUNLU satır "imza X bu migration tarafından KALDIRILDI — pin daraltılmış ✓"
+S0'da var · H'de VAR · pinde yok                         → KIRMIZI: bayat pin / unutulmuş override
+S0'da var · H'de yok · tablo sayısı DÜŞTÜ                → ÖLÇEMEDİM (körlük şüphesi — §31 kalır)
+```
+**(a) reddi:** beyan/override istisna mekanizmasıdır; tür kaldıran migration meşru-olağan iş, her seferinde istisna açtırmak beyanı ucuzlatır.
+**Bedel adıyla kabul:** unutulmuş override yalnız KALDIRAN fixture'da yeşile döner — ama yeşil dal zorunlu görünür satır taşır, sessiz değil.
+**Kayıt:** `pin-narrow-default-removed`'ın iki sonucu bir kilidin iki yarısıydı — fixture doğruydu, **öncül eksikti** ("gözlem sözleşmeye dönmüş" ailesi).
+
+**Hüküm T-397: dar düzeltme onaylı — 🔴-2 + 🟡-1 + 🟡-2 birlikte, AYRILMAZ.** 🟡-2 (bölünmüş satırda sessiz eksik küme) bugün yalnız 🔴-2'nin
+elle yazılmış satırıyla örtülü — "bir kusur diğerini örtüyor" (`Z93 §4`); tek başına düzeltilirse açık görünür olur. 🟡-1 (`\bEFFECT\b` —
+`_` kelime karakteri, `EFFECT_REASON` eşleşmez) araç-hatası ailesine, `F12` üyesi. 🟡-3 T-task (P2).
+
+**Sıra:** T-397 dar düzeltme → T-395 eki (üç dal · kaldıran-fixture yeşil+satır · H'de-var kırmızı) → ikisi birlikte doğrulama (harness
+self-test + ratchet self-test tek koşum) → tek push → 1838 (kolon ekler, tür kaldırmaz — "ölçmedim" notu doğru; harness söyler).
+
+#### `38.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-14) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "Z93 §4"                [ÖLÇÜLDÜ: 04_KARAR_KAYDI:8926 "DÜZELTME İKİ KUSUR AÇTI — İKİSİ DE BİRİNCİYLE ÖRTÜLÜYORDU"] ✓
+  "§31 kalır" (dal 3)     [ÖLÇÜLDÜ: migration-verify.sh D-4 (c) körlük dalı, tablo S0>H → ÖLÇEMEDİM] ✓
+UYUŞMAYANLAR
+  N57  "D-4c'nin talimatı değişmez, zamanı netleşir" — METİN değişir [ÖLÇÜLDÜ: migration-verify.sh:2473 "AYRI commit'te DARALTILMALI" · :2490
+       "AYRI bir commit'te çıkarılmalı" · bu kayıt §30 bloğu (satır ~12714) "(ayrı commit, gerekçe)"] ⇒ harness mesajları "migration'la AYNI
+       commit'te" diye düzeltilir (T-395 eki); §30 satırı append-only kalır, bu kayıt onun üstüne yazar
+  N58  Dal 2 (S0'da var · H'de VAR · pinde yok) S0 bloğuna ULAŞMAZ [ÖLÇÜLDÜ: H−pin "YENİ ifade türü" KIRMIZI :2415, S0 bloğu :2438'den ÖNCE,
+       red → exit] ⇒ bu durumda H imzası da pinde yok, H-kontrolü önce kırmızı verir. Team Lead teknik kararı: ölü dal YAZILMAZ (F04 "kapı
+       yazılmış ≠ kapı işliyor"); dal 2'yi H-kontrolü gerçekler, mesajı "yeni tür YA DA bayat pin / unutulmuş override" diye iki sebebi adlandırır;
+       şerit ulaşılamazlığı ölçer — ulaşılabilir çıkarsa DUR
+  N59  "F12'ye üye (kaçıncı olduğunu liste söyler)" — F12'nin NUMARALI üye listesi YOK [ÖLÇÜLDÜ: DISIPLIN.md "AİLE F12 — ARAÇ HATASI" başlık
+       dizisi, numara yok] ⇒ başlık olarak eklenir, sayı yazılmaz (F00 dördüncü vaka) · ilgili mevcut kural: DISIPLIN "Kelime sınırı bir gürültü
+       filtresidir, bir kapsam garantisi değil" (sayım ailesi) — `_` bu kuralın regex tarafındaki yeni biçimi
+  N60  "'gözlem sözleşmeye dönmüş' ailesi" — ad DISIPLIN'de YOK [ÖLÇÜLDÜ: grep boş]; reviewer'ın etiketi. En yakın: F03 (hüküm atıfsız beklenti =
+       fotoğraf) ⇒ günlüğe F03 adayı olarak
+  SONUÇ  T-395 bilinen-kırmızıları DEĞİŞİR: pin-narrow override'sız → rc=0 + zorunlu "KALDIRILDI" satırı · pin-vanish override'sız → rc=2
+       körlük şüphesi — T-395'in "override'sız rc=1" kanıtı bu hükümle geçersiz (bilinçli)
+```
+
+### `§39` · PUSH ONAYI (T-395 eki + T-397) · T-402: DAL 3 = TABLO-ADI KÜMESİ + BAĞIMSIZ KATALOG · DURUM-SATIRLARI NİHAİ RENKLE (ürün sahibi + Fable, 2026-09-14)
+
+**Onay:** commit planı + `push-order.sh` (kapılar tam, §38'in üç dalı fixture'larda ayrıştı, gerçek HEAD 1835 temiz, sha'lar sabit).
+
+**T-402 hükmü (acil değil):** tablo-SAYISI vekili düşer → **tablo-ADI KÜMESİ + bağımsız katalog kontrolü**. "Sayı değil liste" kuralının harness
+hâli — vekil artık yeşil↔ÖLÇEMEDİM arasında seçiyor, yanlış yön güvenli değil. **Dal 3'ün doğru tanımı:** harness'ın gördüğü tablo-adı kümesi,
+bağımsız katalog sayımıyla (`pg_tables`, ayrı yol) uyuşmuyor = körlük şüphesi. **Gerçek DROP TABLE meşru** (S0'da var, H'de yok, B==S0 ile geri
+gelir) — dal 1'in tablo hâli, "KALDIRILDI" satırıyla. Drop + create aynı migration'da böylece ayrışır: küme farkı adıyla görünür, sayı aynı kalsa da.
+
+**İki not:** (1) ölü kol (`S0_UNEXPECTED_MSG`) — fail-closed olması meşrulaştırmaz; ilk fırsatta ya fixture'ı ya silinir. (2) erken "KALDIRILDI ✓"
+satırı `HARNESS_DECLARED`'ın S-3 vakasının aynısı — **tek kural: durum satırları nihai renkle birlikte basılır.**
+
+**Sıra:** push → T-395/T-397 done → 1838 brief'i (sözleşme kolonları + match_status/reason; kolon ekler; harness dört kol + ratchet; volatile-kimlikli
+satır üretmez → veri byte-birebir beklenir) → İŞ-2 backend ∥ QA.
+
+#### `39.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-14) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "B-1'in döngü-satırı emsali"  [ÖLÇÜLDÜ: HARNESS brief :505 "N tablonun rowcount'u alındı satırı LİSTE uzunluğu — döngünün TUR sayısı DEĞİL"
+                                · :545 "taranan 1 ≠ 51" → ÖLÇEMEDİM] ✓ ayrı yolla sayıp karşılaştırma emsali
+  "HARNESS_DECLARED S-3"        [ÖLÇÜLDÜ: reviewer — DEFERRED_DECLARED_* "YALNIZ NİHAİ YEŞİL'den HEMEN ÖNCE", §9.11.2 S-3] ✓
+UYUŞMAYANLAR
+  N61  "T-267/T-249 sınıfı" (ölü kol) — iki task'ın başlığı bu sınıfı taşımıyor [ÖLÇÜLDÜ: T-267 "59 filtresiz uç @Roles'a bağlanır" ·
+       T-249 "app_runtime sekiz tabloda YETKİSİZ … 500 döner"] ⇒ sınıf F04 "kapı yazılmış ≠ kapı işliyor" olarak kayda; atıf doğrulanamadı
+  N62  "Gerçek DROP TABLE … B==S0 ile geri gelir" — dal 1 bugün İMZA için tanımlı; tablo hâli T-402'de YENİ davranış (bugün tablo düşerse
+       dal 3 ÖLÇEMEDİM) ⇒ T-402 şeridi bilinen-kırmızı/yeşil çiftiyle doğurur, 1838'e bağlı DEĞİL (1838 tablo düşürmez — ölçülmedi, harness söyler)
+```
