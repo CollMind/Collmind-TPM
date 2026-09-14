@@ -13140,3 +13140,83 @@ UYUŞMAYANLAR
   N62  "Gerçek DROP TABLE … B==S0 ile geri gelir" — dal 1 bugün İMZA için tanımlı; tablo hâli T-402'de YENİ davranış (bugün tablo düşerse
        dal 3 ÖLÇEMEDİM) ⇒ T-402 şeridi bilinen-kırmızı/yeşil çiftiyle doğurur, 1838'e bağlı DEĞİL (1838 tablo düşürmez — ölçülmedi, harness söyler)
 ```
+
+### `§40` · 1838 ÜÇ DUR KAPANDI — 1838 ÖNCE (1836→1840 · 1837→1841) · match_* TEK AİLE DB-ENUM · customer_code + customer_id (ürün sahibi + Fable, 2026-09-14)
+
+**DUR-1: (b).** 1838 önce; **1836 → 1840**, **1837 → 1841** — tahsis kuralı (`§35`) tam bunun için yazıldı. İŞ-2 backend olay-türetmesi 1838'e
+bağlı, 1836/1837'ye değil; 1836 zaten "seed yeniden kurulumu yeterliyse boş" notlu. **Şart:** T-402 (tablo-adı kümesi, `§39`) **1841'den ÖNCE** —
+1841 DROP TABLE yapacak, sayı vekiliyle ÖLÇEMEDİM alırdı.
+
+**DUR-2: TEK AİLE, DB-enum, üyeler üreticileriyle (1835 deseni).**
+```
+match_status  ENUM  1838: UNMATCHED · SUSPENDED (üretici İŞ-2 import: satır yazılır → UNMATCHED; zarf bulunamadı → SUSPENDED "askı")
+                    İŞ-3 migration'ı: MATCHED · ANOMALY (üretici motor)
+match_reason  ENUM  1838: NO_ENVELOPE (üretici İŞ-2) · İŞ-3: NO_PLAN · NO_AGREEMENT · GRAIN_MISMATCH · AMBIGUOUS_AGREEMENT
+TEK AİLE      TS NotMatchedReason (bugün never) = DB match_reason — aynı ad, aynı üyeler; DB↔TS eşitliği role-enum-contract kapısı emsaliyle
+              ÖLÇÜLÜR (üç kaynak: DB enum · TS enum · docs) — iki aile yapısal olarak imkânsız
+TİP           enum (CHECK'li varchar değil — evren DB'de, G5); enum-üye ekleme migration'ları ayrı dosya (§13)
+MEVCUT 3 SATIR NULL kalır, backfill YOK — olay-modeli öncesi seed satırları; İŞ-2 seed yeniden kurulumu (1840/seed-script) yeniden yazar.
+              nullable doğar → yazar (İŞ-2) → NOT NULL ayrı migration (Z98 §3). Migration BEYANSIZ (up/down simetrik).
+```
+**DUR-3: (ii).** `customer_code` (ham, denetim izi) + `customer_id` FK (İŞ-2 üreticisi doldurur); emsal `on_invoice_entries`; ikisi nullable
+(sözleşme "müşteri kodu YA DA CPL kodu" — CPL satırında müşteri yok, `cpl_id` zaten NOT NULL). Eşleme bulunamazsa satır UNKNOWN_CUSTOMER ile reddedilir.
+
+**Kayıt:** N61 — ürün sahibinin atıf hatası; **bundan sonra sınıf adı (F0x ailesi) yazılır, T-numarası yazılmaz.** event_type NULL notu doğru ve
+beklenen (1835 yalnız üye ekledi, yazar İŞ-2).
+
+**Sıra:** 1838 → harness dört kol (veri byte-birebir: satır üretmiyor) + ratchet → push → İŞ-2 backend ∥ QA.
+
+#### `40.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-14) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "Z98 §3"                   [ÖLÇÜLDÜ: KARAR_KAYDI :9361 Z98 · §3 "KISIT, YAZARDAN ÖNCE gelirse YOLU ÖLDÜRÜR"] ✓
+  "role-enum-contract emsali" [ÖLÇÜLDÜ: scripts/guards/role-enum-contract.mjs VAR, run-all'da] ✓
+  "enum-üye ayrı dosya"      ✓ — ⚠️ 1838 YENİ tip yaratıp AYNI dosyada kolona bağlar: Postgres kısıtı yalnız VAR OLAN tipe ADD VALUE için
+                             (CREATE TYPE + ADD COLUMN aynı transaction'da meşru) — İŞ-3'ün MATCHED/ANOMALY eki ayrı dosya olur
+UYUŞMAYANLAR
+  N62  "role-enum-contract emsaliyle … üç kaynak: DB enum · TS enum · docs" — emsalin üç kaynağı DB İÇERMEZ [ÖLÇÜLDÜ: role-enum-contract.mjs:22-27
+       "canonicalFromDoc (EK_C) · backendRoles (user.entity.ts) · frontendRoles (user.types.ts)"] ⇒ DB kaynağı YENİ bir okuyucu (katalog) ister;
+       ve kanonik "docs" kaynağı EK_C ise EK_C DONMUŞ (Z1) — kayıt ister ⇒ kapı İŞ-2/QA şeridinde, 1838'de DEĞİL
+  N63  "zarf bulunamadı → SUSPENDED — Z111 §13 'askı'" — §13'teki askı AMBIGUOUS_AGREEMENT için [ÖLÇÜLDÜ: §13 U1 "motor o grain'de AMBIGUOUS_AGREEMENT
+       → ASKI (üye+üretici bu dalga)"]; NO_ENVELOPE askısı §12 §5'te ("ZARF YOK … NO_ENVELOPE üyesi (ASKI, ERROR değil)") ⇒ hüküm içeriği tutuyor, atıf §12 §5
+  N64  AMBIGUOUS_AGREEMENT İŞ-3'e konuldu — §13 U1 "üye+üretici BU DALGA" diyor (İŞ-2 dalgası) ⇒ çelişki: bu hüküm §13 U1'in dalga cümlesinin üstüne
+       mi yazar? 1838'i ETKİLEMEZ (1838 yalnız NO_ENVELOPE) — İŞ-2 brief'inde DUR olarak sorulur
+  N65  "UNKNOWN_CUSTOMER ile zaten reddedilir" — kodda YOK [ÖLÇÜLDÜ: grep src boş; yalnız sözleşme v1 + İŞ-2 brief] ⇒ İŞ-2'nin yazacağı red; "zaten" gelecek
+  N66  "atıf hatası bu hafta sekizinci" — sayı damgasız (F00 dördüncü vaka) · kayda sınıf olarak
+```
+
+### `§41` · 1838 DAR DÜZELTME ONAYLI (R1 · S1 · S2 · S3 + notlar) · İKİ T-TASK (ürün sahibi + Fable, 2026-09-14)
+
+**Onay:** R1 + S1 + S2 + S3 + enum sırası / etiketsiz tip + yorumlar — tek dosya, tek tur; üç yeni bilinen-kırmızı (yanlış-şema FK · DEFAULT'lu
+kolon · UNIQUE index) rollback'li. Sonra harness gerçek HEAD'de (rc ayrı) → push onayı.
+**Sınıflar:** R1 = şema-nitelendirme sınıfının FK yüzü (1835 udt_schema'nın kardeşi) — "zaten uygulanmış" kontrolü yanlış şemayı beklenen sayar,
+fail-open, son assert de görmez. S2 = kontrol gevşekliği ürün davranışına sızar (UNIQUE index İŞ-2 yazışını sessizce reddeder). S3 = up/down
+simetrisi MESAJDA da; fail-closed ama mesajsız = "sessiz kapalı" (§2.5'in kapalı yönü).
+**Kayıt 1:** şeridin iki ihlali (harness rc okunmadı · npx) — ikisi de DISIPLIN'de kural; sonuç bağımsız doğrulamayla kurtarıldı. Brief şablonunun
+koşum-biçimi bölümü ajan tarafından okunmamış; şablon kapı değil ⇒ **T-task:** ajan brief'inin başında koşum-biçimi ZORUNLU ONAY satırı (ajan
+"okudum" yazmadan başlamaz). **Kayıt 2:** K-d etiketi (harness "revert etkisiz" değil, Postgres 2BP01) — "kanıt rengin sebebidir"; doğru adıyla
+yazılması kanıtı güçlendirir.
+**İŞ-2 notları doğru yerde:** üretici tenant eşitliğini zorlar · **T-task (P1, ayrı):** customers'a (tenant_id, id) UNIQUE — RLS-öncesi çok-kiracılı
+kısıt (master-data borcu).
+
+#### `41.1` · KAYIT ANINDA ÖLÇÜLEN ÖNCÜLLER (Team Lead, 2026-09-14) — ⛔ KARAR DEĞİL (`DISIPLIN F00`)
+```
+TUTANLAR
+  "public.customers gerçekten var"  [ÖLÇÜLDÜ: pg_class relkind='r' → public|customers · main|customers] ✓
+  "292/994 → 293/1000"              [ÖLÇÜLDÜ: runt395b REAL-HEAD-SON log · tl1838 harness.log] ✓
+UYUŞMAYANLAR
+  N67  "harness'ın 'beklentiyle uyumlu fark' satırı ilk kez işledi" — harness böyle bir satır BASMIYOR [ÖLÇÜLDÜ: tl1838/harness.log yalnız mutlak
+       "GENİŞ (K1) MASKE: 293 kolon / toplam 1000 kolon"]; fark Team Lead'in iki log'u elle karşılaştırmasıdır ⇒ "işleyen" bir kapı değil, bir
+       ÖLÇÜM. Harness'a önceki-HEAD değeriyle karşılaştırma eklenmesi ayrı bir soru (kayda, karar değil)
+```
+
+### `§42` · 1838 PUSH ONAYI · KAPANIŞ BEYANI "kapsanmadı" · İŞ-2 BRIEF KAPSAMI (ürün sahibi + Fable, 2026-09-14)
+
+**Onay:** commit planı + push-order. **Kapanış beyanı** `M1838_SOZLESME_KOLONLARI_BRIEF.md §8.1`: üç açık nokta "kapsanmadı" sütununda adıyla —
+R1 migration akışından geçmedi (yetki modeli) · R1/S1/S2 ÖNCE kanıtı yok (Z83'ün yarısı; yön güvenli, kural bu turda yarım uygulandı — kayıt öyle) ·
+onay bloğu görülemedi → T-404. **Kayıtlar:** money-float guard'ı migration'da Alan A yakaladı (kapı işletmede) · R1 yetki sınırı savunma derinliği.
+**Sıra:** push → T-403 done → İŞ-2 backend ∥ QA brief'i — olay türetme (SALE / ON_INVOICE_DISCOUNT / FREE_GOODS) · ERP-doğal sözleşme + kabul
+kuralları (mevcut + yeni kodlar, UNKNOWN_* adıyla) · customer_id/cpl_id türetme (tenant eşitliği zorunlu) · match_status UNMATCHED/SUSPENDED
+üreticileri · posting_date dönem sonu · sales_actuals tüketici · on-invoice bacağı tüketici taraması (1841'e girdi) · anlaşma tekilliği · seed yeniden
+kurulumu (olay modeli, 3 tutarsız satır) · DB↔TS enum kapısı (QA). Halka-3'ün gövdesi.
+**Öncül notu (Team Lead, F00):** N68 "T-334 para hattının ilk migration yakalaması" — T-334 başlığı para-hattı guard'ı DEĞİL [ÖLÇÜLDÜ: T-334 "FORMÜL-KANON DÜZELTMESİ — TO/NIV kavram-ayrıştırma + GP tabanı + off-invoice tabanı"]; yakalayan kapı money-float (ADR 0007 Alan A) — kayda sınıf adıyla (§40 kaydının kendi kuralı: T-numarası yazılmaz) · N69 "14 mevcut" kabul kodu sayısı kayıt anında ölçülmedi — İŞ-2 brief'i sınıfla yazar, sayıyı ölçerek.
